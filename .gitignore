@@ -1,0 +1,77 @@
+# FlutterFlow AI managed
+.env
+.flutterflow/.env
+.flutterflow/sdk/
+.flutterflow/runs.jsonl
+.flutterflow/history/
+.flutterflow/traces/
+.flutterflow/backups/
+.flutterflow/support/
+.flutterflow/workspace.json
+.flutterflow/last_run.json
+.flutterflow/recovery.json
+.flutterflow/plan.md
+.flutterflow/project_sdk_meta.json
+.flutterflow/generated_code_state.json
+generated_code/
+.ffai_staging/
+.dart_tool/
+.packages
+build/
+
+# AVARYN safe Git migration
+.env.*
+!/.env.example
+!.flutterflow/.env.example
+.env.local
+
+.dart_cli_state/
+node_modules/
+
+# Machine-local agent and MCP launch configuration
+.codex/config.toml
+.kiro/settings/mcp.json
+
+# FlutterFlow local history, tooling, downloads and caches
+.flutterflow/tools/
+.flutterflow/cache/
+.flutterflow/caches/
+.flutterflow/downloads/
+.flutterflow/logs/
+.flutterflow/tmp/
+flutterflow-tools/
+sdk-downloads/
+.pub-cache/
+pub-cache/
+.cache/
+cache/
+caches/
+
+# Local browser preview profiles and snapshots
+work/
+chrome-preview-profile/
+edge-preview-profile*/
+project_snapshot.json
+
+# Local archives and backups
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+*.xz
+*.iso
+*.dmg
+*.bak
+*.backup
+
+# Local credentials and signing material
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
