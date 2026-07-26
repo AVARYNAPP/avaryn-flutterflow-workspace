@@ -218,6 +218,7 @@ secure_password_change = false
 max_frequency = "1s"
 # Number of characters used in the email OTP.
 otp_length = 6
+
 # Number of seconds before the email OTP expires (defaults to 1 hour).
 otp_expiry = 3600
 
@@ -241,6 +242,11 @@ otp_expiry = 3600
 # enabled = true
 # subject = "Your password has been changed"
 # content_path = "./templates/password_changed_notification.html"
+
+[functions.stable-invitations]
+# Preview is intentionally anonymous; every mutating action validates the
+# bearer session inside the function before invoking a user-scoped RPC.
+verify_jwt = false
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.

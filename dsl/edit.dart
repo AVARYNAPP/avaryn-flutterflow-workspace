@@ -12,6 +12,7 @@ import 'package:flutterflow_ai/src/helpers/data_schema_helpers.dart'
         addDataStructField,
         findAppStateField,
         findDataStruct,
+        setSecurePersistedValues,
         structField,
         findDataStructField;
 import 'package:flutterflow_ai/src/helpers/data_type_helpers.dart'
@@ -24,7 +25,7 @@ import 'package:flutterflow_ai/src/helpers/ensure_helpers.dart'
 import 'package:flutterflow_ai/src/helpers/auth_helpers.dart'
     show configureSupabaseAuth;
 import 'package:flutterflow_ai/src/helpers/postgres_helpers.dart'
-    show isSupabaseActive;
+    show addTable, findTable, isSupabaseActive, postgresField;
 import 'package:flutterflow_ai/src/helpers/project_helpers.dart'
     show updateComponent, updatePage;
 import 'package:flutterflow_ai/src/helpers/routing_helpers.dart'
@@ -5203,7 +5204,7 @@ Future<void> main(List<String> args) async {
   final options = _parseCliOptions(args);
   try {
     await flutterFlowAI(
-      buildAvarynPhase4A,
+      buildAvarynPhase4B,
       apiKey: options.apiKey,
       baseUrl: options.baseUrl,
       projectName: options.projectName,
@@ -5224,15 +5225,23 @@ const bool _nutritionCustomCodeCheckpointOnly = false;
 const bool _phase4ASchemaCheckpointOnly = false;
 
 String _loadPhase4AAccountRuntimeWidgetCode() {
+  final contextFile = File.fromUri(
+    Platform.script.resolve('phase_4b_context_model.dart'),
+  );
   final sourceFile = File.fromUri(
     Platform.script.resolve('avaryn_account_runtime.dart'),
   );
+  if (!contextFile.existsSync()) {
+    throw StateError(
+      'Missing Phase 4B runtime contract source: ${contextFile.path}',
+    );
+  }
   if (!sourceFile.existsSync()) {
     throw StateError(
       'Missing Phase 4A custom-widget source: ${sourceFile.path}',
     );
   }
-  return sourceFile
+  final runtimeCode = sourceFile
       .readAsLinesSync()
       .map(
         (line) =>
@@ -5252,8 +5261,69 @@ String _loadPhase4AAccountRuntimeWidgetCode() {
                 ? "import '/flutter_flow/flutter_flow_util.dart';"
                 : line,
       )
-      .where((line) => !line.contains('package:flutterflow_generated/'))
+      .where(
+        (line) =>
+            !line.contains('package:flutterflow_generated/') &&
+            !line.contains("import 'phase_4b_context_model.dart'"),
+      )
       .join('\n');
+  return '${contextFile.readAsStringSync()}\n\n$runtimeCode';
+}
+
+String _loadPhase4BStableRuntimeWidgetCode() {
+  final contextFile = File.fromUri(
+    Platform.script.resolve('phase_4b_context_model.dart'),
+  );
+  final managementFile = File.fromUri(
+    Platform.script.resolve('phase_4b_management_model.dart'),
+  );
+  final sourceFile = File.fromUri(
+    Platform.script.resolve('avaryn_stable_runtime.dart'),
+  );
+  if (!contextFile.existsSync()) {
+    throw StateError(
+      'Missing Phase 4B runtime contract source: ${contextFile.path}',
+    );
+  }
+  if (!managementFile.existsSync()) {
+    throw StateError(
+      'Missing Phase 4B management source: ${managementFile.path}',
+    );
+  }
+  if (!sourceFile.existsSync()) {
+    throw StateError(
+      'Missing Phase 4B custom-widget source: ${sourceFile.path}',
+    );
+  }
+  final managementCode = managementFile.readAsStringSync();
+  final runtimeCode = sourceFile
+      .readAsLinesSync()
+      .map(
+        (line) =>
+            line.contains(
+                  "package:flutterflow_generated/backend/schema/structs/index.dart",
+                )
+                ? "import '/backend/schema/structs/index.dart';"
+                : line.contains('package:flutterflow_generated/app_state.dart')
+                ? "import '/app_state.dart';"
+                : line.contains(
+                  'package:flutterflow_generated/flutter_flow/flutter_flow_theme.dart',
+                )
+                ? "import '/flutter_flow/flutter_flow_theme.dart';"
+                : line.contains(
+                  'package:flutterflow_generated/flutter_flow/flutter_flow_util.dart',
+                )
+                ? "import '/flutter_flow/flutter_flow_util.dart';"
+                : line,
+      )
+      .where(
+        (line) =>
+            !line.contains('package:flutterflow_generated/') &&
+            !line.contains("import 'phase_4b_context_model.dart'") &&
+            !line.contains("import 'phase_4b_management_model.dart'"),
+      )
+      .join('\n');
+  return '${contextFile.readAsStringSync()}\n\n$managementCode\n\n$runtimeCode';
 }
 
 String _loadDailyFeedingRuntimeWidgetCode() {
@@ -6683,6 +6753,546 @@ void buildAvarynPhase4A(App app) {
   assert(authGate.name == 'AuthGatePage');
   assert(welcome.name == 'AuthWelcomePage');
   assert(personalProfile.name == 'PersonalProfilePage');
+}
+
+/// Adds the Phase 4B stable authority boundary while keeping Phase 1-3
+/// operational data local. This source is intentionally validated locally;
+/// applying it to the bound FlutterFlow project requires a separate reviewed
+/// remote run.
+void buildAvarynPhase4B(App app) {
+  buildAvarynPhase4A(app);
+
+  app.raw((project) {
+    FFIdentifier ensureStruct(
+      String name,
+      List<FFParameter> fields,
+      String description,
+    ) {
+      final existing = findDataStruct(project, name: name);
+      if (existing != null) return existing.identifier;
+      return addDataStruct(
+        project,
+        name: name,
+        fields: fields,
+        description: description,
+      );
+    }
+
+    final linkId = ensureStruct(
+      'LocalStableCloudLinkData',
+      [
+        structField(
+          'authUserId',
+          stringType,
+          description: 'Auth UUID that owns this explicit local mapping.',
+        ),
+        structField(
+          'cloudStableId',
+          stringType,
+          description: 'Selected cloud stable UUID; never a local stable ID.',
+        ),
+        structField(
+          'localStableId',
+          stringType,
+          description:
+              'Existing local stable ID preserved byte-for-byte from Phase 1-3.',
+        ),
+        structField(
+          'selectedHorseId',
+          intType,
+          description: 'Per-cloud-stable selected existing local horse ID.',
+        ),
+        structField(
+          'confirmed',
+          boolType,
+          description: 'True only after explicit local-to-cloud confirmation.',
+        ),
+        structField(
+          'linkedAt',
+          dateTimeType,
+          description: 'Local timestamp of the explicit mapping decision.',
+        ),
+      ],
+      'Explicit account-scoped mapping between one cloud stable and one unchanged local stable ID.',
+    );
+
+    final membershipCacheId = ensureStruct(
+      'StableMembershipCacheData',
+      [
+        structField(
+          'authUserId',
+          stringType,
+          description: 'Auth UUID that owns this read-only offline cache.',
+        ),
+        structField('stableId', stringType, description: 'Cloud stable UUID.'),
+        structField(
+          'stableName',
+          stringType,
+          description: 'Last validated non-contact stable label.',
+        ),
+        structField(
+          'stableKind',
+          stringType,
+          description: 'Last validated organization or personal kind.',
+        ),
+        structField(
+          'membershipId',
+          stringType,
+          description: 'Authoritative membership UUID.',
+        ),
+        structField(
+          'stableMemberId',
+          stringType,
+          description: 'Distinct operational stable-member UUID.',
+        ),
+        structField(
+          'role',
+          stringType,
+          description: 'Last validated role; never trusted for offline writes.',
+        ),
+        structField(
+          'status',
+          stringType,
+          description: 'Last validated membership status.',
+        ),
+        structField(
+          'lastValidatedAt',
+          dateTimeType,
+          description: 'UTC time of the last successful server validation.',
+        ),
+      ],
+      'Short-lived offline read-only cache of a validated stable membership without contact data.',
+    );
+
+    void ensureScopeField(
+      String fieldName,
+      FFDataTypeV2 type,
+      String description, {
+      bool isList = false,
+    }) {
+      if (findDataStructField(
+            project,
+            structName: 'LocalAccountScopeData',
+            fieldName: fieldName,
+          ) !=
+          null) {
+        return;
+      }
+      addDataStructField(
+        project,
+        structName: 'LocalAccountScopeData',
+        fieldName: fieldName,
+        type: type,
+        description: description,
+        isList: isList,
+      );
+    }
+
+    ensureScopeField(
+      'selectedCloudStableId',
+      stringType,
+      'Last selected cloud stable UUID; never overwrites currentLocalStableId.',
+    );
+    ensureScopeField(
+      'localStableCloudLinks',
+      raw_types.dataStructType(linkId),
+      'Explicit local-to-cloud stable mappings for this account scope.',
+      isList: true,
+    );
+    ensureScopeField(
+      'stableMembershipCaches',
+      raw_types.dataStructType(membershipCacheId),
+      'Read-only last-validated membership cache for this account scope.',
+      isList: true,
+    );
+
+    void ensureState(
+      String name,
+      FFDataTypeV2 type,
+      String description, {
+      String? defaultValue,
+      bool persisted = true,
+      bool isList = false,
+    }) {
+      if (findAppStateField(project, name: name) != null) return;
+      addAppStateField(
+        project,
+        name: name,
+        type: isList ? raw_types.listOf(type) : type,
+        description: description,
+        defaultValue: defaultValue,
+        persisted: persisted,
+      );
+    }
+
+    ensureState(
+      'selectedCloudStableId',
+      stringType,
+      'Selected cloud stable UUID, separate from currentLocalStableId.',
+    );
+    ensureState(
+      'localStableCloudLinks',
+      raw_types.dataStructType(linkId),
+      'Explicit account-scoped local-to-cloud stable mappings.',
+      isList: true,
+    );
+    ensureState(
+      'stableMembershipCaches',
+      raw_types.dataStructType(membershipCacheId),
+      'Offline read-only membership cache; never authorizes mutations.',
+      isList: true,
+    );
+    ensureState(
+      'phase4BAccountOperationalBackups',
+      raw_types.dataStructType(
+        findDataStruct(project, name: 'LocalAccountScopeData')!.identifier,
+      ),
+      'Rollback-safe account masters used to filter local operations by explicit stable link.',
+      isList: true,
+    );
+    ensureState(
+      'lastMembershipValidatedAt',
+      dateTimeType,
+      'Last successful online validation of the selected membership.',
+    );
+    ensureState(
+      'stableAccessStatus',
+      stringType,
+      'In-memory active, validating, unlinked, removed, suspended or denied state.',
+      persisted: false,
+    );
+    setSecurePersistedValues(project, enabled: true);
+
+    void ensureTableMetadata(String name, List<FFPostgresField> fields) {
+      if (findTable(project, name: name) != null) return;
+      addTable(project, name: name, fields: fields);
+    }
+
+    ensureTableMetadata('stables', [
+      postgresField(
+        'id',
+        type: stringType,
+        postgresType: 'uuid',
+        isPrimaryKey: true,
+        isRequired: true,
+        hasDefault: true,
+      ),
+      postgresField('kind', type: stringType, postgresType: 'text'),
+      postgresField('name', type: stringType, postgresType: 'text'),
+      postgresField('status', type: stringType, postgresType: 'text'),
+      postgresField('timezone', type: stringType, postgresType: 'text'),
+      postgresField('locale', type: stringType, postgresType: 'text'),
+      postgresField(
+        'created_by_user_id',
+        type: stringType,
+        postgresType: 'uuid',
+      ),
+      postgresField(
+        'creation_request_id',
+        type: stringType,
+        postgresType: 'uuid',
+      ),
+      postgresField(
+        'created_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+      postgresField(
+        'updated_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+      postgresField(
+        'archived_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+    ]);
+    ensureTableMetadata('stable_members', [
+      postgresField(
+        'id',
+        type: stringType,
+        postgresType: 'uuid',
+        isPrimaryKey: true,
+      ),
+      postgresField('stable_id', type: stringType, postgresType: 'uuid'),
+      postgresField('display_name', type: stringType, postgresType: 'text'),
+      postgresField('function_title', type: stringType, postgresType: 'text'),
+      postgresField('status', type: stringType, postgresType: 'text'),
+      postgresField(
+        'legacy_local_member_id',
+        type: stringType,
+        postgresType: 'text',
+      ),
+      postgresField('source', type: stringType, postgresType: 'text'),
+      postgresField(
+        'created_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+      postgresField(
+        'updated_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+    ]);
+    ensureTableMetadata('stable_memberships', [
+      postgresField(
+        'id',
+        type: stringType,
+        postgresType: 'uuid',
+        isPrimaryKey: true,
+      ),
+      postgresField('stable_id', type: stringType, postgresType: 'uuid'),
+      postgresField('user_id', type: stringType, postgresType: 'uuid'),
+      postgresField('stable_member_id', type: stringType, postgresType: 'uuid'),
+      postgresField('role', type: stringType, postgresType: 'text'),
+      postgresField('status', type: stringType, postgresType: 'text'),
+      postgresField(
+        'joined_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+      postgresField('row_version', type: intType, postgresType: 'int8'),
+      postgresField(
+        'source_invitation_id',
+        type: stringType,
+        postgresType: 'uuid',
+      ),
+      postgresField(
+        'ended_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+    ]);
+    ensureTableMetadata('stable_invitations', [
+      postgresField(
+        'id',
+        type: stringType,
+        postgresType: 'uuid',
+        isPrimaryKey: true,
+      ),
+      postgresField('stable_id', type: stringType, postgresType: 'uuid'),
+      postgresField('offered_role', type: stringType, postgresType: 'text'),
+      postgresField('status', type: stringType, postgresType: 'text'),
+      postgresField(
+        'expires_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+      postgresField(
+        'target_stable_member_id',
+        type: stringType,
+        postgresType: 'uuid',
+      ),
+      postgresField(
+        'last_sent_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+      postgresField('resend_count', type: intType, postgresType: 'int4'),
+    ]);
+    ensureTableMetadata('account_workspace_preferences', [
+      postgresField(
+        'user_id',
+        type: stringType,
+        postgresType: 'uuid',
+        isPrimaryKey: true,
+      ),
+      postgresField(
+        'last_selected_stable_id',
+        type: stringType,
+        postgresType: 'uuid',
+      ),
+      postgresField('workspace_mode', type: stringType, postgresType: 'text'),
+      postgresField('phase_4b_status', type: stringType, postgresType: 'text'),
+      postgresField(
+        'intent_consumed_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+    ]);
+    ensureTableMetadata('stable_security_events', [
+      postgresField(
+        'id',
+        type: intType,
+        postgresType: 'int8',
+        isPrimaryKey: true,
+      ),
+      postgresField('stable_id', type: stringType, postgresType: 'uuid'),
+      postgresField('event_type', type: stringType, postgresType: 'text'),
+      postgresField(
+        'created_at',
+        type: dateTimeType,
+        postgresType: 'timestamptz',
+      ),
+    ]);
+  });
+
+  final stableRuntimeCode = _loadPhase4BStableRuntimeWidgetCode();
+  app.raw((project) {
+    final existing = findCustomWidget(project, name: 'AvarynStableRuntime');
+    if (existing == null) {
+      addCustomWidget(
+        project,
+        name: 'AvarynStableRuntime',
+        code: stableRuntimeCode,
+        description:
+            'Responsive Phase 4B onboarding, stable authority, invitations and isolated local stable context.',
+      );
+    } else {
+      updateCustomWidget(
+        project,
+        name: 'AvarynStableRuntime',
+        code: stableRuntimeCode,
+        description:
+            'Responsive Phase 4B onboarding, stable authority, invitations and isolated local stable context.',
+      );
+    }
+  });
+
+  final pages = <({String name, String route, String mode, bool auth})>[
+    (
+      name: 'StableOnboardingHandoffPage',
+      route: '/onboarding/workspace',
+      mode: 'handoff',
+      auth: true,
+    ),
+    (
+      name: 'CreateStablePage',
+      route: '/stallen/nieuw',
+      mode: 'createStable',
+      auth: true,
+    ),
+    (
+      name: 'PersonalWorkspacePage',
+      route: '/persoonlijke-workspace',
+      mode: 'personalWorkspace',
+      auth: true,
+    ),
+    (
+      name: 'StableInvitationPage',
+      route: '/uitnodiging',
+      mode: 'invitation',
+      auth: false,
+    ),
+    (
+      name: 'InvalidStableInvitationPage',
+      route: '/uitnodiging/ongeldig',
+      mode: 'invitation',
+      auth: false,
+    ),
+    (
+      name: 'StablePickerPage',
+      route: '/stallen',
+      mode: 'stablePicker',
+      auth: true,
+    ),
+    (
+      name: 'StableDetailsPage',
+      route: '/stal',
+      mode: 'stableDetails',
+      auth: true,
+    ),
+    (
+      name: 'StableMembersPage',
+      route: '/stal/leden',
+      mode: 'members',
+      auth: true,
+    ),
+    (
+      name: 'StableMemberDetailsPage',
+      route: '/stal/leden/detail',
+      mode: 'memberDetails',
+      auth: true,
+    ),
+    (
+      name: 'InviteStableMemberPage',
+      route: '/stal/uitnodigen',
+      mode: 'invite',
+      auth: true,
+    ),
+    (
+      name: 'PendingStableInvitationsPage',
+      route: '/stal/uitnodigingen',
+      mode: 'pendingInvitations',
+      auth: true,
+    ),
+    (
+      name: 'ManageStableRolesPage',
+      route: '/stal/rollen',
+      mode: 'roles',
+      auth: true,
+    ),
+    (
+      name: 'StableAccessPage',
+      route: '/stal/toegang',
+      mode: 'access',
+      auth: true,
+    ),
+    (
+      name: 'LinkLocalStablePage',
+      route: '/stal/lokale-koppeling',
+      mode: 'linkLocalStable',
+      auth: true,
+    ),
+  ];
+
+  for (final spec in pages) {
+    final isMemberDetails = spec.mode == 'memberDetails';
+    app.ensurePage(
+      spec.name,
+      route: spec.route,
+      description:
+          'Phase 4B ${spec.mode} flow with role checks, loading, empty, error and retry states.',
+      params:
+          isMemberDetails ? {'stableMemberId': string.withDefault('')} : null,
+      body: _phase4BPageBody(
+        spec.mode,
+        initialStableMemberId:
+            isMemberDetails ? PageParam('stableMemberId') : '',
+      ),
+    );
+  }
+
+  app.raw((project) {
+    for (final spec in pages) {
+      setPageRoute(project, pageName: spec.name, route: spec.route);
+      setPageRequiresAuth(
+        project,
+        pageName: spec.name,
+        requiresAuth: spec.auth,
+      );
+      final page = findPage(project, name: spec.name);
+      if (page == null) throw StateError('Expected ${spec.name}.');
+      final desktop = findDescendants(
+        page.node,
+        (node) => node.name == 'Phase4BDesktopSideNavigation',
+      );
+      final mobile = findDescendants(
+        page.node,
+        (node) => node.name == 'Phase4BMobileBottomNavigation',
+      );
+      if (desktop.length == 1) {
+        setResponsiveVisibility(
+          desktop.single,
+          phoneHidden: true,
+          tabletHidden: true,
+          tabletLandscapeHidden: true,
+          desktopHidden: false,
+        );
+      }
+      if (mobile.length == 1) {
+        setResponsiveVisibility(
+          mobile.single,
+          phoneHidden: false,
+          tabletHidden: false,
+          tabletLandscapeHidden: false,
+          desktopHidden: true,
+        );
+      }
+    }
+  });
 }
 
 /// Completes Phase 2 with stable-scoped round settings, date-specific staff
@@ -11678,6 +12288,61 @@ DslWidget _phase4APersonalProfilePageBody() => Row(
     ),
   ],
 );
+
+DslWidget _phase4BPageBody(String mode, {Object initialStableMemberId = ''}) =>
+    Row(
+      name: 'Phase4BResponsiveShell',
+      crossAxis: CrossAxis.stretch,
+      children: [
+        Container(
+          name: 'Phase4BDesktopSideNavigation',
+          child: _desktopNavigationBody(
+            bindParams: false,
+            activeTab: 'Profiel',
+            horsesTarget: ff.Pages.horsesOverviewPage,
+            planningTarget: ff.Pages.planningPage,
+            profileTarget: 'PersonalProfilePage',
+          ),
+        ),
+        Expanded(
+          Column(
+            crossAxis: CrossAxis.stretch,
+            children: [
+              Container(
+                name: 'Phase4BStableContextSelector',
+                height: 78,
+                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                color: Colors.primary,
+                child: CustomWidget(
+                  widgetName: 'AvarynStableRuntime',
+                  arguments: const {'mode': 'selector'},
+                ),
+              ),
+              Expanded(
+                CustomWidget(
+                  name: 'Phase4B${mode}Runtime',
+                  widgetName: 'AvarynStableRuntime',
+                  arguments: {
+                    'mode': mode,
+                    'initialStableMemberId': initialStableMemberId,
+                  },
+                ),
+              ),
+              Container(
+                name: 'Phase4BMobileBottomNavigation',
+                child: _mobileNavigationBody(
+                  bindParams: false,
+                  activeTab: 'Profiel',
+                  horsesTarget: ff.Pages.horsesOverviewPage,
+                  planningTarget: ff.Pages.planningPage,
+                  profileTarget: 'PersonalProfilePage',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
 
 DslWidget _mobileNavigationBody({
   bool bindParams = true,

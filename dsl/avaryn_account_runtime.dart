@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'phase_4b_context_model.dart';
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ const String _phase4ATermsUrl = String.fromEnvironment('AVARYN_TERMS_URL');
 const String _phase4ALegacyBackupId = 'legacy-unscoped-backup';
 const String _phase4ALegacyLocalUserId = 'local-current-user';
 const String _phase4ALegacyStableId = 'local-stable';
-const int _phase4ALocalScopeSchemaVersion = 1;
+const int _phase4ALocalScopeSchemaVersion = 2;
 
 bool get _phase4ALegalConfigured =>
     Uri.tryParse(_phase4APrivacyPolicyUrl)?.hasScheme == true &&
@@ -223,6 +224,28 @@ List<FeedingExecutionRecordDataStruct> _phase4ACopyExecutions(
         )
         .toList();
 
+List<LocalStableCloudLinkDataStruct> _phase4ACopyStableLinks(
+  Iterable<LocalStableCloudLinkDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => LocalStableCloudLinkDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+List<StableMembershipCacheDataStruct> _phase4ACopyMembershipCaches(
+  Iterable<StableMembershipCacheDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => StableMembershipCacheDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
 HorseProfileDataStruct _phase4ACopyHorse(HorseProfileDataStruct value) =>
     HorseProfileDataStruct.fromSerializableMap(jsonDecode(value.serialize()));
 
@@ -256,6 +279,11 @@ LocalAccountScopeDataStruct _phase4ACaptureScope(String authUserId) {
     ),
     nextFeedingAssignmentExceptionId: state.nextFeedingAssignmentExceptionId,
     nextFeedingExecutionRecordId: state.nextFeedingExecutionRecordId,
+    selectedCloudStableId: state.selectedCloudStableId,
+    localStableCloudLinks: _phase4ACopyStableLinks(state.localStableCloudLinks),
+    stableMembershipCaches: _phase4ACopyMembershipCaches(
+      state.stableMembershipCaches,
+    ),
     schemaVersion: _phase4ALocalScopeSchemaVersion,
     updatedAt: DateTime.now().toUtc(),
   );
@@ -289,6 +317,46 @@ void _phase4ASaveScope(String authUserId) {
   state.localAccountScopes = scopes;
 }
 
+LocalAccountScopeDataStruct? _phase4BOperationalMasterFor(String authUserId) {
+  for (final scope in FFAppState().phase4BAccountOperationalBackups) {
+    if (scope.authUserId == authUserId) return scope;
+  }
+  return null;
+}
+
+void _phase4ASavePhase4BOperationalMaster(String authUserId) {
+  if (authUserId.trim().isEmpty) return;
+  final selectedCloudStableId = FFAppState().selectedCloudStableId;
+  if (selectedCloudStableId.isNotEmpty) {
+    final links = List<LocalStableCloudLinkDataStruct>.from(
+      FFAppState().localStableCloudLinks,
+    );
+    for (final link in links) {
+      if (link.authUserId == authUserId &&
+          link.cloudStableId == selectedCloudStableId &&
+          link.confirmed) {
+        link.selectedHorseId = FFAppState().selectedHorse.id;
+      }
+    }
+    FFAppState().localStableCloudLinks = links;
+  }
+  final current = _phase4ACaptureScope(authUserId);
+  final existing = _phase4BOperationalMasterFor(authUserId);
+  final plan = phase4BPlanSerializedOperationalMasterSave(
+    current: current,
+    existing: existing,
+    toSerializableMap:
+        (scope) => jsonDecode(scope.serialize()) as Map<String, dynamic>,
+    fromSerializableMap: LocalAccountScopeDataStruct.fromSerializableMap,
+  );
+  if (!plan.shouldPersist) return;
+  final masters = List<LocalAccountScopeDataStruct>.from(
+    FFAppState().phase4BAccountOperationalBackups,
+  )..removeWhere((scope) => scope.authUserId == authUserId);
+  masters.add(plan.master);
+  FFAppState().phase4BAccountOperationalBackups = masters;
+}
+
 void _phase4AClearWorkingSet() {
   final state = FFAppState();
   state.update(() {
@@ -305,7 +373,7 @@ void _phase4AClearWorkingSet() {
     state.selectedActivity = ActivityDataStruct();
     state.selectedActivityIndex = 0;
     state.currentLocalUserId = _phase4ALegacyLocalUserId;
-    state.currentLocalStableId = _phase4ALegacyStableId;
+    state.currentLocalStableId = '';
     state.horseFeedingPlans = <HorseFeedingPlanDataStruct>[];
     state.temporaryFeedingSchedules = <TemporaryFeedingScheduleDataStruct>[];
     state.nextFeedingItemId = 1;
@@ -318,6 +386,8 @@ void _phase4AClearWorkingSet() {
     state.nextFeedingExecutionRecordId = 1;
     state.selectedFeedingDateKey = '';
     state.selectedFeedingRoundId = 'morning';
+    state.selectedCloudStableId = '';
+    state.stableAccessStatus = '';
     state.activityDraftHorseId = 0;
     state.activityDraftAssigneeUserIds = <String>[];
     state.activityDraftStartDate = null;
@@ -387,6 +457,14 @@ void _phase4ALoadScope(LocalAccountScopeDataStruct scope) {
             : scope.nextFeedingExecutionRecordId;
     state.selectedFeedingDateKey = '';
     state.selectedFeedingRoundId = 'morning';
+    state.selectedCloudStableId = scope.selectedCloudStableId;
+    state.localStableCloudLinks = _phase4ACopyStableLinks(
+      scope.localStableCloudLinks,
+    );
+    state.stableMembershipCaches = _phase4ACopyMembershipCaches(
+      scope.stableMembershipCaches,
+    );
+    state.stableAccessStatus = '';
   });
 }
 
@@ -400,13 +478,15 @@ bool _phase4AActivateScope(String authUserId) {
   }
 
   if (current.isNotEmpty) {
+    _phase4ASavePhase4BOperationalMaster(current);
     _phase4ASaveScope(current);
   } else if (!state.hasLegacyLocalDataBackup && _phase4AHasOperationalData()) {
     state.legacyLocalDataBackup = _phase4ACaptureScope(_phase4ALegacyBackupId);
     state.hasLegacyLocalDataBackup = true;
   }
 
-  final saved = _phase4AScopeFor(authUserId);
+  final saved =
+      _phase4BOperationalMasterFor(authUserId) ?? _phase4AScopeFor(authUserId);
   if (saved == null) {
     _phase4AClearWorkingSet();
     _phase4ASaveScope(authUserId);
@@ -693,7 +773,11 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       if (profile.onboardingCompletedAt == null) {
         context.goNamed('OnboardingPage');
       } else if (!legacyPrompt) {
-        context.goNamed('TodayDashboardPage');
+        if (FFAppState().selectedCloudStableId.trim().isEmpty) {
+          context.goNamed('StableOnboardingHandoffPage');
+        } else {
+          context.goNamed('TodayDashboardPage');
+        }
       }
     } catch (error) {
       _setError(_phase4AAuthError(error));
@@ -1027,7 +1111,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       if (!mounted) return;
       setState(() => _profile = profile);
       if (complete) {
-        context.goNamed('AuthGatePage');
+        context.goNamed('StableOnboardingHandoffPage');
       } else {
         _setNotice('Je profiel is opgeslagen.');
       }
@@ -1161,9 +1245,14 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     _setBusy(true);
     try {
       final authId = FFAppState().activeAuthAccountId.trim();
-      if (authId.isNotEmpty) _phase4ASaveScope(authId);
+      if (authId.isNotEmpty) {
+        _phase4ASavePhase4BOperationalMaster(authId);
+        _phase4ASaveScope(authId);
+      }
       FFAppState().activeAuthAccountId = '';
       FFAppState().currentAuthProfile = AuthProfileDataStruct();
+      FFAppState().selectedCloudStableId = '';
+      FFAppState().stableAccessStatus = 'signed_out';
       _phase4AClearWorkingSet();
       await _client.auth.signOut();
       if (!mounted) return;
@@ -1220,7 +1309,11 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     if (profile.onboardingCompletedAt == null) {
       context.goNamed('OnboardingPage');
     } else {
-      context.goNamed('TodayDashboardPage');
+      if (FFAppState().selectedCloudStableId.trim().isEmpty) {
+        context.goNamed('StableOnboardingHandoffPage');
+      } else {
+        context.goNamed('TodayDashboardPage');
+      }
     }
   }
 
@@ -2248,7 +2341,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       ),
       const SizedBox(height: 8),
       Text(
-        'Staltoegang en rollen worden pas in Phase 4B ingericht.',
+        'Hierna bevestig je expliciet een stal, uitnodiging of persoonlijke workspace.',
         textAlign: TextAlign.center,
         style: theme.bodySmall.copyWith(color: theme.secondaryText),
       ),
