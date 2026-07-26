@@ -5,6 +5,12 @@ library;
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
 abstract final class AppState {
+  static const activeAuthAccountId = ffai.ProjectAppStateFieldHandle(
+    name: "activeAuthAccountId",
+    key: "w8t4ohe8",
+    typeName: "String",
+    persisted: true,
+  );
   static const activities = ffai.ProjectAppStateFieldHandle(
     name: "activities",
     key: "fl3cs1gr",
@@ -77,6 +83,24 @@ abstract final class AppState {
     typeName: "Boolean",
     persisted: false,
   );
+  static const authPendingEmail = ffai.ProjectAppStateFieldHandle(
+    name: "authPendingEmail",
+    key: "60mksc5q",
+    typeName: "String",
+    persisted: true,
+  );
+  static const authProfileCaches = ffai.ProjectAppStateFieldHandle(
+    name: "authProfileCaches",
+    key: "hlrt35lx",
+    typeName: "List<DataStruct<AuthProfileData>>",
+    persisted: true,
+  );
+  static const currentAuthProfile = ffai.ProjectAppStateFieldHandle(
+    name: "currentAuthProfile",
+    key: "x2372tva",
+    typeName: "DataStruct<AuthProfileData>",
+    persisted: false,
+  );
   static const currentLocalStableId = ffai.ProjectAppStateFieldHandle(
     name: "currentLocalStableId",
     key: "5vfxqjhu",
@@ -107,6 +131,12 @@ abstract final class AppState {
     typeName: "List<DataStruct<FeedingRoundConfigData>>",
     persisted: true,
   );
+  static const hasLegacyLocalDataBackup = ffai.ProjectAppStateFieldHandle(
+    name: "hasLegacyLocalDataBackup",
+    key: "avo0gxeb",
+    typeName: "Boolean",
+    persisted: true,
+  );
   static const horseFeedingPlans = ffai.ProjectAppStateFieldHandle(
     name: "horseFeedingPlans",
     key: "ue3uvg5e",
@@ -123,6 +153,24 @@ abstract final class AppState {
     name: "horses",
     key: "t380paqq",
     typeName: "List<DataStruct<HorseProfileData>>",
+    persisted: true,
+  );
+  static const legacyDataPromptedAuthIds = ffai.ProjectAppStateFieldHandle(
+    name: "legacyDataPromptedAuthIds",
+    key: "8bax2d8t",
+    typeName: "List<String>",
+    persisted: true,
+  );
+  static const legacyLocalDataBackup = ffai.ProjectAppStateFieldHandle(
+    name: "legacyLocalDataBackup",
+    key: "4tsbmz1s",
+    typeName: "DataStruct<LocalAccountScopeData>",
+    persisted: true,
+  );
+  static const localAccountScopes = ffai.ProjectAppStateFieldHandle(
+    name: "localAccountScopes",
+    key: "vg10um4b",
+    typeName: "List<DataStruct<LocalAccountScopeData>>",
     persisted: true,
   );
   static const nextActivityId = ffai.ProjectAppStateFieldHandle(
@@ -216,6 +264,7 @@ abstract final class AppState {
     persisted: true,
   );
   static const all = <ffai.ProjectAppStateFieldHandle>[
+    activeAuthAccountId,
     activities,
     activityDraftAllDay,
     activityDraftAssigneeUserIds,
@@ -228,14 +277,21 @@ abstract final class AppState {
     activityDraftStartDate,
     activityDraftStartTime,
     activitySaveInProgress,
+    authPendingEmail,
+    authProfileCaches,
+    currentAuthProfile,
     currentLocalStableId,
     currentLocalUserId,
     feedingAssignmentExceptions,
     feedingExecutionRecords,
     feedingRoundConfigs,
+    hasLegacyLocalDataBackup,
     horseFeedingPlans,
     horseSeedVersion,
     horses,
+    legacyDataPromptedAuthIds,
+    legacyLocalDataBackup,
+    localAccountScopes,
     nextActivityId,
     nextFeedingAssignmentExceptionId,
     nextFeedingExecutionRecordId,

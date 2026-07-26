@@ -5,6 +5,15 @@ library;
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 import 'pages/activity_detail_page.dart' show activityDetailPageHandle;
 import 'pages/activity_form_page.dart' show activityFormPageHandle;
+import 'pages/auth_callback_page.dart' show authCallbackPageHandle;
+import 'pages/auth_create_account_page.dart' show authCreateAccountPageHandle;
+import 'pages/auth_email_page.dart' show authEmailPageHandle;
+import 'pages/auth_forgot_password_page.dart' show authForgotPasswordPageHandle;
+import 'pages/auth_gate_page.dart' show authGatePageHandle;
+import 'pages/auth_login_page.dart' show authLoginPageHandle;
+import 'pages/auth_reset_password_page.dart' show authResetPasswordPageHandle;
+import 'pages/auth_verify_email_page.dart' show authVerifyEmailPageHandle;
+import 'pages/auth_welcome_page.dart' show authWelcomePageHandle;
 import 'pages/feeding_overview_page.dart' show feedingOverviewPageHandle;
 import 'pages/feeding_round_execution_page.dart' show feedingRoundExecutionPageHandle;
 import 'pages/feeding_round_settings_page.dart' show feedingRoundSettingsPageHandle;
@@ -12,13 +21,24 @@ import 'pages/horse_edit_page.dart' show horseEditPageHandle;
 import 'pages/horse_form_page.dart' show horseFormPageHandle;
 import 'pages/horse_nutrition_page.dart' show horseNutritionPageHandle;
 import 'pages/horses_overview_page.dart' show horsesOverviewPageHandle;
+import 'pages/onboarding_page.dart' show onboardingPageHandle;
 import 'pages/orion_profile_page.dart' show orionProfilePageHandle;
+import 'pages/personal_profile_page.dart' show personalProfilePageHandle;
 import 'pages/planning_page.dart' show planningPageHandle;
 import 'pages/today_dashboard_page.dart' show todayDashboardPageHandle;
 
 abstract final class Pages {
   static final activityDetailPage = activityDetailPageHandle;
   static final activityFormPage = activityFormPageHandle;
+  static final authCallbackPage = authCallbackPageHandle;
+  static final authCreateAccountPage = authCreateAccountPageHandle;
+  static final authEmailPage = authEmailPageHandle;
+  static final authForgotPasswordPage = authForgotPasswordPageHandle;
+  static final authGatePage = authGatePageHandle;
+  static final authLoginPage = authLoginPageHandle;
+  static final authResetPasswordPage = authResetPasswordPageHandle;
+  static final authVerifyEmailPage = authVerifyEmailPageHandle;
+  static final authWelcomePage = authWelcomePageHandle;
   static final feedingOverviewPage = feedingOverviewPageHandle;
   static final feedingRoundExecutionPage = feedingRoundExecutionPageHandle;
   static final feedingRoundSettingsPage = feedingRoundSettingsPageHandle;
@@ -26,12 +46,23 @@ abstract final class Pages {
   static final horseFormPage = horseFormPageHandle;
   static final horseNutritionPage = horseNutritionPageHandle;
   static final horsesOverviewPage = horsesOverviewPageHandle;
+  static final onboardingPage = onboardingPageHandle;
   static final orionProfilePage = orionProfilePageHandle;
+  static final personalProfilePage = personalProfilePageHandle;
   static final planningPage = planningPageHandle;
   static final todayDashboardPage = todayDashboardPageHandle;
   static final all = <ffai.ProjectPageHandle>[
     activityDetailPage,
     activityFormPage,
+    authCallbackPage,
+    authCreateAccountPage,
+    authEmailPage,
+    authForgotPasswordPage,
+    authGatePage,
+    authLoginPage,
+    authResetPasswordPage,
+    authVerifyEmailPage,
+    authWelcomePage,
     feedingOverviewPage,
     feedingRoundExecutionPage,
     feedingRoundSettingsPage,
@@ -39,7 +70,9 @@ abstract final class Pages {
     horseFormPage,
     horseNutritionPage,
     horsesOverviewPage,
+    onboardingPage,
     orionProfilePage,
+    personalProfilePage,
     planningPage,
     todayDashboardPage,
   ];

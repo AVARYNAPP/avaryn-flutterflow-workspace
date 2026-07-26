@@ -975,4 +975,70 @@ void main() {
       );
     },
   );
+
+  test('phase 4A auth, onboarding and profile boundary is complete', () {
+    final source = File('dsl/edit.dart').readAsStringSync();
+    final runtime = File('dsl/avaryn_account_runtime.dart').readAsStringSync();
+    final schemas =
+        File('lib/flutterflow_project/schemas.dart').readAsStringSync();
+
+    expect(source, contains('const bool _phase4ASchemaCheckpointOnly = false'));
+    expect(schemas, contains('"AvarynAccountRuntime"'));
+
+    for (final pageFile in const [
+      'auth_gate_page.dart',
+      'auth_welcome_page.dart',
+      'auth_email_page.dart',
+      'auth_create_account_page.dart',
+      'auth_login_page.dart',
+      'auth_verify_email_page.dart',
+      'auth_forgot_password_page.dart',
+      'auth_reset_password_page.dart',
+      'auth_callback_page.dart',
+      'onboarding_page.dart',
+      'personal_profile_page.dart',
+    ]) {
+      expect(
+        File('lib/flutterflow_project/pages/$pageFile').existsSync(),
+        isTrue,
+        reason: '$pageFile must be present in the completed Phase 4A flow',
+      );
+    }
+
+    for (final contract in const [
+      'Supabase.instance.client',
+      'signInWithPassword',
+      'auth.signUp',
+      'auth.resend',
+      'resetPasswordForEmail',
+      'AuthChangeEvent.passwordRecovery',
+      'auth.updateUser',
+      'auth.signOut',
+      "from('profiles')",
+      "onConflict: 'id'",
+      'activeAuthAccountId',
+      'localAccountScopes',
+      'Doorgaan met Apple',
+      'Doorgaan met Google',
+      'Doorgaan met e-mail',
+      '_cooldownSeconds = 60',
+      "'initials' => _accountInitials()",
+      "'greeting' => _accountGreeting(compact: false)",
+    ]) {
+      expect(
+        runtime,
+        contains(contract),
+        reason: 'Missing contract: $contract',
+      );
+    }
+
+    expect(runtime, contains("context.goNamed('AuthWelcomePage')"));
+    expect(runtime, contains("context.goNamed('AuthGatePage')"));
+    expect(runtime, contains("context.goNamed('OnboardingPage')"));
+    expect(runtime, contains("context.goNamed('TodayDashboardPage')"));
+    expect(runtime, isNot(contains('SupabaseClient(')));
+    expect(source, contains("'AuthenticatedDesktopAccountGreeting'"));
+    expect(source, contains("'AuthenticatedMobileAccountGreeting'"));
+    expect(source, contains("profileTarget: 'PersonalProfilePage'"));
+  });
 }

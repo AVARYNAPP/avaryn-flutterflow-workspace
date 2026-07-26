@@ -43,38 +43,38 @@ abstract final class PlanningPageWidgets {
                 name: "PlanningPageDesktopSideNavigation",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_1hjwju87",
+                    key: "Container_k6hjfl2j",
                     type: "Container",
                     path: "PlanningPage.body[0].children[0].children[0]",
                     name: "AvarynDesktopNavigationBody",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Column_clp97hm1",
+                        key: "Column_iu7nzfma",
                         type: "Column",
                         path: "PlanningPage.body[0].children[0].children[0].children[0]",
                         name: "Column",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Container_60dkskzx",
+                            key: "Container_u7hbgwe1",
                             type: "Container",
                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[0]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Column_ascd8bv1",
+                                key: "Column_0tfvcz5z",
                                 type: "Column",
                                 path: "PlanningPage.body[0].children[0].children[0].children[0].children[0].children[0]",
                                 name: "Column",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_lv3ispa7",
+                                    key: "Text_3uzt5rnr",
                                     type: "Text",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
                                     name: "Text",
                                     text: "AVARYN",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_onbng13c",
+                                    key: "Text_wrokyk2f",
                                     type: "Text",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
                                     name: "Text",
@@ -85,31 +85,31 @@ abstract final class PlanningPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_3ji9sst5",
+                            key: "Container_eq2evzpm",
                             type: "Container",
                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[1]",
                             name: "Container",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_u2p52xiq",
+                            key: "Container_8is203df",
                             type: "Container",
                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[2]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_r09ug1c6",
+                                key: "Row_smfg3glb",
                                 type: "Row",
                                 path: "PlanningPage.body[0].children[0].children[0].children[0].children[2].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_mjbw9myv",
+                                    key: "Container_klqblrks",
                                     type: "Container",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_d1p3xb8v",
+                                    key: "Button_ym8e2ybm",
                                     type: "Button",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
                                     name: "Button",
@@ -123,7 +123,7 @@ abstract final class PlanningPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_iu05jono",
+                            key: "Container_ajlndtcm",
                             type: "Container",
                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[3]",
                             name: "Container",
@@ -132,37 +132,37 @@ abstract final class PlanningPageWidgets {
                             ],
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_yr1asllr",
+                                key: "Row_ens7o1xd",
                                 type: "Row",
                                 path: "PlanningPage.body[0].children[0].children[0].children[0].children[3].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_1bqk1in7",
+                                    key: "Container_m8byl9l8",
                                     type: "Container",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_o9gxbgx0",
+                                    key: "Container_wkbewmyi",
                                     type: "Container",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
                                     name: "Container",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Row_a9we82vy",
+                                        key: "Row_421eqmwt",
                                         type: "Row",
                                         path: "PlanningPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
                                         name: "Row",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_8z34pplj",
+                                            key: "Container_lnnd2if1",
                                             type: "Container",
                                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
                                             name: "Container",
                                             children: <ffai.ProjectWidgetHandle>[
                                               ffai.ProjectWidgetHandle(
-                                                key: "Container_gh3nsbwl",
+                                                key: "Container_f88r7z8k",
                                                 type: "Container",
                                                 path: "PlanningPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
                                                 name: "AvarynHorseshoeIcon",
@@ -170,7 +170,7 @@ abstract final class PlanningPageWidgets {
                                             ],
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_w3xxql3i",
+                                            key: "Text_6e2i5vhe",
                                             type: "Text",
                                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
                                             name: "Text",
@@ -185,25 +185,25 @@ abstract final class PlanningPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_phbfmxp5",
+                            key: "Container_0o5t8ssq",
                             type: "Container",
                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[4]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_tis78yp4",
+                                key: "Row_e07wtgqo",
                                 type: "Row",
                                 path: "PlanningPage.body[0].children[0].children[0].children[0].children[4].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_b4xpgbxi",
+                                    key: "Container_d5phvtp4",
                                     type: "Container",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_yaifdcjq",
+                                    key: "Button_1bd12d28",
                                     type: "Button",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
                                     name: "Button",
@@ -217,25 +217,25 @@ abstract final class PlanningPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_hu2g0p81",
+                            key: "Container_2kqdk16v",
                             type: "Container",
                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[5]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_rddvaaq1",
+                                key: "Row_ho58umo1",
                                 type: "Row",
                                 path: "PlanningPage.body[0].children[0].children[0].children[0].children[5].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_s8g3j5pr",
+                                    key: "Container_cra2yzhz",
                                     type: "Container",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_tkzsa1sq",
+                                    key: "Button_enmuu8r5",
                                     type: "Button",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
                                     name: "Button",
@@ -249,25 +249,25 @@ abstract final class PlanningPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_nqrehy0h",
+                            key: "Container_7tfm9ci3",
                             type: "Container",
                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[6]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_uoi7q1ci",
+                                key: "Row_yp12pbyg",
                                 type: "Row",
                                 path: "PlanningPage.body[0].children[0].children[0].children[0].children[6].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_cjyyi4nj",
+                                    key: "Container_ecw5wda1",
                                     type: "Container",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[6].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_lhbmxua5",
+                                    key: "Button_x94l7271",
                                     type: "Button",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[6].children[0].children[1]",
                                     name: "Button",
@@ -281,44 +281,44 @@ abstract final class PlanningPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Spacer_wmlqvyie",
+                            key: "Spacer_tptmogna",
                             type: "Spacer",
                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[7]",
                             name: "FlexSpacer",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_wcbpaxgu",
+                            key: "Container_gnmh41gk",
                             type: "Container",
                             path: "PlanningPage.body[0].children[0].children[0].children[0].children[8]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_sdw8oxqo",
+                                key: "Row_hv7pd3nl",
                                 type: "Row",
                                 path: "PlanningPage.body[0].children[0].children[0].children[0].children[8].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Icon_6xcbkkvk",
+                                    key: "Icon_xbgeg1gq",
                                     type: "Icon",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[8].children[0].children[0]",
                                     name: "Icon",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_008do08b",
+                                    key: "Column_zbs36r02",
                                     type: "Column",
                                     path: "PlanningPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_71bwgh2q",
+                                        key: "Text_635dtp0b",
                                         type: "Text",
                                         path: "PlanningPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[0]",
                                         name: "Text",
                                         text: "Local prototype",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_ilpd9jox",
+                                        key: "Text_ejhurkcf",
                                         type: "Text",
                                         path: "PlanningPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[1]",
                                         name: "Text",
@@ -418,19 +418,19 @@ abstract final class PlanningPageWidgets {
                     name: "PlanningPageMobileBottomNavigation",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_8t8sncje",
+                        key: "Container_misbh5wa",
                         type: "Container",
                         path: "PlanningPage.body[0].children[1].children[1].children[0]",
                         name: "AvarynMobileNavigationBody",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Row_0741ys1d",
+                            key: "Row_hhbzduoj",
                             type: "Row",
                             path: "PlanningPage.body[0].children[1].children[1].children[0].children[0]",
                             name: "Row",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Container_op2f56o6",
+                                key: "Container_dp1gocuw",
                                 type: "Container",
                                 path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[0]",
                                 name: "Container",
@@ -439,25 +439,25 @@ abstract final class PlanningPageWidgets {
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_uix7lk6g",
+                                    key: "Column_xj5hpncl",
                                     type: "Column",
                                     path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[0].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_2palpogf",
+                                        key: "Container_452ujm85",
                                         type: "Container",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_0unxl18t",
+                                        key: "Icon_11cbr151",
                                         type: "Icon",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_flpx204c",
+                                        key: "Text_obkgz802",
                                         type: "Text",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[2]",
                                         name: "Text",
@@ -468,7 +468,7 @@ abstract final class PlanningPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_zbpjjhsb",
+                                key: "Container_bsqp3mp9",
                                 type: "Container",
                                 path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[1]",
                                 name: "Container",
@@ -477,25 +477,25 @@ abstract final class PlanningPageWidgets {
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_2mtcpmc6",
+                                    key: "Column_kxd6nls1",
                                     type: "Column",
                                     path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[1].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_krhwjdup",
+                                        key: "Container_ybb9wuny",
                                         type: "Container",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_krajbkx4",
+                                        key: "Container_1dh9yl0v",
                                         type: "Container",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_0ysw9n9g",
+                                            key: "Container_1o9r81sa",
                                             type: "Container",
                                             path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[1].children[0]",
                                             name: "AvarynHorseshoeIcon",
@@ -503,7 +503,7 @@ abstract final class PlanningPageWidgets {
                                         ],
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_5524xngy",
+                                        key: "Text_wnvor0e8",
                                         type: "Text",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[2]",
                                         name: "Text",
@@ -514,7 +514,7 @@ abstract final class PlanningPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_ayveb1va",
+                                key: "Container_ln7s4ehs",
                                 type: "Container",
                                 path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[2]",
                                 name: "Container",
@@ -523,25 +523,25 @@ abstract final class PlanningPageWidgets {
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_ae40vnxf",
+                                    key: "Column_xjjfe9ze",
                                     type: "Column",
                                     path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[2].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_nkck9k5d",
+                                        key: "Container_mfioy99u",
                                         type: "Container",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_tykll9fh",
+                                        key: "Icon_hjj3rft6",
                                         type: "Icon",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_jl8mkjxo",
+                                        key: "Text_f788lley",
                                         type: "Text",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[2]",
                                         name: "Text",
@@ -552,7 +552,7 @@ abstract final class PlanningPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_3lww72cg",
+                                key: "Container_chz2rdtt",
                                 type: "Container",
                                 path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[3]",
                                 name: "Container",
@@ -561,25 +561,25 @@ abstract final class PlanningPageWidgets {
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_9b0mqy2y",
+                                    key: "Column_gdixol8p",
                                     type: "Column",
                                     path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[3].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_auepoq5d",
+                                        key: "Container_f3vaacfc",
                                         type: "Container",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_s65zbe58",
+                                        key: "Icon_yd8slehr",
                                         type: "Icon",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_fvg9c7a0",
+                                        key: "Text_tdtf9t4s",
                                         type: "Text",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[2]",
                                         name: "Text",
@@ -590,7 +590,7 @@ abstract final class PlanningPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_abstzj75",
+                                key: "Container_w107fbfi",
                                 type: "Container",
                                 path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[4]",
                                 name: "Container",
@@ -599,25 +599,25 @@ abstract final class PlanningPageWidgets {
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_tqzgei38",
+                                    key: "Column_mncgzchr",
                                     type: "Column",
                                     path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[4].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_5feqeo5f",
+                                        key: "Container_2qztc2vt",
                                         type: "Container",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[4].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_c6a5ttti",
+                                        key: "Icon_hjcyzer8",
                                         type: "Icon",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[4].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_nkcfatxf",
+                                        key: "Text_8857f6ny",
                                         type: "Text",
                                         path: "PlanningPage.body[0].children[1].children[1].children[0].children[0].children[4].children[0].children[2]",
                                         name: "Text",

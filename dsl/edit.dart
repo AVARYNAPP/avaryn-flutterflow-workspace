@@ -5221,7 +5221,7 @@ Future<void> main(List<String> args) async {
 
 const bool _agendaFunctionCheckpointOnly = false;
 const bool _nutritionCustomCodeCheckpointOnly = false;
-const bool _phase4ASchemaCheckpointOnly = true;
+const bool _phase4ASchemaCheckpointOnly = false;
 
 String _loadPhase4AAccountRuntimeWidgetCode() {
   final sourceFile = File.fromUri(
@@ -6370,13 +6370,15 @@ void buildAvarynPhase4A(App app) {
   if (_phase4ASchemaCheckpointOnly) return;
 
   final accountRuntimeCode = _loadPhase4AAccountRuntimeWidgetCode();
-  app.customWidget(
-    'AvarynAccountRuntime',
-    parameters: {'mode': string},
-    code: accountRuntimeCode,
-    description:
-        'Supabase auth gate, account onboarding, profile settings and UUID-scoped local prototype ownership.',
-  );
+  app.raw((project) {
+    updateCustomWidget(
+      project,
+      name: 'AvarynAccountRuntime',
+      code: accountRuntimeCode,
+      description:
+          'Supabase auth gate, account onboarding, profile settings and UUID-scoped local prototype ownership.',
+    );
+  });
 
   final authGate = app.ensurePage(
     'AuthGatePage',
@@ -6532,6 +6534,72 @@ void buildAvarynPhase4A(App app) {
     mobileKey: 'Container_2ewo00nv',
     activeTab: 'Vandaag',
   );
+
+  app.editPage(ff.Pages.todayDashboardPage, (page) {
+    page.ensureReplaced(
+      page.findByKey('Container_w057tax8'),
+      Container(
+        name: 'AuthenticatedDesktopAccountBadge',
+        width: 50,
+        height: 50,
+        padding: 2,
+        borderRadius: 999,
+        borderColor: Colors.secondary,
+        borderWidth: 1,
+        color: Colors.hex(0xFF292529),
+        alignment: Alignment.center,
+        child: CustomWidget(
+          name: 'DesktopAccountInitials',
+          widgetName: 'AvarynAccountRuntime',
+          arguments: const {'mode': 'initials'},
+        ),
+      ),
+    );
+    page.ensureReplaced(
+      page.findByKey('Text_jv2p00l2'),
+      Container(
+        name: 'AuthenticatedDesktopAccountGreeting',
+        height: 58,
+        child: CustomWidget(
+          widgetName: 'AvarynAccountRuntime',
+          arguments: const {'mode': 'greeting'},
+        ),
+      ),
+    );
+    page.ensureReplaced(
+      page.findByKey('Container_olt26g1q'),
+      Container(
+        name: 'AuthenticatedMobileAccountBadge',
+        width: 38,
+        height: 38,
+        padding: 2,
+        borderRadius: 999,
+        borderColor: Colors.secondary,
+        borderWidth: 1,
+        child: Container(
+          borderRadius: 999,
+          color: Colors.hex(0xFF292529),
+          alignment: Alignment.center,
+          child: CustomWidget(
+            name: 'MobileAccountInitials',
+            widgetName: 'AvarynAccountRuntime',
+            arguments: const {'mode': 'initials'},
+          ),
+        ),
+      ),
+    );
+    page.ensureReplaced(
+      page.findByKey('Text_edxxjntz'),
+      Container(
+        name: 'AuthenticatedMobileAccountGreeting',
+        height: 58,
+        child: CustomWidget(
+          widgetName: 'AvarynAccountRuntime',
+          arguments: const {'mode': 'greetingCompact'},
+        ),
+      ),
+    );
+  });
 
   app.raw((project) {
     configureSupabaseAuth(
@@ -13545,6 +13613,7 @@ DslWidget _desktopHero() => Container(
             ),
             Text(
               'Goedemorgen, Sofia. Dit vraagt vandaag je aandacht.',
+              name: 'DesktopAccountGreetingPlaceholder',
               style: Styles.bodyLarge,
               color: Colors.secondaryText,
               maxLines: 2,
@@ -13709,6 +13778,7 @@ DslWidget _mobileHeader() => Container(
 );
 
 DslWidget _mobileProfileBadge() => Container(
+  name: 'AvarynMobileProfileBadge',
   width: 38,
   height: 38,
   padding: 2,
@@ -13738,6 +13808,7 @@ DslWidget _mobileIntro() => Column(
     ),
     Text(
       'Goedemorgen, Sofia. Orion vraagt je aandacht vÃ³Ã³r de training.',
+      name: 'MobileAccountGreetingPlaceholder',
       style: Styles.bodyLarge,
       color: Colors.secondaryText,
       maxLines: 2,

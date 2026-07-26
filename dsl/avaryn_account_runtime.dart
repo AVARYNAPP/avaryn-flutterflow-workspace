@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterflow_generated/app_state.dart';
@@ -53,6 +53,31 @@ String _phase4ADisplayName(AuthProfileDataStruct profile) {
   if (saved.isNotEmpty) return saved;
   final composed = '${profile.firstName} ${profile.lastName}'.trim();
   return composed.isEmpty ? 'AVARYN-gebruiker' : composed;
+}
+
+String _phase4AFirstName(AuthProfileDataStruct profile) {
+  final firstName = profile.firstName.trim();
+  if (firstName.isNotEmpty) return firstName;
+  final displayName = _phase4ADisplayName(profile);
+  final words =
+      displayName
+          .split(RegExp(r'\s+'))
+          .where((word) => word.trim().isNotEmpty)
+          .toList();
+  return words.isEmpty ? 'daar' : words.first;
+}
+
+String _phase4AInitials(AuthProfileDataStruct profile) {
+  final words =
+      _phase4ADisplayName(
+        profile,
+      ).split(RegExp(r'\s+')).where((word) => word.trim().isNotEmpty).toList();
+  if (words.isEmpty) return 'AV';
+  if (words.length == 1) {
+    final value = words.first;
+    return value.substring(0, value.length.clamp(1, 2)).toUpperCase();
+  }
+  return '${words.first[0]}${words.last[0]}'.toUpperCase();
 }
 
 String _phase4AProviderLabel(String provider) {
@@ -1020,8 +1045,8 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     _setBusy(true);
     _setError(null);
     try {
-      final picked = await FilePicker.platform.pickFiles(
-        type: FileType.image,
+      final picked = await file_picker.FilePicker.pickFiles(
+        type: file_picker.FileType.image,
         allowMultiple: false,
         withData: true,
       );
@@ -2476,6 +2501,33 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     );
   }
 
+  Widget _accountInitials() {
+    final profile = FFAppState().currentAuthProfile;
+    return Center(
+      child: Text(
+        _phase4AInitials(profile),
+        style: FlutterFlowTheme.of(
+          context,
+        ).labelSmall.copyWith(color: FlutterFlowTheme.of(context).accent1),
+      ),
+    );
+  }
+
+  Widget _accountGreeting({required bool compact}) {
+    final profile = FFAppState().currentAuthProfile;
+    final firstName = _phase4AFirstName(profile);
+    return Text(
+      compact
+          ? 'Goedemorgen, $firstName. Orion vraagt je aandacht vóór de training.'
+          : 'Goedemorgen, $firstName. Dit vraagt vandaag je aandacht.',
+      style: FlutterFlowTheme.of(
+        context,
+      ).bodyLarge.copyWith(color: FlutterFlowTheme.of(context).secondaryText),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.mode == 'gate' && _legacyPrompt) {
@@ -2493,6 +2545,9 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       'gate' => _loadingOrCallback(),
       'onboarding' => _onboarding(),
       'profile' => _profilePage(),
+      'initials' => _accountInitials(),
+      'greeting' => _accountGreeting(compact: false),
+      'greetingCompact' => _accountGreeting(compact: true),
       _ => _welcome(),
     };
   }

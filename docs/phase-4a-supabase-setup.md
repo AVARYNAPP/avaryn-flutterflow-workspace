@@ -20,18 +20,31 @@ Client configuration:
 
 ## Redirect allowlist
 
-Add only the exact development URLs that are in use:
+The local Supabase instance uses this exact allowlist:
 
-- Web OAuth/email callback:
-  `https://<approved-development-origin>/auth/callback`
-- Web password recovery:
-  `https://<approved-development-origin>/auth/reset-password`
-- Mobile OAuth/email callback:
-  `avarynconsumerapp://avarynconsumerapp.com/auth/callback`
-- Mobile password recovery:
-  `avarynconsumerapp://avarynconsumerapp.com/auth/reset-password`
+- `http://127.0.0.1:3000/auth/callback`
+- `http://127.0.0.1:3000/auth/reset-password`
+- `http://localhost:3000/auth/callback`
+- `http://localhost:3000/auth/reset-password`
+- `http://127.0.0.1:3001/auth/callback`
+- `http://127.0.0.1:3001/auth/reset-password`
+- `avarynconsumerapp://avarynconsumerapp.com/auth/callback`
+- `avarynconsumerapp://avarynconsumerapp.com/auth/reset-password`
+
+The web runtime builds its callback from the exact origin serving the app. For
+every hosted development origin, add exactly these two entries manually in
+Supabase Authentication > URL Configuration:
+
+- `https://ACTUAL-DEVELOPMENT-ORIGIN/auth/callback`
+- `https://ACTUAL-DEVELOPMENT-ORIGIN/auth/reset-password`
+
+`ACTUAL-DEVELOPMENT-ORIGIN` is intentionally not a value to paste. Replace it
+with the real HTTPS host after that host is approved. The repository does not
+currently contain that host, so the hosted-development allowlist cannot be
+finalized truthfully from source alone.
 
 Do not use a wildcard production redirect. Add each preview origin explicitly.
+Do not change the production allowlist during Phase 4A.
 
 ## Google
 
@@ -108,3 +121,22 @@ Do not run deployment commands as part of Phase 4A review.
 - Avatar ownership tests pass.
 - Account deletion and Apple revocation pass end to end.
 - Release build contains no local auth bypass.
+
+## Static-analysis baseline
+
+The Phase 4A local verification on Flutter 3.35.7 established the following
+baseline for the complete FlutterFlow-generated code snapshot:
+
+- Errors: `0`
+- Warnings: `1578`
+- Info/lints: `2975`
+
+The targeted Phase 4A analysis of `dsl/edit.dart` and `test/app_test.dart`
+reported:
+
+- Errors: `0`
+- Warnings: `0`
+
+Future reviews should compare their results with this baseline and report new
+errors or increases separately. The generated snapshot remains read-only and is
+not committed from this workspace.

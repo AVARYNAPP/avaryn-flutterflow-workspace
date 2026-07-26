@@ -40,6 +40,24 @@ abstract final class Structs {
     },
     description: ffai.generatedProjectStructDescription,
   );
+  static final ffai.StructHandle authProfileData = ffai.StructHandle(
+    "AuthProfileData",
+    <String, ffai.DslType>{
+      "avatarObjectPath": ffai.string,
+      "createdAt": ffai.dateTime,
+      "displayName": ffai.string,
+      "firstName": ffai.string,
+      "id": ffai.string,
+      "lastName": ffai.string,
+      "locale": ffai.string,
+      "onboardingCompletedAt": ffai.dateTime,
+      "onboardingIntent": ffai.string,
+      "phoneE164": ffai.string,
+      "themeMode": ffai.string,
+      "updatedAt": ffai.dateTime,
+    },
+    description: ffai.generatedProjectStructDescription,
+  );
   static final ffai.StructHandle effectiveFeedingScheduleData = ffai.StructHandle(
     "EffectiveFeedingScheduleData",
     <String, ffai.DslType>{
@@ -172,6 +190,35 @@ abstract final class Structs {
     },
     description: ffai.generatedProjectStructDescription,
   );
+  static final ffai.StructHandle localAccountScopeData = ffai.StructHandle(
+    "LocalAccountScopeData",
+    <String, ffai.DslType>{
+      "activities": ffai.listOf(Structs.activityData),
+      "authUserId": ffai.string,
+      "currentLocalStableId": ffai.string,
+      "currentLocalUserId": ffai.string,
+      "feedingAssignmentExceptions": ffai.listOf(Structs.feedingAssignmentExceptionData),
+      "feedingExecutionRecords": ffai.listOf(Structs.feedingExecutionRecordData),
+      "feedingRoundConfigs": ffai.listOf(Structs.feedingRoundConfigData),
+      "horseFeedingPlans": ffai.listOf(Structs.horseFeedingPlanData),
+      "horseSeedVersion": ffai.int_,
+      "horses": ffai.listOf(Structs.horseProfileData),
+      "nextActivityId": ffai.int_,
+      "nextFeedingAssignmentExceptionId": ffai.int_,
+      "nextFeedingExecutionRecordId": ffai.int_,
+      "nextFeedingItemId": ffai.int_,
+      "nextHorseId": ffai.int_,
+      "nextHorseIndex": ffai.int_,
+      "nextTemporaryFeedingScheduleId": ffai.int_,
+      "passportPrototypeVersion": ffai.int_,
+      "schemaVersion": ffai.int_,
+      "selectedHorse": Structs.horseProfileData,
+      "selectedHorseIndex": ffai.int_,
+      "temporaryFeedingSchedules": ffai.listOf(Structs.temporaryFeedingScheduleData),
+      "updatedAt": ffai.dateTime,
+    },
+    description: ffai.generatedProjectStructDescription,
+  );
   static final ffai.StructHandle resolvedFeedingResponsibleData = ffai.StructHandle(
     "ResolvedFeedingResponsibleData",
     <String, ffai.DslType>{
@@ -204,6 +251,7 @@ abstract final class Structs {
   );
   static final all = <ffai.StructHandle>[
     activityData,
+    authProfileData,
     effectiveFeedingScheduleData,
     feedingAssignmentExceptionData,
     feedingExecutionRecordData,
@@ -212,6 +260,7 @@ abstract final class Structs {
     feedingRoundSnapshotData,
     horseFeedingPlanData,
     horseProfileData,
+    localAccountScopeData,
     resolvedFeedingResponsibleData,
     temporaryFeedingScheduleData,
   ];
@@ -222,7 +271,234 @@ abstract final class Collections {
 }
 
 abstract final class Tables {
-  static const all = <ffai.ProjectTableHandle>[];
+  static final profiles = ffai.ProjectTableHandle<ProfilesFields>(
+    name: "profiles",
+    description: "",
+    isView: false,
+    fields: ProfilesFields(),
+  );
+  static final all = <ffai.ProjectTableHandle>[
+    profiles,
+  ];
+}
+
+final class ProfilesFields extends MapBase<String, ffai.PostgresTableField> {
+  final acceptedPrivacyVersion = ffai.ProjectTableFieldHandle(
+    name: "accepted_privacy_version",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final acceptedTermsVersion = ffai.ProjectTableFieldHandle(
+    name: "accepted_terms_version",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final avatarObjectPath = ffai.ProjectTableFieldHandle(
+    name: "avatar_object_path",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final createdAt = ffai.ProjectTableFieldHandle(
+    name: "created_at",
+    key: "",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: true,
+  );
+  final displayName = ffai.ProjectTableFieldHandle(
+    name: "display_name",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: true,
+  );
+  final firstName = ffai.ProjectTableFieldHandle(
+    name: "first_name",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final id = ffai.ProjectTableFieldHandle(
+    name: "id",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: "users.id",
+    isPrimaryKey: true,
+    isRequired: true,
+    hasDefault: false,
+  );
+  final lastName = ffai.ProjectTableFieldHandle(
+    name: "last_name",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final locale = ffai.ProjectTableFieldHandle(
+    name: "locale",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: true,
+  );
+  final onboardingCompletedAt = ffai.ProjectTableFieldHandle(
+    name: "onboarding_completed_at",
+    key: "",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final onboardingIntent = ffai.ProjectTableFieldHandle(
+    name: "onboarding_intent",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final phoneE164 = ffai.ProjectTableFieldHandle(
+    name: "phone_e164",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final themeMode = ffai.ProjectTableFieldHandle(
+    name: "theme_mode",
+    key: "",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: true,
+  );
+  final updatedAt = ffai.ProjectTableFieldHandle(
+    name: "updated_at",
+    key: "",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: true,
+  );
+
+  @override
+  Iterable<String> get keys => const <String>[
+    "accepted_privacy_version",
+    "accepted_terms_version",
+    "avatar_object_path",
+    "created_at",
+    "display_name",
+    "first_name",
+    "id",
+    "last_name",
+    "locale",
+    "onboarding_completed_at",
+    "onboarding_intent",
+    "phone_e164",
+    "theme_mode",
+    "updated_at",
+  ];
+
+  @override
+  ffai.PostgresTableField? operator [](Object? key) => switch (key) {
+    "accepted_privacy_version" => acceptedPrivacyVersion,
+    "accepted_terms_version" => acceptedTermsVersion,
+    "avatar_object_path" => avatarObjectPath,
+    "created_at" => createdAt,
+    "display_name" => displayName,
+    "first_name" => firstName,
+    "id" => id,
+    "last_name" => lastName,
+    "locale" => locale,
+    "onboarding_completed_at" => onboardingCompletedAt,
+    "onboarding_intent" => onboardingIntent,
+    "phone_e164" => phoneE164,
+    "theme_mode" => themeMode,
+    "updated_at" => updatedAt,
+    _ => null,
+  };
+
+  @override
+  void operator []=(String key, ffai.PostgresTableField value) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  void clear() => throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  ffai.PostgresTableField? remove(Object? key) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
 }
 
 abstract final class CustomCode {
@@ -315,6 +591,7 @@ abstract final class CustomCode {
     "pickHorsePrototypePhoto",
   ];
   static const widgets = <String>[
+    "AvarynAccountRuntime",
     "AvarynAgendaPickerRuntime",
     "AvarynDailyFeedingRuntime",
     "AvarynHorseAvatar",
