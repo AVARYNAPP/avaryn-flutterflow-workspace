@@ -14,6 +14,7 @@ import 'pages/auth_login_page.dart' show authLoginPageHandle;
 import 'pages/auth_reset_password_page.dart' show authResetPasswordPageHandle;
 import 'pages/auth_verify_email_page.dart' show authVerifyEmailPageHandle;
 import 'pages/auth_welcome_page.dart' show authWelcomePageHandle;
+import 'pages/create_stable_page.dart' show createStablePageHandle;
 import 'pages/feeding_overview_page.dart' show feedingOverviewPageHandle;
 import 'pages/feeding_round_execution_page.dart' show feedingRoundExecutionPageHandle;
 import 'pages/feeding_round_settings_page.dart' show feedingRoundSettingsPageHandle;
@@ -21,10 +22,23 @@ import 'pages/horse_edit_page.dart' show horseEditPageHandle;
 import 'pages/horse_form_page.dart' show horseFormPageHandle;
 import 'pages/horse_nutrition_page.dart' show horseNutritionPageHandle;
 import 'pages/horses_overview_page.dart' show horsesOverviewPageHandle;
+import 'pages/invalid_stable_invitation_page.dart' show invalidStableInvitationPageHandle;
+import 'pages/invite_stable_member_page.dart' show inviteStableMemberPageHandle;
+import 'pages/link_local_stable_page.dart' show linkLocalStablePageHandle;
+import 'pages/manage_stable_roles_page.dart' show manageStableRolesPageHandle;
 import 'pages/onboarding_page.dart' show onboardingPageHandle;
 import 'pages/orion_profile_page.dart' show orionProfilePageHandle;
+import 'pages/pending_stable_invitations_page.dart' show pendingStableInvitationsPageHandle;
 import 'pages/personal_profile_page.dart' show personalProfilePageHandle;
+import 'pages/personal_workspace_page.dart' show personalWorkspacePageHandle;
 import 'pages/planning_page.dart' show planningPageHandle;
+import 'pages/stable_access_page.dart' show stableAccessPageHandle;
+import 'pages/stable_details_page.dart' show stableDetailsPageHandle;
+import 'pages/stable_invitation_page.dart' show stableInvitationPageHandle;
+import 'pages/stable_member_details_page.dart' show stableMemberDetailsPageHandle;
+import 'pages/stable_members_page.dart' show stableMembersPageHandle;
+import 'pages/stable_onboarding_handoff_page.dart' show stableOnboardingHandoffPageHandle;
+import 'pages/stable_picker_page.dart' show stablePickerPageHandle;
 import 'pages/today_dashboard_page.dart' show todayDashboardPageHandle;
 
 abstract final class Pages {
@@ -39,6 +53,7 @@ abstract final class Pages {
   static final authResetPasswordPage = authResetPasswordPageHandle;
   static final authVerifyEmailPage = authVerifyEmailPageHandle;
   static final authWelcomePage = authWelcomePageHandle;
+  static final createStablePage = createStablePageHandle;
   static final feedingOverviewPage = feedingOverviewPageHandle;
   static final feedingRoundExecutionPage = feedingRoundExecutionPageHandle;
   static final feedingRoundSettingsPage = feedingRoundSettingsPageHandle;
@@ -46,10 +61,23 @@ abstract final class Pages {
   static final horseFormPage = horseFormPageHandle;
   static final horseNutritionPage = horseNutritionPageHandle;
   static final horsesOverviewPage = horsesOverviewPageHandle;
+  static final invalidStableInvitationPage = invalidStableInvitationPageHandle;
+  static final inviteStableMemberPage = inviteStableMemberPageHandle;
+  static final linkLocalStablePage = linkLocalStablePageHandle;
+  static final manageStableRolesPage = manageStableRolesPageHandle;
   static final onboardingPage = onboardingPageHandle;
   static final orionProfilePage = orionProfilePageHandle;
+  static final pendingStableInvitationsPage = pendingStableInvitationsPageHandle;
   static final personalProfilePage = personalProfilePageHandle;
+  static final personalWorkspacePage = personalWorkspacePageHandle;
   static final planningPage = planningPageHandle;
+  static final stableAccessPage = stableAccessPageHandle;
+  static final stableDetailsPage = stableDetailsPageHandle;
+  static final stableInvitationPage = stableInvitationPageHandle;
+  static final stableMemberDetailsPage = stableMemberDetailsPageHandle;
+  static final stableMembersPage = stableMembersPageHandle;
+  static final stableOnboardingHandoffPage = stableOnboardingHandoffPageHandle;
+  static final stablePickerPage = stablePickerPageHandle;
   static final todayDashboardPage = todayDashboardPageHandle;
   static final all = <ffai.ProjectPageHandle>[
     activityDetailPage,
@@ -63,6 +91,7 @@ abstract final class Pages {
     authResetPasswordPage,
     authVerifyEmailPage,
     authWelcomePage,
+    createStablePage,
     feedingOverviewPage,
     feedingRoundExecutionPage,
     feedingRoundSettingsPage,
@@ -70,10 +99,23 @@ abstract final class Pages {
     horseFormPage,
     horseNutritionPage,
     horsesOverviewPage,
+    invalidStableInvitationPage,
+    inviteStableMemberPage,
+    linkLocalStablePage,
+    manageStableRolesPage,
     onboardingPage,
     orionProfilePage,
+    pendingStableInvitationsPage,
     personalProfilePage,
+    personalWorkspacePage,
     planningPage,
+    stableAccessPage,
+    stableDetailsPage,
+    stableInvitationPage,
+    stableMemberDetailsPage,
+    stableMembersPage,
+    stableOnboardingHandoffPage,
+    stablePickerPage,
     todayDashboardPage,
   ];
 }

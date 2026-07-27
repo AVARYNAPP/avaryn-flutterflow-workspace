@@ -4,79 +4,79 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final feedingOverviewPageHandle = ffai.ProjectPageHandle<FeedingOverviewPageParams, FeedingOverviewPageState>(
-  name: "FeedingOverviewPage",
-  key: "Scaffold_xef37z7d",
-  route: "voeding",
-  params: const FeedingOverviewPageParams(),
-  state: const FeedingOverviewPageState(),
-  widgets: FeedingOverviewPageWidgets.tree,
+final invalidStableInvitationPageHandle = ffai.ProjectPageHandle<InvalidStableInvitationPageParams, InvalidStableInvitationPageState>(
+  name: "InvalidStableInvitationPage",
+  key: "Scaffold_vx6as0sf",
+  route: "uitnodiging/ongeldig",
+  params: const InvalidStableInvitationPageParams(),
+  state: const InvalidStableInvitationPageState(),
+  widgets: InvalidStableInvitationPageWidgets.tree,
 );
 
-final class FeedingOverviewPageParams {
-  const FeedingOverviewPageParams();
+final class InvalidStableInvitationPageParams {
+  const InvalidStableInvitationPageParams();
 }
 
-final class FeedingOverviewPageState {
-  const FeedingOverviewPageState();
+final class InvalidStableInvitationPageState {
+  const InvalidStableInvitationPageState();
 }
 
-abstract final class FeedingOverviewPageWidgets {
+abstract final class InvalidStableInvitationPageWidgets {
   static final tree = ffai.ProjectWidgetTree(
     root: ffai.ProjectWidgetHandle(
-      key: "Scaffold_xef37z7d",
+      key: "Scaffold_vx6as0sf",
       type: "Scaffold",
-      path: "FeedingOverviewPage",
-      name: "FeedingOverviewPage",
+      path: "InvalidStableInvitationPage",
+      name: "InvalidStableInvitationPage",
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Row_sgjusubd",
+            key: "Row_ahfwaq0m",
             type: "Row",
-            path: "FeedingOverviewPage.body[0]",
-            name: "Phase4C7ResponsiveShell",
+            path: "InvalidStableInvitationPage.body[0]",
+            name: "Phase4BResponsiveShell",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Container_g3najojs",
+                key: "Container_qr9nojwp",
                 type: "Container",
-                path: "FeedingOverviewPage.body[0].children[0]",
-                name: "Phase4C7DesktopSideNavigation",
+                path: "InvalidStableInvitationPage.body[0].children[0]",
+                name: "Phase4BDesktopSideNavigation",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_yutc0s2g",
+                    key: "Container_g7vitkjz",
                     type: "Container",
-                    path: "FeedingOverviewPage.body[0].children[0].children[0]",
+                    path: "InvalidStableInvitationPage.body[0].children[0].children[0]",
                     name: "AvarynDesktopNavigationBody",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Column_q8mti7zg",
+                        key: "Column_cdxnd951",
                         type: "Column",
-                        path: "FeedingOverviewPage.body[0].children[0].children[0].children[0]",
+                        path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0]",
                         name: "Column",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Container_jnsm60ar",
+                            key: "Container_rptizadb",
                             type: "Container",
-                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[0]",
+                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[0]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Column_4163zhtd",
+                                key: "Column_z0o9a58u",
                                 type: "Column",
-                                path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[0].children[0]",
+                                path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[0].children[0]",
                                 name: "Column",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_kuzapy2l",
+                                    key: "Text_grj2rg2n",
                                     type: "Text",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
                                     name: "Text",
                                     text: "AVARYN",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_9rsdbwkv",
+                                    key: "Text_xtb5mkf1",
                                     type: "Text",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
                                     name: "Text",
                                     text: "Performance",
                                   ),
@@ -85,33 +85,33 @@ abstract final class FeedingOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_72rl4dce",
+                            key: "Container_mfpie658",
                             type: "Container",
-                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[1]",
+                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[1]",
                             name: "Container",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_5xx484ux",
+                            key: "Container_mezw60u2",
                             type: "Container",
-                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[2]",
+                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[2]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_vcn33l1c",
+                                key: "Row_dw7wwg15",
                                 type: "Row",
-                                path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[2].children[0]",
+                                path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[2].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_tz9q939k",
+                                    key: "Container_sdqyzs4a",
                                     type: "Container",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_o9jw7h74",
+                                    key: "Button_aeku5d56",
                                     type: "Button",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
                                     name: "Button",
                                     text: "Vandaag",
                                     triggers: const <String>[
@@ -123,56 +123,56 @@ abstract final class FeedingOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_g3xzn26j",
+                            key: "Container_38etcwjz",
                             type: "Container",
-                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[3]",
+                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[3]",
                             name: "Container",
                             triggers: const <String>[
                               "ON_TAP",
                             ],
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_dlhlx28p",
+                                key: "Row_ghagfwsm",
                                 type: "Row",
-                                path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0]",
+                                path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[3].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_0e86n8am",
+                                    key: "Container_nfxry5j1",
                                     type: "Container",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_wgkmdg42",
+                                    key: "Container_23296vis",
                                     type: "Container",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
                                     name: "Container",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Row_8vv3e80s",
+                                        key: "Row_gwxi4mka",
                                         type: "Row",
-                                        path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
+                                        path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
                                         name: "Row",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_3a1xyttu",
+                                            key: "Container_imc7o0x8",
                                             type: "Container",
-                                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
+                                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
                                             name: "Container",
                                             children: <ffai.ProjectWidgetHandle>[
                                               ffai.ProjectWidgetHandle(
-                                                key: "Container_lg04yz2h",
+                                                key: "Container_s0ly1uar",
                                                 type: "Container",
-                                                path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
+                                                path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
                                                 name: "AvarynHorseshoeIcon",
                                               ),
                                             ],
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_27ho415s",
+                                            key: "Text_0n5e4i4m",
                                             type: "Text",
-                                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
+                                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
                                             name: "Text",
                                             text: "Paarden",
                                           ),
@@ -185,27 +185,27 @@ abstract final class FeedingOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_8tjplsvn",
+                            key: "Container_49hnavuw",
                             type: "Container",
-                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[4]",
+                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[4]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_p79hmgf0",
+                                key: "Row_k56f49dj",
                                 type: "Row",
-                                path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[4].children[0]",
+                                path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[4].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_gzu640b0",
+                                    key: "Container_qoqj0uv5",
                                     type: "Container",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_9vszbafl",
+                                    key: "Button_z0iwtahn",
                                     type: "Button",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
                                     name: "Button",
                                     text: "Planning",
                                     triggers: const <String>[
@@ -217,27 +217,27 @@ abstract final class FeedingOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_4ymio5db",
+                            key: "Container_94rsygs4",
                             type: "Container",
-                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[5]",
+                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[5]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_a4fnxcan",
+                                key: "Row_4e90li3i",
                                 type: "Row",
-                                path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[5].children[0]",
+                                path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[5].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_fvfuuyrw",
+                                    key: "Container_c3bhhz57",
                                     type: "Container",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_30gbzrl7",
+                                    key: "Button_n87pu05u",
                                     type: "Button",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
                                     name: "Button",
                                     text: "Wedstrijden",
                                     triggers: const <String>[
@@ -249,27 +249,27 @@ abstract final class FeedingOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_zfkjv2z2",
+                            key: "Container_90ehmouf",
                             type: "Container",
-                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[6]",
+                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[6]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_b9e1ir4x",
+                                key: "Row_to37rixc",
                                 type: "Row",
-                                path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[6].children[0]",
+                                path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[6].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_ikhoh43y",
+                                    key: "Container_6hpyc5tg",
                                     type: "Container",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[6].children[0].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[6].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_c9st29j8",
+                                    key: "Button_g66c70zs",
                                     type: "Button",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[6].children[0].children[1]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[6].children[0].children[1]",
                                     name: "Button",
                                     text: "Profiel",
                                     triggers: const <String>[
@@ -281,46 +281,46 @@ abstract final class FeedingOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Spacer_sbiu7mq9",
+                            key: "Spacer_vazimwqh",
                             type: "Spacer",
-                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[7]",
+                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[7]",
                             name: "FlexSpacer",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_7akxr91u",
+                            key: "Container_79yy1zs6",
                             type: "Container",
-                            path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[8]",
+                            path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[8]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_uiz5qwjc",
+                                key: "Row_wjnh8hm2",
                                 type: "Row",
-                                path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0]",
+                                path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[8].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Icon_82bdnsnm",
+                                    key: "Icon_rs1ut05i",
                                     type: "Icon",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[8].children[0].children[0]",
                                     name: "Icon",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_l8xopyvs",
+                                    key: "Column_c9php3mo",
                                     type: "Column",
-                                    path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1]",
+                                    path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_7hv8xo61",
+                                        key: "Text_xh0dwswq",
                                         type: "Text",
-                                        path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[0]",
+                                        path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[0]",
                                         name: "Text",
                                         text: "Local prototype",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_rrmvh10q",
+                                        key: "Text_jg6zb2ne",
                                         type: "Text",
-                                        path: "FeedingOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[1]",
+                                        path: "InvalidStableInvitationPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[1]",
                                         name: "Text",
                                         text: "Sample data only",
                                       ),
@@ -337,80 +337,80 @@ abstract final class FeedingOverviewPageWidgets {
                 ],
               ),
               ffai.ProjectWidgetHandle(
-                key: "Column_z593d7i5",
+                key: "Column_0ew5idgi",
                 type: "Column",
-                path: "FeedingOverviewPage.body[0].children[1]",
+                path: "InvalidStableInvitationPage.body[0].children[1]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_7em5o1e3",
+                    key: "Container_vh34sb97",
                     type: "Container",
-                    path: "FeedingOverviewPage.body[0].children[1].children[0]",
-                    name: "Phase4C7StableContextSelector",
+                    path: "InvalidStableInvitationPage.body[0].children[1].children[0]",
+                    name: "Phase4BStableContextSelector",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_meghupjp",
+                        key: "Container_dfa0zv4e",
                         type: "Container",
-                        path: "FeedingOverviewPage.body[0].children[1].children[0].children[0]",
-                        name: "Phase4C7StableContextRuntime",
+                        path: "InvalidStableInvitationPage.body[0].children[1].children[0].children[0]",
+                        name: "Phase4BStableContextRuntime",
                       ),
                     ],
                   ),
                   ffai.ProjectWidgetHandle(
-                    key: "Container_fgrshayy",
+                    key: "Container_fh0qg329",
                     type: "Container",
-                    path: "FeedingOverviewPage.body[0].children[1].children[1]",
-                    name: "Phase4C7OperationalRuntime",
+                    path: "InvalidStableInvitationPage.body[0].children[1].children[1]",
+                    name: "Phase4BinvitationRuntime",
                   ),
                   ffai.ProjectWidgetHandle(
-                    key: "Container_fmmzcu3u",
+                    key: "Container_dwji0toc",
                     type: "Container",
-                    path: "FeedingOverviewPage.body[0].children[1].children[2]",
-                    name: "Phase4C7MobileBottomNavigation",
+                    path: "InvalidStableInvitationPage.body[0].children[1].children[2]",
+                    name: "Phase4BMobileBottomNavigation",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_99cqb6z7",
+                        key: "Container_hinis638",
                         type: "Container",
-                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0]",
+                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0]",
                         name: "AvarynMobileNavigationBody",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Row_9ivbkfyz",
+                            key: "Row_xpl4xsia",
                             type: "Row",
-                            path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0]",
+                            path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0]",
                             name: "Row",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Container_37rm7zp4",
+                                key: "Container_p23kqbnh",
                                 type: "Container",
-                                path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[0]",
+                                path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[0]",
                                 name: "Container",
                                 triggers: const <String>[
                                   "ON_TAP",
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_90sfhf79",
+                                    key: "Column_8p4jpzw0",
                                     type: "Column",
-                                    path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_zwbxblc9",
+                                        key: "Container_3lj5786v",
                                         type: "Container",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[0]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_9iqngp48",
+                                        key: "Icon_wqej67r7",
                                         type: "Icon",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[1]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_iidxs7zv",
+                                        key: "Text_qqnkb7yn",
                                         type: "Text",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[2]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[2]",
                                         name: "Text",
                                         text: "Vandaag",
                                       ),
@@ -419,44 +419,44 @@ abstract final class FeedingOverviewPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_509tbqj8",
+                                key: "Container_7qmx0m9c",
                                 type: "Container",
-                                path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[1]",
+                                path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[1]",
                                 name: "Container",
                                 triggers: const <String>[
                                   "ON_TAP",
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_wfh3gc4a",
+                                    key: "Column_zrhhwylt",
                                     type: "Column",
-                                    path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_9pzr1om8",
+                                        key: "Container_upzj3uva",
                                         type: "Container",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[0]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_h8txfbnk",
+                                        key: "Container_79hvzw40",
                                         type: "Container",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_a7bdcwas",
+                                            key: "Container_mxr932v5",
                                             type: "Container",
-                                            path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
+                                            path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
                                             name: "AvarynHorseshoeIcon",
                                           ),
                                         ],
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_bqigjmra",
+                                        key: "Text_t78ik3ia",
                                         type: "Text",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[2]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[2]",
                                         name: "Text",
                                         text: "Paarden",
                                       ),
@@ -465,36 +465,36 @@ abstract final class FeedingOverviewPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_fsnnyj1h",
+                                key: "Container_uelyyack",
                                 type: "Container",
-                                path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[2]",
+                                path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[2]",
                                 name: "Container",
                                 triggers: const <String>[
                                   "ON_TAP",
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_or8vki0s",
+                                    key: "Column_8dxqf72u",
                                     type: "Column",
-                                    path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_kj66xcuz",
+                                        key: "Container_2mqhpy1p",
                                         type: "Container",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[0]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_sa52yi02",
+                                        key: "Icon_2wxw30el",
                                         type: "Icon",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[1]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_rm2dtly7",
+                                        key: "Text_xg923tkw",
                                         type: "Text",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[2]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[2]",
                                         name: "Text",
                                         text: "Planning",
                                       ),
@@ -503,36 +503,36 @@ abstract final class FeedingOverviewPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_wlzq234x",
+                                key: "Container_u4p0kcc4",
                                 type: "Container",
-                                path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[3]",
+                                path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[3]",
                                 name: "Container",
                                 triggers: const <String>[
                                   "ON_TAP",
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_80rznbkt",
+                                    key: "Column_2y9pnxyi",
                                     type: "Column",
-                                    path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_janpj9fd",
+                                        key: "Container_ncfrfl3n",
                                         type: "Container",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[0]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_rcm5nzyp",
+                                        key: "Icon_j3mteats",
                                         type: "Icon",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[1]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_w0zgzp57",
+                                        key: "Text_inv7uel3",
                                         type: "Text",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[2]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[2]",
                                         name: "Text",
                                         text: "Wedstrijden",
                                       ),
@@ -541,36 +541,36 @@ abstract final class FeedingOverviewPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_a91eyf1h",
+                                key: "Container_irobizbt",
                                 type: "Container",
-                                path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[4]",
+                                path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[4]",
                                 name: "Container",
                                 triggers: const <String>[
                                   "ON_TAP",
                                 ],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_9i2b50np",
+                                    key: "Column_3pey51qk",
                                     type: "Column",
-                                    path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0]",
+                                    path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_nkr83g0w",
+                                        key: "Container_vew7ohsc",
                                         type: "Container",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[0]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_0desqfio",
+                                        key: "Icon_jgx7rbgd",
                                         type: "Icon",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[1]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_5gk5blro",
+                                        key: "Text_ytwcee9v",
                                         type: "Text",
-                                        path: "FeedingOverviewPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[2]",
+                                        path: "InvalidStableInvitationPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[2]",
                                         name: "Text",
                                         text: "Profiel",
                                       ),
@@ -593,4 +593,3 @@ abstract final class FeedingOverviewPageWidgets {
     ),
   );
 }
-

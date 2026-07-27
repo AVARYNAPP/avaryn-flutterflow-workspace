@@ -155,6 +155,12 @@ abstract final class AppState {
     typeName: "List<DataStruct<HorseProfileData>>",
     persisted: true,
   );
+  static const lastMembershipValidatedAt = ffai.ProjectAppStateFieldHandle(
+    name: "lastMembershipValidatedAt",
+    key: "k0rxs8e7",
+    typeName: "DateTime",
+    persisted: true,
+  );
   static const legacyDataPromptedAuthIds = ffai.ProjectAppStateFieldHandle(
     name: "legacyDataPromptedAuthIds",
     key: "8bax2d8t",
@@ -171,6 +177,12 @@ abstract final class AppState {
     name: "localAccountScopes",
     key: "vg10um4b",
     typeName: "List<DataStruct<LocalAccountScopeData>>",
+    persisted: true,
+  );
+  static const localStableCloudLinks = ffai.ProjectAppStateFieldHandle(
+    name: "localStableCloudLinks",
+    key: "b5b3ugt3",
+    typeName: "List<DataStruct<LocalStableCloudLinkData>>",
     persisted: true,
   );
   static const nextActivityId = ffai.ProjectAppStateFieldHandle(
@@ -221,6 +233,12 @@ abstract final class AppState {
     typeName: "Integer",
     persisted: true,
   );
+  static const phase4BAccountOperationalBackups = ffai.ProjectAppStateFieldHandle(
+    name: "phase4BAccountOperationalBackups",
+    key: "8pvvlwcu",
+    typeName: "List<DataStruct<LocalAccountScopeData>>",
+    persisted: true,
+  );
   static const selectedActivity = ffai.ProjectAppStateFieldHandle(
     name: "selectedActivity",
     key: "ra1wcaxz",
@@ -232,6 +250,12 @@ abstract final class AppState {
     key: "0mzqfv9b",
     typeName: "Integer",
     persisted: false,
+  );
+  static const selectedCloudStableId = ffai.ProjectAppStateFieldHandle(
+    name: "selectedCloudStableId",
+    key: "sl5ulqfo",
+    typeName: "String",
+    persisted: true,
   );
   static const selectedFeedingDateKey = ffai.ProjectAppStateFieldHandle(
     name: "selectedFeedingDateKey",
@@ -255,6 +279,18 @@ abstract final class AppState {
     name: "selectedHorseIndex",
     key: "xzi3yoba",
     typeName: "Integer",
+    persisted: true,
+  );
+  static const stableAccessStatus = ffai.ProjectAppStateFieldHandle(
+    name: "stableAccessStatus",
+    key: "wsp3kzch",
+    typeName: "String",
+    persisted: false,
+  );
+  static const stableMembershipCaches = ffai.ProjectAppStateFieldHandle(
+    name: "stableMembershipCaches",
+    key: "ibym1uhh",
+    typeName: "List<DataStruct<StableMembershipCacheData>>",
     persisted: true,
   );
   static const temporaryFeedingSchedules = ffai.ProjectAppStateFieldHandle(
@@ -289,9 +325,11 @@ abstract final class AppState {
     horseFeedingPlans,
     horseSeedVersion,
     horses,
+    lastMembershipValidatedAt,
     legacyDataPromptedAuthIds,
     legacyLocalDataBackup,
     localAccountScopes,
+    localStableCloudLinks,
     nextActivityId,
     nextFeedingAssignmentExceptionId,
     nextFeedingExecutionRecordId,
@@ -300,12 +338,16 @@ abstract final class AppState {
     nextHorseIndex,
     nextTemporaryFeedingScheduleId,
     passportPrototypeVersion,
+    phase4BAccountOperationalBackups,
     selectedActivity,
     selectedActivityIndex,
+    selectedCloudStableId,
     selectedFeedingDateKey,
     selectedFeedingRoundId,
     selectedHorse,
     selectedHorseIndex,
+    stableAccessStatus,
+    stableMembershipCaches,
     temporaryFeedingSchedules,
   ];
 }

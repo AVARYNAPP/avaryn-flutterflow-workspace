@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'phase_4b_context_model.dart';
+import 'phase_4c7_runtime_contract.dart';
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutterflow_generated/app_state.dart';
 import 'package:flutterflow_generated/backend/schema/structs/index.dart';
 import 'package:flutterflow_generated/flutter_flow/flutter_flow_theme.dart';
@@ -25,6 +27,36 @@ const int _phase4ALocalScopeSchemaVersion = 2;
 bool get _phase4ALegalConfigured =>
     Uri.tryParse(_phase4APrivacyPolicyUrl)?.hasScheme == true &&
     Uri.tryParse(_phase4ATermsUrl)?.hasScheme == true;
+
+Future<void> _phase4APurgeOperationalSecureState(String authUserId) async {
+  final normalized = authUserId.trim();
+  if (normalized.isEmpty) return;
+  const storage = FlutterSecureStorage();
+  Object? lastError;
+  for (var attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      final values = await storage.readAll();
+      final keys = phase4C7SecureKeysForAccount(values.keys, normalized);
+      for (final key in keys) {
+        await storage.delete(key: key);
+      }
+      final remaining = await storage.readAll();
+      if (phase4C7SecureKeysForAccount(remaining.keys, normalized).isEmpty) {
+        return;
+      }
+      lastError = StateError('Operational secure-state purge incomplete');
+    } catch (error) {
+      lastError = error;
+    }
+    if (attempt < 2) {
+      await Future<void>.delayed(Duration(milliseconds: 200 * (attempt + 1)));
+    }
+  }
+  throw StateError(
+    'Operational secure-state purge failed after retries: '
+    '${lastError.runtimeType}',
+  );
+}
 
 String _phase4ARedirectUrl(String path) {
   if (kIsWeb) {
@@ -751,6 +783,10 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     try {
       final session = _client.auth.currentSession;
       if (session == null) {
+        final previousAuthId = FFAppState().activeAuthAccountId.trim();
+        await _phase4APurgeOperationalSecureState(previousAuthId);
+        FFAppState().activeAuthAccountId = '';
+        FFAppState().selectedCloudStableId = '';
         if (!mounted) return;
         context.goNamed('AuthWelcomePage');
         return;
@@ -763,6 +799,10 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
         return;
       }
       final profile = await _loadOrCreateProfile(session.user);
+      final previousAuthId = FFAppState().activeAuthAccountId.trim();
+      if (previousAuthId.isNotEmpty && previousAuthId != session.user.id) {
+        await _phase4APurgeOperationalSecureState(previousAuthId);
+      }
       final legacyPrompt = _phase4AActivateScope(session.user.id);
       _applyTheme(profile.themeMode);
       if (!mounted) return;
@@ -796,6 +836,10 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
         return;
       }
       final profile = await _loadOrCreateProfile(user);
+      final previousAuthId = FFAppState().activeAuthAccountId.trim();
+      if (previousAuthId.isNotEmpty && previousAuthId != user.id) {
+        await _phase4APurgeOperationalSecureState(previousAuthId);
+      }
       _phase4AActivateScope(user.id);
       _firstNameController.text = profile.firstName;
       _lastNameController.text = profile.lastName;
@@ -1248,6 +1292,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       if (authId.isNotEmpty) {
         _phase4ASavePhase4BOperationalMaster(authId);
         _phase4ASaveScope(authId);
+        await _phase4APurgeOperationalSecureState(authId);
       }
       FFAppState().activeAuthAccountId = '';
       FFAppState().currentAuthProfile = AuthProfileDataStruct();
@@ -1894,6 +1939,9 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
                   _busy
                       ? null
                       : () async {
+                        await _phase4APurgeOperationalSecureState(
+                          FFAppState().activeAuthAccountId,
+                        );
                         await _client.auth.signOut();
                         if (mounted) context.goNamed('AuthWelcomePage');
                       },

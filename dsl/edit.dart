@@ -5223,14 +5223,21 @@ Future<void> main(List<String> args) async {
 const bool _agendaFunctionCheckpointOnly = false;
 const bool _nutritionCustomCodeCheckpointOnly = false;
 const bool _phase4ASchemaCheckpointOnly = false;
+const bool _phase4C7RuntimeCheckpointOnly = false;
+
+File _resolveDslSourceFile(String name) {
+  final adjacent = File.fromUri(Platform.script.resolve(name));
+  if (adjacent.existsSync()) return adjacent;
+  final workspaceRelative = File('dsl/$name').absolute;
+  return workspaceRelative.existsSync() ? workspaceRelative : adjacent;
+}
 
 String _loadPhase4AAccountRuntimeWidgetCode() {
-  final contextFile = File.fromUri(
-    Platform.script.resolve('phase_4b_context_model.dart'),
+  final contextFile = _resolveDslSourceFile('phase_4b_context_model.dart');
+  final phase4C7ContractFile = _resolveDslSourceFile(
+    'phase_4c7_runtime_contract.dart',
   );
-  final sourceFile = File.fromUri(
-    Platform.script.resolve('avaryn_account_runtime.dart'),
-  );
+  final sourceFile = _resolveDslSourceFile('avaryn_account_runtime.dart');
   if (!contextFile.existsSync()) {
     throw StateError(
       'Missing Phase 4B runtime contract source: ${contextFile.path}',
@@ -5241,7 +5248,13 @@ String _loadPhase4AAccountRuntimeWidgetCode() {
       'Missing Phase 4A custom-widget source: ${sourceFile.path}',
     );
   }
-  final runtimeCode = sourceFile
+  if (!phase4C7ContractFile.existsSync()) {
+    throw StateError(
+      'Missing Phase 4C.7 runtime contract source: '
+      '${phase4C7ContractFile.path}',
+    );
+  }
+  final runtimeLines = sourceFile
       .readAsLinesSync()
       .map(
         (line) =>
@@ -5264,22 +5277,30 @@ String _loadPhase4AAccountRuntimeWidgetCode() {
       .where(
         (line) =>
             !line.contains('package:flutterflow_generated/') &&
-            !line.contains("import 'phase_4b_context_model.dart'"),
+            !line.contains("import 'phase_4b_context_model.dart'") &&
+            !line.contains("import 'phase_4c7_runtime_contract.dart'"),
       )
+      .toList(growable: false);
+  final imports = runtimeLines
+      .where((line) => line.trimLeft().startsWith('import '))
       .join('\n');
-  return '${contextFile.readAsStringSync()}\n\n$runtimeCode';
+  final runtimeBody =
+      runtimeLines
+          .where((line) => !line.trimLeft().startsWith('import '))
+          .join('\n')
+          .trimLeft();
+  return '$imports\n\n'
+      '${contextFile.readAsStringSync().trim()}\n\n'
+      '${phase4C7ContractFile.readAsStringSync().trim()}\n\n'
+      '$runtimeBody';
 }
 
 String _loadPhase4BStableRuntimeWidgetCode() {
-  final contextFile = File.fromUri(
-    Platform.script.resolve('phase_4b_context_model.dart'),
+  final contextFile = _resolveDslSourceFile('phase_4b_context_model.dart');
+  final managementFile = _resolveDslSourceFile(
+    'phase_4b_management_model.dart',
   );
-  final managementFile = File.fromUri(
-    Platform.script.resolve('phase_4b_management_model.dart'),
-  );
-  final sourceFile = File.fromUri(
-    Platform.script.resolve('avaryn_stable_runtime.dart'),
-  );
+  final sourceFile = _resolveDslSourceFile('avaryn_stable_runtime.dart');
   if (!contextFile.existsSync()) {
     throw StateError(
       'Missing Phase 4B runtime contract source: ${contextFile.path}',
@@ -5296,7 +5317,7 @@ String _loadPhase4BStableRuntimeWidgetCode() {
     );
   }
   final managementCode = managementFile.readAsStringSync();
-  final runtimeCode = sourceFile
+  final runtimeLines = sourceFile
       .readAsLinesSync()
       .map(
         (line) =>
@@ -5322,14 +5343,23 @@ String _loadPhase4BStableRuntimeWidgetCode() {
             !line.contains("import 'phase_4b_context_model.dart'") &&
             !line.contains("import 'phase_4b_management_model.dart'"),
       )
+      .toList(growable: false);
+  final imports = runtimeLines
+      .where((line) => line.trimLeft().startsWith('import '))
       .join('\n');
-  return '${contextFile.readAsStringSync()}\n\n$managementCode\n\n$runtimeCode';
+  final runtimeBody =
+      runtimeLines
+          .where((line) => !line.trimLeft().startsWith('import '))
+          .join('\n')
+          .trimLeft();
+  return '$imports\n\n'
+      '${contextFile.readAsStringSync().trim()}\n\n'
+      '${managementCode.trim()}\n\n'
+      '$runtimeBody';
 }
 
 String _loadDailyFeedingRuntimeWidgetCode() {
-  final sourceFile = File.fromUri(
-    Platform.script.resolve('avaryn_daily_feeding_runtime.dart'),
-  );
+  final sourceFile = _resolveDslSourceFile('avaryn_daily_feeding_runtime.dart');
   if (!sourceFile.existsSync()) {
     throw StateError(
       'Missing Phase 2 custom-widget source: ${sourceFile.path}',
@@ -5345,6 +5375,144 @@ String _loadDailyFeedingRuntimeWidgetCode() {
       )
       .where((line) => !line.contains('package:flutterflow_generated/'))
       .join('\n');
+}
+
+void _applyPhase4C7AccountPurgeResource(App app) {
+  final accountRuntimeCode = _loadPhase4AAccountRuntimeWidgetCode();
+  app.raw((project) {
+    updateCustomWidget(
+      project,
+      name: 'AvarynAccountRuntime',
+      code: accountRuntimeCode,
+      description:
+          'Supabase auth gate, account onboarding, profile settings, UUID-scoped local prototype ownership and secure operational-cache purge.',
+    );
+  });
+}
+
+String _loadOperationalRuntimeWidgetCode() {
+  final contractFile = _resolveDslSourceFile('phase_4c7_runtime_contract.dart');
+  final sourceFile = _resolveDslSourceFile('avaryn_operational_runtime.dart');
+  if (!contractFile.existsSync()) {
+    throw StateError(
+      'Missing Phase 4C.7 runtime contract source: ${contractFile.path}',
+    );
+  }
+  if (!sourceFile.existsSync()) {
+    throw StateError(
+      'Missing Phase 4C.7 custom-widget source: ${sourceFile.path}',
+    );
+  }
+  final runtimeLines = sourceFile
+      .readAsLinesSync()
+      .map(
+        (line) =>
+            line.contains('package:flutterflow_generated/app_state.dart')
+                ? "import '/app_state.dart';"
+                : line.contains(
+                  'package:flutterflow_generated/flutter_flow/flutter_flow_theme.dart',
+                )
+                ? "import '/flutter_flow/flutter_flow_theme.dart';"
+                : line.contains(
+                  'package:flutterflow_generated/flutter_flow/flutter_flow_util.dart',
+                )
+                ? "import '/flutter_flow/flutter_flow_util.dart';"
+                : line,
+      )
+      .where(
+        (line) =>
+            !line.contains('package:flutterflow_generated/') &&
+            line.trim() != "import 'package:flutter/material.dart';" &&
+            line.trim() != "import '/app_state.dart';" &&
+            line.trim() != "import '/flutter_flow/flutter_flow_theme.dart';" &&
+            line.trim() != "import '/flutter_flow/flutter_flow_util.dart';" &&
+            !line.contains("import 'phase_4c7_runtime_contract.dart'"),
+      )
+      .toList(growable: false);
+  final imports = runtimeLines
+      .where((line) => line.trimLeft().startsWith('import '))
+      .join('\n');
+  final runtimeBody =
+      runtimeLines
+          .where((line) => !line.trimLeft().startsWith('import '))
+          .join('\n')
+          .trimLeft();
+  return '$imports\n\n'
+      '${contractFile.readAsStringSync().trim()}\n\n'
+      '$runtimeBody';
+}
+
+void _applyPhase4C7OperationalRuntimeResource(App app) {
+  final operationalRuntimeCode = _loadOperationalRuntimeWidgetCode();
+  app.raw((project) {
+    final openPgp = findPubDependency(project, name: 'openpgp');
+    if (openPgp == null) {
+      addPubDependency(project, name: 'openpgp', version: '^3.10.7');
+    } else if (openPgp.version != '^3.10.7') {
+      updatePubDependency(project, name: 'openpgp', newVersion: '^3.10.7');
+    }
+    final uuid = findPubDependency(project, name: 'uuid');
+    if (uuid == null) {
+      addPubDependency(project, name: 'uuid', version: '^4.0.0');
+    } else if (uuid.version != '^4.0.0') {
+      updatePubDependency(project, name: 'uuid', newVersion: '^4.0.0');
+    }
+    final timezone = findPubDependency(project, name: 'timezone');
+    if (timezone == null) {
+      addPubDependency(project, name: 'timezone', version: '^0.10.1');
+    } else if (timezone.version != '^0.10.1') {
+      updatePubDependency(project, name: 'timezone', newVersion: '^0.10.1');
+    }
+
+    final operationalWidget = findCustomWidget(
+      project,
+      name: 'AvarynOperationalRuntime',
+    );
+    if (operationalWidget == null) {
+      addCustomWidget(
+        project,
+        name: 'AvarynOperationalRuntime',
+        code: operationalRuntimeCode,
+        parameters: [
+          FFParameter(
+            identifier: FFIdentifier(
+              key: generateRandomAlphaNumericString(),
+              name: 'mode',
+            ),
+            dataType: stringType,
+          ),
+        ],
+        description:
+            'RLS-backed Horse, Today, Planning and Feeding runtime with durable wake-up sync, encrypted offline daysets and fail-closed authority resets.',
+      );
+    } else {
+      final parameters = operationalWidget.parameters
+          .map((parameter) => parameter.deepCopy())
+          .toList(growable: true);
+      if (!parameters.any(
+        (parameter) =>
+            parameter.hasIdentifier() && parameter.identifier.name == 'mode',
+      )) {
+        parameters.add(
+          FFParameter(
+            identifier: FFIdentifier(
+              key: generateRandomAlphaNumericString(),
+              name: 'mode',
+            ),
+            dataType: stringType,
+          ),
+        );
+      }
+      updateCustomWidget(
+        project,
+        name: 'AvarynOperationalRuntime',
+        code: operationalRuntimeCode,
+        parameters: parameters,
+        description:
+            'RLS-backed Horse, Today, Planning and Feeding runtime with durable wake-up sync, encrypted offline daysets and fail-closed authority resets.',
+      );
+    }
+  });
 }
 
 /// Adds the persisted nutrition data foundation without changing existing
@@ -6760,6 +6928,29 @@ void buildAvarynPhase4A(App app) {
 /// applying it to the bound FlutterFlow project requires a separate reviewed
 /// remote run.
 void buildAvarynPhase4B(App app) {
+  final phase4C7OperationalPages = <ProjectPageHandle>[
+    ff.Pages.todayDashboardPage,
+    ff.Pages.horsesOverviewPage,
+    ff.Pages.planningPage,
+    ff.Pages.feedingOverviewPage,
+    ff.Pages.feedingRoundExecutionPage,
+  ];
+  final phase4C7FullyWired = phase4C7OperationalPages.every((page) {
+    final bodies = page.widgets.byPath('${page.name}.body[0]');
+    final runtimes = page.widgets.all.where(
+      (widget) => widget.name == 'Phase4C7OperationalRuntime',
+    );
+    return bodies.matches.length == 1 &&
+        bodies.single.name == 'Phase4C7ResponsiveShell' &&
+        runtimes.length == 1;
+  });
+  if (phase4C7FullyWired) {
+    _configureAvarynTheme(app, existingProject: true);
+    _applyPhase4C7AccountPurgeResource(app);
+    _applyPhase4C7OperationalRuntimeResource(app);
+    return;
+  }
+
   buildAvarynPhase4A(app);
 
   app.raw((project) {
@@ -7131,24 +7322,18 @@ void buildAvarynPhase4B(App app) {
 
   final stableRuntimeCode = _loadPhase4BStableRuntimeWidgetCode();
   app.raw((project) {
-    final existing = findCustomWidget(project, name: 'AvarynStableRuntime');
-    if (existing == null) {
-      addCustomWidget(
-        project,
-        name: 'AvarynStableRuntime',
-        code: stableRuntimeCode,
-        description:
-            'Responsive Phase 4B onboarding, stable authority, invitations and isolated local stable context.',
-      );
-    } else {
-      updateCustomWidget(
-        project,
-        name: 'AvarynStableRuntime',
-        code: stableRuntimeCode,
-        description:
-            'Responsive Phase 4B onboarding, stable authority, invitations and isolated local stable context.',
+    if (findCustomWidget(project, name: 'AvarynStableRuntime') == null) {
+      throw StateError(
+        'Phase 4C.7 requires the existing AvarynStableRuntime custom widget.',
       );
     }
+    updateCustomWidget(
+      project,
+      name: 'AvarynStableRuntime',
+      code: stableRuntimeCode,
+      description:
+          'Responsive Phase 4B onboarding, stable authority, invitations and isolated local stable context.',
+    );
   });
 
   final pages = <({String name, String route, String mode, bool auth})>[
@@ -7272,6 +7457,70 @@ void buildAvarynPhase4B(App app) {
       final mobile = findDescendants(
         page.node,
         (node) => node.name == 'Phase4BMobileBottomNavigation',
+      );
+      if (desktop.length == 1) {
+        setResponsiveVisibility(
+          desktop.single,
+          phoneHidden: true,
+          tabletHidden: true,
+          tabletLandscapeHidden: true,
+          desktopHidden: false,
+        );
+      }
+      if (mobile.length == 1) {
+        setResponsiveVisibility(
+          mobile.single,
+          phoneHidden: false,
+          tabletHidden: false,
+          tabletLandscapeHidden: false,
+          desktopHidden: true,
+        );
+      }
+    }
+  });
+
+  _applyPhase4C7OperationalRuntimeResource(app);
+
+  if (_phase4C7RuntimeCheckpointOnly) return;
+
+  final operationalPages = <
+    ({ProjectPageHandle page, String mode, String activeTab})
+  >[
+    (page: ff.Pages.todayDashboardPage, mode: 'today', activeTab: 'Vandaag'),
+    (page: ff.Pages.horsesOverviewPage, mode: 'horses', activeTab: 'Paarden'),
+    (page: ff.Pages.planningPage, mode: 'planning', activeTab: 'Planning'),
+    (page: ff.Pages.feedingOverviewPage, mode: 'feeding', activeTab: 'Vandaag'),
+    (
+      page: ff.Pages.feedingRoundExecutionPage,
+      mode: 'feedingExecution',
+      activeTab: 'Vandaag',
+    ),
+  ];
+  for (final spec in operationalPages) {
+    app.editPage(spec.page, (page) {
+      page.ensureReplaced(
+        spec.page.widgets.byPath('${spec.page.name}.body[0]').single,
+        _phase4C7OperationalPageBody(
+          mode: spec.mode,
+          activeTab: spec.activeTab,
+        ),
+      );
+    });
+  }
+
+  app.raw((project) {
+    for (final spec in operationalPages) {
+      final page = findPage(project, name: spec.page.name);
+      if (page == null) {
+        throw StateError('Expected ${spec.page.name} for Phase 4C.7.');
+      }
+      final desktop = findDescendants(
+        page.node,
+        (node) => node.name == 'Phase4C7DesktopSideNavigation',
+      );
+      final mobile = findDescendants(
+        page.node,
+        (node) => node.name == 'Phase4C7MobileBottomNavigation',
       );
       if (desktop.length == 1) {
         setResponsiveVisibility(
@@ -11115,6 +11364,75 @@ void _applyHorseDetailResponsiveVisibility(App app) {
 }
 
 /// Standalone compile-only smoke app used by test/app_test.dart.
+void buildPhase4AAccountRuntimeCompileTestApp(App app) {
+  _configureAvarynTheme(app, existingProject: false);
+  final dynamic accountRuntime = app.customWidget(
+    'AvarynAccountRuntime',
+    parameters: {'mode': string.withDefault('welcome')},
+    code: _loadPhase4AAccountRuntimeWidgetCode(),
+    description: 'Compile-only Phase 4A account runtime regression fixture.',
+  );
+  app.page(
+    'Phase4AAccountRuntimeCompilePage',
+    route: '/',
+    isInitial: true,
+    description: 'Compiles the bundled Phase 4A custom widget source.',
+    body: accountRuntime(
+      name: 'Phase4AAccountRuntimeCompileFixture',
+      mode: 'welcome',
+    ),
+  );
+}
+
+/// Standalone compile-only smoke app used by test/app_test.dart.
+void buildPhase4BStableRuntimeCompileTestApp(App app) {
+  _configureAvarynTheme(app, existingProject: false);
+  final dynamic stableRuntime = app.customWidget(
+    'AvarynStableRuntime',
+    parameters: {
+      'mode': string,
+      'initialStableMemberId': string.withDefault(''),
+    },
+    code: _loadPhase4BStableRuntimeWidgetCode(),
+    description: 'Compile-only Phase 4B stable runtime regression fixture.',
+  );
+  app.page(
+    'Phase4BStableRuntimeCompilePage',
+    route: '/',
+    isInitial: true,
+    description: 'Compiles the bundled Phase 4B custom widget source.',
+    body: stableRuntime(
+      name: 'Phase4BStableRuntimeCompileFixture',
+      mode: 'stablePicker',
+      initialStableMemberId: '',
+    ),
+  );
+}
+
+/// Standalone compile-only smoke app used by test/app_test.dart.
+void buildPhase4C7OperationalRuntimeCompileTestApp(App app) {
+  _configureAvarynTheme(app, existingProject: false);
+  app.pubDependency('openpgp', '^3.10.7');
+  app.pubDependency('timezone', '^0.10.1');
+  final dynamic operationalRuntime = app.customWidget(
+    'AvarynOperationalRuntime',
+    parameters: {'mode': string.withDefault('today')},
+    code: _loadOperationalRuntimeWidgetCode(),
+    description: 'Compile-only Phase 4C.7 operational runtime fixture.',
+  );
+  app.page(
+    'Phase4C7OperationalRuntimeCompilePage',
+    route: '/',
+    isInitial: true,
+    description: 'Compiles the bundled Phase 4C.7 custom widget source.',
+    body: operationalRuntime(
+      name: 'Phase4C7OperationalRuntimeCompileFixture',
+      mode: 'today',
+    ),
+  );
+}
+
+/// Standalone compile-only smoke app used by test/app_test.dart.
 void buildAvarynDesignSystemTestApp(App app) {
   _configureAvarynTheme(app, existingProject: false);
   app.customWidget(
@@ -12314,8 +12632,12 @@ DslWidget _phase4BPageBody(String mode, {Object initialStableMemberId = ''}) =>
                 padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                 color: Colors.primary,
                 child: CustomWidget(
+                  name: 'Phase4BStableContextRuntime',
                   widgetName: 'AvarynStableRuntime',
-                  arguments: const {'mode': 'selector'},
+                  arguments: const {
+                    'mode': 'selector',
+                    'initialStableMemberId': '',
+                  },
                 ),
               ),
               Expanded(
@@ -12343,6 +12665,64 @@ DslWidget _phase4BPageBody(String mode, {Object initialStableMemberId = ''}) =>
         ),
       ],
     );
+
+DslWidget _phase4C7OperationalPageBody({
+  required String mode,
+  required String activeTab,
+}) => Row(
+  name: 'Phase4C7ResponsiveShell',
+  crossAxis: CrossAxis.stretch,
+  children: [
+    Container(
+      name: 'Phase4C7DesktopSideNavigation',
+      child: _desktopNavigationBody(
+        bindParams: false,
+        activeTab: activeTab,
+        horsesTarget: ff.Pages.horsesOverviewPage,
+        planningTarget: ff.Pages.planningPage,
+        profileTarget: 'PersonalProfilePage',
+      ),
+    ),
+    Expanded(
+      Column(
+        crossAxis: CrossAxis.stretch,
+        children: [
+          Container(
+            name: 'Phase4C7StableContextSelector',
+            height: 78,
+            padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+            color: Colors.primary,
+            child: CustomWidget(
+              name: 'Phase4C7StableContextRuntime',
+              widgetName: 'AvarynStableRuntime',
+              arguments: const {
+                'mode': 'selector',
+                'initialStableMemberId': '',
+              },
+            ),
+          ),
+          Expanded(
+            CustomWidget(
+              name: 'Phase4C7OperationalRuntime',
+              widgetName: 'AvarynOperationalRuntime',
+              arguments: {'mode': mode},
+            ),
+          ),
+          Container(
+            name: 'Phase4C7MobileBottomNavigation',
+            child: _mobileNavigationBody(
+              bindParams: false,
+              activeTab: activeTab,
+              horsesTarget: ff.Pages.horsesOverviewPage,
+              planningTarget: ff.Pages.planningPage,
+              profileTarget: 'PersonalProfilePage',
+            ),
+          ),
+        ],
+      ),
+    ),
+  ],
+);
 
 DslWidget _mobileNavigationBody({
   bool bindParams = true,

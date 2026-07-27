@@ -6,6 +6,210 @@ import 'package:test/test.dart';
 import '../dsl/edit.dart' as checkpoint;
 
 void main() {
+  test('Phase 4A bundled account runtime is valid custom-widget Dart', () {
+    final app = buildApp(checkpoint.buildPhase4AAccountRuntimeCompileTestApp);
+    final project = compileApp(app).project;
+
+    expect(
+      findPage(project, name: 'Phase4AAccountRuntimeCompilePage'),
+      isNotNull,
+    );
+    expect(findCustomWidget(project, name: 'AvarynAccountRuntime'), isNotNull);
+  });
+
+  test('Phase 4B stable runtime is updated before brownfield placement', () {
+    final source = File('dsl/edit.dart').readAsStringSync();
+    final phase4BSource = source.substring(
+      source.indexOf('void buildAvarynPhase4B(App app)'),
+      source.indexOf('void buildHorseFeedingPhaseTwo(App app)'),
+    );
+
+    expect(phase4BSource, contains("name: 'AvarynStableRuntime',"));
+    expect(source, contains("name: 'Phase4BStableContextRuntime',"));
+    expect(source, contains("widgetName: 'AvarynStableRuntime',"));
+    expect(
+      phase4BSource,
+      isNot(
+        contains(
+          "final dynamic stableRuntime = app.customWidget(\n"
+          "    'AvarynStableRuntime',",
+        ),
+      ),
+    );
+  });
+
+  test('Phase 4B bundled stable runtime is valid custom-widget Dart', () {
+    final app = buildApp(checkpoint.buildPhase4BStableRuntimeCompileTestApp);
+    final project = compileApp(app).project;
+
+    expect(
+      findPage(project, name: 'Phase4BStableRuntimeCompilePage'),
+      isNotNull,
+    );
+    expect(findCustomWidget(project, name: 'AvarynStableRuntime'), isNotNull);
+  });
+
+  test('Phase 4B member route accepts nullable generated page parameters', () {
+    final source = File('dsl/avaryn_stable_runtime.dart').readAsStringSync();
+
+    expect(source, contains('final String? initialStableMemberId;'));
+    expect(
+      source,
+      contains("initialStableMemberId: widget.initialStableMemberId ?? '',"),
+    );
+  });
+
+  test('Phase 4B selector stays within its compact navigation slot', () {
+    final source = File('dsl/avaryn_stable_runtime.dart').readAsStringSync();
+
+    expect(
+      source,
+      contains("if (widget.mode == 'selector') return _selectorBar(theme);"),
+    );
+    expect(source, contains('Widget _selectorBar(FlutterFlowTheme theme)'));
+    expect(source, contains('maxLines: 1,'));
+    expect(source, contains("context.pushNamed('StablePickerPage')"));
+    expect(
+      source,
+      isNot(
+        contains(
+          "if (widget.mode == 'selector') "
+          "return _selector(theme, compact: true);",
+        ),
+      ),
+    );
+  });
+
+  test(
+    'Phase 4C.7 bundled operational runtime is valid custom-widget Dart',
+    () {
+      final app = buildApp(
+        checkpoint.buildPhase4C7OperationalRuntimeCompileTestApp,
+      );
+      final project = compileApp(app).project;
+
+      expect(
+        findPage(project, name: 'Phase4C7OperationalRuntimeCompilePage'),
+        isNotNull,
+      );
+      expect(
+        findCustomWidget(project, name: 'AvarynOperationalRuntime'),
+        isNotNull,
+      );
+    },
+  );
+
+  test('Phase 4C.7 client fails closed and persists no plaintext dayset', () {
+    final source =
+        File('dsl/avaryn_operational_runtime.dart').readAsStringSync();
+    final accountSource =
+        File('dsl/avaryn_account_runtime.dart').readAsStringSync();
+
+    for (final rpc in const [
+      'get_realtime_topics',
+      'pull_operation_changes',
+      'list_today_schedule',
+      'register_sync_device',
+      'get_encrypted_offline_dayset',
+      'sync_schedule_execution',
+      'sync_feeding_execution',
+      'list_sync_conflicts',
+      'create_horse',
+      'create_schedule_item',
+      'create_feeding_plan',
+      'record_schedule_execution',
+      'record_feeding_execution',
+    ]) {
+      expect(source, contains("'$rpc'"));
+    }
+    expect(source, contains("RealtimeChannelConfig(private: true)"));
+    expect(source, contains("event: 'change_available'"));
+    expect(source, contains("value: jsonEncode(envelope)"));
+    expect(source, contains("OpenPGP.decrypt("));
+    expect(source, contains("OpenPGP.encrypt("));
+    expect(source, contains("FlutterSecureStorage"));
+    expect(
+      source,
+      contains("throw StateError('OFFLINE_REQUIRES_OS_KEYSTORE')"),
+    );
+    expect(source, contains("if (kIsWeb || _stableId.isEmpty) return false;"));
+    expect(source, contains("OS-backed sleutelopslag is verplicht."));
+    expect(source, contains("_clearDecryptedState();"));
+    expect(source, contains("message.contains('SYNC_RESET_REQUIRED')"));
+    expect(source, contains("error.code == '42501'"));
+    expect(source, contains('previousAuthority != refreshedAuthority'));
+    expect(source, contains('phase4C7DaysetMetadataMatches('));
+    expect(source, contains('_authSubscription ='));
+    expect(source, contains('_requestLedger.bindScope(user.id, _stableId)'));
+    expect(source, contains('_requestLedger.acquire('));
+    expect(source, contains("operation: 'register_sync_device'"));
+    expect(source, contains('phase4C7RemoveProcessedMutation('));
+    expect(source, contains('await _writeOfflineMutations(remaining, keys);'));
+    expect(source, contains('_markPendingScheduleItems(pending);'));
+    expect(source, contains("_storageKey('timezone')"));
+    expect(source, contains('_restoreCachedStableTimezone()'));
+    expect(source, contains('_operationalPendingPurgeAccounts'));
+    expect(source, contains('_retryOperationalSecurityCleanup()'));
+    expect(source, contains("StateError('LOCAL_PURGE_INCOMPLETE')"));
+    expect(source, isNot(contains(".from('feeding_occurrences')")));
+    expect(source, isNot(contains('const _operationalTimezone')));
+    expect(source, isNot(contains("writeAsString")));
+    expect(source, isNot(contains("SharedPreferences")));
+    expect(
+      accountSource,
+      contains('_phase4APurgeOperationalSecureState(authId)'),
+    );
+    expect(accountSource, contains('phase4C7SecureKeysForAccount('));
+    expect(
+      accountSource.indexOf(
+        'await _phase4APurgeOperationalSecureState(authId)',
+      ),
+      lessThan(accountSource.indexOf('await _client.auth.signOut();')),
+    );
+
+    final scheduleExecutionStart = source.indexOf(
+      "operation: 'record_schedule_execution'",
+    );
+    final scheduleExecutionEnd = source.indexOf(
+      "_notice = 'Uitvoering veilig geregistreerd.'",
+      scheduleExecutionStart,
+    );
+    final scheduleExecution = source.substring(
+      scheduleExecutionStart,
+      scheduleExecutionEnd,
+    );
+    expect(scheduleExecution, isNot(contains("'p_corrects_execution_id'")));
+  });
+
+  test('Phase 4C.7 replaces the operational prototype surfaces', () {
+    final source = File('dsl/edit.dart').readAsStringSync();
+    final phase4BSource = source.substring(
+      source.indexOf('void buildAvarynPhase4B(App app)'),
+      source.indexOf('void buildHorseFeedingPhaseTwo(App app)'),
+    );
+
+    for (final mode in const [
+      "'today'",
+      "'horses'",
+      "'planning'",
+      "'feeding'",
+      "'feedingExecution'",
+    ]) {
+      expect(phase4BSource, contains('mode: $mode'));
+    }
+    expect(
+      phase4BSource,
+      contains('_applyPhase4C7OperationalRuntimeResource(app);'),
+    );
+    expect(source, contains("name: 'AvarynOperationalRuntime'"));
+    expect(phase4BSource, contains('final phase4C7FullyWired ='));
+    expect(phase4BSource, contains('runtimes.length == 1'));
+    expect(source, contains("widgetName: 'AvarynOperationalRuntime'"));
+    expect(source, contains("name: 'Phase4C7StableContextSelector'"));
+    expect(source, contains("name: 'Phase4C7DesktopSideNavigation'"));
+    expect(source, contains("name: 'Phase4C7MobileBottomNavigation'"));
+  });
+
   test('AVARYN design system and reusable components compile', () {
     final app = buildApp(checkpoint.buildAvarynDesignSystemTestApp);
     final project = compileApp(app).project;

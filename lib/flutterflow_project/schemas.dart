@@ -203,6 +203,7 @@ abstract final class Structs {
       "horseFeedingPlans": ffai.listOf(Structs.horseFeedingPlanData),
       "horseSeedVersion": ffai.int_,
       "horses": ffai.listOf(Structs.horseProfileData),
+      "localStableCloudLinks": ffai.listOf(Structs.localStableCloudLinkData),
       "nextActivityId": ffai.int_,
       "nextFeedingAssignmentExceptionId": ffai.int_,
       "nextFeedingExecutionRecordId": ffai.int_,
@@ -212,10 +213,24 @@ abstract final class Structs {
       "nextTemporaryFeedingScheduleId": ffai.int_,
       "passportPrototypeVersion": ffai.int_,
       "schemaVersion": ffai.int_,
+      "selectedCloudStableId": ffai.string,
       "selectedHorse": Structs.horseProfileData,
       "selectedHorseIndex": ffai.int_,
+      "stableMembershipCaches": ffai.listOf(Structs.stableMembershipCacheData),
       "temporaryFeedingSchedules": ffai.listOf(Structs.temporaryFeedingScheduleData),
       "updatedAt": ffai.dateTime,
+    },
+    description: ffai.generatedProjectStructDescription,
+  );
+  static final ffai.StructHandle localStableCloudLinkData = ffai.StructHandle(
+    "LocalStableCloudLinkData",
+    <String, ffai.DslType>{
+      "authUserId": ffai.string,
+      "cloudStableId": ffai.string,
+      "confirmed": ffai.bool_,
+      "linkedAt": ffai.dateTime,
+      "localStableId": ffai.string,
+      "selectedHorseId": ffai.int_,
     },
     description: ffai.generatedProjectStructDescription,
   );
@@ -228,6 +243,21 @@ abstract final class Structs {
       "roundId": ffai.string,
       "source": ffai.string,
       "stableId": ffai.string,
+    },
+    description: ffai.generatedProjectStructDescription,
+  );
+  static final ffai.StructHandle stableMembershipCacheData = ffai.StructHandle(
+    "StableMembershipCacheData",
+    <String, ffai.DslType>{
+      "authUserId": ffai.string,
+      "lastValidatedAt": ffai.dateTime,
+      "membershipId": ffai.string,
+      "role": ffai.string,
+      "stableId": ffai.string,
+      "stableKind": ffai.string,
+      "stableMemberId": ffai.string,
+      "stableName": ffai.string,
+      "status": ffai.string,
     },
     description: ffai.generatedProjectStructDescription,
   );
@@ -261,7 +291,9 @@ abstract final class Structs {
     horseFeedingPlanData,
     horseProfileData,
     localAccountScopeData,
+    localStableCloudLinkData,
     resolvedFeedingResponsibleData,
+    stableMembershipCacheData,
     temporaryFeedingScheduleData,
   ];
 }
@@ -271,15 +303,150 @@ abstract final class Collections {
 }
 
 abstract final class Tables {
+  static final accountWorkspacePreferences = ffai.ProjectTableHandle<AccountWorkspacePreferencesFields>(
+    name: "account_workspace_preferences",
+    description: "",
+    isView: false,
+    fields: AccountWorkspacePreferencesFields(),
+  );
   static final profiles = ffai.ProjectTableHandle<ProfilesFields>(
     name: "profiles",
     description: "",
     isView: false,
     fields: ProfilesFields(),
   );
+  static final stableInvitations = ffai.ProjectTableHandle<StableInvitationsFields>(
+    name: "stable_invitations",
+    description: "",
+    isView: false,
+    fields: StableInvitationsFields(),
+  );
+  static final stableMembers = ffai.ProjectTableHandle<StableMembersFields>(
+    name: "stable_members",
+    description: "",
+    isView: false,
+    fields: StableMembersFields(),
+  );
+  static final stableMemberships = ffai.ProjectTableHandle<StableMembershipsFields>(
+    name: "stable_memberships",
+    description: "",
+    isView: false,
+    fields: StableMembershipsFields(),
+  );
+  static final stableSecurityEvents = ffai.ProjectTableHandle<StableSecurityEventsFields>(
+    name: "stable_security_events",
+    description: "",
+    isView: false,
+    fields: StableSecurityEventsFields(),
+  );
+  static final stables = ffai.ProjectTableHandle<StablesFields>(
+    name: "stables",
+    description: "",
+    isView: false,
+    fields: StablesFields(),
+  );
   static final all = <ffai.ProjectTableHandle>[
+    accountWorkspacePreferences,
     profiles,
+    stableInvitations,
+    stableMembers,
+    stableMemberships,
+    stableSecurityEvents,
+    stables,
   ];
+}
+
+final class AccountWorkspacePreferencesFields extends MapBase<String, ffai.PostgresTableField> {
+  final intentConsumedAt = ffai.ProjectTableFieldHandle(
+    name: "intent_consumed_at",
+    key: "hfyicrlg",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final lastSelectedStableId = ffai.ProjectTableFieldHandle(
+    name: "last_selected_stable_id",
+    key: "wg4hc2lk",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final phase4bStatus = ffai.ProjectTableFieldHandle(
+    name: "phase_4b_status",
+    key: "rzdjp6dd",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final userId = ffai.ProjectTableFieldHandle(
+    name: "user_id",
+    key: "g5j168ni",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: true,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final workspaceMode = ffai.ProjectTableFieldHandle(
+    name: "workspace_mode",
+    key: "50uboj7p",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+
+  @override
+  Iterable<String> get keys => const <String>[
+    "intent_consumed_at",
+    "last_selected_stable_id",
+    "phase_4b_status",
+    "user_id",
+    "workspace_mode",
+  ];
+
+  @override
+  ffai.PostgresTableField? operator [](Object? key) => switch (key) {
+    "intent_consumed_at" => intentConsumedAt,
+    "last_selected_stable_id" => lastSelectedStableId,
+    "phase_4b_status" => phase4bStatus,
+    "user_id" => userId,
+    "workspace_mode" => workspaceMode,
+    _ => null,
+  };
+
+  @override
+  void operator []=(String key, ffai.PostgresTableField value) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  void clear() => throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  ffai.PostgresTableField? remove(Object? key) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
 }
 
 final class ProfilesFields extends MapBase<String, ffai.PostgresTableField> {
@@ -501,6 +668,709 @@ final class ProfilesFields extends MapBase<String, ffai.PostgresTableField> {
       throw UnsupportedError('Generated project SDK fields are read-only.');
 }
 
+final class StableInvitationsFields extends MapBase<String, ffai.PostgresTableField> {
+  final expiresAt = ffai.ProjectTableFieldHandle(
+    name: "expires_at",
+    key: "50069jzf",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final id = ffai.ProjectTableFieldHandle(
+    name: "id",
+    key: "xiiaqydf",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: true,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final lastSentAt = ffai.ProjectTableFieldHandle(
+    name: "last_sent_at",
+    key: "5z1nik2v",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final offeredRole = ffai.ProjectTableFieldHandle(
+    name: "offered_role",
+    key: "k729us2r",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final resendCount = ffai.ProjectTableFieldHandle(
+    name: "resend_count",
+    key: "b7cusgc1",
+    typeName: "Integer",
+    type: ffai.int_,
+    description: "",
+    postgresType: "int4",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final stableId = ffai.ProjectTableFieldHandle(
+    name: "stable_id",
+    key: "v0f448ni",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final status = ffai.ProjectTableFieldHandle(
+    name: "status",
+    key: "f7oydake",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final targetStableMemberId = ffai.ProjectTableFieldHandle(
+    name: "target_stable_member_id",
+    key: "pnd4jwfq",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+
+  @override
+  Iterable<String> get keys => const <String>[
+    "expires_at",
+    "id",
+    "last_sent_at",
+    "offered_role",
+    "resend_count",
+    "stable_id",
+    "status",
+    "target_stable_member_id",
+  ];
+
+  @override
+  ffai.PostgresTableField? operator [](Object? key) => switch (key) {
+    "expires_at" => expiresAt,
+    "id" => id,
+    "last_sent_at" => lastSentAt,
+    "offered_role" => offeredRole,
+    "resend_count" => resendCount,
+    "stable_id" => stableId,
+    "status" => status,
+    "target_stable_member_id" => targetStableMemberId,
+    _ => null,
+  };
+
+  @override
+  void operator []=(String key, ffai.PostgresTableField value) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  void clear() => throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  ffai.PostgresTableField? remove(Object? key) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+}
+
+final class StableMembersFields extends MapBase<String, ffai.PostgresTableField> {
+  final createdAt = ffai.ProjectTableFieldHandle(
+    name: "created_at",
+    key: "b5iaep70",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final displayName = ffai.ProjectTableFieldHandle(
+    name: "display_name",
+    key: "ttj5lepy",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final functionTitle = ffai.ProjectTableFieldHandle(
+    name: "function_title",
+    key: "mj1i8qqg",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final id = ffai.ProjectTableFieldHandle(
+    name: "id",
+    key: "mzwazmw8",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: true,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final legacyLocalMemberId = ffai.ProjectTableFieldHandle(
+    name: "legacy_local_member_id",
+    key: "6hmmrfgg",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final source = ffai.ProjectTableFieldHandle(
+    name: "source",
+    key: "fo82g2pw",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final stableId = ffai.ProjectTableFieldHandle(
+    name: "stable_id",
+    key: "xb6bc91o",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final status = ffai.ProjectTableFieldHandle(
+    name: "status",
+    key: "dh6k91w5",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final updatedAt = ffai.ProjectTableFieldHandle(
+    name: "updated_at",
+    key: "r4ff8ikb",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+
+  @override
+  Iterable<String> get keys => const <String>[
+    "created_at",
+    "display_name",
+    "function_title",
+    "id",
+    "legacy_local_member_id",
+    "source",
+    "stable_id",
+    "status",
+    "updated_at",
+  ];
+
+  @override
+  ffai.PostgresTableField? operator [](Object? key) => switch (key) {
+    "created_at" => createdAt,
+    "display_name" => displayName,
+    "function_title" => functionTitle,
+    "id" => id,
+    "legacy_local_member_id" => legacyLocalMemberId,
+    "source" => source,
+    "stable_id" => stableId,
+    "status" => status,
+    "updated_at" => updatedAt,
+    _ => null,
+  };
+
+  @override
+  void operator []=(String key, ffai.PostgresTableField value) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  void clear() => throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  ffai.PostgresTableField? remove(Object? key) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+}
+
+final class StableMembershipsFields extends MapBase<String, ffai.PostgresTableField> {
+  final endedAt = ffai.ProjectTableFieldHandle(
+    name: "ended_at",
+    key: "vm0sbteq",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final id = ffai.ProjectTableFieldHandle(
+    name: "id",
+    key: "0kzoqtwq",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: true,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final joinedAt = ffai.ProjectTableFieldHandle(
+    name: "joined_at",
+    key: "wgil5nyp",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final role = ffai.ProjectTableFieldHandle(
+    name: "role",
+    key: "bi9oztd9",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final rowVersion = ffai.ProjectTableFieldHandle(
+    name: "row_version",
+    key: "oj0dh0xb",
+    typeName: "Integer",
+    type: ffai.int_,
+    description: "",
+    postgresType: "int8",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final sourceInvitationId = ffai.ProjectTableFieldHandle(
+    name: "source_invitation_id",
+    key: "fky8njde",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final stableId = ffai.ProjectTableFieldHandle(
+    name: "stable_id",
+    key: "d24ierox",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final stableMemberId = ffai.ProjectTableFieldHandle(
+    name: "stable_member_id",
+    key: "k8s0yivv",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final status = ffai.ProjectTableFieldHandle(
+    name: "status",
+    key: "2m32id8y",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final userId = ffai.ProjectTableFieldHandle(
+    name: "user_id",
+    key: "es1oe0xi",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+
+  @override
+  Iterable<String> get keys => const <String>[
+    "ended_at",
+    "id",
+    "joined_at",
+    "role",
+    "row_version",
+    "source_invitation_id",
+    "stable_id",
+    "stable_member_id",
+    "status",
+    "user_id",
+  ];
+
+  @override
+  ffai.PostgresTableField? operator [](Object? key) => switch (key) {
+    "ended_at" => endedAt,
+    "id" => id,
+    "joined_at" => joinedAt,
+    "role" => role,
+    "row_version" => rowVersion,
+    "source_invitation_id" => sourceInvitationId,
+    "stable_id" => stableId,
+    "stable_member_id" => stableMemberId,
+    "status" => status,
+    "user_id" => userId,
+    _ => null,
+  };
+
+  @override
+  void operator []=(String key, ffai.PostgresTableField value) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  void clear() => throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  ffai.PostgresTableField? remove(Object? key) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+}
+
+final class StableSecurityEventsFields extends MapBase<String, ffai.PostgresTableField> {
+  final createdAt = ffai.ProjectTableFieldHandle(
+    name: "created_at",
+    key: "hqw7xmhl",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final eventType = ffai.ProjectTableFieldHandle(
+    name: "event_type",
+    key: "uf40ehfz",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final id = ffai.ProjectTableFieldHandle(
+    name: "id",
+    key: "1ys8h3sl",
+    typeName: "Integer",
+    type: ffai.int_,
+    description: "",
+    postgresType: "int8",
+    foreignKey: null,
+    isPrimaryKey: true,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final stableId = ffai.ProjectTableFieldHandle(
+    name: "stable_id",
+    key: "j5tf25ug",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+
+  @override
+  Iterable<String> get keys => const <String>[
+    "created_at",
+    "event_type",
+    "id",
+    "stable_id",
+  ];
+
+  @override
+  ffai.PostgresTableField? operator [](Object? key) => switch (key) {
+    "created_at" => createdAt,
+    "event_type" => eventType,
+    "id" => id,
+    "stable_id" => stableId,
+    _ => null,
+  };
+
+  @override
+  void operator []=(String key, ffai.PostgresTableField value) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  void clear() => throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  ffai.PostgresTableField? remove(Object? key) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+}
+
+final class StablesFields extends MapBase<String, ffai.PostgresTableField> {
+  final archivedAt = ffai.ProjectTableFieldHandle(
+    name: "archived_at",
+    key: "v8p4ure2",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final createdAt = ffai.ProjectTableFieldHandle(
+    name: "created_at",
+    key: "9uo35ueg",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final createdByUserId = ffai.ProjectTableFieldHandle(
+    name: "created_by_user_id",
+    key: "pobyty4n",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final creationRequestId = ffai.ProjectTableFieldHandle(
+    name: "creation_request_id",
+    key: "ou15z7zz",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final id = ffai.ProjectTableFieldHandle(
+    name: "id",
+    key: "62k6p5dg",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "uuid",
+    foreignKey: null,
+    isPrimaryKey: true,
+    isRequired: true,
+    hasDefault: true,
+  );
+  final kind = ffai.ProjectTableFieldHandle(
+    name: "kind",
+    key: "ic66wx0x",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final locale = ffai.ProjectTableFieldHandle(
+    name: "locale",
+    key: "g844pwo3",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final name = ffai.ProjectTableFieldHandle(
+    name: "name",
+    key: "keod2a6t",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final status = ffai.ProjectTableFieldHandle(
+    name: "status",
+    key: "bhlfo5hj",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final timezone = ffai.ProjectTableFieldHandle(
+    name: "timezone",
+    key: "4gs87z6r",
+    typeName: "String",
+    type: ffai.string,
+    description: "",
+    postgresType: "text",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+  final updatedAt = ffai.ProjectTableFieldHandle(
+    name: "updated_at",
+    key: "439z8kv7",
+    typeName: "DateTime",
+    type: ffai.dateTime,
+    description: "",
+    postgresType: "timestamptz",
+    foreignKey: null,
+    isPrimaryKey: false,
+    isRequired: false,
+    hasDefault: false,
+  );
+
+  @override
+  Iterable<String> get keys => const <String>[
+    "archived_at",
+    "created_at",
+    "created_by_user_id",
+    "creation_request_id",
+    "id",
+    "kind",
+    "locale",
+    "name",
+    "status",
+    "timezone",
+    "updated_at",
+  ];
+
+  @override
+  ffai.PostgresTableField? operator [](Object? key) => switch (key) {
+    "archived_at" => archivedAt,
+    "created_at" => createdAt,
+    "created_by_user_id" => createdByUserId,
+    "creation_request_id" => creationRequestId,
+    "id" => id,
+    "kind" => kind,
+    "locale" => locale,
+    "name" => name,
+    "status" => status,
+    "timezone" => timezone,
+    "updated_at" => updatedAt,
+    _ => null,
+  };
+
+  @override
+  void operator []=(String key, ffai.PostgresTableField value) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  void clear() => throw UnsupportedError('Generated project SDK fields are read-only.');
+
+  @override
+  ffai.PostgresTableField? remove(Object? key) =>
+      throw UnsupportedError('Generated project SDK fields are read-only.');
+}
+
 abstract final class CustomCode {
   static const functions = <String>[
     "activitiesForAgendaDateV2",
@@ -597,8 +1467,10 @@ abstract final class CustomCode {
     "AvarynHorseAvatar",
     "AvarynHorseNutritionRuntime",
     "AvarynHorseshoeIcon",
+    "AvarynOperationalRuntime",
     "AvarynOrionPhoto",
     "AvarynPlanningViewsRuntime",
+    "AvarynStableRuntime",
   ];
 }
 

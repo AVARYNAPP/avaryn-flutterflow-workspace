@@ -268,7 +268,7 @@ class AvarynStableRuntime extends StatefulWidget {
   final double? width;
   final double? height;
   final String mode;
-  final String initialStableMemberId;
+  final String? initialStableMemberId;
 
   @override
   State<AvarynStableRuntime> createState() => _AvarynStableRuntimeState();
@@ -316,7 +316,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
       personalWorkspace: false,
     );
     _memberSelection = Phase4BMemberSelectionCoordinator(
-      initialStableMemberId: widget.initialStableMemberId,
+      initialStableMemberId: widget.initialStableMemberId ?? '',
       requireExplicitSelection: widget.mode == 'memberDetails',
     );
     _readTransientToken();
@@ -1045,6 +1045,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
   @override
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
+    if (widget.mode == 'selector') return _selectorBar(theme);
     return LayoutBuilder(
       builder: (context, constraints) {
         final compact =
@@ -1072,8 +1073,88 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
     );
   }
 
+  Widget _selectorBar(FlutterFlowTheme theme) {
+    final membership =
+        _selectedMembership ??
+        (_memberships.isEmpty ? null : _memberships.first);
+    final stable =
+        membership == null
+            ? null
+            : Map<String, dynamic>.from(membership['stables'] as Map);
+    final title =
+        _loading
+            ? 'Stalcontext laden…'
+            : stable == null
+            ? (_client.auth.currentUser == null
+                ? 'Veilige stalcontext'
+                : 'Geen actieve stal')
+            : _phase4BString(stable['name']);
+    final subtitle =
+        stable == null
+            ? (_client.auth.currentUser == null
+                ? 'Meld aan om een stal te kiezen'
+                : 'Open stalkeuze of onboarding')
+            : '${membership!['role']}${_offline ? ' · offline lezen' : ''}';
+    final canOpenPicker =
+        !_loading && _client.auth.currentUser != null && !_busy;
+    return Material(
+      color: theme.primary,
+      child: InkWell(
+        onTap:
+            canOpenPicker
+                ? () => context.pushNamed('StablePickerPage')
+                : null,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                stable?['kind'] == 'personal'
+                    ? Icons.person_outline
+                    : Icons.home_work_outlined,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.titleMedium.copyWith(color: Colors.white),
+                    ),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.bodySmall.copyWith(
+                        color: Colors.white.withOpacity(0.72),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (_loading || _busy)
+                const SizedBox.square(
+                  dimension: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              else if (canOpenPicker)
+                const Icon(Icons.expand_more, color: Colors.white),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _content(FlutterFlowTheme theme, bool compact) {
-    if (widget.mode == 'selector') return _selector(theme, compact: true);
     final title = switch (widget.mode) {
       'handoff' => 'Kies hoe je AVARYN wilt gebruiken',
       'createStable' => 'Nieuwe stal aanmaken',
