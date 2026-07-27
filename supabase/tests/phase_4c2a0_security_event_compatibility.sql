@@ -80,6 +80,25 @@ begin
   set constraints all immediate;
   set constraints all deferred;
 
+  -- Phase 4C.2A adds the typed same-stable FK that 4C.2A0 deliberately
+  -- deferred. Keep exercising the 4C.2A0 event contract with a real Horse.
+  insert into public.horses (
+    id,
+    stable_id,
+    display_name,
+    source_kind,
+    created_by_user_id,
+    created_request_id
+  )
+  values (
+    horse_a,
+    stable_a,
+    '4C.2A0 compatibility Horse',
+    'manual',
+    owner_a,
+    gen_random_uuid()
+  );
+
   select count(*) into before_b_count
   from public.stable_security_events
   where stable_id = stable_b;
