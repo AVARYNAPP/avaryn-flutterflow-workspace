@@ -248,6 +248,18 @@ otp_expiry = 3600
 # bearer session inside the function before invoking a user-scoped RPC.
 verify_jwt = false
 
+[functions.delete-account]
+# The pinned local gateway cannot verify current asymmetric user JWTs. The
+# function itself still requires a bearer token and validates it with getUser
+# before checking memberships or returning any deletion decision.
+verify_jwt = false
+
+[functions.media-assets]
+# The gateway verifier in the pinned local Edge runtime does not understand the
+# current asymmetric user JWTs. The function still fails closed: every action
+# requires a bearer token and validates it with Auth getUser before any RPC.
+verify_jwt = false
+
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.
 enable_signup = false
