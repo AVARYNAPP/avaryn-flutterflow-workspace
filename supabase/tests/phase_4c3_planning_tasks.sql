@@ -1078,6 +1078,39 @@ begin
 end;
 $$;
 
+reset role;
+insert into public.client_sync_devices (
+  id,
+  stable_id,
+  actor_user_id,
+  encryption_public_key,
+  encryption_key_fingerprint,
+  registered_authority_version
+)
+select
+  '4c3a0000-0000-0000-0000-000000000099',
+  '4c320000-0000-0000-0000-000000000001',
+  '4c310000-0000-0000-0000-000000000004',
+  '-----BEGIN PGP PUBLIC KEY BLOCK-----'
+    || repeat('x', 200)
+    || '-----END PGP PUBLIC KEY BLOCK-----',
+  extensions.digest(
+    convert_to('phase-4c3-regression-device', 'UTF8'),
+    'sha256'
+  ),
+  (
+    select authority_version
+    from public.stable_sync_authorities
+    where stable_id = '4c320000-0000-0000-0000-000000000001'
+  );
+set local role authenticated;
+select set_config('request.jwt.claim.role', 'authenticated', true);
+select set_config(
+  'request.jwt.claim.sub',
+  '4c310000-0000-0000-0000-000000000004',
+  true
+);
+
 insert into phase_4c3_ids
 select
   'completed_execution',
