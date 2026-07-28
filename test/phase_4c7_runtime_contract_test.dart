@@ -56,11 +56,13 @@ void main() {
     final expiry = now.add(const Duration(hours: 2));
     final envelope = {
       'authority_version': 7,
+      'local_date': '2026-07-27',
       'expires_at': expiry.toIso8601String(),
     };
     final plaintext = {
       'stable_id': 'stable-a',
       'timezone': 'Europe/Amsterdam',
+      'local_date': '2026-07-27',
       'authority_version': 7,
       'expires_at': expiry.toIso8601String(),
     };
@@ -71,6 +73,7 @@ void main() {
         plaintext: plaintext,
         stableId: 'stable-a',
         timezone: 'Europe/Amsterdam',
+        localDate: '2026-07-27',
         authorityVersion: 7,
         nowUtc: now,
       ),
@@ -82,6 +85,7 @@ void main() {
         plaintext: {...plaintext, 'authority_version': 8},
         stableId: 'stable-a',
         timezone: 'Europe/Amsterdam',
+        localDate: '2026-07-27',
         authorityVersion: 7,
         nowUtc: now,
       ),
@@ -93,6 +97,7 @@ void main() {
         plaintext: plaintext,
         stableId: 'stable-a',
         timezone: 'Europe/Amsterdam',
+        localDate: '2026-07-27',
         authorityVersion: 7,
         nowUtc: now,
       ),
@@ -108,6 +113,31 @@ void main() {
         },
         stableId: 'stable-a',
         timezone: 'Europe/Amsterdam',
+        localDate: '2026-07-27',
+        authorityVersion: 7,
+        nowUtc: now,
+      ),
+      isFalse,
+    );
+    expect(
+      phase4C7DaysetMetadataMatches(
+        envelope: envelope,
+        plaintext: plaintext,
+        stableId: 'stable-a',
+        timezone: 'Europe/Amsterdam',
+        localDate: '2026-07-28',
+        authorityVersion: 7,
+        nowUtc: now,
+      ),
+      isFalse,
+    );
+    expect(
+      phase4C7DaysetMetadataMatches(
+        envelope: {...envelope, 'local_date': '2026-07-28'},
+        plaintext: plaintext,
+        stableId: 'stable-a',
+        timezone: 'Europe/Amsterdam',
+        localDate: '2026-07-27',
         authorityVersion: 7,
         nowUtc: now,
       ),

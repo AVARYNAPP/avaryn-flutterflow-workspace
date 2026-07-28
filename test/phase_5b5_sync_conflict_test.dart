@@ -117,12 +117,7 @@ void main() {
 
   test('sensitive conflict state is dismissed before every purge', () {
     expect(runtime, contains('Route<dynamic>? _sensitiveConflictDialogRoute;'));
-    expect(
-      runtime,
-      contains(
-        'Navigator.of(dialogContext).removeRoute<dynamic>(dialogRoute, false)',
-      ),
-    );
+    expect(runtime, contains(').removeRoute<dynamic>(conflictRoute, false)'));
     expect(
       runtime,
       contains('sensitiveStateGeneration != _sensitiveStateGeneration'),
@@ -134,7 +129,7 @@ void main() {
     final purgeEnd = runtime.indexOf('void _clearDecryptedState()', purgeStart);
     final purge = runtime.substring(purgeStart, purgeEnd);
     expect(
-      purge.indexOf('_dismissSensitiveConflictDialog();'),
+      purge.indexOf('_dismissSensitiveDialogs();'),
       lessThan(purge.indexOf('_clearDecryptedState();')),
     );
   });
@@ -154,8 +149,9 @@ void main() {
   });
 
   test('server authority and active edit flow remain bound', () {
-    expect(edit, contains('buildAvarynPhase5B5,'));
+    expect(edit, contains('buildAvarynPhase5D1,'));
     expect(edit, contains('void buildAvarynPhase5B5(App app)'));
+    expect(edit, contains('void buildAvarynPhase5D1(App app)'));
     expect(edit, contains('_applyPhase4C7OperationalRuntimeResource(app);'));
     expect(migration, contains('create table public.sync_conflicts'));
     expect(migration, contains("entity_type in ('horse_basic_noncritical')"));

@@ -5205,7 +5205,7 @@ Future<void> main(List<String> args) async {
   final options = _parseCliOptions(args);
   try {
     await flutterFlowAI(
-      buildAvarynPhase5B5,
+      buildAvarynPhase5D1,
       apiKey: options.apiKey,
       baseUrl: options.baseUrl,
       projectName: options.projectName,
@@ -5685,6 +5685,29 @@ void buildAvarynPhase5B5(App app) {
   });
 }
 
+/// Phase 5D.1 closes the minimum Planning acceptance path. Testers can choose
+/// a logical stable day, create daily or weekly routines, plan one-off tasks
+/// and assign a responsible stable member. Existing RLS/RPC checks remain the
+/// only authority for every read and mutation.
+void buildAvarynPhase5D1(App app) {
+  _configureAvarynTheme(app, existingProject: true);
+  _applyPhase4C7OperationalRuntimeResource(app);
+  app.raw((project) {
+    updatePage(
+      project,
+      name: 'TodayDashboardPage',
+      description:
+          'RLS-backed Today workspace with explicit stable-day navigation, traceable execution, private evidence and fail-closed offline behavior.',
+    );
+    updatePage(
+      project,
+      name: 'PlanningPage',
+      description:
+          'RLS-backed Alpha planning for dated one-off tasks, responsible-member assignment and daily or weekly recurring routines.',
+    );
+  });
+}
+
 String _loadPhase4BStableRuntimeWidgetCode() {
   final contextFile = _resolveDslSourceFile('phase_4b_context_model.dart');
   final managementFile = _resolveDslSourceFile(
@@ -5870,6 +5893,33 @@ void _applyPhase4C7OperationalRuntimeResource(App app) {
       addPubDependency(project, name: 'json_path', version: '0.7.2');
     } else if (jsonPath.version != '0.7.2') {
       updatePubDependency(project, name: 'json_path', newVersion: '0.7.2');
+    }
+    final fontAwesome = findPubDependency(
+      project,
+      name: 'font_awesome_flutter',
+    );
+    if (fontAwesome == null) {
+      addPubDependency(
+        project,
+        name: 'font_awesome_flutter',
+        version: '10.7.0',
+      );
+    } else if (fontAwesome.version != '10.7.0') {
+      updatePubDependency(
+        project,
+        name: 'font_awesome_flutter',
+        newVersion: '10.7.0',
+      );
+    }
+    final pageTransition = findPubDependency(project, name: 'page_transition');
+    if (pageTransition == null) {
+      addPubDependency(project, name: 'page_transition', version: '2.2.2');
+    } else if (pageTransition.version != '2.2.2') {
+      updatePubDependency(
+        project,
+        name: 'page_transition',
+        newVersion: '2.2.2',
+      );
     }
 
     final operationalWidget = findCustomWidget(

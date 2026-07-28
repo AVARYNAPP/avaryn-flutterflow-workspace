@@ -104,6 +104,7 @@ bool phase4C7DaysetMetadataMatches({
   required Map<String, dynamic> plaintext,
   required String stableId,
   required String timezone,
+  required String localDate,
   required int authorityVersion,
   required DateTime nowUtc,
 }) {
@@ -124,6 +125,8 @@ bool phase4C7DaysetMetadataMatches({
   );
   return plaintext['stable_id']?.toString() == stableId &&
       plaintext['timezone']?.toString() == timezone &&
+      plaintext['local_date']?.toString() == localDate &&
+      envelope['local_date']?.toString() == localDate &&
       innerAuthority == authorityVersion &&
       outerAuthority == authorityVersion &&
       outerAuthority == innerAuthority &&

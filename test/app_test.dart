@@ -115,7 +115,7 @@ void main() {
       'sync_feeding_execution',
       'list_sync_conflicts',
       'create_horse',
-      'create_schedule_item',
+      'create_schedule_task_with_assignment',
       'create_feeding_plan',
       'record_schedule_execution',
       'record_feeding_execution',

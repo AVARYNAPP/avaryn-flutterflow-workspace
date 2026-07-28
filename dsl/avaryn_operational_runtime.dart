@@ -164,6 +164,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   List<Map<String, dynamic>> _horseRelationships = const [];
   List<Map<String, dynamic>> _horseMedia = const [];
   List<Map<String, dynamic>> _stableRoster = const [];
+  List<Map<String, dynamic>> _planningRoster = const [];
   Map<String, dynamic> _actorMembership = const {};
   Map<String, dynamic> _horseCapabilities = const {};
 
@@ -174,6 +175,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   String _selectedHorseId = '';
   String _error = '';
   String _notice = '';
+  DateTime? _scheduleDate;
   int _authorityVersion = 0;
   int _cursor = 0;
   bool _loading = true;
@@ -185,6 +187,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   Timer? _wakeDebounce;
   BuildContext? _sensitiveConflictDialogContext;
   Route<dynamic>? _sensitiveConflictDialogRoute;
+  BuildContext? _sensitivePlanningDialogContext;
+  Route<dynamic>? _sensitivePlanningDialogRoute;
   int _sensitiveStateGeneration = 0;
 
   String get _storagePrefix {
@@ -218,7 +222,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
 
   @override
   void dispose() {
-    _dismissSensitiveConflictDialog();
+    _dismissSensitiveDialogs();
     _authSubscription?.cancel();
     _wakeDebounce?.cancel();
     for (final channel in _channels) {
@@ -355,6 +359,9 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     if (error is StateError && error.message == 'LOCAL_PURGE_INCOMPLETE') {
       return true;
     }
+    if (error is StateError && error.message == 'STALE_PLANNING_CONFIRMATION') {
+      return true;
+    }
     if (error is PostgrestException) {
       final message = '${error.code} ${error.message}'.toUpperCase();
       return error.code == '42501' ||
@@ -478,6 +485,14 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
 
   timezone.TZDateTime _stableNow() => timezone.TZDateTime.now(_stableLocation);
 
+  bool get _selectedScheduleDateIsToday {
+    final stableNow = _stableNow();
+    final selected = _scheduleDate ?? stableNow;
+    return selected.year == stableNow.year &&
+        selected.month == stableNow.month &&
+        selected.day == stableNow.day;
+  }
+
   String _stableLocalTimestamp(DateTime value) {
     final local = timezone.TZDateTime.from(value, _stableLocation);
     return '${_operationalDateKey(local)}T'
@@ -587,7 +602,9 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   }
 
   Future<void> _fetchOperationalData() async {
-    final today = _operationalDateKey(_stableNow());
+    final stableNow = _stableNow();
+    _scheduleDate ??= DateTime(stableNow.year, stableNow.month, stableNow.day);
+    final selectedDate = _operationalDateKey(_scheduleDate!);
     final userId = _client.auth.currentUser?.id ?? '';
     final results = await Future.wait<dynamic>([
       _client
@@ -601,7 +618,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           .order('display_name'),
       _client.rpc(
         'list_today_schedule',
-        params: {'p_stable_id': _stableId, 'p_local_date': today},
+        params: {'p_stable_id': _stableId, 'p_local_date': selectedDate},
       ),
       _client
           .from('feeding_plans')
@@ -620,6 +637,14 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           .eq('user_id', userId)
           .eq('status', 'active')
           .maybeSingle(),
+      widget.mode == 'planning'
+          ? _client
+              .from('stable_members')
+              .select('id,display_name,function_title,status')
+              .eq('stable_id', _stableId)
+              .eq('status', 'active')
+              .order('display_name')
+          : Future<dynamic>.value(const <Map<String, dynamic>>[]),
     ]);
     _horses = _operationalRows(results[0]);
     _schedule = await _attachLatestScheduleExecutions(
@@ -628,6 +653,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     _feedingPlans = _operationalRows(results[2]);
     _conflicts = _operationalRows(results[3]);
     _actorMembership = _operationalMap(results[4]);
+    _planningRoster = _operationalRows(results[5]);
     if (_actorMembership.isEmpty) {
       throw const PostgrestException(
         message: 'MEMBERSHIP_UNAVAILABLE',
@@ -915,6 +941,14 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       });
       return;
     }
+    if (!_selectedScheduleDateIsToday) {
+      setState(() {
+        _error =
+            'Ga terug naar Vandaag voordat je de versleutelde offline '
+            'dagset voorbereidt.';
+      });
+      return;
+    }
     await _guarded(() async {
       final keys = await _ensureDeviceKeys();
       await _runIdempotentRpc(
@@ -928,18 +962,23 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
               'p_request_id': requestId,
             },
       );
-      final envelope = _operationalMap(
+      final localDate = _operationalDateKey(_stableNow());
+      final responseEnvelope = _operationalMap(
         await _client.rpc(
           'get_encrypted_offline_dayset',
           params: {
             'p_stable_id': _stableId,
             'p_device_instance_id': keys['device_id'],
-            'p_local_date': _operationalDateKey(_stableNow()),
+            'p_local_date': localDate,
             'p_timezone': _stableTimezone,
             'p_expected_authority_version': _authorityVersion,
           },
         ),
       );
+      final envelope = <String, dynamic>{
+        ...responseEnvelope,
+        'local_date': localDate,
+      };
       if (_operationalString(envelope['format']) != 'openpgp-aes256' ||
           _operationalString(envelope['ciphertext']).isEmpty) {
         throw StateError('Invalid encrypted dayset.');
@@ -977,11 +1016,13 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         keys['passphrase']!,
       );
       final dayset = _operationalMap(jsonDecode(plaintext));
+      final localDate = _operationalDateKey(_stableNow());
       if (!phase4C7DaysetMetadataMatches(
         envelope: envelope,
         plaintext: dayset,
         stableId: _stableId,
         timezone: _stableTimezone,
+        localDate: localDate,
         authorityVersion: _authorityVersion,
         nowUtc: DateTime.now().toUtc(),
       )) {
@@ -2971,47 +3012,626 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       setState(() => _error = 'Voeg eerst een paard toe.');
       return;
     }
-    final title = TextEditingController();
-    final confirmed = await _showFormDialog(
-      title: 'Taak voor vandaag',
-      controller: title,
-      label: 'Titel',
-      action: 'Plannen',
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final stableTimezone = _stableTimezone;
+    final sensitiveStateGeneration = _sensitiveStateGeneration;
+    final selectedDay = _scheduleDate ?? _stableNow();
+    if (actorUserId.isEmpty || stableId.isEmpty || stableTimezone.isEmpty) {
+      return;
+    }
+    final input = await _showScheduleTaskDialog();
+    if (input == null ||
+        !_planningScopeMatches(
+          generation: sensitiveStateGeneration,
+          actorUserId: actorUserId,
+          stableId: stableId,
+        )) {
+      return;
+    }
+    final taskTitle = input['title']!;
+    final horseId = input['horse_id']!;
+    final memberId = input['stable_member_id'] ?? '';
+    final plannedHour = int.parse(input['hour']!);
+    final plannedMinute = int.parse(input['minute']!);
+    final start = timezone.TZDateTime(
+      timezone.getLocation(stableTimezone),
+      selectedDay.year,
+      selectedDay.month,
+      selectedDay.day,
+      plannedHour,
+      plannedMinute,
     );
-    final taskTitle = title.text.trim();
-    title.dispose();
-    if (!confirmed || taskTitle.isEmpty) return;
+    final localDate = _operationalDateKey(start);
+    final localTime =
+        '${start.hour.toString().padLeft(2, '0')}:'
+        '${start.minute.toString().padLeft(2, '0')}:00';
+    final startUtc = start.toUtc().toIso8601String();
+    final endUtc =
+        start.add(const Duration(minutes: 30)).toUtc().toIso8601String();
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: sensitiveStateGeneration,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    );
     await _guarded(() async {
-      final start = _stableNow().add(const Duration(minutes: 15));
-      await _runIdempotentRpc(
-        operation: 'create_schedule_item',
-        intentKey: '$_selectedHorseId:$taskTitle',
-        buildParams:
-            (requestId) => {
-              'p_stable_id': _stableId,
-              'p_horse_id': _selectedHorseId,
-              'p_item_kind': 'task',
-              'p_data_category': 'horse.schedule',
-              'p_title': taskTitle,
-              'p_instruction': 'Uitvoeren volgens de stalplanning.',
-              'p_priority': 'normal',
-              'p_scheduled_start_at': start.toUtc().toIso8601String(),
-              'p_scheduled_end_at':
-                  start
-                      .add(const Duration(minutes: 30))
-                      .toUtc()
-                      .toIso8601String(),
-              'p_source_timezone': _stableTimezone,
-              'p_source_local_date': _operationalDateKey(start),
-              'p_source_local_time':
-                  '${start.hour.toString().padLeft(2, '0')}:'
-                  '${start.minute.toString().padLeft(2, '0')}:00',
-              'p_request_id': requestId,
+      final created = _operationalMap(
+        await _runDurableIdempotentRpc(
+          operation: 'create_schedule_task_with_assignment',
+          intentKey: '$horseId:$localDate:$localTime:$taskTitle:$memberId',
+          initialReplayValues: {
+            'stable_id': stableId,
+            'horse_id': horseId,
+            'title': taskTitle,
+            'scheduled_start_at': startUtc,
+            'scheduled_end_at': endUtc,
+            'source_timezone': stableTimezone,
+            'source_local_date': localDate,
+            'source_local_time': localTime,
+            if (memberId.isNotEmpty) ...{
+              'stable_member_id': memberId,
+              'assignment_request_id': _uuid.v4(),
             },
+          },
+          scopePreflight: scopePreflight,
+          buildParams:
+              (requestId, replayValues) => {
+                'p_stable_id': replayValues['stable_id'],
+                'p_horse_id': replayValues['horse_id'],
+                'p_title': replayValues['title'],
+                'p_instruction': 'Uitvoeren volgens de stalplanning.',
+                'p_priority': 'normal',
+                'p_scheduled_start_at': replayValues['scheduled_start_at'],
+                'p_scheduled_end_at': replayValues['scheduled_end_at'],
+                'p_source_timezone': replayValues['source_timezone'],
+                'p_source_local_date': replayValues['source_local_date'],
+                'p_source_local_time': replayValues['source_local_time'],
+                'p_create_request_id': requestId,
+                'p_stable_member_id': replayValues['stable_member_id'],
+                'p_assignment_request_id':
+                    replayValues['assignment_request_id'],
+              },
+        ),
       );
-      _notice = 'Taak veilig gepland.';
+      if (_operationalString(created['schedule_item_id']).isEmpty) {
+        throw StateError('SCHEDULE_RESULT_INVALID');
+      }
+      scopePreflight();
+      _notice =
+          memberId.isNotEmpty
+              ? 'Taak veilig gepland en toegewezen.'
+              : 'Taak veilig gepland.';
       await _load(quiet: true);
     });
+  }
+
+  Future<Map<String, String>?> _showScheduleTaskDialog() async {
+    final title = TextEditingController();
+    var horseId =
+        _selectedHorseId.isNotEmpty
+            ? _selectedHorseId
+            : _operationalString(_horses.first['id']);
+    var stableMemberId = '';
+    final stableNow = _stableNow();
+    var selectedHour = stableNow.hour;
+    var selectedMinute = ((stableNow.minute ~/ 15) + 1) * 15;
+    if (selectedMinute >= 60) {
+      if (selectedHour == 23) {
+        selectedMinute = 45;
+      } else {
+        selectedHour += 1;
+        selectedMinute = 0;
+      }
+    }
+    var showTitleError = false;
+    BuildContext? openedDialogContext;
+    Route<dynamic>? openedDialogRoute;
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (dialogContext) {
+        final dialogRoute = ModalRoute.of(dialogContext);
+        openedDialogContext = dialogContext;
+        openedDialogRoute = dialogRoute;
+        _sensitivePlanningDialogContext = dialogContext;
+        _sensitivePlanningDialogRoute = dialogRoute;
+        return StatefulBuilder(
+          builder:
+              (context, setDialogState) => AlertDialog(
+                title: const Text('Taak plannen'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DropdownButtonFormField<String>(
+                        initialValue: horseId,
+                        decoration: const InputDecoration(labelText: 'Paard'),
+                        items: _horses
+                            .map(
+                              (horse) => DropdownMenuItem(
+                                value: _operationalString(horse['id']),
+                                child: Text(
+                                  _operationalString(horse['display_name']),
+                                ),
+                              ),
+                            )
+                            .toList(growable: false),
+                        onChanged:
+                            (value) => setDialogState(
+                              () => horseId = value ?? horseId,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: title,
+                        autofocus: true,
+                        maxLength: 160,
+                        decoration: InputDecoration(
+                          labelText: 'Titel',
+                          errorText:
+                              showTitleError
+                                  ? 'Vul een duidelijke titel in.'
+                                  : null,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      DropdownButtonFormField<String>(
+                        initialValue: stableMemberId,
+                        decoration: const InputDecoration(
+                          labelText: 'Verantwoordelijke',
+                        ),
+                        items: [
+                          const DropdownMenuItem(
+                            value: '',
+                            child: Text('Niet toegewezen'),
+                          ),
+                          ..._planningRoster.map(
+                            (member) => DropdownMenuItem(
+                              value: _operationalString(member['id']),
+                              child: Text(
+                                _operationalString(member['display_name']),
+                              ),
+                            ),
+                          ),
+                        ],
+                        onChanged:
+                            (value) => setDialogState(
+                              () => stableMemberId = value ?? '',
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: DropdownButtonFormField<int>(
+                              initialValue: selectedHour,
+                              decoration: const InputDecoration(
+                                labelText: 'Uur',
+                              ),
+                              items: List.generate(
+                                24,
+                                (hour) => DropdownMenuItem(
+                                  value: hour,
+                                  child: Text(hour.toString().padLeft(2, '0')),
+                                ),
+                              ),
+                              onChanged:
+                                  (value) => setDialogState(
+                                    () => selectedHour = value ?? selectedHour,
+                                  ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: DropdownButtonFormField<int>(
+                              initialValue: selectedMinute,
+                              decoration: const InputDecoration(
+                                labelText: 'Minuut',
+                              ),
+                              items: const [0, 15, 30, 45]
+                                  .map(
+                                    (minute) => DropdownMenuItem(
+                                      value: minute,
+                                      child: Text(
+                                        minute.toString().padLeft(2, '0'),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(growable: false),
+                              onChanged:
+                                  (value) => setDialogState(
+                                    () =>
+                                        selectedMinute =
+                                            value ?? selectedMinute,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Annuleren'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      final normalizedTitle = title.text.trim();
+                      if (normalizedTitle.isEmpty) {
+                        setDialogState(() => showTitleError = true);
+                        return;
+                      }
+                      Navigator.pop(dialogContext, {
+                        'title': normalizedTitle,
+                        'horse_id': horseId,
+                        'stable_member_id': stableMemberId,
+                        'hour': selectedHour.toString(),
+                        'minute': selectedMinute.toString(),
+                      });
+                    },
+                    child: const Text('Plannen'),
+                  ),
+                ],
+              ),
+        );
+      },
+    );
+    if (identical(_sensitivePlanningDialogContext, openedDialogContext) &&
+        identical(_sensitivePlanningDialogRoute, openedDialogRoute)) {
+      _sensitivePlanningDialogContext = null;
+      _sensitivePlanningDialogRoute = null;
+    }
+    title.dispose();
+    return result;
+  }
+
+  Future<void> _createScheduleSeries() async {
+    if (_horses.isEmpty) {
+      setState(() => _error = 'Voeg eerst een paard toe.');
+      return;
+    }
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final stableTimezone = _stableTimezone;
+    final sensitiveStateGeneration = _sensitiveStateGeneration;
+    final selectedDay = _scheduleDate ?? _stableNow();
+    if (actorUserId.isEmpty || stableId.isEmpty || stableTimezone.isEmpty) {
+      return;
+    }
+    final input = await _showScheduleSeriesDialog();
+    if (input == null ||
+        !_planningScopeMatches(
+          generation: sensitiveStateGeneration,
+          actorUserId: actorUserId,
+          stableId: stableId,
+        )) {
+      return;
+    }
+    final frequency = input['frequency']!;
+    final hour = int.parse(input['hour']!);
+    final minute = int.parse(input['minute']!);
+    final localTime =
+        '${hour.toString().padLeft(2, '0')}:'
+        '${minute.toString().padLeft(2, '0')}:00';
+    final throughDate = selectedDay.add(const Duration(days: 12));
+    final startsOn = _operationalDateKey(selectedDay);
+    final throughLocalDate = _operationalDateKey(throughDate);
+    final horseId = input['horse_id']!;
+    final title = input['title']!;
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: sensitiveStateGeneration,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    );
+    await _guarded(() async {
+      final created = _operationalMap(
+        await _runDurableIdempotentRpc(
+          operation: 'create_schedule_series_with_occurrences',
+          intentKey: '$horseId:$startsOn:$frequency:$localTime:$title',
+          initialReplayValues: {
+            'stable_id': stableId,
+            'horse_id': horseId,
+            'title': title,
+            'timezone': stableTimezone,
+            'frequency': frequency,
+            'weekdays': selectedDay.weekday.toString(),
+            'local_start_time': localTime,
+            'starts_on': startsOn,
+            'through_local_date': throughLocalDate,
+            'materialize_request_id': _uuid.v4(),
+          },
+          scopePreflight: scopePreflight,
+          buildParams:
+              (requestId, replayValues) => {
+                'p_stable_id': replayValues['stable_id'],
+                'p_horse_id': replayValues['horse_id'],
+                'p_title': replayValues['title'],
+                'p_instruction': 'Uitvoeren volgens de stalplanning.',
+                'p_timezone': replayValues['timezone'],
+                'p_frequency': replayValues['frequency'],
+                'p_interval_value': 1,
+                'p_weekdays':
+                    replayValues['frequency'] == 'weekly'
+                        ? [int.parse(replayValues['weekdays']!)]
+                        : null,
+                'p_local_start_time': replayValues['local_start_time'],
+                'p_duration_minutes': 30,
+                'p_starts_on': replayValues['starts_on'],
+                'p_ends_on': null,
+                'p_generation_horizon_days': 30,
+                'p_status': 'active',
+                'p_through_local_date': replayValues['through_local_date'],
+                'p_create_request_id': requestId,
+                'p_materialize_request_id':
+                    replayValues['materialize_request_id'],
+              },
+        ),
+      );
+      final seriesId = _operationalString(created['series_id']);
+      if (seriesId.isEmpty) {
+        throw StateError('SCHEDULE_RESULT_INVALID');
+      }
+      scopePreflight();
+      _notice =
+          frequency == 'daily'
+              ? 'Dagelijkse routine veilig aangemaakt.'
+              : 'Wekelijkse routine veilig aangemaakt.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<Map<String, String>?> _showScheduleSeriesDialog() async {
+    final title = TextEditingController();
+    var horseId =
+        _selectedHorseId.isNotEmpty
+            ? _selectedHorseId
+            : _operationalString(_horses.first['id']);
+    var frequency = 'daily';
+    var selectedHour = 9;
+    var selectedMinute = 0;
+    var showTitleError = false;
+    BuildContext? openedDialogContext;
+    Route<dynamic>? openedDialogRoute;
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (dialogContext) {
+        final dialogRoute = ModalRoute.of(dialogContext);
+        openedDialogContext = dialogContext;
+        openedDialogRoute = dialogRoute;
+        _sensitivePlanningDialogContext = dialogContext;
+        _sensitivePlanningDialogRoute = dialogRoute;
+        return StatefulBuilder(
+          builder:
+              (context, setDialogState) => AlertDialog(
+                title: const Text('Terugkerende routine'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DropdownButtonFormField<String>(
+                        initialValue: horseId,
+                        decoration: const InputDecoration(labelText: 'Paard'),
+                        items: _horses
+                            .map(
+                              (horse) => DropdownMenuItem(
+                                value: _operationalString(horse['id']),
+                                child: Text(
+                                  _operationalString(horse['display_name']),
+                                ),
+                              ),
+                            )
+                            .toList(growable: false),
+                        onChanged:
+                            (value) => setDialogState(
+                              () => horseId = value ?? horseId,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: title,
+                        autofocus: true,
+                        maxLength: 160,
+                        decoration: InputDecoration(
+                          labelText: 'Titel',
+                          errorText:
+                              showTitleError
+                                  ? 'Vul een duidelijke titel in.'
+                                  : null,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      DropdownButtonFormField<String>(
+                        initialValue: frequency,
+                        decoration: const InputDecoration(
+                          labelText: 'Herhaling',
+                        ),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'daily',
+                            child: Text('Dagelijks'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'weekly',
+                            child: Text('Wekelijks op deze weekdag'),
+                          ),
+                        ],
+                        onChanged:
+                            (value) => setDialogState(
+                              () => frequency = value ?? frequency,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: DropdownButtonFormField<int>(
+                              initialValue: selectedHour,
+                              decoration: const InputDecoration(
+                                labelText: 'Uur',
+                              ),
+                              items: List.generate(
+                                24,
+                                (hour) => DropdownMenuItem(
+                                  value: hour,
+                                  child: Text(hour.toString().padLeft(2, '0')),
+                                ),
+                              ),
+                              onChanged:
+                                  (value) => setDialogState(
+                                    () => selectedHour = value ?? selectedHour,
+                                  ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: DropdownButtonFormField<int>(
+                              initialValue: selectedMinute,
+                              decoration: const InputDecoration(
+                                labelText: 'Minuut',
+                              ),
+                              items: const [0, 15, 30, 45]
+                                  .map(
+                                    (minute) => DropdownMenuItem(
+                                      value: minute,
+                                      child: Text(
+                                        minute.toString().padLeft(2, '0'),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(growable: false),
+                              onChanged:
+                                  (value) => setDialogState(
+                                    () =>
+                                        selectedMinute =
+                                            value ?? selectedMinute,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Annuleren'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      final normalizedTitle = title.text.trim();
+                      if (normalizedTitle.isEmpty) {
+                        setDialogState(() => showTitleError = true);
+                        return;
+                      }
+                      Navigator.pop(dialogContext, {
+                        'title': normalizedTitle,
+                        'horse_id': horseId,
+                        'frequency': frequency,
+                        'hour': selectedHour.toString(),
+                        'minute': selectedMinute.toString(),
+                      });
+                    },
+                    child: const Text('Routine aanmaken'),
+                  ),
+                ],
+              ),
+        );
+      },
+    );
+    if (identical(_sensitivePlanningDialogContext, openedDialogContext) &&
+        identical(_sensitivePlanningDialogRoute, openedDialogRoute)) {
+      _sensitivePlanningDialogContext = null;
+      _sensitivePlanningDialogRoute = null;
+    }
+    title.dispose();
+    return result;
+  }
+
+  bool _planningScopeMatches({
+    required int generation,
+    required String actorUserId,
+    required String stableId,
+  }) =>
+      generation == _sensitiveStateGeneration &&
+      _client.auth.currentUser?.id == actorUserId &&
+      _stableId == stableId;
+
+  void _assertPlanningScopeCurrent({
+    required int generation,
+    required String actorUserId,
+    required String stableId,
+  }) {
+    if (!_planningScopeMatches(
+      generation: generation,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    )) {
+      throw StateError('STALE_PLANNING_CONFIRMATION');
+    }
+  }
+
+  Future<void> _setScheduleDate(DateTime date) async {
+    if (_busy) return;
+    _scheduleDate = DateTime(date.year, date.month, date.day);
+    await _load();
+  }
+
+  Widget _scheduleDateControls(FlutterFlowTheme theme) {
+    final stableNow = _stableNow();
+    final selected = _scheduleDate ?? stableNow;
+    final today = DateTime(stableNow.year, stableNow.month, stableNow.day);
+    final selectedDay = DateTime(selected.year, selected.month, selected.day);
+    final isToday = selectedDay == today;
+    return Row(
+      children: [
+        IconButton(
+          tooltip: 'Vorige dag',
+          onPressed:
+              _offline || _busy
+                  ? null
+                  : () => unawaited(
+                    _setScheduleDate(
+                      selectedDay.subtract(const Duration(days: 1)),
+                    ),
+                  ),
+          icon: const Icon(Icons.chevron_left),
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              Text(
+                isToday ? 'Vandaag' : _operationalDateKey(selectedDay),
+                textAlign: TextAlign.center,
+                style: theme.titleMedium.copyWith(
+                  color: theme.primaryText,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              if (!isToday)
+                TextButton(
+                  onPressed:
+                      _offline || _busy
+                          ? null
+                          : () => unawaited(_setScheduleDate(today)),
+                  child: const Text('Terug naar vandaag'),
+                ),
+            ],
+          ),
+        ),
+        IconButton(
+          tooltip: 'Volgende dag',
+          onPressed:
+              _offline || _busy
+                  ? null
+                  : () => unawaited(
+                    _setScheduleDate(selectedDay.add(const Duration(days: 1))),
+                  ),
+          icon: const Icon(Icons.chevron_right),
+        ),
+      ],
+    );
   }
 
   Future<void> _createFeedingPlan() async {
@@ -3113,7 +3733,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         _boundUserId.isNotEmpty
             ? _boundUserId
             : (_client.auth.currentUser?.id ?? '');
-    _dismissSensitiveConflictDialog();
+    _dismissSensitiveDialogs();
     final channels = List<RealtimeChannel>.from(_channels);
     _channels.clear();
     _wakeDebounce?.cancel();
@@ -3157,19 +3777,28 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     return !_secureCleanupPending;
   }
 
-  void _dismissSensitiveConflictDialog() {
+  void _dismissSensitiveDialogs() {
     _sensitiveStateGeneration += 1;
-    final dialogContext = _sensitiveConflictDialogContext;
-    final dialogRoute = _sensitiveConflictDialogRoute;
+    final conflictContext = _sensitiveConflictDialogContext;
+    final conflictRoute = _sensitiveConflictDialogRoute;
+    final planningContext = _sensitivePlanningDialogContext;
+    final planningRoute = _sensitivePlanningDialogRoute;
     _sensitiveConflictDialogContext = null;
     _sensitiveConflictDialogRoute = null;
-    if (dialogContext == null ||
-        !dialogContext.mounted ||
-        dialogRoute == null ||
-        !dialogRoute.isActive) {
-      return;
+    _sensitivePlanningDialogContext = null;
+    _sensitivePlanningDialogRoute = null;
+    if (conflictContext != null &&
+        conflictContext.mounted &&
+        conflictRoute != null &&
+        conflictRoute.isActive) {
+      Navigator.of(conflictContext).removeRoute<dynamic>(conflictRoute, false);
     }
-    Navigator.of(dialogContext).removeRoute<dynamic>(dialogRoute, false);
+    if (planningContext != null &&
+        planningContext.mounted &&
+        planningRoute != null &&
+        planningRoute.isActive) {
+      Navigator.of(planningContext).removeRoute<dynamic>(planningRoute, false);
+    }
   }
 
   void _clearDecryptedState() {
@@ -3182,9 +3811,11 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     _horseRelationships = const [];
     _horseMedia = const [];
     _stableRoster = const [];
+    _planningRoster = const [];
     _actorMembership = const {};
     _horseCapabilities = const {};
     _selectedHorseId = '';
+    _scheduleDate = null;
   }
 
   @override
@@ -3671,35 +4302,71 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         .where((item) => !feedingOnly || item['item_kind'] == 'feeding')
         .toList(growable: false);
     if (rows.isEmpty) {
-      return _emptyCard(
-        theme,
-        icon:
-            feedingOnly
-                ? Icons.restaurant_outlined
-                : Icons.event_available_outlined,
-        title:
-            feedingOnly
-                ? 'Geen toegewezen voerronde'
-                : 'Geen toegankelijke taken vandaag',
-        body:
-            _offline
-                ? 'De versleutelde offline dagset bevat geen taken.'
-                : 'Nieuwe of toegewezen taken verschijnen hier automatisch.',
-        actionLabel: planning && !_offline ? 'Taak plannen' : null,
-        onPressed: planning && !_offline ? _createScheduleItem : null,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _scheduleDateControls(theme),
+          if (planning && !_offline) ...[
+            const SizedBox(height: 10),
+            Wrap(
+              alignment: WrapAlignment.end,
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: _busy ? null : _createScheduleSeries,
+                  icon: const Icon(Icons.repeat),
+                  label: const Text('Routine aanmaken'),
+                ),
+                FilledButton.icon(
+                  onPressed: _busy ? null : _createScheduleItem,
+                  icon: const Icon(Icons.add_task),
+                  label: const Text('Taak plannen'),
+                ),
+              ],
+            ),
+          ],
+          const SizedBox(height: 12),
+          _emptyCard(
+            theme,
+            icon:
+                feedingOnly
+                    ? Icons.restaurant_outlined
+                    : Icons.event_available_outlined,
+            title:
+                feedingOnly
+                    ? 'Geen toegewezen voerronde'
+                    : 'Geen toegankelijke taken op deze dag',
+            body:
+                _offline
+                    ? 'De versleutelde offline dagset bevat geen taken.'
+                    : 'Nieuwe of toegewezen taken verschijnen hier automatisch.',
+          ),
+        ],
       );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        _scheduleDateControls(theme),
+        const SizedBox(height: 10),
         if (planning)
-          Align(
-            alignment: Alignment.centerRight,
-            child: FilledButton.icon(
-              onPressed: _offline || _busy ? null : _createScheduleItem,
-              icon: const Icon(Icons.add_task),
-              label: const Text('Taak plannen'),
-            ),
+          Wrap(
+            alignment: WrapAlignment.end,
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              OutlinedButton.icon(
+                onPressed: _offline || _busy ? null : _createScheduleSeries,
+                icon: const Icon(Icons.repeat),
+                label: const Text('Routine aanmaken'),
+              ),
+              FilledButton.icon(
+                onPressed: _offline || _busy ? null : _createScheduleItem,
+                icon: const Icon(Icons.add_task),
+                label: const Text('Taak plannen'),
+              ),
+            ],
           ),
         if (planning) const SizedBox(height: 12),
         ...rows.map((item) {
@@ -3749,14 +4416,19 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           )
         else
           OutlinedButton.icon(
-            onPressed: _offline || _busy ? null : _prepareOfflineDayset,
+            onPressed:
+                _offline || _busy || !_selectedScheduleDateIsToday
+                    ? null
+                    : _prepareOfflineDayset,
             icon: Icon(
               _offlineReady
                   ? Icons.offline_pin_outlined
                   : Icons.download_outlined,
             ),
             label: Text(
-              _offlineReady
+              !_selectedScheduleDateIsToday
+                  ? 'Offline dagset alleen voor vandaag'
+                  : _offlineReady
                   ? 'Versleutelde dagset vernieuwen'
                   : 'Veilige offline dagset voorbereiden',
             ),
