@@ -82,7 +82,8 @@ P1 voor een bruikbare Alpha:
 
 P2 voor formele testgereedheid:
 
-1. deterministische Test Basis/Medium/Extreme/Custom-fixtures;
+1. deterministische Test Basis/Medium/Extreme/Custom-fixtures — afgerond in
+   fase 5C;
 2. responsive- en keyboard/a11y-matrix;
 3. reproduceerbare reset-, acceptatie- en regressiecommando's;
 4. incident-, rollback-, testaccount- en privacyprocedures;
@@ -181,3 +182,26 @@ A22 is daarmee niet langer functioneel onvolledig. A18–A23 blijven voor de
 formele fase-5D-status `aanwezig, onvoldoende getest` totdat multi-session,
 native-offline, revoke-, responsive en browserbewijs als afzonderlijke
 acceptatierecords zijn uitgevoerd. Er is niets gepubliceerd of gedeployed.
+
+## 10. Fase-5C-checkpoint
+
+De vier formele, uitsluitend lokale testprofielen zijn reproduceerbaar
+geconsolideerd in `supabase/fixtures/phase_5c_test_profile.sql`. Basis,
+Medium en Extreme gebruiken respectievelijk 3, 8 en 15 paarden; Custom heeft
+begrensde, expliciete testparameters. Deze aantallen zijn testvolumes en geen
+commerciële productlimieten.
+
+Ieder profiel bevat fictieve ruiters, grooms, trainer, gescheiden stallen,
+een semantische eigenaar met één-paardtoegang, ingetrokken toegang, outsider,
+terugkerende routines, twee Today-datums, uitvoering, voeding, pending media,
+een native sync-devicecontract en open profielconflicten. Horse-relaties en
+technische grants blijven afzonderlijk.
+
+De centrale lokale runner heeft alle vier profielen vanaf een lege reset
+geprovisioned en met echte RLS gecontroleerd. Een aanvullende Custom-run met
+4 paarden, 7 routines, 19 items, 3 mediasessies en 2 conflicten bewijst dat
+de parametrisering niet afhankelijk is van gelijke volumes. De workspace
+staat op 112/112 groene tests. De resetguard vereist expliciete bevestiging,
+de exacte project-ID, een lokale Unix-Dockercontext en het exacte
+Supabase-projectlabel. Er is geen automatische seed, externe databaseactie,
+FlutterFlow-projectwijziging, publicatie of deployment uitgevoerd.
