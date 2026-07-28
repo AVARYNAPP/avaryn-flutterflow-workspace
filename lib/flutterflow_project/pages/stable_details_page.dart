@@ -4,14 +4,15 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final stableDetailsPageHandle = ffai.ProjectPageHandle<StableDetailsPageParams, StableDetailsPageState>(
-  name: "StableDetailsPage",
-  key: "Scaffold_jjo5uu05",
-  route: "stal",
-  params: const StableDetailsPageParams(),
-  state: const StableDetailsPageState(),
-  widgets: StableDetailsPageWidgets.tree,
-);
+final stableDetailsPageHandle =
+    ffai.ProjectPageHandle<StableDetailsPageParams, StableDetailsPageState>(
+      name: "StableDetailsPage",
+      key: "Scaffold_jjo5uu05",
+      route: "stal",
+      params: const StableDetailsPageParams(),
+      state: const StableDetailsPageState(),
+      widgets: StableDetailsPageWidgets.tree,
+    );
 
 final class StableDetailsPageParams {
   const StableDetailsPageParams();
@@ -31,52 +32,57 @@ abstract final class StableDetailsPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Row_c585cqej",
+            key: "Row_bhd8rwqo",
             type: "Row",
             path: "StableDetailsPage.body[0]",
             name: "Phase4BResponsiveShell",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Container_gfl3l5cv",
+                key: "Container_xv5n9eq7",
                 type: "Container",
                 path: "StableDetailsPage.body[0].children[0]",
                 name: "Phase4BDesktopSideNavigation",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_omcwi2fk",
+                    key: "Container_c36bbnb7",
                     type: "Container",
                     path: "StableDetailsPage.body[0].children[0].children[0]",
                     name: "AvarynDesktopNavigationBody",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Column_us49abmx",
+                        key: "Column_zigvpelm",
                         type: "Column",
-                        path: "StableDetailsPage.body[0].children[0].children[0].children[0]",
+                        path:
+                            "StableDetailsPage.body[0].children[0].children[0].children[0]",
                         name: "Column",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Container_68fkf7d5",
+                            key: "Container_onangn0w",
                             type: "Container",
-                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[0]",
+                            path:
+                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[0]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Column_3jajcns9",
+                                key: "Column_yjbbuprc",
                                 type: "Column",
-                                path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[0].children[0]",
+                                path:
+                                    "StableDetailsPage.body[0].children[0].children[0].children[0].children[0].children[0]",
                                 name: "Column",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_ccgbhzk8",
+                                    key: "Text_ge3qhehy",
                                     type: "Text",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
                                     name: "Text",
                                     text: "AVARYN",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_vuxiz4p7",
+                                    key: "Text_xmwlpdsc",
                                     type: "Text",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
                                     name: "Text",
                                     text: "Performance",
                                   ),
@@ -85,94 +91,105 @@ abstract final class StableDetailsPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_gmpxfh1g",
+                            key: "Container_u7608118",
                             type: "Container",
-                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[1]",
+                            path:
+                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[1]",
                             name: "Container",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_eq6apya5",
+                            key: "Container_tz3racez",
                             type: "Container",
-                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[2]",
+                            path:
+                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[2]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_1fb0596s",
+                                key: "Row_v57xwubg",
                                 type: "Row",
-                                path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[2].children[0]",
+                                path:
+                                    "StableDetailsPage.body[0].children[0].children[0].children[0].children[2].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_ac900b74",
+                                    key: "Container_pnmxz9jq",
                                     type: "Container",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_ux3vtsit",
+                                    key: "Button_hb6mjkp5",
                                     type: "Button",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
                                     name: "Button",
                                     text: "Vandaag",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_qh4jh5ej",
+                            key: "Container_8uw4metq",
                             type: "Container",
-                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[3]",
+                            path:
+                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[3]",
                             name: "Container",
-                            triggers: const <String>[
-                              "ON_TAP",
-                            ],
+                            triggers: const <String>["ON_TAP"],
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_5v5619jb",
+                                key: "Row_640z2dem",
                                 type: "Row",
-                                path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0]",
+                                path:
+                                    "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_zkqps8ay",
+                                    key: "Container_uc4gg8ua",
                                     type: "Container",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_rmyl0u1f",
+                                    key: "Container_dpgjkzxf",
                                     type: "Container",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
                                     name: "Container",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Row_azgf4ib0",
+                                        key: "Row_n59bnqm4",
                                         type: "Row",
-                                        path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
                                         name: "Row",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_r3tk8lnd",
+                                            key: "Container_of739nxo",
                                             type: "Container",
-                                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
+                                            path:
+                                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
-                                                key: "Container_cuejfwjf",
+                                                key: "Container_fgqid4qi",
                                                 type: "Container",
-                                                path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
+                                                path:
+                                                    "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
                                                 name: "AvarynHorseshoeIcon",
                                               ),
                                             ],
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_z2iiwx8g",
+                                            key: "Text_v8wqvi0c",
                                             type: "Text",
-                                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
+                                            path:
+                                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
                                             name: "Text",
                                             text: "Paarden",
                                           ),
@@ -185,144 +202,123 @@ abstract final class StableDetailsPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_uoc6lw7f",
+                            key: "Container_zuyx4qmp",
                             type: "Container",
-                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[4]",
+                            path:
+                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[4]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_3typxk07",
+                                key: "Row_wpe0mp83",
                                 type: "Row",
-                                path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[4].children[0]",
+                                path:
+                                    "StableDetailsPage.body[0].children[0].children[0].children[0].children[4].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_91sjq4vr",
+                                    key: "Container_g2556v87",
                                     type: "Container",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_wizkw0rs",
+                                    key: "Button_l3xelwe0",
                                     type: "Button",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
                                     name: "Button",
                                     text: "Planning",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_dmrlm84j",
+                            key: "Container_16es4q97",
                             type: "Container",
-                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[5]",
+                            path:
+                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[5]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_rm06m9iw",
+                                key: "Row_omfrb2p3",
                                 type: "Row",
-                                path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[5].children[0]",
+                                path:
+                                    "StableDetailsPage.body[0].children[0].children[0].children[0].children[5].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_cw578jl4",
+                                    key: "Container_zxlnszj2",
                                     type: "Container",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_jijn1354",
+                                    key: "Button_cygfpy5z",
                                     type: "Button",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
-                                    name: "Button",
-                                    text: "Wedstrijden",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          ffai.ProjectWidgetHandle(
-                            key: "Container_01j01wfs",
-                            type: "Container",
-                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[6]",
-                            name: "Container",
-                            children: <ffai.ProjectWidgetHandle>[
-                              ffai.ProjectWidgetHandle(
-                                key: "Row_qscwz67y",
-                                type: "Row",
-                                path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[6].children[0]",
-                                name: "Row",
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Container_ic2ffaai",
-                                    type: "Container",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[6].children[0].children[0]",
-                                    name: "Container",
-                                  ),
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Button_yth0m0ad",
-                                    type: "Button",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[6].children[0].children[1]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
                                     name: "Button",
                                     text: "Profiel",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Spacer_mdsyadbw",
+                            key: "Spacer_3bwwxr91",
                             type: "Spacer",
-                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[7]",
+                            path:
+                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[6]",
                             name: "FlexSpacer",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_qqfa2vwn",
+                            key: "Container_f6ccc6mx",
                             type: "Container",
-                            path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[8]",
+                            path:
+                                "StableDetailsPage.body[0].children[0].children[0].children[0].children[7]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_6gawzcsx",
+                                key: "Row_mkml8zql",
                                 type: "Row",
-                                path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[8].children[0]",
+                                path:
+                                    "StableDetailsPage.body[0].children[0].children[0].children[0].children[7].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Icon_c617iidy",
+                                    key: "Icon_m3jkv77n",
                                     type: "Icon",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[8].children[0].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[7].children[0].children[0]",
                                     name: "Icon",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_jhht1h0y",
+                                    key: "Column_fhi4k435",
                                     type: "Column",
-                                    path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[0].children[0].children[0].children[7].children[0].children[1]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_alwclwl9",
+                                        key: "Text_oesdwj8m",
                                         type: "Text",
-                                        path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[0]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[0]",
                                         name: "Text",
-                                        text: "Local prototype",
+                                        text: "Besloten Alpha",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_yy3sv3nh",
+                                        key: "Text_cz5xq1vb",
                                         type: "Text",
-                                        path: "StableDetailsPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[1]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[1]",
                                         name: "Text",
-                                        text: "Sample data only",
+                                        text: "Geen productie",
                                       ),
                                     ],
                                   ),
@@ -337,80 +333,86 @@ abstract final class StableDetailsPageWidgets {
                 ],
               ),
               ffai.ProjectWidgetHandle(
-                key: "Column_8bs5wwk4",
+                key: "Column_tgzmailo",
                 type: "Column",
                 path: "StableDetailsPage.body[0].children[1]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_kup4nh8k",
+                    key: "Container_lh7adxfg",
                     type: "Container",
                     path: "StableDetailsPage.body[0].children[1].children[0]",
                     name: "Phase4BStableContextSelector",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_wajzrpdm",
+                        key: "Container_hfuj17ru",
                         type: "Container",
-                        path: "StableDetailsPage.body[0].children[1].children[0].children[0]",
+                        path:
+                            "StableDetailsPage.body[0].children[1].children[0].children[0]",
                         name: "Phase4BStableContextRuntime",
                       ),
                     ],
                   ),
                   ffai.ProjectWidgetHandle(
-                    key: "Container_xwxxgpbb",
+                    key: "Container_8t0r1v05",
                     type: "Container",
                     path: "StableDetailsPage.body[0].children[1].children[1]",
                     name: "Phase4BstableDetailsRuntime",
                   ),
                   ffai.ProjectWidgetHandle(
-                    key: "Container_5rebiebz",
+                    key: "Container_sp7f07t8",
                     type: "Container",
                     path: "StableDetailsPage.body[0].children[1].children[2]",
                     name: "Phase4BMobileBottomNavigation",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_0k6x5wqv",
+                        key: "Container_ua8fjzvh",
                         type: "Container",
-                        path: "StableDetailsPage.body[0].children[1].children[2].children[0]",
+                        path:
+                            "StableDetailsPage.body[0].children[1].children[2].children[0]",
                         name: "AvarynMobileNavigationBody",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Row_zyk0gyku",
+                            key: "Row_tretoxsj",
                             type: "Row",
-                            path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0]",
+                            path:
+                                "StableDetailsPage.body[0].children[1].children[2].children[0].children[0]",
                             name: "Row",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Container_5xi1yxmq",
+                                key: "Container_3q5wox9c",
                                 type: "Container",
-                                path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0]",
+                                path:
+                                    "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_fvb214qa",
+                                    key: "Column_wh4yuogp",
                                     type: "Column",
-                                    path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_4863jfo0",
+                                        key: "Container_iukae0ed",
                                         type: "Container",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[0]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_3nhbmgmt",
+                                        key: "Icon_5bnz2pd5",
                                         type: "Icon",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[1]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_5chbfjpd",
+                                        key: "Text_1dys3ldg",
                                         type: "Text",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[2]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[2]",
                                         name: "Text",
                                         text: "Vandaag",
                                       ),
@@ -419,44 +421,48 @@ abstract final class StableDetailsPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_ne23ut28",
+                                key: "Container_j1c8lvv6",
                                 type: "Container",
-                                path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1]",
+                                path:
+                                    "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_0yxb4d1q",
+                                    key: "Column_jnel1vkw",
                                     type: "Column",
-                                    path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_xi53w9ol",
+                                        key: "Container_ayssqzvp",
                                         type: "Container",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[0]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_ldn9pjej",
+                                        key: "Container_6yf466f7",
                                         type: "Container",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_v45c26w9",
+                                            key: "Container_1sl36x31",
                                             type: "Container",
-                                            path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
+                                            path:
+                                                "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
                                             name: "AvarynHorseshoeIcon",
                                           ),
                                         ],
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_ticmbl0x",
+                                        key: "Text_nchcggsy",
                                         type: "Text",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[2]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[2]",
                                         name: "Text",
                                         text: "Paarden",
                                       ),
@@ -465,36 +471,39 @@ abstract final class StableDetailsPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_z9twxn6e",
+                                key: "Container_1exqg9eq",
                                 type: "Container",
-                                path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2]",
+                                path:
+                                    "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_g1b9x2zo",
+                                    key: "Column_pepn7za4",
                                     type: "Column",
-                                    path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_ql1a6or0",
+                                        key: "Container_hwxunh21",
                                         type: "Container",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[0]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_yrf8t4qs",
+                                        key: "Icon_o3ze36d2",
                                         type: "Icon",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[1]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_vy4ng48y",
+                                        key: "Text_t1zmjq19",
                                         type: "Text",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[2]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[2]",
                                         name: "Text",
                                         text: "Planning",
                                       ),
@@ -503,74 +512,39 @@ abstract final class StableDetailsPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_74k5699x",
+                                key: "Container_rdvwjzsd",
                                 type: "Container",
-                                path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3]",
+                                path:
+                                    "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_m0nggcfq",
+                                    key: "Column_vpc7oyub",
                                     type: "Column",
-                                    path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0]",
+                                    path:
+                                        "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_3rkfiki2",
+                                        key: "Container_eo2bun3w",
                                         type: "Container",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[0]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_n0jrxqtv",
+                                        key: "Icon_h1gdiaio",
                                         type: "Icon",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[1]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_fd9ct2ni",
+                                        key: "Text_0txhibls",
                                         type: "Text",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[2]",
-                                        name: "Text",
-                                        text: "Wedstrijden",
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              ffai.ProjectWidgetHandle(
-                                key: "Container_h2pa088w",
-                                type: "Container",
-                                path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[4]",
-                                name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Column_lgq6ylr4",
-                                    type: "Column",
-                                    path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0]",
-                                    name: "Column",
-                                    children: <ffai.ProjectWidgetHandle>[
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Container_kr74w1as",
-                                        type: "Container",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[0]",
-                                        name: "Container",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Icon_6d6z69sa",
-                                        type: "Icon",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[1]",
-                                        name: "Icon",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Text_j6rv6dtd",
-                                        type: "Text",
-                                        path: "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[2]",
+                                        path:
+                                            "StableDetailsPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[2]",
                                         name: "Text",
                                         text: "Profiel",
                                       ),

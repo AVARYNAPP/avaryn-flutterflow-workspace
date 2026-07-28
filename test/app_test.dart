@@ -1238,8 +1238,12 @@ void main() {
 
     expect(runtime, contains("context.goNamed('AuthWelcomePage')"));
     expect(runtime, contains("context.goNamed('AuthGatePage')"));
-    expect(runtime, contains("context.goNamed('OnboardingPage')"));
-    expect(runtime, contains("context.goNamed('TodayDashboardPage')"));
+    expect(runtime, contains('phase5ResolveAccountRoute('));
+    expect(runtime, contains('phase5AccountRouteName(route)'));
+    expect(
+      File('dsl/phase_5b1_account_navigation_model.dart').readAsStringSync(),
+      contains("'TodayDashboardPage'"),
+    );
     expect(runtime, isNot(contains('SupabaseClient(')));
     expect(source, contains("'AuthenticatedDesktopAccountGreeting'"));
     expect(source, contains("'AuthenticatedMobileAccountGreeting'"));

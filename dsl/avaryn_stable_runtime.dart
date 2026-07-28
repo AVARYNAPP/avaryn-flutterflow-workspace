@@ -23,6 +23,38 @@ DateTime? _phase4BDate(dynamic value) =>
         ? DateTime.tryParse(value)
         : null;
 
+void _phase5StripInvitationTokenFromLocation() {
+  if (!kIsWeb) return;
+  final current = Uri.base;
+  final fragment = current.fragment;
+  if (fragment.isEmpty || !fragment.contains('token=')) return;
+
+  final separator = fragment.indexOf('?');
+  final route = separator >= 0 ? fragment.substring(0, separator) : '';
+  final encodedQuery =
+      separator >= 0 ? fragment.substring(separator + 1) : fragment;
+  final query = Map<String, String>.from(Uri.splitQueryString(encodedQuery))
+    ..remove('token');
+  final safeFragment =
+      query.isEmpty
+          ? route
+          : '${route.isEmpty ? '' : '$route?'}${Uri(queryParameters: query).query}';
+  final safeLocation = current.replace(fragment: safeFragment);
+  SystemNavigator.routeInformationUpdated(
+    uri: safeLocation,
+    replace: true,
+  );
+}
+
+String _phase5DeterministicRequestId(
+  String actorId,
+  String operation,
+  Object payload,
+) => const Uuid().v5(
+  Uuid.NAMESPACE_URL,
+  jsonEncode(['avaryn-phase5-v1', actorId, operation, payload]),
+);
+
 List<T> _phase4BCopyStructList<T extends BaseStruct>(
   Iterable<T> values,
   T Function(Map<String, dynamic>) decode,
@@ -125,6 +157,39 @@ void _phase4BClearSensitiveWorkingSet({String accessStatus = ''}) {
     state.activityDraftPendingType = '';
     state.activitySaveInProgress = false;
     state.stableAccessStatus = accessStatus;
+  });
+}
+
+void _phase5InvalidateMembershipAuthority(String authUserId) {
+  final state = FFAppState();
+  final localAccountScopes = List<LocalAccountScopeDataStruct>.from(
+    state.localAccountScopes,
+  );
+  final operationalBackups = List<LocalAccountScopeDataStruct>.from(
+    state.phase4BAccountOperationalBackups,
+  );
+
+  void sanitizeScopes(List<LocalAccountScopeDataStruct> scopes) {
+    for (final scope in scopes) {
+      if (scope.authUserId != authUserId) continue;
+      scope.selectedCloudStableId = '';
+      scope.stableMembershipCaches =
+          scope.stableMembershipCaches
+              .where((cache) => cache.authUserId != authUserId)
+              .toList();
+    }
+  }
+
+  sanitizeScopes(localAccountScopes);
+  sanitizeScopes(operationalBackups);
+  state.update(() {
+    state.stableMembershipCaches =
+        state.stableMembershipCaches
+            .where((cache) => cache.authUserId != authUserId)
+            .toList();
+    state.selectedCloudStableId = '';
+    state.localAccountScopes = localAccountScopes;
+    state.phase4BAccountOperationalBackups = operationalBackups;
   });
 }
 
@@ -292,6 +357,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
   String _error = '';
   String _notice = '';
   String _transientInvitationToken = '';
+  String _transientInvitationId = '';
   String _transientShareLink = '';
   List<Map<String, dynamic>> _memberships = const [];
   List<Map<String, dynamic>> _directory = const [];
@@ -320,12 +386,14 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
       requireExplicitSelection: widget.mode == 'memberDetails',
     );
     _readTransientToken();
+    _transientInvitationId = FFAppState().pendingStableInvitationId.trim();
     _load();
   }
 
   @override
   void dispose() {
     _transientInvitationToken = '';
+    _transientInvitationId = '';
     _transientShareLink = '';
     _name.dispose();
     _timezone.dispose();
@@ -344,9 +412,20 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
         fragment.contains('?')
             ? fragment.substring(fragment.indexOf('?') + 1)
             : fragment;
-    final token = Uri.splitQueryString(query)['token'] ?? '';
+    final tokenFromUri = Uri.splitQueryString(query)['token'] ?? '';
+    final token =
+        tokenFromUri.isNotEmpty
+            ? tokenFromUri
+            : FFAppState().pendingStableInvitationToken.trim();
     if (token.length >= 40 && token.length <= 128) {
       _transientInvitationToken = token;
+      FFAppState().pendingStableInvitationToken = token;
+      if (tokenFromUri.isNotEmpty) {
+        _phase5StripInvitationTokenFromLocation();
+      }
+    } else if (tokenFromUri.isNotEmpty) {
+      FFAppState().pendingStableInvitationToken = '';
+      _phase5StripInvitationTokenFromLocation();
     }
   }
 
@@ -394,13 +473,18 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
         await _loadManagementMembers();
       }
     } on PostgrestException catch (error) {
-      if (error.code == '401' || error.code == '403' || error.code == '42501') {
+      final denied =
+          error.code == '401' || error.code == '403' || error.code == '42501';
+      if (denied) {
         _phase4BClearSensitiveWorkingSet(accessStatus: 'access_denied');
+        _phase5InvalidateMembershipAuthority(user.id);
+        _memberships = const [];
+      } else {
+        _memberships = _validCachedMemberships(user.id);
       }
       _offline = true;
-      _memberships = _validCachedMemberships(user.id);
       _error =
-          _memberships.isEmpty
+          denied || _memberships.isEmpty
               ? 'Je staltoegang kon niet veilig worden gecontroleerd.'
               : 'Offline: stalgegevens zijn tijdelijk alleen-lezen.';
     } catch (_) {
@@ -435,7 +519,6 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
       ),
       ...caches,
     ];
-    FFAppState().lastMembershipValidatedAt = DateTime.now().toUtc();
   }
 
   List<Map<String, dynamic>> _validCachedMemberships(String authUserId) {
@@ -446,6 +529,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
               cache.authUserId == authUserId &&
               cache.status == 'active' &&
               cache.lastValidatedAt != null &&
+              !now.difference(cache.lastValidatedAt!).isNegative &&
               now.difference(cache.lastValidatedAt!) <=
                   _phase4BOfflineAuthorityMaximumAge,
         )
@@ -524,10 +608,18 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
       _busy = true;
       _error = '';
     });
+    try {
+      await _activateStable(membership);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<bool> _activateStable(Map<String, dynamic> membership) async {
     final user = _client.auth.currentUser;
     if (user == null) {
       _phase4BClearSensitiveWorkingSet(accessStatus: 'signed_out');
-      return;
+      return false;
     }
 
     final authId = user.id;
@@ -539,8 +631,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
     } catch (_) {
       _error =
           'De huidige lokale stal kon niet veilig worden opgeslagen. Wisselen is gestopt.';
-      if (mounted) setState(() => _busy = false);
-      return;
+      return false;
     }
     // Clear before network validation so a previous stable can never flash.
     _phase4BClearSensitiveWorkingSet(accessStatus: 'validating');
@@ -568,10 +659,10 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
         },
       );
       FFAppState().selectedCloudStableId = stableId;
-      FFAppState().lastMembershipValidatedAt = DateTime.now().toUtc();
       final link = _phase4BLinkFor(authId, stableId);
       _phase4BLoadLinkedOperationalContext(master, link);
       if (mounted) context.goNamed('TodayDashboardPage');
+      return true;
     } on PostgrestException catch (error) {
       final denied =
           error.code == '401' || error.code == '403' || error.code == '42501';
@@ -583,18 +674,45 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
           denied
               ? 'Je toegang tot deze stal is verwijderd of geschorst.'
               : 'Stalwisselen vereist een online lidmaatschapscontrole.';
-    } finally {
-      if (mounted) setState(() => _busy = false);
+      return false;
+    } catch (_) {
+      _phase4BClearSensitiveWorkingSet(accessStatus: 'offline');
+      _error =
+          'De stal kon niet veilig worden geactiveerd. Controleer je verbinding.';
+      return false;
     }
   }
 
   Future<void> _createStable({required bool personal}) async {
     if (_busy || _offline) return;
+    final actorId = _client.auth.currentUser?.id ?? '';
+    if (actorId.isEmpty) {
+      setState(() => _error = 'Log opnieuw in om een workspace aan te maken.');
+      return;
+    }
     final name = _name.text.trim();
     if (name.isEmpty || _timezone.text.trim().isEmpty) {
       setState(() => _error = 'Vul een naam en tijdzone in.');
       return;
     }
+    final payload = [
+      personal ? 'personal' : 'organization',
+      name,
+      _timezone.text.trim(),
+      _displayName.text.trim(),
+    ];
+    final payloadKey = _phase5DeterministicRequestId(
+      actorId,
+      'create-stable-payload',
+      payload,
+    );
+    final state = FFAppState();
+    if (state.pendingStableCreateRequestId.trim().isEmpty ||
+        state.pendingStableCreatePayloadKey != payloadKey) {
+      state.pendingStableCreateRequestId = const Uuid().v4();
+      state.pendingStableCreatePayloadKey = payloadKey;
+    }
+    final requestId = state.pendingStableCreateRequestId;
     setState(() {
       _busy = true;
       _error = '';
@@ -607,35 +725,92 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
           'p_timezone': _timezone.text.trim(),
           'p_kind': personal ? 'personal' : 'organization',
           'p_locale': 'nl',
-          'p_creation_request_id': const Uuid().v4(),
+          'p_creation_request_id': requestId,
           'p_owner_display_name': _displayName.text.trim(),
           'p_owner_function_title': null,
         },
       );
       final stableId = _phase4BString(result['stable_id']);
       await _load();
-      final membership = _memberships.firstWhere(
-        (row) => row['stable_id'] == stableId,
-      );
-      await _switchStable(membership);
+      Map<String, dynamic>? membership;
+      for (final row in _memberships) {
+        if (row['stable_id'] == stableId) {
+          membership = row;
+          break;
+        }
+      }
+      if (membership == null) {
+        _error =
+            'De workspace is aangemaakt, maar nog niet geladen. Probeer opnieuw.';
+        return;
+      }
+      if (await _activateStable(membership)) {
+        state.pendingStableCreateRequestId = '';
+        state.pendingStableCreatePayloadKey = '';
+      }
     } on PostgrestException catch (error) {
       _error =
           error.code == '42501'
               ? 'Je sessie is verlopen. Log opnieuw in.'
               : 'De workspace kon niet veilig worden aangemaakt.';
+    } catch (_) {
+      _error =
+          'De workspace kon niet veilig worden aangemaakt. Probeer opnieuw.';
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
   Future<void> _previewInvitation() async {
-    if (_transientInvitationToken.isEmpty) return;
+    if (_transientInvitationToken.isEmpty && _transientInvitationId.isEmpty) {
+      return;
+    }
+    if (_transientInvitationToken.isEmpty && _client.auth.currentUser == null) {
+      _invitationPreview = {'status': 'authentication_required'};
+      if (mounted) setState(() {});
+      return;
+    }
     try {
+      final useToken = _transientInvitationToken.isNotEmpty;
       final response = await _client.functions.invoke(
         'stable-invitations',
-        body: {'action': 'preview', 'token': _transientInvitationToken},
+        body:
+            useToken
+                ? {'action': 'preview', 'token': _transientInvitationToken}
+                : {'action': 'resume', 'invitation_id': _transientInvitationId},
       );
       _invitationPreview = Map<String, dynamic>.from(response.data as Map);
+      final status = _phase4BString(_invitationPreview?['status']);
+      if (status == 'pending') {
+        final invitationId = _phase4BString(
+          _invitationPreview?['invitation_id'],
+        );
+        if (invitationId.isNotEmpty) {
+          _transientInvitationId = invitationId;
+          FFAppState().pendingStableInvitationId = invitationId;
+          _transientInvitationToken = '';
+          FFAppState().pendingStableInvitationToken = '';
+        }
+      } else if (status == 'accepted') {
+        final stableId = _phase4BString(_invitationPreview?['stable_id']);
+        _transientInvitationToken = '';
+        _transientInvitationId = '';
+        FFAppState().pendingStableInvitationToken = '';
+        FFAppState().pendingStableInvitationId = '';
+        if (stableId.isNotEmpty) {
+          FFAppState().selectedCloudStableId = stableId;
+        }
+        if (mounted) context.goNamed('StablePickerPage');
+      } else if (status == 'declined') {
+        _transientInvitationToken = '';
+        _transientInvitationId = '';
+        FFAppState().pendingStableInvitationToken = '';
+        FFAppState().pendingStableInvitationId = '';
+        if (mounted) context.goNamed('StableOnboardingHandoffPage');
+      } else {
+        FFAppState().pendingStableInvitationToken = '';
+        FFAppState().pendingStableInvitationId = '';
+      }
     } catch (_) {
       _invitationPreview = {'status': 'unavailable'};
     }
@@ -643,29 +818,84 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
   }
 
   Future<void> _respondInvitation(bool accept) async {
-    if (_busy || _offline || _transientInvitationToken.isEmpty) return;
+    if (_busy ||
+        _offline ||
+        (_transientInvitationToken.isEmpty && _transientInvitationId.isEmpty)) {
+      return;
+    }
+    final actorId = _client.auth.currentUser?.id ?? '';
+    if (actorId.isEmpty) return;
+    final invitationReference =
+        _transientInvitationToken.isNotEmpty
+            ? _transientInvitationToken
+            : _transientInvitationId;
+    final payload = [
+      accept ? 'accept' : 'decline',
+      invitationReference,
+      _displayName.text.trim(),
+      _functionTitle.text.trim(),
+    ];
+    final requestId = _phase5DeterministicRequestId(
+      actorId,
+      'respond-invitation',
+      payload,
+    );
     setState(() => _busy = true);
     try {
       final response = await _client.functions.invoke(
         'stable-invitations',
         body: {
           'action': accept ? 'accept' : 'decline',
-          'token': _transientInvitationToken,
+          if (_transientInvitationToken.isNotEmpty)
+            'token': _transientInvitationToken
+          else
+            'invitation_id': _transientInvitationId,
           'display_name': _displayName.text.trim(),
           'function_title': _functionTitle.text.trim(),
-          'request_id': const Uuid().v4(),
+          'request_id': requestId,
         },
       );
       if (response.status != 200) throw StateError('invite response failed');
       _transientInvitationToken = '';
+      _transientInvitationId = '';
+      FFAppState().pendingStableInvitationToken = '';
+      FFAppState().pendingStableInvitationId = '';
       _notice =
           accept
               ? 'Uitnodiging geaccepteerd. Kies de stal om verder te gaan.'
               : 'Uitnodiging geweigerd.';
       await _load();
+      if (mounted) {
+        context.goNamed(
+          accept ? 'StablePickerPage' : 'StableOnboardingHandoffPage',
+        );
+      }
+    } on FunctionException catch (error) {
+      final definitive = const {
+        400,
+        403,
+        404,
+        409,
+        410,
+        422,
+      }.contains(error.status);
+      if (definitive) {
+        _transientInvitationToken = '';
+        _transientInvitationId = '';
+        FFAppState().pendingStableInvitationToken = '';
+        FFAppState().pendingStableInvitationId = '';
+      }
+      _error =
+          error.status == 401
+              ? 'Je sessie is verlopen. Log opnieuw in; de veilige uitnodigingsreferentie blijft behouden.'
+              : error.status == 412
+              ? 'Bevestig je account en vul een weergavenaam in. De veilige uitnodigingsreferentie blijft behouden.'
+              : definitive
+              ? 'Deze uitnodiging is ongeldig, verlopen, ingetrokken of hoort bij een ander bevestigd account.'
+              : 'De reactie is nog niet bevestigd. Probeer opnieuw met dezelfde gegevens.';
     } catch (_) {
       _error =
-          'Deze uitnodiging is ongeldig, verlopen, ingetrokken of hoort bij een ander bevestigd account.';
+          'De reactie is nog niet bevestigd. Probeer opnieuw met dezelfde gegevens.';
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -1101,9 +1331,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
       color: theme.primary,
       child: InkWell(
         onTap:
-            canOpenPicker
-                ? () => context.pushNamed('StablePickerPage')
-                : null,
+            canOpenPicker ? () => context.pushNamed('StablePickerPage') : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
@@ -1144,6 +1372,13 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
                     strokeWidth: 2,
                     color: Colors.white,
                   ),
+                )
+              else if (canOpenPicker && stable != null)
+                IconButton(
+                  tooltip: 'Stal en team beheren',
+                  onPressed: () => context.pushNamed('StableDetailsPage'),
+                  icon: const Icon(Icons.settings_outlined),
+                  color: Colors.white,
                 )
               else if (canOpenPicker)
                 const Icon(Icons.expand_more, color: Colors.white),
@@ -1290,7 +1525,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
 
   Widget _invitation(FlutterFlowTheme theme) {
     final preview = _invitationPreview;
-    if (_transientInvitationToken.isEmpty) {
+    if (_transientInvitationToken.isEmpty && _transientInvitationId.isEmpty) {
       return _empty(
         theme,
         'Je hebt een uitnodigingslink nodig om bij een stal te komen.',
@@ -1298,6 +1533,29 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
     }
     if (preview == null) {
       return const Center(child: CircularProgressIndicator());
+    }
+    if (preview['status'] == 'authentication_required') {
+      return _panel(
+        theme,
+        Column(
+          children: [
+            const Text(
+              'Log veilig in om deze uitnodiging opnieuw te controleren.',
+            ),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: () => context.goNamed('AuthWelcomePage'),
+              child: const Text('Veilig inloggen'),
+            ),
+          ],
+        ),
+      );
+    }
+    if (preview['status'] == 'unavailable') {
+      return _empty(
+        theme,
+        'De uitnodiging kon niet veilig worden gecontroleerd. Probeer opnieuw.',
+      );
     }
     if (preview['status'] != 'pending') {
       return _empty(
@@ -1447,10 +1705,6 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
             onPressed: () => context.pushNamed('StableMembersPage'),
             child: const Text('Leden en medewerkers'),
           ),
-          OutlinedButton(
-            onPressed: () => context.pushNamed('LinkLocalStablePage'),
-            child: const Text('Lokale stal expliciet koppelen'),
-          ),
           if (_isManager) ...[
             OutlinedButton(
               onPressed: () => context.pushNamed('ManageStableRolesPage'),
@@ -1467,7 +1721,12 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
                     () => context.pushNamed('PendingStableInvitationsPage'),
                 child: const Text('Openstaande uitnodigingen'),
               ),
-          ],
+          ] else if (!_isOwner)
+            OutlinedButton(
+              onPressed:
+                  _offline || _management.busy ? null : _leaveSelectedStable,
+              child: const Text('Zelf deze stal verlaten'),
+            ),
           if (_isOwner)
             OutlinedButton(
               onPressed:

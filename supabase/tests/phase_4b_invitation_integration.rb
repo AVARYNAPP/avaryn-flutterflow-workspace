@@ -239,8 +239,35 @@ preview = edge(
 preview_data = json_body(preview)
 assert!(preview.code.to_i == 200, 'Anonymous safe preview failed')
 assert!(preview_data['stable_name'] == 'Lokale integratiestal', 'Preview stable mismatch')
+assert!(preview_data['invitation_id'] == invitation_id, 'Preview hand-off ID mismatch')
 assert!(!preview.body.include?(existing_email), 'Preview exposed contact data')
 pass('preview exposes only minimal stable and role data')
+
+resumed = edge(
+  function_url,
+  api_key,
+  { action: 'resume', invitation_id: invitation_id },
+  session: existing_session,
+)
+resumed_data = json_body(resumed)
+assert!(resumed.code.to_i == 200, 'Authenticated invitation resume failed')
+assert!(resumed_data['status'] == 'pending', 'Resumed invitation is not pending')
+assert!(resumed_data['invitation_id'] == invitation_id, 'Resume changed invitation ID')
+assert!(!resumed.body.include?(existing_email), 'Resume exposed recipient contact data')
+pass('non-secret hand-off ID resumes only after confirmed authentication')
+
+wrong_resume = edge(
+  function_url,
+  api_key,
+  { action: 'resume', invitation_id: invitation_id },
+  session: wrong_session,
+)
+assert!(wrong_resume.code.to_i == 200, 'Wrong-account resume enumerated by status')
+assert!(
+  json_body(wrong_resume) == { 'status' => 'unavailable' },
+  'Wrong-account resume exposed invitation metadata',
+)
+pass('hand-off ID remains bound to the confirmed invited email')
 
 wrong_accept = edge(
   function_url,
@@ -256,14 +283,47 @@ wrong_accept = edge(
 assert!(wrong_accept.code.to_i == 409, 'Wrong email accepted invitation')
 pass('invitation is bound to the confirmed session email without enumeration')
 
-accept_results = 2.times.map do
+missing_name = edge(
+  function_url,
+  api_key,
+  {
+    action: 'accept',
+    invitation_id: invitation_id,
+    display_name: '',
+    request_id: SecureRandom.uuid,
+  },
+  session: existing_session,
+)
+assert!(
+  missing_name.code.to_i == 412,
+  "Correctable display-name error returned HTTP #{missing_name.code}",
+)
+assert!(
+  json_body(missing_name)['code'] == 'DISPLAY_NAME_REQUIRED',
+  'Correctable display-name error lost its safe code',
+)
+resume_after_correction = edge(
+  function_url,
+  api_key,
+  { action: 'resume', invitation_id: invitation_id },
+  session: existing_session,
+)
+assert!(
+  resume_after_correction.code.to_i == 200 &&
+    json_body(resume_after_correction)['status'] == 'pending',
+  'Correctable validation error destroyed the invitation hand-off',
+)
+pass('correctable invitation validation keeps the safe hand-off retryable')
+
+accept_results = [:token, :handoff].map do |path|
   Thread.new do
     edge(
       function_url,
       api_key,
       {
         action: 'accept',
-        token: existing_token,
+        (path == :token ? :token : :invitation_id) =>
+          (path == :token ? existing_token : invitation_id),
         display_name: 'Bestaand lokaal account',
         function_title: 'Groom',
         request_id: SecureRandom.uuid,
@@ -291,6 +351,23 @@ assert!(
   "Concurrent idempotent acceptance returned #{accept_results.map(&:code).join(', ')}",
 )
 pass('two concurrent accept calls converge on one membership')
+
+accepted_resume = edge(
+  function_url,
+  api_key,
+  { action: 'resume', invitation_id: invitation_id },
+  session: existing_session,
+)
+accepted_resume_data = json_body(accepted_resume)
+assert!(accepted_resume.code.to_i == 200, 'Accepted resume returned an error')
+assert!(
+  accepted_resume_data == {
+    'status' => 'accepted',
+    'stable_id' => stable_id,
+  },
+  'Accepted ambiguous retry did not return the safe stable hand-off',
+)
+pass('accepted ambiguous response resumes to the safe stable hand-off')
 
 used_preview = edge(
   function_url,
@@ -697,4 +774,4 @@ assert!(
 )
 pass('account deletion fails closed for owner, active member and incomplete deletion')
 
-puts 'SUMMARY: 23 Phase 4B invitation integration assertions passed'
+puts 'SUMMARY: 27 Phase 4B invitation integration assertions passed'

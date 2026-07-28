@@ -4,7 +4,10 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final manageStableRolesPageHandle = ffai.ProjectPageHandle<ManageStableRolesPageParams, ManageStableRolesPageState>(
+final manageStableRolesPageHandle = ffai.ProjectPageHandle<
+  ManageStableRolesPageParams,
+  ManageStableRolesPageState
+>(
   name: "ManageStableRolesPage",
   key: "Scaffold_4migd6ef",
   route: "stal/rollen",
@@ -31,52 +34,58 @@ abstract final class ManageStableRolesPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Row_zxhbzm6d",
+            key: "Row_grunk1lg",
             type: "Row",
             path: "ManageStableRolesPage.body[0]",
             name: "Phase4BResponsiveShell",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Container_phyg19oi",
+                key: "Container_t17npwvc",
                 type: "Container",
                 path: "ManageStableRolesPage.body[0].children[0]",
                 name: "Phase4BDesktopSideNavigation",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_cr7azx3f",
+                    key: "Container_ko39e2zk",
                     type: "Container",
-                    path: "ManageStableRolesPage.body[0].children[0].children[0]",
+                    path:
+                        "ManageStableRolesPage.body[0].children[0].children[0]",
                     name: "AvarynDesktopNavigationBody",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Column_c8imz5cd",
+                        key: "Column_uccvgq01",
                         type: "Column",
-                        path: "ManageStableRolesPage.body[0].children[0].children[0].children[0]",
+                        path:
+                            "ManageStableRolesPage.body[0].children[0].children[0].children[0]",
                         name: "Column",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Container_orbn54q9",
+                            key: "Container_689656ft",
                             type: "Container",
-                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[0]",
+                            path:
+                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[0]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Column_x24rxi4d",
+                                key: "Column_3pvmhk6d",
                                 type: "Column",
-                                path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[0].children[0]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[0].children[0]",
                                 name: "Column",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_207cxv04",
+                                    key: "Text_kh78j3ot",
                                     type: "Text",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
                                     name: "Text",
                                     text: "AVARYN",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_w4ldu1ax",
+                                    key: "Text_njz69pyq",
                                     type: "Text",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
                                     name: "Text",
                                     text: "Performance",
                                   ),
@@ -85,94 +94,105 @@ abstract final class ManageStableRolesPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_r7rhh06i",
+                            key: "Container_nnlvp64z",
                             type: "Container",
-                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[1]",
+                            path:
+                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[1]",
                             name: "Container",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_bbpmmxxx",
+                            key: "Container_zsol3mfn",
                             type: "Container",
-                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[2]",
+                            path:
+                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[2]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_lcix88si",
+                                key: "Row_4xd2h9pi",
                                 type: "Row",
-                                path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[2].children[0]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[2].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_441t38s5",
+                                    key: "Container_cqbk270j",
                                     type: "Container",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_7h9n1o1e",
+                                    key: "Button_mvq5jypn",
                                     type: "Button",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
                                     name: "Button",
                                     text: "Vandaag",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_5kblvhmb",
+                            key: "Container_sgp1s4ki",
                             type: "Container",
-                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3]",
+                            path:
+                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3]",
                             name: "Container",
-                            triggers: const <String>[
-                              "ON_TAP",
-                            ],
+                            triggers: const <String>["ON_TAP"],
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_2xpodr8j",
+                                key: "Row_gvzel118",
                                 type: "Row",
-                                path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_gmeujs1i",
+                                    key: "Container_ht6erats",
                                     type: "Container",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_reiydi24",
+                                    key: "Container_wzyljaj5",
                                     type: "Container",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
                                     name: "Container",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Row_rk4rv377",
+                                        key: "Row_5mbfb8rv",
                                         type: "Row",
-                                        path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
                                         name: "Row",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_ob0vom91",
+                                            key: "Container_7xd552zp",
                                             type: "Container",
-                                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
+                                            path:
+                                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
-                                                key: "Container_tyw0vblp",
+                                                key: "Container_yk9x2w67",
                                                 type: "Container",
-                                                path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
+                                                path:
+                                                    "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
                                                 name: "AvarynHorseshoeIcon",
                                               ),
                                             ],
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_m6y5uorm",
+                                            key: "Text_5xt5czdo",
                                             type: "Text",
-                                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
+                                            path:
+                                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
                                             name: "Text",
                                             text: "Paarden",
                                           ),
@@ -185,144 +205,123 @@ abstract final class ManageStableRolesPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_imc8i0lb",
+                            key: "Container_v7dq2dtt",
                             type: "Container",
-                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[4]",
+                            path:
+                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[4]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_5atiiurf",
+                                key: "Row_ujug82wf",
                                 type: "Row",
-                                path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[4].children[0]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[4].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_mjg2kr8n",
+                                    key: "Container_awt5aap0",
                                     type: "Container",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_13kpu41c",
+                                    key: "Button_oam192ry",
                                     type: "Button",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
                                     name: "Button",
                                     text: "Planning",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_yobcppsg",
+                            key: "Container_520hs76l",
                             type: "Container",
-                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[5]",
+                            path:
+                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[5]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_cwkgsnxc",
+                                key: "Row_fvc8383u",
                                 type: "Row",
-                                path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[5].children[0]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[5].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_ul89xxv2",
+                                    key: "Container_78ujl7dn",
                                     type: "Container",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_s3axbik5",
+                                    key: "Button_5uyqa2eq",
                                     type: "Button",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
-                                    name: "Button",
-                                    text: "Wedstrijden",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          ffai.ProjectWidgetHandle(
-                            key: "Container_ph7s995g",
-                            type: "Container",
-                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[6]",
-                            name: "Container",
-                            children: <ffai.ProjectWidgetHandle>[
-                              ffai.ProjectWidgetHandle(
-                                key: "Row_kvv1m52g",
-                                type: "Row",
-                                path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[6].children[0]",
-                                name: "Row",
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Container_8z2lgtjp",
-                                    type: "Container",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[6].children[0].children[0]",
-                                    name: "Container",
-                                  ),
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Button_9oxkcf32",
-                                    type: "Button",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[6].children[0].children[1]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
                                     name: "Button",
                                     text: "Profiel",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Spacer_gtknalp9",
+                            key: "Spacer_874lavph",
                             type: "Spacer",
-                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[7]",
+                            path:
+                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[6]",
                             name: "FlexSpacer",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_xulvn9io",
+                            key: "Container_6r2preuu",
                             type: "Container",
-                            path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[8]",
+                            path:
+                                "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[7]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_07bfw0w8",
+                                key: "Row_9jelayiw",
                                 type: "Row",
-                                path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[8].children[0]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[7].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Icon_dkmit43m",
+                                    key: "Icon_v4shak2a",
                                     type: "Icon",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[8].children[0].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[7].children[0].children[0]",
                                     name: "Icon",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_xz4lafxa",
+                                    key: "Column_lk9bxbob",
                                     type: "Column",
-                                    path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[7].children[0].children[1]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_fxblw5bk",
+                                        key: "Text_02gf25j6",
                                         type: "Text",
-                                        path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[0]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[0]",
                                         name: "Text",
-                                        text: "Local prototype",
+                                        text: "Besloten Alpha",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_lycbfi79",
+                                        key: "Text_ypwwfvzl",
                                         type: "Text",
-                                        path: "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[1]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[1]",
                                         name: "Text",
-                                        text: "Sample data only",
+                                        text: "Geen productie",
                                       ),
                                     ],
                                   ),
@@ -337,80 +336,89 @@ abstract final class ManageStableRolesPageWidgets {
                 ],
               ),
               ffai.ProjectWidgetHandle(
-                key: "Column_qw9eso3k",
+                key: "Column_td3ndis9",
                 type: "Column",
                 path: "ManageStableRolesPage.body[0].children[1]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_6awbxf91",
+                    key: "Container_0hdsztn9",
                     type: "Container",
-                    path: "ManageStableRolesPage.body[0].children[1].children[0]",
+                    path:
+                        "ManageStableRolesPage.body[0].children[1].children[0]",
                     name: "Phase4BStableContextSelector",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_zm8x3p1h",
+                        key: "Container_mn87cxpq",
                         type: "Container",
-                        path: "ManageStableRolesPage.body[0].children[1].children[0].children[0]",
+                        path:
+                            "ManageStableRolesPage.body[0].children[1].children[0].children[0]",
                         name: "Phase4BStableContextRuntime",
                       ),
                     ],
                   ),
                   ffai.ProjectWidgetHandle(
-                    key: "Container_tkz8pat6",
+                    key: "Container_77cpzgnw",
                     type: "Container",
-                    path: "ManageStableRolesPage.body[0].children[1].children[1]",
+                    path:
+                        "ManageStableRolesPage.body[0].children[1].children[1]",
                     name: "Phase4BrolesRuntime",
                   ),
                   ffai.ProjectWidgetHandle(
-                    key: "Container_palv5eg7",
+                    key: "Container_7tmc3ns1",
                     type: "Container",
-                    path: "ManageStableRolesPage.body[0].children[1].children[2]",
+                    path:
+                        "ManageStableRolesPage.body[0].children[1].children[2]",
                     name: "Phase4BMobileBottomNavigation",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_n9ryp5vd",
+                        key: "Container_j76q03u1",
                         type: "Container",
-                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0]",
+                        path:
+                            "ManageStableRolesPage.body[0].children[1].children[2].children[0]",
                         name: "AvarynMobileNavigationBody",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Row_wlyoax1x",
+                            key: "Row_e3evtra5",
                             type: "Row",
-                            path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0]",
+                            path:
+                                "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0]",
                             name: "Row",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Container_zdg41exq",
+                                key: "Container_08b3ihvd",
                                 type: "Container",
-                                path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_1rkwm8lt",
+                                    key: "Column_iq10d940",
                                     type: "Column",
-                                    path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_tdcyzq96",
+                                        key: "Container_4h9uhh5d",
                                         type: "Container",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[0]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_c8sjasq3",
+                                        key: "Icon_vk123v3v",
                                         type: "Icon",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[1]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_quave9l5",
+                                        key: "Text_nukcnmfb",
                                         type: "Text",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[2]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[2]",
                                         name: "Text",
                                         text: "Vandaag",
                                       ),
@@ -419,44 +427,48 @@ abstract final class ManageStableRolesPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_9igjm2j9",
+                                key: "Container_g0w21dtu",
                                 type: "Container",
-                                path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_uldy6h9z",
+                                    key: "Column_zi8judzk",
                                     type: "Column",
-                                    path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_m7j2oyhg",
+                                        key: "Container_42yymlqm",
                                         type: "Container",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[0]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_4a2tcxa2",
+                                        key: "Container_b42j0rjz",
                                         type: "Container",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_gljuh2ct",
+                                            key: "Container_zj5ddoeb",
                                             type: "Container",
-                                            path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
+                                            path:
+                                                "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
                                             name: "AvarynHorseshoeIcon",
                                           ),
                                         ],
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_r9c55gm1",
+                                        key: "Text_fxrd5v71",
                                         type: "Text",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[2]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[2]",
                                         name: "Text",
                                         text: "Paarden",
                                       ),
@@ -465,36 +477,39 @@ abstract final class ManageStableRolesPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_usyuar4n",
+                                key: "Container_xmiwhzwg",
                                 type: "Container",
-                                path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_e8v52vki",
+                                    key: "Column_tj7pn2lm",
                                     type: "Column",
-                                    path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_22azetwc",
+                                        key: "Container_lezc11ks",
                                         type: "Container",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[0]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_bsh25jpy",
+                                        key: "Icon_yh787exx",
                                         type: "Icon",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[1]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_btciyhth",
+                                        key: "Text_5ntrpqra",
                                         type: "Text",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[2]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[2]",
                                         name: "Text",
                                         text: "Planning",
                                       ),
@@ -503,74 +518,39 @@ abstract final class ManageStableRolesPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_04ad4p3z",
+                                key: "Container_nd7wy7yh",
                                 type: "Container",
-                                path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3]",
+                                path:
+                                    "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_8iqv14g7",
+                                    key: "Column_9kdsxqna",
                                     type: "Column",
-                                    path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0]",
+                                    path:
+                                        "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_qeqc5khs",
+                                        key: "Container_ernt7oaj",
                                         type: "Container",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[0]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_xktjhnrq",
+                                        key: "Icon_1jqean1y",
                                         type: "Icon",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[1]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_zfknv214",
+                                        key: "Text_2z3iw008",
                                         type: "Text",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[2]",
-                                        name: "Text",
-                                        text: "Wedstrijden",
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              ffai.ProjectWidgetHandle(
-                                key: "Container_4ycm1a16",
-                                type: "Container",
-                                path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[4]",
-                                name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Column_kjv6zb4s",
-                                    type: "Column",
-                                    path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0]",
-                                    name: "Column",
-                                    children: <ffai.ProjectWidgetHandle>[
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Container_2h7mq4ll",
-                                        type: "Container",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[0]",
-                                        name: "Container",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Icon_kvm5qg0z",
-                                        type: "Icon",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[1]",
-                                        name: "Icon",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Text_bltd279e",
-                                        type: "Text",
-                                        path: "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[2]",
+                                        path:
+                                            "ManageStableRolesPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[2]",
                                         name: "Text",
                                         text: "Profiel",
                                       ),

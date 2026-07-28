@@ -11,6 +11,7 @@ import 'package:flutterflow_ai/src/helpers/data_schema_helpers.dart'
         addDataStruct,
         addDataStructField,
         findAppStateField,
+        removeAppStateField,
         findDataStruct,
         setSecurePersistedValues,
         structField,
@@ -5204,7 +5205,7 @@ Future<void> main(List<String> args) async {
   final options = _parseCliOptions(args);
   try {
     await flutterFlowAI(
-      buildAvarynPhase4B,
+      buildAvarynPhase5B1,
       apiKey: options.apiKey,
       baseUrl: options.baseUrl,
       projectName: options.projectName,
@@ -5238,6 +5239,9 @@ String _loadPhase4AAccountRuntimeWidgetCode() {
     'phase_4c7_runtime_contract.dart',
   );
   final sourceFile = _resolveDslSourceFile('avaryn_account_runtime.dart');
+  final phase5NavigationFile = _resolveDslSourceFile(
+    'phase_5b1_account_navigation_model.dart',
+  );
   if (!contextFile.existsSync()) {
     throw StateError(
       'Missing Phase 4B runtime contract source: ${contextFile.path}',
@@ -5252,6 +5256,11 @@ String _loadPhase4AAccountRuntimeWidgetCode() {
     throw StateError(
       'Missing Phase 4C.7 runtime contract source: '
       '${phase4C7ContractFile.path}',
+    );
+  }
+  if (!phase5NavigationFile.existsSync()) {
+    throw StateError(
+      'Missing Phase 5B.1 navigation source: ${phase5NavigationFile.path}',
     );
   }
   final runtimeLines = sourceFile
@@ -5278,7 +5287,8 @@ String _loadPhase4AAccountRuntimeWidgetCode() {
         (line) =>
             !line.contains('package:flutterflow_generated/') &&
             !line.contains("import 'phase_4b_context_model.dart'") &&
-            !line.contains("import 'phase_4c7_runtime_contract.dart'"),
+            !line.contains("import 'phase_4c7_runtime_contract.dart'") &&
+            !line.contains("import 'phase_5b1_account_navigation_model.dart'"),
       )
       .toList(growable: false);
   final imports = runtimeLines
@@ -5292,7 +5302,281 @@ String _loadPhase4AAccountRuntimeWidgetCode() {
   return '$imports\n\n'
       '${contextFile.readAsStringSync().trim()}\n\n'
       '${phase4C7ContractFile.readAsStringSync().trim()}\n\n'
+      '${phase5NavigationFile.readAsStringSync().trim()}\n\n'
       '$runtimeBody';
+}
+
+void buildAvarynPhase5B1(App app) {
+  _configureAvarynTheme(app, existingProject: true);
+  app.raw((project) {
+    if (findAppStateField(project, name: 'pendingStableInvitationToken') ==
+        null) {
+      addAppStateField(
+        project,
+        name: 'pendingStableInvitationToken',
+        type: stringType,
+        description:
+            'Ephemeral one-time invitation hand-off across auth and onboarding; never persisted.',
+        defaultValue: '',
+        persisted: false,
+      );
+    }
+    if (findAppStateField(project, name: 'pendingStableInvitationId') == null) {
+      addAppStateField(
+        project,
+        name: 'pendingStableInvitationId',
+        type: stringType,
+        description:
+            'Non-secret invitation UUID used to resume safely after an auth redirect; server rebinds it to the confirmed email.',
+        defaultValue: '',
+        persisted: true,
+      );
+    }
+    if (findAppStateField(project, name: 'pendingStableCreateRequestId') ==
+        null) {
+      addAppStateField(
+        project,
+        name: 'pendingStableCreateRequestId',
+        type: stringType,
+        description:
+            'Non-secret create-stable idempotency UUID retained across an ambiguous reload and cleared only after activation succeeds.',
+        defaultValue: '',
+        persisted: true,
+      );
+    }
+    if (findAppStateField(project, name: 'pendingStableCreatePayloadKey') ==
+        null) {
+      addAppStateField(
+        project,
+        name: 'pendingStableCreatePayloadKey',
+        type: stringType,
+        description:
+            'Deterministic non-plaintext key binding the retained create-stable request UUID to one actor and exact payload.',
+        defaultValue: '',
+        persisted: true,
+      );
+    }
+    if (findAppStateField(project, name: 'lastMembershipValidatedAt') != null) {
+      removeAppStateField(project, name: 'lastMembershipValidatedAt');
+    }
+  });
+  _applyPhase4C7AccountPurgeResource(app);
+  app.raw((project) {
+    updateCustomWidget(
+      project,
+      name: 'AvarynStableRuntime',
+      code: _loadPhase4BStableRuntimeWidgetCode(),
+      description:
+          'Responsive stable authority, transient invitation hand-off, team management and isolated stable context.',
+    );
+  });
+
+  app.editPage(ff.Pages.personalProfilePage, (page) {
+    page.ensureReplaced(
+      ff.Pages.personalProfilePage.widgets
+          .byPath('PersonalProfilePage.body[0]')
+          .single,
+      _phase4APersonalProfilePageBody(),
+    );
+  });
+
+  final stablePages =
+      <({ProjectPageHandle page, String mode, Object initialStableMemberId})>[
+        (
+          page: ff.Pages.stableOnboardingHandoffPage,
+          mode: 'handoff',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.createStablePage,
+          mode: 'createStable',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.personalWorkspacePage,
+          mode: 'personalWorkspace',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.stableInvitationPage,
+          mode: 'invitation',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.invalidStableInvitationPage,
+          mode: 'invitation',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.stablePickerPage,
+          mode: 'stablePicker',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.stableDetailsPage,
+          mode: 'stableDetails',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.stableMembersPage,
+          mode: 'members',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.stableMemberDetailsPage,
+          mode: 'memberDetails',
+          initialStableMemberId: PageParam('stableMemberId'),
+        ),
+        (
+          page: ff.Pages.inviteStableMemberPage,
+          mode: 'invite',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.pendingStableInvitationsPage,
+          mode: 'pendingInvitations',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.manageStableRolesPage,
+          mode: 'roles',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.stableAccessPage,
+          mode: 'access',
+          initialStableMemberId: '',
+        ),
+        (
+          page: ff.Pages.linkLocalStablePage,
+          mode: 'linkLocalStable',
+          initialStableMemberId: '',
+        ),
+      ];
+  for (final spec in stablePages) {
+    app.editPage(spec.page, (page) {
+      page.ensureReplaced(
+        spec.page.widgets.byPath('${spec.page.name}.body[0]').single,
+        _phase4BPageBody(
+          spec.mode,
+          initialStableMemberId: spec.initialStableMemberId,
+        ),
+      );
+    });
+  }
+
+  final operationalPages = <
+    ({ProjectPageHandle page, String mode, String activeTab})
+  >[
+    (page: ff.Pages.todayDashboardPage, mode: 'today', activeTab: 'Vandaag'),
+    (page: ff.Pages.horsesOverviewPage, mode: 'horses', activeTab: 'Paarden'),
+    (page: ff.Pages.planningPage, mode: 'planning', activeTab: 'Planning'),
+    (page: ff.Pages.feedingOverviewPage, mode: 'feeding', activeTab: 'Vandaag'),
+    (
+      page: ff.Pages.feedingRoundExecutionPage,
+      mode: 'feedingExecution',
+      activeTab: 'Vandaag',
+    ),
+  ];
+  for (final spec in operationalPages) {
+    app.editPage(spec.page, (page) {
+      page.ensureReplaced(
+        spec.page.widgets.byPath('${spec.page.name}.body[0]').single,
+        _phase4C7OperationalPageBody(
+          mode: spec.mode,
+          activeTab: spec.activeTab,
+        ),
+      );
+    });
+  }
+
+  final legacyDetailNavigationPages =
+      <({ProjectPageHandle page, String activeTab})>[
+        (page: ff.Pages.orionProfilePage, activeTab: 'Paarden'),
+        (page: ff.Pages.activityDetailPage, activeTab: 'Planning'),
+        (page: ff.Pages.horseNutritionPage, activeTab: 'Paarden'),
+        (page: ff.Pages.feedingRoundSettingsPage, activeTab: 'Vandaag'),
+      ];
+  for (final spec in legacyDetailNavigationPages) {
+    app.editPage(spec.page, (page) {
+      page.ensureReplaced(
+        page.findByName('AvarynDesktopNavigationBody'),
+        _desktopNavigationBody(
+          bindParams: false,
+          activeTab: spec.activeTab,
+          horsesTarget: ff.Pages.horsesOverviewPage,
+          planningTarget: ff.Pages.planningPage,
+          profileTarget: ff.Pages.personalProfilePage,
+        ),
+      );
+      page.ensureReplaced(
+        page.findByName('AvarynMobileNavigationBody'),
+        _mobileNavigationBody(
+          bindParams: false,
+          activeTab: spec.activeTab,
+          horsesTarget: ff.Pages.horsesOverviewPage,
+          planningTarget: ff.Pages.planningPage,
+          profileTarget: ff.Pages.personalProfilePage,
+        ),
+      );
+    });
+  }
+
+  app.raw((project) {
+    void applyResponsiveVisibility(
+      String pageName,
+      String desktopName,
+      String mobileName,
+    ) {
+      final page = findPage(project, name: pageName);
+      if (page == null) throw StateError('Expected $pageName.');
+      final desktop = findDescendants(
+        page.node,
+        (node) => node.name == desktopName,
+      );
+      final mobile = findDescendants(
+        page.node,
+        (node) => node.name == mobileName,
+      );
+      if (desktop.length != 1 || mobile.length != 1) {
+        throw StateError('Expected responsive navigation in $pageName.');
+      }
+      setResponsiveVisibility(
+        desktop.single,
+        phoneHidden: true,
+        tabletHidden: true,
+        tabletLandscapeHidden: true,
+        desktopHidden: false,
+      );
+      setResponsiveVisibility(
+        mobile.single,
+        phoneHidden: false,
+        tabletHidden: false,
+        tabletLandscapeHidden: false,
+        desktopHidden: true,
+      );
+    }
+
+    applyResponsiveVisibility(
+      'PersonalProfilePage',
+      'PersonalProfileDesktopSideNavigation',
+      'PersonalProfileMobileBottomNavigation',
+    );
+    for (final spec in stablePages) {
+      applyResponsiveVisibility(
+        spec.page.name,
+        'Phase4BDesktopSideNavigation',
+        'Phase4BMobileBottomNavigation',
+      );
+    }
+    for (final spec in operationalPages) {
+      applyResponsiveVisibility(
+        spec.page.name,
+        'Phase4C7DesktopSideNavigation',
+        'Phase4C7MobileBottomNavigation',
+      );
+    }
+  });
 }
 
 String _loadPhase4BStableRuntimeWidgetCode() {
@@ -12774,17 +13058,6 @@ DslWidget _mobileNavigationBody({
         profileTarget: profileTarget,
       ),
       _mobileNavItem(
-        'emoji_events',
-        'Wedstrijden',
-        'competitionAction',
-        active: activeTab == 'Wedstrijden',
-        bindParam: bindParams,
-        currentTab: activeTab,
-        horsesTarget: horsesTarget,
-        planningTarget: planningTarget,
-        profileTarget: profileTarget,
-      ),
-      _mobileNavItem(
         'person',
         'Profiel',
         'profileAction',
@@ -12914,17 +13187,6 @@ DslWidget _desktopNavigationBody({
         profileTarget: profileTarget,
       ),
       _desktopNavItem(
-        'emoji_events',
-        'Wedstrijden',
-        'competitionAction',
-        active: activeTab == 'Wedstrijden',
-        bindParam: bindParams,
-        currentTab: activeTab,
-        horsesTarget: horsesTarget,
-        planningTarget: planningTarget,
-        profileTarget: profileTarget,
-      ),
-      _desktopNavItem(
         'person',
         'Profiel',
         'profileAction',
@@ -12948,12 +13210,12 @@ DslWidget _desktopNavigationBody({
                 spacing: 1,
                 children: [
                   Text(
-                    'Local prototype',
+                    'Besloten Alpha',
                     style: Styles.labelSmall,
                     color: Colors.hex(0xFFD8D4CE),
                   ),
                   Text(
-                    'Sample data only',
+                    'Geen productie',
                     style: Styles.bodySmall,
                     color: Colors.hex(0xFF8E8F8B),
                   ),

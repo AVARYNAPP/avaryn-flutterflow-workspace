@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'phase_4b_context_model.dart';
 import 'phase_4c7_runtime_contract.dart';
+import 'phase_5b1_account_navigation_model.dart';
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:flutterflow_generated/flutter_flow/flutter_flow_util.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
 
 const String _phase4APrivacyPolicyUrl = String.fromEnvironment(
   'AVARYN_PRIVACY_POLICY_URL',
@@ -23,6 +25,40 @@ const String _phase4ALegacyBackupId = 'legacy-unscoped-backup';
 const String _phase4ALegacyLocalUserId = 'local-current-user';
 const String _phase4ALegacyStableId = 'local-stable';
 const int _phase4ALocalScopeSchemaVersion = 2;
+const Duration _phase5PasswordRecoveryLifetime = Duration(minutes: 15);
+
+String _phase5PasswordRecoveryUserId = '';
+DateTime? _phase5PasswordRecoveryAuthorizedAt;
+
+void _phase5ClearPasswordRecoveryAuthorization() {
+  _phase5PasswordRecoveryUserId = '';
+  _phase5PasswordRecoveryAuthorizedAt = null;
+}
+
+bool _phase5AuthorizePasswordRecovery(Session? session) {
+  if (session == null) {
+    _phase5ClearPasswordRecoveryAuthorization();
+    return false;
+  }
+  _phase5PasswordRecoveryUserId = session.user.id;
+  _phase5PasswordRecoveryAuthorizedAt = DateTime.now().toUtc();
+  return true;
+}
+
+bool _phase5HasPasswordRecoveryAuthorization(Session? session) {
+  final authorizedAt = _phase5PasswordRecoveryAuthorizedAt;
+  if (session == null ||
+      authorizedAt == null ||
+      session.user.id != _phase5PasswordRecoveryUserId) {
+    return false;
+  }
+  final age = DateTime.now().toUtc().difference(authorizedAt);
+  if (age.isNegative || age > _phase5PasswordRecoveryLifetime) {
+    _phase5ClearPasswordRecoveryAuthorization();
+    return false;
+  }
+  return true;
+}
 
 bool get _phase4ALegalConfigured =>
     Uri.tryParse(_phase4APrivacyPolicyUrl)?.hasScheme == true &&
@@ -339,6 +375,40 @@ LocalAccountScopeDataStruct? _phase4AScopeFor(String authUserId) {
   return null;
 }
 
+void _phase5AccountInvalidateMembershipAuthority(String authUserId) {
+  final state = FFAppState();
+  final localAccountScopes = List<LocalAccountScopeDataStruct>.from(
+    state.localAccountScopes,
+  );
+  final operationalBackups = List<LocalAccountScopeDataStruct>.from(
+    state.phase4BAccountOperationalBackups,
+  );
+
+  void sanitizeScopes(List<LocalAccountScopeDataStruct> scopes) {
+    for (final scope in scopes) {
+      if (scope.authUserId != authUserId) continue;
+      scope.selectedCloudStableId = '';
+      scope.stableMembershipCaches =
+          scope.stableMembershipCaches
+              .where((cache) => cache.authUserId != authUserId)
+              .toList();
+    }
+  }
+
+  sanitizeScopes(localAccountScopes);
+  sanitizeScopes(operationalBackups);
+  state.update(() {
+    state.selectedCloudStableId = '';
+    state.stableMembershipCaches =
+        state.stableMembershipCaches
+            .where((cache) => cache.authUserId != authUserId)
+            .toList();
+    state.localAccountScopes = localAccountScopes;
+    state.phase4BAccountOperationalBackups = operationalBackups;
+    state.stableAccessStatus = 'access_denied';
+  });
+}
+
 void _phase4ASaveScope(String authUserId) {
   if (authUserId.trim().isEmpty) return;
   final state = FFAppState();
@@ -619,8 +689,15 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     _authSubscription = _client.auth.onAuthStateChange.listen((state) {
       if (!mounted) return;
       if (state.event == AuthChangeEvent.passwordRecovery) {
-        context.goNamed('AuthResetPasswordPage');
+        if (_phase5AuthorizePasswordRecovery(state.session)) {
+          context.goNamed('AuthResetPasswordPage');
+        }
         return;
+      }
+      if (state.session == null ||
+          (_phase5PasswordRecoveryUserId.isNotEmpty &&
+              state.session!.user.id != _phase5PasswordRecoveryUserId)) {
+        _phase5ClearPasswordRecoveryAuthorization();
       }
       if ((widget.mode == 'verify' || widget.mode == 'callback') &&
           state.session != null &&
@@ -787,12 +864,14 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
         await _phase4APurgeOperationalSecureState(previousAuthId);
         FFAppState().activeAuthAccountId = '';
         FFAppState().selectedCloudStableId = '';
+        FFAppState().pendingStableInvitationToken = '';
         if (!mounted) return;
         context.goNamed('AuthWelcomePage');
         return;
       }
-      if (session.user.emailConfirmedAt == null &&
-          (session.user.appMetadata['provider'] ?? '') == 'email') {
+      final emailProvider =
+          (session.user.appMetadata['provider'] ?? '') == 'email';
+      if (session.user.emailConfirmedAt == null && emailProvider) {
         FFAppState().authPendingEmail = session.user.email ?? '';
         if (!mounted) return;
         context.goNamed('AuthVerifyEmailPage');
@@ -803,26 +882,85 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       if (previousAuthId.isNotEmpty && previousAuthId != session.user.id) {
         await _phase4APurgeOperationalSecureState(previousAuthId);
       }
-      final legacyPrompt = _phase4AActivateScope(session.user.id);
+      _phase4AActivateScope(session.user.id);
+      await _hydrateSelectedStableFromServer(session.user);
       _applyTheme(profile.themeMode);
       if (!mounted) return;
       setState(() {
         _profile = profile;
-        _legacyPrompt = legacyPrompt;
+        // Phase 5 keeps legacy backups intact but never exposes them as an
+        // Alpha data source or onboarding decision.
+        _legacyPrompt = false;
       });
-      if (profile.onboardingCompletedAt == null) {
-        context.goNamed('OnboardingPage');
-      } else if (!legacyPrompt) {
-        if (FFAppState().selectedCloudStableId.trim().isEmpty) {
-          context.goNamed('StableOnboardingHandoffPage');
-        } else {
-          context.goNamed('TodayDashboardPage');
-        }
-      }
+      _continueAfterProfile(profile, session.user);
     } catch (error) {
       _setError(_phase4AAuthError(error));
     } finally {
       _setBusy(false);
+    }
+  }
+
+  bool _hasFreshCachedMembership(String authUserId, String stableId) {
+    final now = DateTime.now().toUtc();
+    for (final cache in FFAppState().stableMembershipCaches) {
+      final age =
+          cache.lastValidatedAt == null
+              ? null
+              : now.difference(cache.lastValidatedAt!);
+      if (cache.authUserId == authUserId &&
+          cache.stableId == stableId &&
+          cache.status == 'active' &&
+          age != null &&
+          !age.isNegative &&
+          age <= const Duration(hours: 24)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<void> _hydrateSelectedStableFromServer(User user) async {
+    final cachedStableId = FFAppState().selectedCloudStableId.trim();
+    try {
+      final preference =
+          await _client
+              .from('account_workspace_preferences')
+              .select('last_selected_stable_id')
+              .eq('user_id', user.id)
+              .maybeSingle();
+      final preferredStableId = _phase4ANullableString(
+        preference?['last_selected_stable_id'],
+      );
+      if (preferredStableId.isEmpty) {
+        FFAppState().selectedCloudStableId = '';
+        return;
+      }
+      final membership =
+          await _client
+              .from('stable_memberships')
+              .select('stable_id,status')
+              .eq('stable_id', preferredStableId)
+              .eq('user_id', user.id)
+              .eq('status', 'active')
+              .maybeSingle();
+      FFAppState().selectedCloudStableId =
+          membership == null ? '' : preferredStableId;
+    } on PostgrestException catch (error) {
+      final denied =
+          error.code == '401' || error.code == '403' || error.code == '42501';
+      if (denied) {
+        _phase5AccountInvalidateMembershipAuthority(user.id);
+        return;
+      }
+      FFAppState().selectedCloudStableId =
+          _hasFreshCachedMembership(user.id, cachedStableId)
+              ? cachedStableId
+              : '';
+    } catch (_) {
+      FFAppState().selectedCloudStableId =
+          _hasFreshCachedMembership(user.id, cachedStableId)
+              ? cachedStableId
+              : '';
     }
   }
 
@@ -1073,7 +1211,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
 
   Future<void> _updatePassword() async {
     if (_busy) return;
-    if (_client.auth.currentSession == null) {
+    if (!_phase5HasPasswordRecoveryAuthorization(_client.auth.currentSession)) {
       _setError('De herstellink is ongeldig of verlopen.');
       return;
     }
@@ -1091,6 +1229,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     _setError(null);
     try {
       await _client.auth.updateUser(UserAttributes(password: password));
+      _phase5ClearPasswordRecoveryAuthorization();
       _setNotice('Je wachtwoord is bijgewerkt.');
       if (!mounted) return;
       context.goNamed('AuthGatePage');
@@ -1155,7 +1294,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       if (!mounted) return;
       setState(() => _profile = profile);
       if (complete) {
-        context.goNamed('StableOnboardingHandoffPage');
+        _continueAfterProfile(profile, user);
       } else {
         _setNotice('Je profiel is opgeslagen.');
       }
@@ -1200,8 +1339,14 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
         _setError('Gebruik een JPG-, PNG- of WebP-afbeelding.');
         return;
       }
+      if (!phase5ImageSignatureMatches(bytes, contentType)) {
+        _setError(
+          'Het bestandstype komt niet overeen met de inhoud van de afbeelding.',
+        );
+        return;
+      }
       final oldPath = _profile?.avatarObjectPath ?? '';
-      final path = '${user.id}/avatar.$extension';
+      final path = '${user.id}/avatar-${const Uuid().v4()}.$extension';
       await _client.storage
           .from('avatars')
           .uploadBinary(
@@ -1209,10 +1354,21 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
             bytes,
             fileOptions: FileOptions(contentType: contentType, upsert: true),
           );
-      await _client
-          .from('profiles')
-          .update({'avatar_object_path': path})
-          .eq('id', user.id);
+      try {
+        await _client
+            .from('profiles')
+            .update({'avatar_object_path': path})
+            .eq('id', user.id);
+      } catch (_) {
+        if (oldPath != path) {
+          try {
+            await _client.storage.from('avatars').remove([path]);
+          } catch (_) {
+            // Best-effort compensating cleanup; the original error remains.
+          }
+        }
+        rethrow;
+      }
       if (oldPath.isNotEmpty && oldPath != path) {
         await _client.storage.from('avatars').remove([oldPath]);
       }
@@ -1271,7 +1427,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
           (dialogContext) => AlertDialog(
             title: const Text('Uitloggen'),
             content: const Text(
-              'Je lokale gegevens blijven veilig bewaard voor dit account.',
+              'Ontsleutelde sessiegegevens worden gewist. Je cloudgegevens blijven behouden.',
             ),
             actions: [
               TextButton(
@@ -1297,6 +1453,8 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       FFAppState().activeAuthAccountId = '';
       FFAppState().currentAuthProfile = AuthProfileDataStruct();
       FFAppState().selectedCloudStableId = '';
+      FFAppState().pendingStableInvitationToken = '';
+      FFAppState().pendingStableInvitationId = '';
       FFAppState().stableAccessStatus = 'signed_out';
       _phase4AClearWorkingSet();
       await _client.auth.signOut();
@@ -1350,16 +1508,27 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
 
   void _continueAfterLegacyChoice() {
     final profile = _profile ?? FFAppState().currentAuthProfile;
-    if (!mounted) return;
-    if (profile.onboardingCompletedAt == null) {
-      context.goNamed('OnboardingPage');
-    } else {
-      if (FFAppState().selectedCloudStableId.trim().isEmpty) {
-        context.goNamed('StableOnboardingHandoffPage');
-      } else {
-        context.goNamed('TodayDashboardPage');
-      }
+    final user = _user;
+    if (user == null) {
+      if (mounted) context.goNamed('AuthWelcomePage');
+      return;
     }
+    _continueAfterProfile(profile, user);
+  }
+
+  void _continueAfterProfile(AuthProfileDataStruct profile, User user) {
+    if (!mounted) return;
+    final route = phase5ResolveAccountRoute(
+      hasSession: true,
+      emailProvider: (user.appMetadata['provider'] ?? '') == 'email',
+      emailConfirmed: user.emailConfirmedAt != null,
+      onboardingCompleted: profile.onboardingCompletedAt != null,
+      hasPendingInvitation:
+          FFAppState().pendingStableInvitationToken.trim().isNotEmpty ||
+          FFAppState().pendingStableInvitationId.trim().isNotEmpty,
+      hasSelectedStable: FFAppState().selectedCloudStableId.trim().isNotEmpty,
+    );
+    context.goNamed(phase5AccountRouteName(route));
   }
 
   Future<void> _openLegal(String url, String label) async {
@@ -1916,6 +2085,17 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
               textAlign: TextAlign.center,
               style: theme.bodyMedium.copyWith(color: theme.secondaryText),
             ),
+            if (FFAppState().pendingStableInvitationToken.trim().isNotEmpty ||
+                FFAppState().pendingStableInvitationId.trim().isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Text(
+                'Na bevestiging hervat AVARYN de uitnodiging met een '
+                'niet-geheime referentie. De uitnodigingscode zelf wordt '
+                'bewust niet duurzaam opgeslagen.',
+                textAlign: TextAlign.center,
+                style: theme.bodySmall.copyWith(color: theme.secondaryText),
+              ),
+            ],
             const SizedBox(height: 20),
             _feedback(theme),
             _primaryButton(
@@ -2581,19 +2761,24 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
             ),
             const SizedBox(height: 6),
             Text(
-              'De geselecteerde stal hieronder blijft lokale prototypecontext en is nog geen cloudlidmaatschap: ${FFAppState().currentLocalStableId}.',
+              FFAppState().selectedCloudStableId.trim().isEmpty
+                  ? 'Kies een stal of persoonlijke workspace om je veilige werkcontext te activeren.'
+                  : 'Je actieve stalcontext is server-side gevalideerd. Rollen komen nooit uit dit profiel.',
               style: theme.bodySmall.copyWith(color: theme.secondaryText),
             ),
-            if (FFAppState().hasLegacyLocalDataBackup &&
-                _phase4AScopeFor(user?.id ?? '')?.horses.isEmpty != false) ...[
-              const SizedBox(height: 12),
-              _secondaryButton(
-                theme,
-                'Bestaande lokale testdata koppelen',
-                user == null ? null : _attachLegacy,
-                icon: Icons.link,
+            const SizedBox(height: 12),
+            _secondaryButton(
+              theme,
+              FFAppState().selectedCloudStableId.trim().isEmpty
+                  ? 'Stal of workspace kiezen'
+                  : 'Stal en team beheren',
+              () => context.pushNamed(
+                FFAppState().selectedCloudStableId.trim().isEmpty
+                    ? 'StableOnboardingHandoffPage'
+                    : 'StableDetailsPage',
               ),
-            ],
+              icon: Icons.groups_outlined,
+            ),
           ]),
           const SizedBox(height: 14),
           _authCard(theme, [
@@ -2659,7 +2844,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     final firstName = _phase4AFirstName(profile);
     return Text(
       compact
-          ? 'Goedemorgen, $firstName. Orion vraagt je aandacht vóór de training.'
+          ? 'Goedemorgen, $firstName. Dit vraagt vandaag je aandacht.'
           : 'Goedemorgen, $firstName. Dit vraagt vandaag je aandacht.',
       style: FlutterFlowTheme.of(
         context,

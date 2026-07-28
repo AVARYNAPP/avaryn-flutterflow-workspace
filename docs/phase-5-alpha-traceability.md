@@ -110,3 +110,21 @@ Iedere requirement krijgt in fase 5D een bewijsrecord met:
 
 Geen item krijgt de status `gereed en bewezen` uitsluitend op basis van een
 zichtbare knop of een succesvol positief pad.
+
+## 6. Fase-5B.1-checkpoint
+
+Op 28 juli 2026 is de account-, onboarding-, stal-, team- en
+navigatiebasis afgerond en via FlutterFlow-projectcommit
+`IWY1YaAsjF7TcE2tzLLn` geëxporteerd. Het reproduceerbare bewijs staat in
+`docs/phase-5b1-account-team-navigation.md`.
+
+Daarmee zijn voor A01–A07, A23–A26 en A30–A33 de broncontracten, lokale
+Auth/RLS/Edge-integratie, fail-closed lifecycle, FlutterFlow-compilatie en
+navigatiestructuur aangescherpt en automatisch bewezen. De requirements
+blijven voor de formele fase-5D-status `aanwezig, onvoldoende getest` zolang
+de bijbehorende browser-, viewport- en handmatige Alpha-E2E-records nog niet
+zijn uitgevoerd; de technische 5B.1-subfase zelf is groen.
+
+De invitation-integratiesuite bevat nu 27 controles en de workspace bevat 89
+groene Darttests. De gegenereerde webapp bouwt lokaal met de projectgebonden
+Flutter 3.35.7-toolchain. Er is niets gepubliceerd of gedeployed.

@@ -47,7 +47,27 @@ function safeRpcError(message: string) {
   }
   if (message.includes('ROLE_NOT_ALLOWED')) return 'ROLE_NOT_ALLOWED'
   if (message.includes('NOT_AUTHORIZED')) return 'NOT_AUTHORIZED'
-  return 'INVITATION_UNAVAILABLE'
+  if (message.includes('INVITATION_UNAVAILABLE')) return 'INVITATION_UNAVAILABLE'
+  if (message.includes('CONFIRMED_ACCOUNT_REQUIRED')) {
+    return 'CONFIRMED_ACCOUNT_REQUIRED'
+  }
+  if (message.includes('DISPLAY_NAME_REQUIRED')) return 'DISPLAY_NAME_REQUIRED'
+  if (message.includes('MEMBERSHIP_ALREADY_ACTIVE')) {
+    return 'MEMBERSHIP_ALREADY_ACTIVE'
+  }
+  return 'SERVER_UNAVAILABLE'
+}
+
+function rpcErrorStatus(code: string) {
+  if (code === 'SERVER_UNAVAILABLE') return 503
+  if (code === 'NOT_AUTHORIZED') return 403
+  if (
+    code === 'CONFIRMED_ACCOUNT_REQUIRED' ||
+    code === 'DISPLAY_NAME_REQUIRED'
+  ) {
+    return 412
+  }
+  return 409
 }
 
 function inviteLink(rawToken: string) {
@@ -108,7 +128,7 @@ Deno.serve(async (request: Request) => {
       'preview_stable_invitation',
       { p_token_hash_hex: tokenHash },
     )
-    if (error) return response(200, { status: 'unavailable' })
+    if (error) return response(503, { code: 'SERVER_UNAVAILABLE' })
     return response(200, data as Record<string, unknown>)
   }
 
@@ -124,6 +144,23 @@ Deno.serve(async (request: Request) => {
   } = await callerClient.auth.getUser(accessToken)
   if (userError || !user) {
     return response(401, { code: 'INVALID_SESSION' })
+  }
+
+  if (action === 'resume') {
+    const invitationId =
+      typeof body.invitation_id === 'string' ? body.invitation_id : ''
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        .test(invitationId)
+    ) {
+      return response(200, { status: 'unavailable' })
+    }
+    const { data, error } = await callerClient.rpc(
+      'resume_stable_invitation',
+      { p_invitation_id: invitationId },
+    )
+    if (error) return response(503, { code: 'SERVER_UNAVAILABLE' })
+    return response(200, data as Record<string, unknown>)
   }
 
   if (action === 'create' || action === 'resend') {
@@ -147,7 +184,7 @@ Deno.serve(async (request: Request) => {
     const { data, error } = await rpc
     if (error) {
       const code = safeRpcError(error.message)
-      return response(code === 'NOT_AUTHORIZED' ? 403 : 409, { code })
+      return response(rpcErrorStatus(code), { code })
     }
     return response(200, {
       ...(data as Record<string, unknown>),
@@ -158,25 +195,44 @@ Deno.serve(async (request: Request) => {
 
   if (action === 'accept' || action === 'decline') {
     const rawToken = typeof body.token === 'string' ? body.token : ''
-    if (rawToken.length < 40 || rawToken.length > 128) {
+    const invitationId =
+      typeof body.invitation_id === 'string' ? body.invitation_id : ''
+    const hasToken = rawToken.length >= 40 && rawToken.length <= 128
+    const hasInvitationId =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        .test(invitationId)
+    if (!hasToken && !hasInvitationId) {
       return response(409, { code: 'INVITATION_UNAVAILABLE' })
     }
-    const tokenHash = await tokenDigest(rawToken)
+    const tokenHash = hasToken ? await tokenDigest(rawToken) : ''
     const rpc =
       action === 'accept'
-        ? callerClient.rpc('accept_stable_invitation', {
-            p_token_hash_hex: tokenHash,
-            p_display_name: body.display_name ?? null,
-            p_function_title: body.function_title ?? null,
-            p_request_id: body.request_id ?? null,
-          })
-        : callerClient.rpc('decline_stable_invitation', {
-            p_token_hash_hex: tokenHash,
-            p_request_id: body.request_id ?? null,
-          })
+        ? hasToken
+          ? callerClient.rpc('accept_stable_invitation', {
+              p_token_hash_hex: tokenHash,
+              p_display_name: body.display_name ?? null,
+              p_function_title: body.function_title ?? null,
+              p_request_id: body.request_id ?? null,
+            })
+          : callerClient.rpc('accept_stable_invitation_by_id', {
+              p_invitation_id: invitationId,
+              p_display_name: body.display_name ?? null,
+              p_function_title: body.function_title ?? null,
+              p_request_id: body.request_id ?? null,
+            })
+        : hasToken
+          ? callerClient.rpc('decline_stable_invitation', {
+              p_token_hash_hex: tokenHash,
+              p_request_id: body.request_id ?? null,
+            })
+          : callerClient.rpc('decline_stable_invitation_by_id', {
+              p_invitation_id: invitationId,
+              p_request_id: body.request_id ?? null,
+            })
     const { data, error } = await rpc
     if (error) {
-      return response(409, { code: safeRpcError(error.message) })
+      const code = safeRpcError(error.message)
+      return response(rpcErrorStatus(code), { code })
     }
     return response(200, { result: data })
   }
@@ -191,7 +247,7 @@ Deno.serve(async (request: Request) => {
     )
     if (error) {
       const code = safeRpcError(error.message)
-      return response(code === 'NOT_AUTHORIZED' ? 403 : 409, { code })
+      return response(rpcErrorStatus(code), { code })
     }
     return response(200, { revoked: data === true })
   }

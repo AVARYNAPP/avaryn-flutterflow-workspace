@@ -32,46 +32,46 @@ abstract final class PersonalProfilePageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Row_befenlmi",
+            key: "Row_8q20m6o8",
             type: "Row",
             path: "PersonalProfilePage.body[0]",
             name: "PersonalProfileResponsiveShell",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Container_o39b2beg",
+                key: "Container_lxir6wgg",
                 type: "Container",
                 path: "PersonalProfilePage.body[0].children[0]",
                 name: "PersonalProfileDesktopSideNavigation",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_mld75qcu",
+                    key: "Container_n9kepct8",
                     type: "Container",
                     path: "PersonalProfilePage.body[0].children[0].children[0]",
                     name: "AvarynDesktopNavigationBody",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Column_z7rriolf",
+                        key: "Column_9t10u8f2",
                         type: "Column",
                         path:
                             "PersonalProfilePage.body[0].children[0].children[0].children[0]",
                         name: "Column",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Container_5fq1mnhd",
+                            key: "Container_wh5sr4ec",
                             type: "Container",
                             path:
                                 "PersonalProfilePage.body[0].children[0].children[0].children[0].children[0]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Column_053nch8u",
+                                key: "Column_urzd6t81",
                                 type: "Column",
                                 path:
                                     "PersonalProfilePage.body[0].children[0].children[0].children[0].children[0].children[0]",
                                 name: "Column",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_ywv7hpcz",
+                                    key: "Text_qzdmu996",
                                     type: "Text",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
@@ -79,7 +79,7 @@ abstract final class PersonalProfilePageWidgets {
                                     text: "AVARYN",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_ccfvotoy",
+                                    key: "Text_t1ye3kol",
                                     type: "Text",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
@@ -91,35 +91,35 @@ abstract final class PersonalProfilePageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_qqion7uk",
+                            key: "Container_8rnldjo0",
                             type: "Container",
                             path:
                                 "PersonalProfilePage.body[0].children[0].children[0].children[0].children[1]",
                             name: "Container",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_3sqlskge",
+                            key: "Container_kae8esd0",
                             type: "Container",
                             path:
                                 "PersonalProfilePage.body[0].children[0].children[0].children[0].children[2]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_uuf4onnc",
+                                key: "Row_wmj1ykfa",
                                 type: "Row",
                                 path:
                                     "PersonalProfilePage.body[0].children[0].children[0].children[0].children[2].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_8e0q065q",
+                                    key: "Container_3hkfvpuy",
                                     type: "Container",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_73ubq1x6",
+                                    key: "Button_81y26fgp",
                                     type: "Button",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
@@ -132,7 +132,7 @@ abstract final class PersonalProfilePageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_eyh5r5lt",
+                            key: "Container_wi7r3oac",
                             type: "Container",
                             path:
                                 "PersonalProfilePage.body[0].children[0].children[0].children[0].children[3]",
@@ -140,35 +140,35 @@ abstract final class PersonalProfilePageWidgets {
                             triggers: const <String>["ON_TAP"],
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_s93yqw92",
+                                key: "Row_i3j56i9y",
                                 type: "Row",
                                 path:
                                     "PersonalProfilePage.body[0].children[0].children[0].children[0].children[3].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_jzre4v6x",
+                                    key: "Container_imcvpsaf",
                                     type: "Container",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_hawu91oq",
+                                    key: "Container_1r3ch2hd",
                                     type: "Container",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
                                     name: "Container",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Row_x3nqs835",
+                                        key: "Row_n8yhkjg0",
                                         type: "Row",
                                         path:
                                             "PersonalProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
                                         name: "Row",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_rrutritd",
+                                            key: "Container_6g0wctjq",
                                             type: "Container",
                                             path:
                                                 "PersonalProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
@@ -177,7 +177,7 @@ abstract final class PersonalProfilePageWidgets {
                                               ffai.ProjectWidgetHandle
                                             >[
                                               ffai.ProjectWidgetHandle(
-                                                key: "Container_pw2k7bi7",
+                                                key: "Container_rwlzfh82",
                                                 type: "Container",
                                                 path:
                                                     "PersonalProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
@@ -186,7 +186,7 @@ abstract final class PersonalProfilePageWidgets {
                                             ],
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_7x2v0ntz",
+                                            key: "Text_x317aj8o",
                                             type: "Text",
                                             path:
                                                 "PersonalProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
@@ -202,28 +202,28 @@ abstract final class PersonalProfilePageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_lugr9axu",
+                            key: "Container_ijedqb13",
                             type: "Container",
                             path:
                                 "PersonalProfilePage.body[0].children[0].children[0].children[0].children[4]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_hxfk8bhn",
+                                key: "Row_rwzghnl0",
                                 type: "Row",
                                 path:
                                     "PersonalProfilePage.body[0].children[0].children[0].children[0].children[4].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_5flk8zwk",
+                                    key: "Container_8u6n23wu",
                                     type: "Container",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_12xm1m5m",
+                                    key: "Button_49nzqd4m",
                                     type: "Button",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
@@ -236,65 +236,31 @@ abstract final class PersonalProfilePageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_vyn8y9wn",
+                            key: "Container_hj8bj6ie",
                             type: "Container",
                             path:
                                 "PersonalProfilePage.body[0].children[0].children[0].children[0].children[5]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_f9janhdt",
+                                key: "Row_6uajb1iy",
                                 type: "Row",
                                 path:
                                     "PersonalProfilePage.body[0].children[0].children[0].children[0].children[5].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_50ed00sx",
+                                    key: "Container_5ey343sj",
                                     type: "Container",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_ft0sw3my",
+                                    key: "Button_uk6w8tml",
                                     type: "Button",
                                     path:
                                         "PersonalProfilePage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
-                                    name: "Button",
-                                    text: "Wedstrijden",
-                                    triggers: const <String>["ON_TAP"],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          ffai.ProjectWidgetHandle(
-                            key: "Container_ir5i2mlj",
-                            type: "Container",
-                            path:
-                                "PersonalProfilePage.body[0].children[0].children[0].children[0].children[6]",
-                            name: "Container",
-                            children: <ffai.ProjectWidgetHandle>[
-                              ffai.ProjectWidgetHandle(
-                                key: "Row_4ztufqtn",
-                                type: "Row",
-                                path:
-                                    "PersonalProfilePage.body[0].children[0].children[0].children[0].children[6].children[0]",
-                                name: "Row",
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Container_4ituo9u1",
-                                    type: "Container",
-                                    path:
-                                        "PersonalProfilePage.body[0].children[0].children[0].children[0].children[6].children[0].children[0]",
-                                    name: "Container",
-                                  ),
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Button_rrk95xf8",
-                                    type: "Button",
-                                    path:
-                                        "PersonalProfilePage.body[0].children[0].children[0].children[0].children[6].children[0].children[1]",
                                     name: "Button",
                                     text: "Profiel",
                                     triggers: const <String>["ON_TAP"],
@@ -304,55 +270,55 @@ abstract final class PersonalProfilePageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Spacer_vz3ono7n",
+                            key: "Spacer_ax8q4p16",
                             type: "Spacer",
                             path:
-                                "PersonalProfilePage.body[0].children[0].children[0].children[0].children[7]",
+                                "PersonalProfilePage.body[0].children[0].children[0].children[0].children[6]",
                             name: "FlexSpacer",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_7qeb7lxs",
+                            key: "Container_rqr5c65b",
                             type: "Container",
                             path:
-                                "PersonalProfilePage.body[0].children[0].children[0].children[0].children[8]",
+                                "PersonalProfilePage.body[0].children[0].children[0].children[0].children[7]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_ad4fdpgt",
+                                key: "Row_qv0p24da",
                                 type: "Row",
                                 path:
-                                    "PersonalProfilePage.body[0].children[0].children[0].children[0].children[8].children[0]",
+                                    "PersonalProfilePage.body[0].children[0].children[0].children[0].children[7].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Icon_c6t210yk",
+                                    key: "Icon_t5r7g70w",
                                     type: "Icon",
                                     path:
-                                        "PersonalProfilePage.body[0].children[0].children[0].children[0].children[8].children[0].children[0]",
+                                        "PersonalProfilePage.body[0].children[0].children[0].children[0].children[7].children[0].children[0]",
                                     name: "Icon",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_7jmdewpw",
+                                    key: "Column_naznldn6",
                                     type: "Column",
                                     path:
-                                        "PersonalProfilePage.body[0].children[0].children[0].children[0].children[8].children[0].children[1]",
+                                        "PersonalProfilePage.body[0].children[0].children[0].children[0].children[7].children[0].children[1]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_eqcreu3n",
+                                        key: "Text_9cmfo1s8",
                                         type: "Text",
                                         path:
-                                            "PersonalProfilePage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[0]",
+                                            "PersonalProfilePage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[0]",
                                         name: "Text",
-                                        text: "Local prototype",
+                                        text: "Besloten Alpha",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_ybvfymix",
+                                        key: "Text_658w7p2u",
                                         type: "Text",
                                         path:
-                                            "PersonalProfilePage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[1]",
+                                            "PersonalProfilePage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[1]",
                                         name: "Text",
-                                        text: "Sample data only",
+                                        text: "Geen productie",
                                       ),
                                     ],
                                   ),
@@ -367,39 +333,39 @@ abstract final class PersonalProfilePageWidgets {
                 ],
               ),
               ffai.ProjectWidgetHandle(
-                key: "Column_z7eib5rt",
+                key: "Column_xi6dw6fn",
                 type: "Column",
                 path: "PersonalProfilePage.body[0].children[1]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_37p9bfy8",
+                    key: "Container_eow2dcnp",
                     type: "Container",
                     path: "PersonalProfilePage.body[0].children[1].children[0]",
                     name: "PersonalProfileRuntime",
                   ),
                   ffai.ProjectWidgetHandle(
-                    key: "Container_cpj45i62",
+                    key: "Container_zbgwnofo",
                     type: "Container",
                     path: "PersonalProfilePage.body[0].children[1].children[1]",
                     name: "PersonalProfileMobileBottomNavigation",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_ximkqqyb",
+                        key: "Container_h68rs3rb",
                         type: "Container",
                         path:
                             "PersonalProfilePage.body[0].children[1].children[1].children[0]",
                         name: "AvarynMobileNavigationBody",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Row_9cqsrxzf",
+                            key: "Row_mvmv8tcv",
                             type: "Row",
                             path:
                                 "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0]",
                             name: "Row",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Container_esddrfzr",
+                                key: "Container_0k77j6gd",
                                 type: "Container",
                                 path:
                                     "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[0]",
@@ -407,28 +373,28 @@ abstract final class PersonalProfilePageWidgets {
                                 triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_mfoedi9g",
+                                    key: "Column_n2n4evob",
                                     type: "Column",
                                     path:
                                         "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_hpbhj87a",
+                                        key: "Container_8yil3q1z",
                                         type: "Container",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_q1pc70p6",
+                                        key: "Icon_0e726u79",
                                         type: "Icon",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_pwpy8sqd",
+                                        key: "Text_cfbfzm4o",
                                         type: "Text",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[2]",
@@ -440,7 +406,7 @@ abstract final class PersonalProfilePageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_j1oyn913",
+                                key: "Container_lh2np18q",
                                 type: "Container",
                                 path:
                                     "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[1]",
@@ -448,28 +414,28 @@ abstract final class PersonalProfilePageWidgets {
                                 triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_18jfzrow",
+                                    key: "Column_z0vfhibe",
                                     type: "Column",
                                     path:
                                         "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_uoe2cox7",
+                                        key: "Container_ggxerb05",
                                         type: "Container",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_pzukdg4a",
+                                        key: "Container_1d59gt0l",
                                         type: "Container",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_3gl1fz0p",
+                                            key: "Container_jdmaf4v8",
                                             type: "Container",
                                             path:
                                                 "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[1].children[0]",
@@ -478,7 +444,7 @@ abstract final class PersonalProfilePageWidgets {
                                         ],
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_erjq5z5r",
+                                        key: "Text_c1um3st5",
                                         type: "Text",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[2]",
@@ -490,7 +456,7 @@ abstract final class PersonalProfilePageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_9vs5h5oj",
+                                key: "Container_izzpy2pz",
                                 type: "Container",
                                 path:
                                     "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[2]",
@@ -498,28 +464,28 @@ abstract final class PersonalProfilePageWidgets {
                                 triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_4o6vss0i",
+                                    key: "Column_b3hvop4h",
                                     type: "Column",
                                     path:
                                         "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_3msk9i15",
+                                        key: "Container_l1qihg65",
                                         type: "Container",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_pq4eehbi",
+                                        key: "Icon_rtwoatvu",
                                         type: "Icon",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_pnntoz77",
+                                        key: "Text_oiaa4xje",
                                         type: "Text",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[2]",
@@ -531,7 +497,7 @@ abstract final class PersonalProfilePageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_y9njt19l",
+                                key: "Container_av69sm2q",
                                 type: "Container",
                                 path:
                                     "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[3]",
@@ -539,72 +505,31 @@ abstract final class PersonalProfilePageWidgets {
                                 triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_nat3j9j2",
+                                    key: "Column_0kmpqrby",
                                     type: "Column",
                                     path:
                                         "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_1w018bxd",
+                                        key: "Container_4yxssgu8",
                                         type: "Container",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_p5u4dq6v",
+                                        key: "Icon_gvlqb0eg",
                                         type: "Icon",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_35k2mzmq",
+                                        key: "Text_2uybab1k",
                                         type: "Text",
                                         path:
                                             "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[2]",
-                                        name: "Text",
-                                        text: "Wedstrijden",
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              ffai.ProjectWidgetHandle(
-                                key: "Container_rhifi3uw",
-                                type: "Container",
-                                path:
-                                    "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[4]",
-                                name: "Container",
-                                triggers: const <String>["ON_TAP"],
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Column_ox0gy2rn",
-                                    type: "Column",
-                                    path:
-                                        "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[4].children[0]",
-                                    name: "Column",
-                                    children: <ffai.ProjectWidgetHandle>[
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Container_42xfw2f1",
-                                        type: "Container",
-                                        path:
-                                            "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[4].children[0].children[0]",
-                                        name: "Container",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Icon_wkq2m2oi",
-                                        type: "Icon",
-                                        path:
-                                            "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[4].children[0].children[1]",
-                                        name: "Icon",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Text_6ltt7ijs",
-                                        type: "Text",
-                                        path:
-                                            "PersonalProfilePage.body[0].children[1].children[1].children[0].children[0].children[4].children[0].children[2]",
                                         name: "Text",
                                         text: "Profiel",
                                       ),

@@ -4,14 +4,15 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final todayDashboardPageHandle = ffai.ProjectPageHandle<TodayDashboardPageParams, TodayDashboardPageState>(
-  name: "TodayDashboardPage",
-  key: "Scaffold_ftur3dgc",
-  route: "today",
-  params: const TodayDashboardPageParams(),
-  state: const TodayDashboardPageState(),
-  widgets: TodayDashboardPageWidgets.tree,
-);
+final todayDashboardPageHandle =
+    ffai.ProjectPageHandle<TodayDashboardPageParams, TodayDashboardPageState>(
+      name: "TodayDashboardPage",
+      key: "Scaffold_ftur3dgc",
+      route: "today",
+      params: const TodayDashboardPageParams(),
+      state: const TodayDashboardPageState(),
+      widgets: TodayDashboardPageWidgets.tree,
+    );
 
 final class TodayDashboardPageParams {
   const TodayDashboardPageParams();
@@ -34,58 +35,61 @@ abstract final class TodayDashboardPageWidgets {
       type: "Scaffold",
       path: "TodayDashboardPage",
       name: "TodayDashboardPage",
-      triggers: const <String>[
-        "ON_INIT_STATE",
-      ],
+      triggers: const <String>["ON_INIT_STATE"],
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Row_sxybj584",
+            key: "Row_rronepiy",
             type: "Row",
             path: "TodayDashboardPage.body[0]",
             name: "Phase4C7ResponsiveShell",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Container_gei2m32y",
+                key: "Container_5sbf0jv0",
                 type: "Container",
                 path: "TodayDashboardPage.body[0].children[0]",
                 name: "Phase4C7DesktopSideNavigation",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_fhtsqxi9",
+                    key: "Container_dcll3mlw",
                     type: "Container",
                     path: "TodayDashboardPage.body[0].children[0].children[0]",
                     name: "AvarynDesktopNavigationBody",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Column_4jpe3ega",
+                        key: "Column_k9t610wz",
                         type: "Column",
-                        path: "TodayDashboardPage.body[0].children[0].children[0].children[0]",
+                        path:
+                            "TodayDashboardPage.body[0].children[0].children[0].children[0]",
                         name: "Column",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Container_6kzlr00n",
+                            key: "Container_sgeobmbl",
                             type: "Container",
-                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[0]",
+                            path:
+                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[0]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Column_utk5kcqd",
+                                key: "Column_cbtshlpo",
                                 type: "Column",
-                                path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[0].children[0]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[0].children[0].children[0].children[0].children[0]",
                                 name: "Column",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_e6pry9su",
+                                    key: "Text_2rbo1vht",
                                     type: "Text",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
                                     name: "Text",
                                     text: "AVARYN",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_xudbl1fh",
+                                    key: "Text_vfbnrhkq",
                                     type: "Text",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
                                     name: "Text",
                                     text: "Performance",
                                   ),
@@ -94,94 +98,105 @@ abstract final class TodayDashboardPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_gwwxhpsp",
+                            key: "Container_du36fzoc",
                             type: "Container",
-                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[1]",
+                            path:
+                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[1]",
                             name: "Container",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_5na6wgfm",
+                            key: "Container_5sqp7pek",
                             type: "Container",
-                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[2]",
+                            path:
+                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[2]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_7u7wob8h",
+                                key: "Row_t3rp8u9d",
                                 type: "Row",
-                                path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[2].children[0]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[0].children[0].children[0].children[2].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_44dnbwzu",
+                                    key: "Container_ekauua7u",
                                     type: "Container",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_k31rna5g",
+                                    key: "Button_4ow1na9c",
                                     type: "Button",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
                                     name: "Button",
                                     text: "Vandaag",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_sska7lw6",
+                            key: "Container_xtdcyiqi",
                             type: "Container",
-                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3]",
+                            path:
+                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3]",
                             name: "Container",
-                            triggers: const <String>[
-                              "ON_TAP",
-                            ],
+                            triggers: const <String>["ON_TAP"],
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_sewxhuzh",
+                                key: "Row_tv37pfz5",
                                 type: "Row",
-                                path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_pk0uauk3",
+                                    key: "Container_7gc72hka",
                                     type: "Container",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_qraalzlf",
+                                    key: "Container_5ogj0m2a",
                                     type: "Container",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
                                     name: "Container",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Row_fvmafcau",
+                                        key: "Row_rtgvu6b6",
                                         type: "Row",
-                                        path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
                                         name: "Row",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_8i5hded1",
+                                            key: "Container_o4q6h76q",
                                             type: "Container",
-                                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
+                                            path:
+                                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
-                                                key: "Container_tp56dmob",
+                                                key: "Container_lxzbl9v1",
                                                 type: "Container",
-                                                path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
+                                                path:
+                                                    "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
                                                 name: "AvarynHorseshoeIcon",
                                               ),
                                             ],
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_jca1p8p3",
+                                            key: "Text_g0g6dyl3",
                                             type: "Text",
-                                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
+                                            path:
+                                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
                                             name: "Text",
                                             text: "Paarden",
                                           ),
@@ -194,144 +209,123 @@ abstract final class TodayDashboardPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_npgpruct",
+                            key: "Container_yyfcnnog",
                             type: "Container",
-                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[4]",
+                            path:
+                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[4]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_v832ocu3",
+                                key: "Row_rzodr5u6",
                                 type: "Row",
-                                path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[4].children[0]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[0].children[0].children[0].children[4].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_b5vvoyzv",
+                                    key: "Container_t8653ed9",
                                     type: "Container",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_covuc8h4",
+                                    key: "Button_935xnz3q",
                                     type: "Button",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
                                     name: "Button",
                                     text: "Planning",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_yldsa3kd",
+                            key: "Container_th3anrt7",
                             type: "Container",
-                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[5]",
+                            path:
+                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[5]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_z0nxyyvq",
+                                key: "Row_atrjok7a",
                                 type: "Row",
-                                path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[5].children[0]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[0].children[0].children[0].children[5].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_sib8rt2k",
+                                    key: "Container_phkop4tk",
                                     type: "Container",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_auld8kxa",
+                                    key: "Button_jfgctet8",
                                     type: "Button",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
-                                    name: "Button",
-                                    text: "Wedstrijden",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          ffai.ProjectWidgetHandle(
-                            key: "Container_6snaypx8",
-                            type: "Container",
-                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[6]",
-                            name: "Container",
-                            children: <ffai.ProjectWidgetHandle>[
-                              ffai.ProjectWidgetHandle(
-                                key: "Row_d8fqxeum",
-                                type: "Row",
-                                path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[6].children[0]",
-                                name: "Row",
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Container_amjyysew",
-                                    type: "Container",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[6].children[0].children[0]",
-                                    name: "Container",
-                                  ),
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Button_87qdvu2x",
-                                    type: "Button",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[6].children[0].children[1]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
                                     name: "Button",
                                     text: "Profiel",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Spacer_7bmv61pg",
+                            key: "Spacer_17t13b8g",
                             type: "Spacer",
-                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[7]",
+                            path:
+                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[6]",
                             name: "FlexSpacer",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_j7j50pay",
+                            key: "Container_bfdrf45y",
                             type: "Container",
-                            path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[8]",
+                            path:
+                                "TodayDashboardPage.body[0].children[0].children[0].children[0].children[7]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_j7zvqynb",
+                                key: "Row_tfclgk6f",
                                 type: "Row",
-                                path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[8].children[0]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[0].children[0].children[0].children[7].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Icon_hdut93no",
+                                    key: "Icon_lf5vyt70",
                                     type: "Icon",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[8].children[0].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[7].children[0].children[0]",
                                     name: "Icon",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_g6ptvtxj",
+                                    key: "Column_75lrrsy3",
                                     type: "Column",
-                                    path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[0].children[0].children[0].children[7].children[0].children[1]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_rvq6vr33",
+                                        key: "Text_hv4dzlgd",
                                         type: "Text",
-                                        path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[0]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[0]",
                                         name: "Text",
-                                        text: "Local prototype",
+                                        text: "Besloten Alpha",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_djry7kam",
+                                        key: "Text_b2yhvop6",
                                         type: "Text",
-                                        path: "TodayDashboardPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[1]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[1]",
                                         name: "Text",
-                                        text: "Sample data only",
+                                        text: "Geen productie",
                                       ),
                                     ],
                                   ),
@@ -346,80 +340,86 @@ abstract final class TodayDashboardPageWidgets {
                 ],
               ),
               ffai.ProjectWidgetHandle(
-                key: "Column_4qfqc0bv",
+                key: "Column_moixrli6",
                 type: "Column",
                 path: "TodayDashboardPage.body[0].children[1]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_dfeosan9",
+                    key: "Container_kjz37695",
                     type: "Container",
                     path: "TodayDashboardPage.body[0].children[1].children[0]",
                     name: "Phase4C7StableContextSelector",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_6uowa7p9",
+                        key: "Container_5aiba1nj",
                         type: "Container",
-                        path: "TodayDashboardPage.body[0].children[1].children[0].children[0]",
+                        path:
+                            "TodayDashboardPage.body[0].children[1].children[0].children[0]",
                         name: "Phase4C7StableContextRuntime",
                       ),
                     ],
                   ),
                   ffai.ProjectWidgetHandle(
-                    key: "Container_ynzrqoiq",
+                    key: "Container_kexini3d",
                     type: "Container",
                     path: "TodayDashboardPage.body[0].children[1].children[1]",
                     name: "Phase4C7OperationalRuntime",
                   ),
                   ffai.ProjectWidgetHandle(
-                    key: "Container_s6ihwo8d",
+                    key: "Container_plo7kym3",
                     type: "Container",
                     path: "TodayDashboardPage.body[0].children[1].children[2]",
                     name: "Phase4C7MobileBottomNavigation",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_f4w98jl0",
+                        key: "Container_tn1gwlhp",
                         type: "Container",
-                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0]",
+                        path:
+                            "TodayDashboardPage.body[0].children[1].children[2].children[0]",
                         name: "AvarynMobileNavigationBody",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Row_9kgpkvg0",
+                            key: "Row_j86dexnp",
                             type: "Row",
-                            path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0]",
+                            path:
+                                "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0]",
                             name: "Row",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Container_4uiyqiiq",
+                                key: "Container_k5rcl2dc",
                                 type: "Container",
-                                path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_fyaypx2b",
+                                    key: "Column_cpmgzkc7",
                                     type: "Column",
-                                    path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_deqsjzda",
+                                        key: "Container_7vuzpo7w",
                                         type: "Container",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[0]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_la0wigxg",
+                                        key: "Icon_bhytzzza",
                                         type: "Icon",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[1]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_ize2b61g",
+                                        key: "Text_inadjw82",
                                         type: "Text",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[2]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[0].children[0].children[2]",
                                         name: "Text",
                                         text: "Vandaag",
                                       ),
@@ -428,44 +428,48 @@ abstract final class TodayDashboardPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_4felzl18",
+                                key: "Container_nrbzpadg",
                                 type: "Container",
-                                path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_h3f0v2ai",
+                                    key: "Column_jdphbxr2",
                                     type: "Column",
-                                    path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_fbyjbo33",
+                                        key: "Container_l44zp79e",
                                         type: "Container",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[0]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_uppa5a0i",
+                                        key: "Container_kcej1a2q",
                                         type: "Container",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_piz9mo64",
+                                            key: "Container_6tknml8p",
                                             type: "Container",
-                                            path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
+                                            path:
+                                                "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
                                             name: "AvarynHorseshoeIcon",
                                           ),
                                         ],
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_54c1vzc2",
+                                        key: "Text_rhgfhlzt",
                                         type: "Text",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[2]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[1].children[0].children[2]",
                                         name: "Text",
                                         text: "Paarden",
                                       ),
@@ -474,36 +478,39 @@ abstract final class TodayDashboardPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_zl2s9wst",
+                                key: "Container_r4vqqcfc",
                                 type: "Container",
-                                path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_nwy13mze",
+                                    key: "Column_mwnbqxi5",
                                     type: "Column",
-                                    path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_cnyq041p",
+                                        key: "Container_8iukit4x",
                                         type: "Container",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[0]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_2jfnsnib",
+                                        key: "Icon_sej005hu",
                                         type: "Icon",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[1]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_rt27nnn0",
+                                        key: "Text_cptzkred",
                                         type: "Text",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[2]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[2].children[0].children[2]",
                                         name: "Text",
                                         text: "Planning",
                                       ),
@@ -512,74 +519,39 @@ abstract final class TodayDashboardPageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_tnr33n11",
+                                key: "Container_28zod9wf",
                                 type: "Container",
-                                path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3]",
+                                path:
+                                    "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_pkdkkzqc",
+                                    key: "Column_tw9kzny2",
                                     type: "Column",
-                                    path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0]",
+                                    path:
+                                        "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_1kuevdwl",
+                                        key: "Container_01ch03o7",
                                         type: "Container",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[0]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_xi3paxgz",
+                                        key: "Icon_81qi4jmq",
                                         type: "Icon",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[1]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_1wcruck7",
+                                        key: "Text_9zds6idk",
                                         type: "Text",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[2]",
-                                        name: "Text",
-                                        text: "Wedstrijden",
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              ffai.ProjectWidgetHandle(
-                                key: "Container_o379v3qr",
-                                type: "Container",
-                                path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[4]",
-                                name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Column_yzjenfm6",
-                                    type: "Column",
-                                    path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0]",
-                                    name: "Column",
-                                    children: <ffai.ProjectWidgetHandle>[
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Container_l9a7r199",
-                                        type: "Container",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[0]",
-                                        name: "Container",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Icon_ob4xtfqz",
-                                        type: "Icon",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[1]",
-                                        name: "Icon",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Text_yo80eztg",
-                                        type: "Text",
-                                        path: "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[4].children[0].children[2]",
+                                        path:
+                                            "TodayDashboardPage.body[0].children[1].children[2].children[0].children[0].children[3].children[0].children[2]",
                                         name: "Text",
                                         text: "Profiel",
                                       ),
@@ -602,4 +574,3 @@ abstract final class TodayDashboardPageWidgets {
     ),
   );
 }
-

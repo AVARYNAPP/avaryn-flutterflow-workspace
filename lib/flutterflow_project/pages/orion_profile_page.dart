@@ -4,14 +4,15 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final orionProfilePageHandle = ffai.ProjectPageHandle<OrionProfilePageParams, OrionProfilePageState>(
-  name: "OrionProfilePage",
-  key: "Scaffold_7pdai8gh",
-  route: "paarden/detail",
-  params: const OrionProfilePageParams(),
-  state: const OrionProfilePageState(),
-  widgets: OrionProfilePageWidgets.tree,
-);
+final orionProfilePageHandle =
+    ffai.ProjectPageHandle<OrionProfilePageParams, OrionProfilePageState>(
+      name: "OrionProfilePage",
+      key: "Scaffold_7pdai8gh",
+      route: "paarden/detail",
+      params: const OrionProfilePageParams(),
+      state: const OrionProfilePageState(),
+      widgets: OrionProfilePageWidgets.tree,
+    );
 
 final class OrionProfilePageParams {
   const OrionProfilePageParams();
@@ -34,9 +35,7 @@ abstract final class OrionProfilePageWidgets {
       type: "Scaffold",
       path: "OrionProfilePage",
       name: "OrionProfilePage",
-      triggers: const <String>[
-        "ON_INIT_STATE",
-      ],
+      triggers: const <String>["ON_INIT_STATE"],
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
@@ -52,40 +51,45 @@ abstract final class OrionProfilePageWidgets {
                 name: "HorseDetailDesktopSideNavigation",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_xfn8pvhh",
+                    key: "Container_grfqpqot",
                     type: "Container",
                     path: "OrionProfilePage.body[0].children[0].children[0]",
                     name: "AvarynDesktopNavigationBody",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Column_0oqny2q4",
+                        key: "Column_5ih9xjtx",
                         type: "Column",
-                        path: "OrionProfilePage.body[0].children[0].children[0].children[0]",
+                        path:
+                            "OrionProfilePage.body[0].children[0].children[0].children[0]",
                         name: "Column",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Container_fnnkvc4o",
+                            key: "Container_mtbhdbh3",
                             type: "Container",
-                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[0]",
+                            path:
+                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[0]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Column_t7zimagh",
+                                key: "Column_zaubcbhi",
                                 type: "Column",
-                                path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[0].children[0]",
+                                path:
+                                    "OrionProfilePage.body[0].children[0].children[0].children[0].children[0].children[0]",
                                 name: "Column",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_gc7bl96c",
+                                    key: "Text_iz8bz8io",
                                     type: "Text",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
                                     name: "Text",
                                     text: "AVARYN",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_347s6v46",
+                                    key: "Text_jt2bju8b",
                                     type: "Text",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
                                     name: "Text",
                                     text: "Performance",
                                   ),
@@ -94,94 +98,105 @@ abstract final class OrionProfilePageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_e5tvc8pa",
+                            key: "Container_jsnt983j",
                             type: "Container",
-                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[1]",
+                            path:
+                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[1]",
                             name: "Container",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_crtqbfk6",
+                            key: "Container_i95wvv4m",
                             type: "Container",
-                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[2]",
+                            path:
+                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[2]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_pzy0uxw2",
+                                key: "Row_08tfh1ei",
                                 type: "Row",
-                                path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[2].children[0]",
+                                path:
+                                    "OrionProfilePage.body[0].children[0].children[0].children[0].children[2].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_eo9hb4pd",
+                                    key: "Container_w4o5fl93",
                                     type: "Container",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_oeuato6z",
+                                    key: "Button_wfur1mil",
                                     type: "Button",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
                                     name: "Button",
                                     text: "Vandaag",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_k1gg4rt8",
+                            key: "Container_alpfg3kp",
                             type: "Container",
-                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[3]",
+                            path:
+                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[3]",
                             name: "Container",
-                            triggers: const <String>[
-                              "ON_TAP",
-                            ],
+                            triggers: const <String>["ON_TAP"],
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_v4k3aj9d",
+                                key: "Row_b0o9cyuj",
                                 type: "Row",
-                                path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0]",
+                                path:
+                                    "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_dj8af149",
+                                    key: "Container_6yeronnu",
                                     type: "Container",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_iotl0umz",
+                                    key: "Container_6fgqh75j",
                                     type: "Container",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
                                     name: "Container",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Row_xapr5lge",
+                                        key: "Row_dl80sy0s",
                                         type: "Row",
-                                        path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
                                         name: "Row",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_6noiinv1",
+                                            key: "Container_4eueldbe",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
-                                                key: "Container_tkbo87fn",
+                                                key: "Container_w7j9i9im",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
                                                 name: "AvarynHorseshoeIcon",
                                               ),
                                             ],
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_ga9harc9",
+                                            key: "Text_uuugjkap",
                                             type: "Text",
-                                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
                                             name: "Text",
                                             text: "Paarden",
                                           ),
@@ -194,144 +209,123 @@ abstract final class OrionProfilePageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_cq9065nx",
+                            key: "Container_o38x5pzq",
                             type: "Container",
-                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[4]",
+                            path:
+                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[4]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_7j78nbxy",
+                                key: "Row_qbmad6ov",
                                 type: "Row",
-                                path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[4].children[0]",
+                                path:
+                                    "OrionProfilePage.body[0].children[0].children[0].children[0].children[4].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_vjyhl6de",
+                                    key: "Container_cnsolgcz",
                                     type: "Container",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_v3ylsewl",
+                                    key: "Button_0nncpd0s",
                                     type: "Button",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
                                     name: "Button",
                                     text: "Planning",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_hqqgqdbg",
+                            key: "Container_vkl802gx",
                             type: "Container",
-                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[5]",
+                            path:
+                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[5]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_ytminuok",
+                                key: "Row_m0qs1ui4",
                                 type: "Row",
-                                path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[5].children[0]",
+                                path:
+                                    "OrionProfilePage.body[0].children[0].children[0].children[0].children[5].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_ds9w0f8b",
+                                    key: "Container_jd1mgfub",
                                     type: "Container",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_2qblsdza",
+                                    key: "Button_ubjcchfx",
                                     type: "Button",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
-                                    name: "Button",
-                                    text: "Wedstrijden",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          ffai.ProjectWidgetHandle(
-                            key: "Container_j26n6zm7",
-                            type: "Container",
-                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[6]",
-                            name: "Container",
-                            children: <ffai.ProjectWidgetHandle>[
-                              ffai.ProjectWidgetHandle(
-                                key: "Row_7xfme4zh",
-                                type: "Row",
-                                path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[6].children[0]",
-                                name: "Row",
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Container_nyru1on7",
-                                    type: "Container",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[6].children[0].children[0]",
-                                    name: "Container",
-                                  ),
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Button_cy4x59xl",
-                                    type: "Button",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[6].children[0].children[1]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
                                     name: "Button",
                                     text: "Profiel",
-                                    triggers: const <String>[
-                                      "ON_TAP",
-                                    ],
+                                    triggers: const <String>["ON_TAP"],
                                   ),
                                 ],
                               ),
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Spacer_gs9v86nf",
+                            key: "Spacer_y4iym42u",
                             type: "Spacer",
-                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[7]",
+                            path:
+                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[6]",
                             name: "FlexSpacer",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_1i8iwx2c",
+                            key: "Container_uxpeyq6a",
                             type: "Container",
-                            path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[8]",
+                            path:
+                                "OrionProfilePage.body[0].children[0].children[0].children[0].children[7]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_atq2rsy3",
+                                key: "Row_c9spqmas",
                                 type: "Row",
-                                path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[8].children[0]",
+                                path:
+                                    "OrionProfilePage.body[0].children[0].children[0].children[0].children[7].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Icon_w17ydsx0",
+                                    key: "Icon_ra5ju9g6",
                                     type: "Icon",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[8].children[0].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[7].children[0].children[0]",
                                     name: "Icon",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_o2fnsr9d",
+                                    key: "Column_xsqr23lo",
                                     type: "Column",
-                                    path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[8].children[0].children[1]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[0].children[0].children[0].children[7].children[0].children[1]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_pzf9ab3c",
+                                        key: "Text_5i1uoftc",
                                         type: "Text",
-                                        path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[0]",
                                         name: "Text",
-                                        text: "Local prototype",
+                                        text: "Besloten Alpha",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_tdn5xuuf",
+                                        key: "Text_piemrma1",
                                         type: "Text",
-                                        path: "OrionProfilePage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[1]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[0].children[0].children[0].children[7].children[0].children[1].children[1]",
                                         name: "Text",
-                                        text: "Sample data only",
+                                        text: "Geen productie",
                                       ),
                                     ],
                                   ),
@@ -360,43 +354,53 @@ abstract final class OrionProfilePageWidgets {
                       ffai.ProjectWidgetHandle(
                         key: "Container_4zadxl6k",
                         type: "Container",
-                        path: "OrionProfilePage.body[0].children[1].children[0].children[0]",
+                        path:
+                            "OrionProfilePage.body[0].children[1].children[0].children[0]",
                         name: "HorseDetailDesktopCanvas",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
                             key: "Container_vv0jmrdc",
                             type: "Container",
-                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0]",
+                            path:
+                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0]",
                             name: "HorseDetailDesktopContent",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
                                 key: "Column_ze4nyxw9",
                                 type: "Column",
-                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0]",
+                                path:
+                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0]",
                                 name: "Column",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
                                     key: "Container_zmbkahzu",
                                     type: "Container",
-                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0]",
-                                    name: "HorseDetailDesktopPhotographicHeader",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0]",
+                                    name:
+                                        "HorseDetailDesktopPhotographicHeader",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
                                         key: "Stack_ql7km1v0",
                                         type: "Stack",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0]",
                                         name: "Stack",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_dnqem6ls",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_elfoyykr",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0]",
                                                 name: "AvarynHorseAvatar",
                                               ),
                                             ],
@@ -404,43 +408,61 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_dy20h7ix",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_m7z2qxd5",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Row_u1biulfg",
                                                     type: "Row",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0]",
                                                     name: "Row",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_yz8tvf3v",
+                                                        key:
+                                                            "Container_yz8tvf3v",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Button_xod3dfau",
+                                                            key:
+                                                                "Button_xod3dfau",
                                                             type: "Button",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
                                                             name: "Button",
-                                                            text: "Mijn paarden",
-                                                            triggers: const <String>[
-                                                              "ON_TAP",
-                                                            ],
+                                                            text:
+                                                                "Mijn paarden",
+                                                            triggers:
+                                                                const <String>[
+                                                                  "ON_TAP",
+                                                                ],
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_b0ea7wyc",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1]",
                                                         name: "Text",
                                                         text: "A V A R Y N",
                                                       ),
@@ -449,32 +471,43 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_hn3jps8q",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_rbbsyd0t",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0]",
                                                         name: "Text",
                                                         text: "PAARDPROFIEL",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Stack_9t0z9y2v",
                                                         type: "Stack",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1]",
                                                         name: "Stack",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_roq06c7t",
+                                                            key:
+                                                                "Text_roq06c7t",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0]",
                                                             name: "Text",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_t0v3tpg5",
+                                                            key:
+                                                                "Text_t0v3tpg5",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -482,20 +515,28 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_85xuybj9",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[2]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_9crz7zhn",
+                                                            key:
+                                                                "Text_9crz7zhn",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[2].children[0]",
                                                             name: "Text",
-                                                            text: "OfficiÃ«le naam:",
+                                                            text:
+                                                                "OfficiÃ«le naam:",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_d87vg02l",
+                                                            key:
+                                                                "Text_d87vg02l",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[2].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[2].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -503,75 +544,108 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Wrap_2qcyik3g",
                                                         type: "Wrap",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3]",
                                                         name: "Wrap",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_sopq04y0",
+                                                            key:
+                                                                "Container_sopq04y0",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_s91usi91",
+                                                                key:
+                                                                    "Text_s91usi91",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[0].children[0]",
                                                                 name: "Text",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_zbotg5k4",
+                                                            key:
+                                                                "Container_zbotg5k4",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[1]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_qjofnw79",
+                                                                key:
+                                                                    "Text_qjofnw79",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[1].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[1].children[0]",
                                                                 name: "Text",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_8kp5cmg1",
+                                                            key:
+                                                                "Container_8kp5cmg1",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[2]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[2]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_srx8it55",
+                                                                key:
+                                                                    "Text_srx8it55",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[2].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[2].children[0]",
                                                                 name: "Text",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_rzxfj9i6",
+                                                            key:
+                                                                "Container_rzxfj9i6",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[3]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[3]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_9yq95dsu",
+                                                                key:
+                                                                    "Text_9yq95dsu",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[3].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[3].children[0]",
                                                                 name: "Text",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_j384lxes",
+                                                            key:
+                                                                "Container_j384lxes",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[4]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[4]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_w5chsbn1",
+                                                                key:
+                                                                    "Text_w5chsbn1",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[4].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[4].children[0]",
                                                                 name: "Text",
                                                               ),
                                                             ],
@@ -579,41 +653,63 @@ abstract final class OrionProfilePageWidgets {
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_8pd7z00u",
+                                                        key:
+                                                            "Container_8pd7z00u",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_0vlkfs64",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Icon_nr0va1mj",
+                                                                key:
+                                                                    "Icon_nr0va1mj",
                                                                 type: "Icon",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[0]",
                                                                 name: "Icon",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Column_6lem6gry",
+                                                                key:
+                                                                    "Column_6lem6gry",
                                                                 type: "Column",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1]",
                                                                 name: "Column",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_0b7q3wzb",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1].children[0]",
-                                                                    name: "Text",
-                                                                    text: "ACTUEEL AANDACHTSPUNT",
+                                                                    key:
+                                                                        "Text_0b7q3wzb",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1].children[0]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "ACTUEEL AANDACHTSPUNT",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_vrf03hbi",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1].children[1]",
-                                                                    name: "Text",
+                                                                    key:
+                                                                        "Text_vrf03hbi",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1].children[1]",
+                                                                    name:
+                                                                        "Text",
                                                                   ),
                                                                 ],
                                                               ),
@@ -624,34 +720,50 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_1nzmeckj",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[5]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[5]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Button_puldut0f",
+                                                            key:
+                                                                "Button_puldut0f",
                                                             type: "Button",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[0]",
                                                             name: "Button",
-                                                            text: "Activiteit toevoegen",
-                                                            triggers: const <String>[
-                                                              "ON_TAP",
-                                                            ],
-                                                          ),
-                                                          ffai.ProjectWidgetHandle(
-                                                            key: "Container_k2n8i0w9",
-                                                            type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[1]",
-                                                            name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
-                                                              ffai.ProjectWidgetHandle(
-                                                                key: "Button_h39semk4",
-                                                                type: "Button",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[1].children[0]",
-                                                                name: "EditHorseFromHeader",
-                                                                text: "Bewerken",
-                                                                triggers: const <String>[
+                                                            text:
+                                                                "Activiteit toevoegen",
+                                                            triggers:
+                                                                const <String>[
                                                                   "ON_TAP",
                                                                 ],
+                                                          ),
+                                                          ffai.ProjectWidgetHandle(
+                                                            key:
+                                                                "Container_k2n8i0w9",
+                                                            type: "Container",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[1]",
+                                                            name: "Container",
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
+                                                              ffai.ProjectWidgetHandle(
+                                                                key:
+                                                                    "Button_h39semk4",
+                                                                type: "Button",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[1].children[0]",
+                                                                name:
+                                                                    "EditHorseFromHeader",
+                                                                text:
+                                                                    "Bewerken",
+                                                                triggers:
+                                                                    const <
+                                                                      String
+                                                                    >["ON_TAP"],
                                                               ),
                                                             ],
                                                           ),
@@ -670,47 +782,61 @@ abstract final class OrionProfilePageWidgets {
                                   ffai.ProjectWidgetHandle(
                                     key: "Container_ympoxhtv",
                                     type: "Container",
-                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1]",
                                     name: "HorseDetailSectionNavigation",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
                                         key: "Row_paw29fmi",
                                         type: "Row",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0]",
                                         name: "Row",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Stack_pez0thk7",
                                             type: "Stack",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0]",
                                             name: "Stack",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_dsf6isr6",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_3b6m1n6o",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_r6twbf1o",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Overzicht",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_eqr3tf6i",
+                                                        key:
+                                                            "Container_eqr3tf6i",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -720,29 +846,38 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_q72hxp78",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_mpn8qsr9",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_dw7pinu3",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Overzicht",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_jnqcfwft",
+                                                        key:
+                                                            "Container_jnqcfwft",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[1].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -754,35 +889,47 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Stack_m73cej88",
                                             type: "Stack",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1]",
                                             name: "Stack",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_7yx98jqm",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_zyjrcofl",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_jpg7kdxt",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Gezondheid",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_lx0gh8b6",
+                                                        key:
+                                                            "Container_lx0gh8b6",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -792,29 +939,38 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_m45h6wcd",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_ko2zq4le",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_1kn1xtxd",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Gezondheid",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_cmreymzx",
+                                                        key:
+                                                            "Container_cmreymzx",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -826,35 +982,47 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Stack_mv12ugse",
                                             type: "Stack",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2]",
                                             name: "Stack",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_w1aukclm",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_xchsofcn",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_7xr9vv3u",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Training",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_smehm304",
+                                                        key:
+                                                            "Container_smehm304",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -864,29 +1032,38 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_t8r8icdt",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[1]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_k2as1511",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[1].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_1o7m601t",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[1].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[1].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Training",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_87c205km",
+                                                        key:
+                                                            "Container_87c205km",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[1].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[1].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -898,35 +1075,47 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Stack_ma6nhehx",
                                             type: "Stack",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3]",
                                             name: "Stack",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_z8csbik9",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[0]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_u05g416a",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[0].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_duhnsily",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[0].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Voeding",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_6zom2bhs",
+                                                        key:
+                                                            "Container_6zom2bhs",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[0].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -936,29 +1125,38 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_i8ft4vfp",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[1]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_uupahheq",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[1].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_cinxibja",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[1].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[1].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Voeding",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_ch9hwcxr",
+                                                        key:
+                                                            "Container_ch9hwcxr",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[1].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[3].children[1].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -970,35 +1168,47 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Stack_rp8sqfcj",
                                             type: "Stack",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4]",
                                             name: "Stack",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_r3bdikfm",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[0]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_enc9ej44",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[0].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_0havs0vk",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[0].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Gegevens",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_wa8ufi7z",
+                                                        key:
+                                                            "Container_wa8ufi7z",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[0].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -1008,29 +1218,38 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_eo4w9sj6",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[1]",
                                                 name: "Container",
                                                 triggers: const <String>[
                                                   "ON_TAP",
                                                 ],
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_n71olh2m",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[1].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_2ca36oj3",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[1].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[1].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Gegevens",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_2mifxx0d",
+                                                        key:
+                                                            "Container_2mifxx0d",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[1].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0].children[4].children[1].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                     ],
@@ -1046,53 +1265,68 @@ abstract final class OrionProfilePageWidgets {
                                   ffai.ProjectWidgetHandle(
                                     key: "Stack_4yiabd3b",
                                     type: "Stack",
-                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2]",
                                     name: "HorseDetailSectionContent",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_p976kfzz",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Column_r8o7pxt6",
                                             type: "Column",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0]",
                                             name: "Column",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Row_542f6pfb",
                                                 type: "Row",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0]",
                                                 name: "Row",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_z6447yrp",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_yzunmg8e",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Overzicht",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_goj2uphy",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0].children[0].children[1]",
                                                         name: "Text",
-                                                        text: "De belangrijkste signalen en eerstvolgende stap op Ã©Ã©n plek.",
+                                                        text:
+                                                            "De belangrijkste signalen en eerstvolgende stap op Ã©Ã©n plek.",
                                                       ),
                                                     ],
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_5bal0ls2",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[0].children[1]",
                                                     name: "Text",
                                                     text: "VANDAAG",
                                                   ),
@@ -1101,189 +1335,312 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Row_zad288hu",
                                                 type: "Row",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1]",
                                                 name: "Row",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_xw4dur44",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_16g300w3",
+                                                        key:
+                                                            "Container_16g300w3",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Column_7n1fu42v",
+                                                            key:
+                                                                "Column_7n1fu42v",
                                                             type: "Column",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0]",
                                                             name: "Column",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Row_52ic81zj",
+                                                                key:
+                                                                    "Row_52ic81zj",
                                                                 type: "Row",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
                                                                 name: "Row",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Column_r2eiz2zl",
-                                                                    type: "Column",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
-                                                                    name: "Column",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    key:
+                                                                        "Column_r2eiz2zl",
+                                                                    type:
+                                                                        "Column",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
+                                                                    name:
+                                                                        "Column",
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_y3a3s0r2",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0]",
-                                                                        name: "Text",
-                                                                        text: "DAGVORM",
+                                                                        key:
+                                                                            "Text_y3a3s0r2",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                                                        name:
+                                                                            "Text",
+                                                                        text:
+                                                                            "DAGVORM",
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_8dpjppx1",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[1]",
-                                                                        name: "Text",
-                                                                        text: "Actuele belastbaarheid",
+                                                                        key:
+                                                                            "Text_8dpjppx1",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[1]",
+                                                                        name:
+                                                                            "Text",
+                                                                        text:
+                                                                            "Actuele belastbaarheid",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Container_qxmaondf",
-                                                                    type: "Container",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[1]",
-                                                                    name: "Container",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    key:
+                                                                        "Container_qxmaondf",
+                                                                    type:
+                                                                        "Container",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[1]",
+                                                                    name:
+                                                                        "Container",
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_cht8aszu",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0]",
-                                                                        name: "Text",
+                                                                        key:
+                                                                            "Text_cht8aszu",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[1].children[0]",
+                                                                        name:
+                                                                            "Text",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_h4nei1da",
+                                                                key:
+                                                                    "Text_h4nei1da",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[1]",
                                                                 name: "Text",
-                                                                text: "Dagvorm bundelt herstel, welzijn en recente belasting tot Ã©Ã©n rustig dagelijks signaal.",
+                                                                text:
+                                                                    "Dagvorm bundelt herstel, welzijn en recente belasting tot Ã©Ã©n rustig dagelijks signaal.",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Container_cgko0gh2",
-                                                                type: "Container",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[2]",
-                                                                name: "Container",
+                                                                key:
+                                                                    "Container_cgko0gh2",
+                                                                type:
+                                                                    "Container",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[2]",
+                                                                name:
+                                                                    "Container",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Row_hcq8mn7k",
+                                                                key:
+                                                                    "Row_hcq8mn7k",
                                                                 type: "Row",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3]",
                                                                 name: "Row",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Container_5u66xas4",
-                                                                    type: "Container",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3].children[0]",
-                                                                    name: "Container",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    key:
+                                                                        "Container_5u66xas4",
+                                                                    type:
+                                                                        "Container",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3].children[0]",
+                                                                    name:
+                                                                        "Container",
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Icon_9pwepbz5",
-                                                                        type: "Icon",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3].children[0].children[0]",
-                                                                        name: "Icon",
+                                                                        key:
+                                                                            "Icon_9pwepbz5",
+                                                                        type:
+                                                                            "Icon",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3].children[0].children[0]",
+                                                                        name:
+                                                                            "Icon",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_xi21a4x5",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3].children[1]",
-                                                                    name: "Text",
-                                                                    text: "Herstel",
+                                                                    key:
+                                                                        "Text_xi21a4x5",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3].children[1]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Herstel",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_dfn4vjq8",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3].children[2]",
-                                                                    name: "Text",
-                                                                    text: "Volgen",
+                                                                    key:
+                                                                        "Text_dfn4vjq8",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[3].children[2]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Volgen",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Row_2pvaj4pd",
+                                                                key:
+                                                                    "Row_2pvaj4pd",
                                                                 type: "Row",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4]",
                                                                 name: "Row",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Container_ouaba9gq",
-                                                                    type: "Container",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4].children[0]",
-                                                                    name: "Container",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    key:
+                                                                        "Container_ouaba9gq",
+                                                                    type:
+                                                                        "Container",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4].children[0]",
+                                                                    name:
+                                                                        "Container",
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Icon_v2825m8f",
-                                                                        type: "Icon",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4].children[0].children[0]",
-                                                                        name: "Icon",
+                                                                        key:
+                                                                            "Icon_v2825m8f",
+                                                                        type:
+                                                                            "Icon",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4].children[0].children[0]",
+                                                                        name:
+                                                                            "Icon",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_41brgrt7",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4].children[1]",
-                                                                    name: "Text",
-                                                                    text: "Welzijn",
+                                                                    key:
+                                                                        "Text_41brgrt7",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4].children[1]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Welzijn",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_qxs0vp1o",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4].children[2]",
-                                                                    name: "Text",
-                                                                    text: "Dagelijks",
+                                                                    key:
+                                                                        "Text_qxs0vp1o",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[4].children[2]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Dagelijks",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Row_r9dgq5cl",
+                                                                key:
+                                                                    "Row_r9dgq5cl",
                                                                 type: "Row",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5]",
                                                                 name: "Row",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Container_b4a3gwip",
-                                                                    type: "Container",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5].children[0]",
-                                                                    name: "Container",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    key:
+                                                                        "Container_b4a3gwip",
+                                                                    type:
+                                                                        "Container",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5].children[0]",
+                                                                    name:
+                                                                        "Container",
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Icon_iketpo0g",
-                                                                        type: "Icon",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5].children[0].children[0]",
-                                                                        name: "Icon",
+                                                                        key:
+                                                                            "Icon_iketpo0g",
+                                                                        type:
+                                                                            "Icon",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5].children[0].children[0]",
+                                                                        name:
+                                                                            "Icon",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_h9khznec",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5].children[1]",
-                                                                    name: "Text",
-                                                                    text: "Belasting",
+                                                                    key:
+                                                                        "Text_h9khznec",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5].children[1]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Belasting",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_g01cqtov",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5].children[2]",
-                                                                    name: "Text",
-                                                                    text: "In context",
+                                                                    key:
+                                                                        "Text_g01cqtov",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[0].children[0].children[5].children[2]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "In context",
                                                                   ),
                                                                 ],
                                                               ),
@@ -1294,92 +1651,153 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Stack_nu01u28p",
                                                         type: "Stack",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1]",
                                                         name: "Stack",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_31ded9oc",
+                                                            key:
+                                                                "Container_31ded9oc",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Column_5dlv8w98",
+                                                                key:
+                                                                    "Column_5dlv8w98",
                                                                 type: "Column",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0]",
                                                                 name: "Column",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_e8m9ijpe",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
-                                                                    name: "Text",
-                                                                    text: "ACTUEEL AANDACHTSPUNT",
+                                                                    key:
+                                                                        "Text_e8m9ijpe",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "ACTUEEL AANDACHTSPUNT",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_y74zu0km",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
-                                                                    name: "Text",
+                                                                    key:
+                                                                        "Text_y74zu0km",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
+                                                                    name:
+                                                                        "Text",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_xmyybic0",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[2]",
-                                                                    name: "Text",
-                                                                    text: "Neem dit signaal mee in de beoordeling vÃ³Ã³r de eerstvolgende belasting.",
+                                                                    key:
+                                                                        "Text_xmyybic0",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[2]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Neem dit signaal mee in de beoordeling vÃ³Ã³r de eerstvolgende belasting.",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Button_m66syo4l",
-                                                                    type: "Button",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[3]",
-                                                                    name: "Button",
-                                                                    text: "Beoordelen",
-                                                                    triggers: const <String>[
-                                                                      "ON_TAP",
-                                                                    ],
+                                                                    key:
+                                                                        "Button_m66syo4l",
+                                                                    type:
+                                                                        "Button",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[3]",
+                                                                    name:
+                                                                        "Button",
+                                                                    text:
+                                                                        "Beoordelen",
+                                                                    triggers:
+                                                                        const <
+                                                                          String
+                                                                        >[
+                                                                          "ON_TAP",
+                                                                        ],
                                                                   ),
                                                                 ],
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_qcj9p2pp",
+                                                            key:
+                                                                "Container_qcj9p2pp",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Row_svar1jp9",
+                                                                key:
+                                                                    "Row_svar1jp9",
                                                                 type: "Row",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0]",
                                                                 name: "Row",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Icon_0gxjbzv2",
-                                                                    type: "Icon",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[0]",
-                                                                    name: "Icon",
+                                                                    key:
+                                                                        "Icon_0gxjbzv2",
+                                                                    type:
+                                                                        "Icon",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[0]",
+                                                                    name:
+                                                                        "Icon",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Column_aj5q0awb",
-                                                                    type: "Column",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[1]",
-                                                                    name: "Column",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    key:
+                                                                        "Column_aj5q0awb",
+                                                                    type:
+                                                                        "Column",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[1]",
+                                                                    name:
+                                                                        "Column",
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_v7ay9yvn",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[1].children[0]",
-                                                                        name: "Text",
-                                                                        text: "Geen actueel aandachtspunt",
+                                                                        key:
+                                                                            "Text_v7ay9yvn",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[1].children[0]",
+                                                                        name:
+                                                                            "Text",
+                                                                        text:
+                                                                            "Geen actueel aandachtspunt",
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_2vwq6n3s",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[1].children[1]",
-                                                                        name: "Text",
-                                                                        text: "Nieuwe observaties verschijnen hier zodra ze worden geregistreerd.",
+                                                                        key:
+                                                                            "Text_2vwq6n3s",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[1].children[0].children[1].children[1]",
+                                                                        name:
+                                                                            "Text",
+                                                                        text:
+                                                                            "Nieuwe observaties verschijnen hier zodra ze worden geregistreerd.",
                                                                       ),
                                                                     ],
                                                                   ),
@@ -1390,90 +1808,140 @@ abstract final class OrionProfilePageWidgets {
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_sj51c47g",
+                                                        key:
+                                                            "Container_sj51c47g",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Column_08afred4",
+                                                            key:
+                                                                "Column_08afred4",
                                                             type: "Column",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0]",
                                                             name: "Column",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_kerw4xbr",
+                                                                key:
+                                                                    "Text_kerw4xbr",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "EERSTVOLGENDE ACTIVITEIT",
+                                                                text:
+                                                                    "EERSTVOLGENDE ACTIVITEIT",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Stack_2y08ur76",
+                                                                key:
+                                                                    "Stack_2y08ur76",
                                                                 type: "Stack",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1]",
                                                                 name: "Stack",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Row_wf6yefux",
+                                                                    key:
+                                                                        "Row_wf6yefux",
                                                                     type: "Row",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[0]",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[0]",
                                                                     name: "Row",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Container_6ae0eqze",
-                                                                        type: "Container",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0]",
-                                                                        name: "Container",
-                                                                        children: <ffai.ProjectWidgetHandle>[
+                                                                        key:
+                                                                            "Container_6ae0eqze",
+                                                                        type:
+                                                                            "Container",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0]",
+                                                                        name:
+                                                                            "Container",
+                                                                        children: <
+                                                                          ffai.ProjectWidgetHandle
+                                                                        >[
                                                                           ffai.ProjectWidgetHandle(
-                                                                            key: "Icon_z5srltjb",
-                                                                            type: "Icon",
-                                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[0]",
-                                                                            name: "Icon",
+                                                                            key:
+                                                                                "Icon_z5srltjb",
+                                                                            type:
+                                                                                "Icon",
+                                                                            path:
+                                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[0]",
+                                                                            name:
+                                                                                "Icon",
                                                                           ),
                                                                         ],
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_3wv9mvxu",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1]",
-                                                                        name: "Text",
+                                                                        key:
+                                                                            "Text_3wv9mvxu",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1]",
+                                                                        name:
+                                                                            "Text",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Row_w817jo84",
+                                                                    key:
+                                                                        "Row_w817jo84",
                                                                     type: "Row",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[1]",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[1]",
                                                                     name: "Row",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Icon_3x2i8kgk",
-                                                                        type: "Icon",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[1].children[0]",
-                                                                        name: "Icon",
+                                                                        key:
+                                                                            "Icon_3x2i8kgk",
+                                                                        type:
+                                                                            "Icon",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[1].children[0]",
+                                                                        name:
+                                                                            "Icon",
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_bpfcwoix",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[1].children[1]",
-                                                                        name: "Text",
-                                                                        text: "Nog geen activiteit gepland",
+                                                                        key:
+                                                                            "Text_bpfcwoix",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[1].children[1].children[1]",
+                                                                        name:
+                                                                            "Text",
+                                                                        text:
+                                                                            "Nog geen activiteit gepland",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Button_s3cgs671",
+                                                                key:
+                                                                    "Button_s3cgs671",
                                                                 type: "Button",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[2]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[0].children[2].children[0].children[2]",
                                                                 name: "Button",
-                                                                text: "Activiteit bekijken",
-                                                                triggers: const <String>[
-                                                                  "ON_TAP",
-                                                                ],
+                                                                text:
+                                                                    "Activiteit bekijken",
+                                                                triggers:
+                                                                    const <
+                                                                      String
+                                                                    >["ON_TAP"],
                                                               ),
                                                             ],
                                                           ),
@@ -1484,209 +1952,342 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_lobhvle3",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Column_m8j2ka6o",
                                                         type: "Column",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0]",
                                                         name: "Column",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_r5myuojn",
+                                                            key:
+                                                                "Container_r5myuojn",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Column_uxguq61x",
+                                                                key:
+                                                                    "Column_uxguq61x",
                                                                 type: "Column",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0]",
                                                                 name: "Column",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_3e8fjw31",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0]",
-                                                                    name: "Text",
-                                                                    text: "PROFIELCONTEXT",
+                                                                    key:
+                                                                        "Text_3e8fjw31",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "PROFIELCONTEXT",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Row_oglxg7ba",
+                                                                    key:
+                                                                        "Row_oglxg7ba",
                                                                     type: "Row",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1]",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1]",
                                                                     name: "Row",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Icon_n5gnukr9",
-                                                                        type: "Icon",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[0]",
-                                                                        name: "Icon",
+                                                                        key:
+                                                                            "Icon_n5gnukr9",
+                                                                        type:
+                                                                            "Icon",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[0]",
+                                                                        name:
+                                                                            "Icon",
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Container_06cvbcym",
-                                                                        type: "Container",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[1]",
-                                                                        name: "Container",
-                                                                        children: <ffai.ProjectWidgetHandle>[
+                                                                        key:
+                                                                            "Container_06cvbcym",
+                                                                        type:
+                                                                            "Container",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[1]",
+                                                                        name:
+                                                                            "Container",
+                                                                        children: <
+                                                                          ffai.ProjectWidgetHandle
+                                                                        >[
                                                                           ffai.ProjectWidgetHandle(
-                                                                            key: "Text_fcy7u3dp",
-                                                                            type: "Text",
-                                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[1].children[0]",
-                                                                            name: "Text",
-                                                                            text: "Ruiter",
+                                                                            key:
+                                                                                "Text_fcy7u3dp",
+                                                                            type:
+                                                                                "Text",
+                                                                            path:
+                                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[1].children[0]",
+                                                                            name:
+                                                                                "Text",
+                                                                            text:
+                                                                                "Ruiter",
                                                                           ),
                                                                         ],
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_71zfyic4",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[2]",
-                                                                        name: "Text",
+                                                                        key:
+                                                                            "Text_71zfyic4",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[1].children[2]",
+                                                                        name:
+                                                                            "Text",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Row_sbx492f8",
+                                                                    key:
+                                                                        "Row_sbx492f8",
                                                                     type: "Row",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2]",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2]",
                                                                     name: "Row",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Icon_0du4v9yl",
-                                                                        type: "Icon",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[0]",
-                                                                        name: "Icon",
+                                                                        key:
+                                                                            "Icon_0du4v9yl",
+                                                                        type:
+                                                                            "Icon",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[0]",
+                                                                        name:
+                                                                            "Icon",
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Container_f35l7gaf",
-                                                                        type: "Container",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[1]",
-                                                                        name: "Container",
-                                                                        children: <ffai.ProjectWidgetHandle>[
+                                                                        key:
+                                                                            "Container_f35l7gaf",
+                                                                        type:
+                                                                            "Container",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[1]",
+                                                                        name:
+                                                                            "Container",
+                                                                        children: <
+                                                                          ffai.ProjectWidgetHandle
+                                                                        >[
                                                                           ffai.ProjectWidgetHandle(
-                                                                            key: "Text_e04h3agi",
-                                                                            type: "Text",
-                                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[1].children[0]",
-                                                                            name: "Text",
-                                                                            text: "Stal of locatie",
+                                                                            key:
+                                                                                "Text_e04h3agi",
+                                                                            type:
+                                                                                "Text",
+                                                                            path:
+                                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[1].children[0]",
+                                                                            name:
+                                                                                "Text",
+                                                                            text:
+                                                                                "Stal of locatie",
                                                                           ),
                                                                         ],
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_z2fqq9px",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[2]",
-                                                                        name: "Text",
+                                                                        key:
+                                                                            "Text_z2fqq9px",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[2].children[2]",
+                                                                        name:
+                                                                            "Text",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Row_spagaql5",
+                                                                    key:
+                                                                        "Row_spagaql5",
                                                                     type: "Row",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3]",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3]",
                                                                     name: "Row",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Icon_ebxsx7vm",
-                                                                        type: "Icon",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3].children[0]",
-                                                                        name: "Icon",
+                                                                        key:
+                                                                            "Icon_ebxsx7vm",
+                                                                        type:
+                                                                            "Icon",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3].children[0]",
+                                                                        name:
+                                                                            "Icon",
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Container_qx05o27n",
-                                                                        type: "Container",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3].children[1]",
-                                                                        name: "Container",
-                                                                        children: <ffai.ProjectWidgetHandle>[
+                                                                        key:
+                                                                            "Container_qx05o27n",
+                                                                        type:
+                                                                            "Container",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3].children[1]",
+                                                                        name:
+                                                                            "Container",
+                                                                        children: <
+                                                                          ffai.ProjectWidgetHandle
+                                                                        >[
                                                                           ffai.ProjectWidgetHandle(
-                                                                            key: "Text_n8fl7qca",
-                                                                            type: "Text",
-                                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3].children[1].children[0]",
-                                                                            name: "Text",
-                                                                            text: "Klasse",
+                                                                            key:
+                                                                                "Text_n8fl7qca",
+                                                                            type:
+                                                                                "Text",
+                                                                            path:
+                                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3].children[1].children[0]",
+                                                                            name:
+                                                                                "Text",
+                                                                            text:
+                                                                                "Klasse",
                                                                           ),
                                                                         ],
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_ri6j832j",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3].children[2]",
-                                                                        name: "Text",
+                                                                        key:
+                                                                            "Text_ri6j832j",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[3].children[2]",
+                                                                        name:
+                                                                            "Text",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_aermt55j",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[4]",
-                                                                    name: "Text",
-                                                                    text: "Training, gezondheid en voeding worden in vervolgstappen aan ditzelfde profiel gekoppeld.",
+                                                                    key:
+                                                                        "Text_aermt55j",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[4]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Training, gezondheid en voeding worden in vervolgstappen aan ditzelfde profiel gekoppeld.",
                                                                   ),
                                                                 ],
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_fgru5gf8",
+                                                            key:
+                                                                "Container_fgru5gf8",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Column_3pdm1q52",
+                                                                key:
+                                                                    "Column_3pdm1q52",
                                                                 type: "Column",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0]",
                                                                 name: "Column",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_j7gv4mpb",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[0]",
-                                                                    name: "Text",
-                                                                    text: "ONTWIKKELING",
+                                                                    key:
+                                                                        "Text_j7gv4mpb",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[0]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "ONTWIKKELING",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_olrehj0d",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[1]",
-                                                                    name: "Text",
-                                                                    text: "EÃ©n profiel voor dagelijkse performancecontext",
+                                                                    key:
+                                                                        "Text_olrehj0d",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[1]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "EÃ©n profiel voor dagelijkse performancecontext",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Row_wdjkeaf3",
+                                                                    key:
+                                                                        "Row_wdjkeaf3",
                                                                     type: "Row",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[2]",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[2]",
                                                                     name: "Row",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_lsv7z027",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[2].children[0]",
-                                                                        name: "Text",
-                                                                        text: "Actuele Dagvorm",
+                                                                        key:
+                                                                            "Text_lsv7z027",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[2].children[0]",
+                                                                        name:
+                                                                            "Text",
+                                                                        text:
+                                                                            "Actuele Dagvorm",
                                                                       ),
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Text_pk7d3uxb",
-                                                                        type: "Text",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[2].children[1]",
-                                                                        name: "Text",
+                                                                        key:
+                                                                            "Text_pk7d3uxb",
+                                                                        type:
+                                                                            "Text",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[2].children[1]",
+                                                                        name:
+                                                                            "Text",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Container_4dpgpdwa",
-                                                                    type: "Container",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[3]",
-                                                                    name: "Container",
+                                                                    key:
+                                                                        "Container_4dpgpdwa",
+                                                                    type:
+                                                                        "Container",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[3]",
+                                                                    name:
+                                                                        "Container",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_ymjgq7nx",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[4]",
-                                                                    name: "Text",
-                                                                    text: "Zodra er meer registraties zijn, toont AVARYN hier de ontwikkeling van belasting, herstel en Dagvorm.",
+                                                                    key:
+                                                                        "Text_ymjgq7nx",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[0].children[0].children[1].children[1].children[0].children[1].children[0].children[4]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Zodra er meer registraties zijn, toont AVARYN hier de ontwikkeling van belasting, herstel en Dagvorm.",
                                                                   ),
                                                                 ],
                                                               ),
@@ -1705,58 +2306,77 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_k1p45r87",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Column_tyitloq9",
                                             type: "Column",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0]",
                                             name: "Column",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Row_5ef36k24",
                                                 type: "Row",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0]",
                                                 name: "Row",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_rap8rsoz",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_mylbcaot",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Gegevens",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_i6s7vlfb",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[0].children[1]",
                                                         name: "Text",
-                                                        text: "De opgeslagen profielinformatie van dit paard.",
+                                                        text:
+                                                            "De opgeslagen profielinformatie van dit paard.",
                                                       ),
                                                     ],
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_vh6slr39",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[1]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Button_lkgyc9rm",
                                                         type: "Button",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[1].children[0]",
-                                                        name: "EditHorseFromData",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[0].children[1].children[0]",
+                                                        name:
+                                                            "EditHorseFromData",
                                                         text: "Bewerken",
-                                                        triggers: const <String>[
-                                                          "ON_TAP",
-                                                        ],
+                                                        triggers:
+                                                            const <String>[
+                                                              "ON_TAP",
+                                                            ],
                                                       ),
                                                     ],
                                                   ),
@@ -1765,67 +2385,95 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_9qhzbfu1",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_vqwh670h",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_53eetul5",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[0]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Icon_togm5i3l",
+                                                            key:
+                                                                "Icon_togm5i3l",
                                                             type: "Icon",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[0].children[0]",
                                                             name: "Icon",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_ppc9bx1b",
+                                                            key:
+                                                                "Text_ppc9bx1b",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[0].children[1]",
                                                             name: "Text",
-                                                            text: "Basisgegevens",
+                                                            text:
+                                                                "Basisgegevens",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_38op8mhi",
+                                                        key:
+                                                            "Container_38op8mhi",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_bmpzlitt",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[2]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_fvvbu05s",
+                                                            key:
+                                                                "Container_fvvbu05s",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[2].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_jyue8csv",
+                                                                key:
+                                                                    "Text_jyue8csv",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[2].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[2].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "OfficiÃ«le naam",
+                                                                text:
+                                                                    "OfficiÃ«le naam",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_l5ocpiu9",
+                                                            key:
+                                                                "Text_l5ocpiu9",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[2].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[2].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -1833,28 +2481,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_mnq73gbg",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[3]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_ig52xzn3",
+                                                            key:
+                                                                "Container_ig52xzn3",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[3].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_lbr6j2eo",
+                                                                key:
+                                                                    "Text_lbr6j2eo",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[3].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[3].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Roepnaam",
+                                                                text:
+                                                                    "Roepnaam",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_rag6dvyg",
+                                                            key:
+                                                                "Text_rag6dvyg",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[3].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[3].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -1862,28 +2522,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_vndywpw1",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[4]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[4]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_hmd34tf3",
+                                                            key:
+                                                                "Container_hmd34tf3",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[4].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[4].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_uw80xlnt",
+                                                                key:
+                                                                    "Text_uw80xlnt",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[4].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[4].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Geboortedatum",
+                                                                text:
+                                                                    "Geboortedatum",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_qd9wrtno",
+                                                            key:
+                                                                "Text_qd9wrtno",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[4].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[4].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -1891,28 +2563,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_5t5h9e1m",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[5]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[5]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_gf486nuq",
+                                                            key:
+                                                                "Container_gf486nuq",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[5].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[5].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_aszhq1as",
+                                                                key:
+                                                                    "Text_aszhq1as",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[5].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[5].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Geslacht",
+                                                                text:
+                                                                    "Geslacht",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_axn3dzpl",
+                                                            key:
+                                                                "Text_axn3dzpl",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[5].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[5].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -1920,28 +2604,39 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_e2d73zwp",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[6]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[6]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_uiyb43io",
+                                                            key:
+                                                                "Container_uiyb43io",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[6].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[6].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_t5e25krt",
+                                                                key:
+                                                                    "Text_t5e25krt",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[6].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[6].children[0].children[0]",
                                                                 name: "Text",
                                                                 text: "Ras",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_8tj3kcu8",
+                                                            key:
+                                                                "Text_8tj3kcu8",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[6].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[6].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -1949,28 +2644,39 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_5jy4j369",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[7]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[7]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_od5fqpqh",
+                                                            key:
+                                                                "Container_od5fqpqh",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[7].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[7].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_cekx31ai",
+                                                                key:
+                                                                    "Text_cekx31ai",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[7].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[7].children[0].children[0]",
                                                                 name: "Text",
                                                                 text: "Kleur",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_m2ykmbyf",
+                                                            key:
+                                                                "Text_m2ykmbyf",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[7].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[1].children[0].children[7].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -1982,67 +2688,94 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_h0ghnfax",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_gu9hkpdu",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_5yl6ohrt",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[0]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Icon_mg4e28w7",
+                                                            key:
+                                                                "Icon_mg4e28w7",
                                                             type: "Icon",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[0].children[0]",
                                                             name: "Icon",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_uccg69f7",
+                                                            key:
+                                                                "Text_uccg69f7",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[0].children[1]",
                                                             name: "Text",
                                                             text: "Sport",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_5wrdck1o",
+                                                        key:
+                                                            "Container_5wrdck1o",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_kpjiills",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[2]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_93j4juu2",
+                                                            key:
+                                                                "Container_93j4juu2",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[2].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_nvpbshbv",
+                                                                key:
+                                                                    "Text_nvpbshbv",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[2].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[2].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Discipline",
+                                                                text:
+                                                                    "Discipline",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_5oazn0c9",
+                                                            key:
+                                                                "Text_5oazn0c9",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[2].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[2].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -2050,28 +2783,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_0drp4kyx",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[3]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_grnespkn",
+                                                            key:
+                                                                "Container_grnespkn",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[3].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_hhwt4cps",
+                                                                key:
+                                                                    "Text_hhwt4cps",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[3].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[3].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Huidige klasse",
+                                                                text:
+                                                                    "Huidige klasse",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_atl58utr",
+                                                            key:
+                                                                "Text_atl58utr",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[3].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[2].children[0].children[3].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -2083,67 +2828,95 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_w2th9qf9",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_8jp5mozn",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_du71v122",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[0]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Icon_p3n9pnpr",
+                                                            key:
+                                                                "Icon_p3n9pnpr",
                                                             type: "Icon",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[0].children[0]",
                                                             name: "Icon",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_x5omttym",
+                                                            key:
+                                                                "Text_x5omttym",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[0].children[1]",
                                                             name: "Text",
-                                                            text: "Identificatie",
+                                                            text:
+                                                                "Identificatie",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_hrcncxe0",
+                                                        key:
+                                                            "Container_hrcncxe0",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_iwxcbwuj",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[2]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_xumaqbwx",
+                                                            key:
+                                                                "Container_xumaqbwx",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[2].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_os2iunfh",
+                                                                key:
+                                                                    "Text_os2iunfh",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[2].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[2].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Paspoort- of levensnummer",
+                                                                text:
+                                                                    "Paspoort- of levensnummer",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_51nvynvj",
+                                                            key:
+                                                                "Text_51nvynvj",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[2].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[2].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -2151,28 +2924,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_ltrllx0x",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[3]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_1ud36fsj",
+                                                            key:
+                                                                "Container_1ud36fsj",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[3].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_2u8h0elj",
+                                                                key:
+                                                                    "Text_2u8h0elj",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[3].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[3].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Chipnummer",
+                                                                text:
+                                                                    "Chipnummer",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_xdt49rmk",
+                                                            key:
+                                                                "Text_xdt49rmk",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[3].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[3].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -2180,28 +2965,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_5tv6z6tj",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[4]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[4]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_k26t16n2",
+                                                            key:
+                                                                "Container_k26t16n2",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[4].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[4].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_2trck9as",
+                                                                key:
+                                                                    "Text_2trck9as",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[4].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[4].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Paspoort geldig tot en met",
+                                                                text:
+                                                                    "Paspoort geldig tot en met",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_j31zbabt",
+                                                            key:
+                                                                "Text_j31zbabt",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[4].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[3].children[0].children[4].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -2213,67 +3010,95 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_c1fea8gw",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_xmkkkj47",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_4koo4mqw",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[0]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Icon_2gl55oji",
+                                                            key:
+                                                                "Icon_2gl55oji",
                                                             type: "Icon",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[0].children[0]",
                                                             name: "Icon",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_m7ttpiqy",
+                                                            key:
+                                                                "Text_m7ttpiqy",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[0].children[1]",
                                                             name: "Text",
-                                                            text: "Betrokkenen & locatie",
+                                                            text:
+                                                                "Betrokkenen & locatie",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_ixt246vx",
+                                                        key:
+                                                            "Container_ixt246vx",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_zr4vammy",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[2]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_xrwv2g8u",
+                                                            key:
+                                                                "Container_xrwv2g8u",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[2].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_xmnofb1a",
+                                                                key:
+                                                                    "Text_xmnofb1a",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[2].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[2].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Eigenaar",
+                                                                text:
+                                                                    "Eigenaar",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_5roz0aa5",
+                                                            key:
+                                                                "Text_5roz0aa5",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[2].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[2].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -2281,28 +3106,39 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_6g8idqmz",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[3]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_qpn6y5gq",
+                                                            key:
+                                                                "Container_qpn6y5gq",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[3].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_mx77abuy",
+                                                                key:
+                                                                    "Text_mx77abuy",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[3].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[3].children[0].children[0]",
                                                                 name: "Text",
                                                                 text: "Ruiter",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_ceg49a0p",
+                                                            key:
+                                                                "Text_ceg49a0p",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[3].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[3].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -2310,28 +3146,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_n078w9ah",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[4]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[4]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_0gpltr5h",
+                                                            key:
+                                                                "Container_0gpltr5h",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[4].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[4].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_afy1llq4",
+                                                                key:
+                                                                    "Text_afy1llq4",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[4].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[4].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Stal of locatie",
+                                                                text:
+                                                                    "Stal of locatie",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_ok1ohcz8",
+                                                            key:
+                                                                "Text_ok1ohcz8",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[4].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[4].children[0].children[4].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -2343,26 +3191,34 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_r3wthf2m",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[5]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[5]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_978ybkip",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[5].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[5].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_i1wfb8d7",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[5].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[5].children[0].children[0]",
                                                         name: "Text",
                                                         text: "NOTITIES",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_nde5jtrh",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[5].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[1].children[0].children[5].children[0].children[1]",
                                                         name: "Text",
                                                       ),
                                                     ],
@@ -2376,31 +3232,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_yi7tg454",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_lreg876h",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_eyskqqrn",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_y2gknxqi",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0].children[0]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Icon_v8a8oaw1",
                                                         type: "Icon",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0].children[0].children[0]",
                                                         name: "Icon",
                                                       ),
                                                     ],
@@ -2408,16 +3275,19 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_5tsn0frq",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0].children[1]",
                                                     name: "Text",
                                                     text: "Gezondheid",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_nbk2u7ls",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0].children[2]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[2].children[0].children[0].children[2]",
                                                     name: "Text",
-                                                    text: "Dit onderdeel wordt in een volgende versie uitgewerkt.",
+                                                    text:
+                                                        "Dit onderdeel wordt in een volgende versie uitgewerkt.",
                                                   ),
                                                 ],
                                               ),
@@ -2428,31 +3298,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_vx11wr36",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_7lx5oom1",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_x8euo76f",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_rgap80bz",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0].children[0]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Icon_4m3hv27t",
                                                         type: "Icon",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0].children[0].children[0]",
                                                         name: "Icon",
                                                       ),
                                                     ],
@@ -2460,16 +3341,19 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_87dx3l6k",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0].children[1]",
                                                     name: "Text",
                                                     text: "Training",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_0q8pkwre",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0].children[2]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[3].children[0].children[0].children[2]",
                                                     name: "Text",
-                                                    text: "Dit onderdeel wordt in een volgende versie uitgewerkt.",
+                                                    text:
+                                                        "Dit onderdeel wordt in een volgende versie uitgewerkt.",
                                                   ),
                                                 ],
                                               ),
@@ -2480,31 +3364,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_v6hwzot1",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_v1c1j5tx",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_shyijibd",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_oh7f5zzn",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0].children[0]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Icon_1zo4mjb7",
                                                         type: "Icon",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0].children[0].children[0]",
                                                         name: "Icon",
                                                       ),
                                                     ],
@@ -2512,16 +3407,19 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_j2g87362",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0].children[1]",
                                                     name: "Text",
                                                     text: "Voeding",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_kubnt6tg",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0].children[2]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[2].children[4].children[0].children[0].children[2]",
                                                     name: "Text",
-                                                    text: "Dit onderdeel wordt in een volgende versie uitgewerkt.",
+                                                    text:
+                                                        "Dit onderdeel wordt in een volgende versie uitgewerkt.",
                                                   ),
                                                 ],
                                               ),
@@ -2534,7 +3432,8 @@ abstract final class OrionProfilePageWidgets {
                                   ffai.ProjectWidgetHandle(
                                     key: "Container_hlm98i6r",
                                     type: "Container",
-                                    path: "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[3]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[0].children[0].children[0].children[0].children[3]",
                                     name: "Spacer",
                                   ),
                                 ],
@@ -2546,37 +3445,43 @@ abstract final class OrionProfilePageWidgets {
                       ffai.ProjectWidgetHandle(
                         key: "Column_obsk98ow",
                         type: "Column",
-                        path: "OrionProfilePage.body[0].children[1].children[0].children[1]",
+                        path:
+                            "OrionProfilePage.body[0].children[1].children[0].children[1]",
                         name: "HorseDetailCompactCanvas",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
                             key: "Column_ww06w0va",
                             type: "Column",
-                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0]",
+                            path:
+                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0]",
                             name: "Column",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
                                 key: "Container_1ewj1x5b",
                                 type: "Container",
-                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0]",
+                                path:
+                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0]",
                                 name: "HorseDetailMobilePhotographicHeader",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
                                     key: "Stack_ota6bsg8",
                                     type: "Stack",
-                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0]",
                                     name: "Stack",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_ei51hwx5",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_bbmyrvi3",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
                                             name: "AvarynHorseAvatar",
                                           ),
                                         ],
@@ -2584,43 +3489,56 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_x9x15zc7",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Column_qgvg5mjb",
                                             type: "Column",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0]",
                                             name: "Column",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Row_kh60v7vw",
                                                 type: "Row",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[0]",
                                                 name: "Row",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_jwdrfezb",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[0].children[0]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Button_bh3uuba5",
                                                         type: "Button",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
                                                         name: "Button",
                                                         text: "Mijn paarden",
-                                                        triggers: const <String>[
-                                                          "ON_TAP",
-                                                        ],
+                                                        triggers:
+                                                            const <String>[
+                                                              "ON_TAP",
+                                                            ],
                                                       ),
                                                     ],
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_yzjzigha",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[0].children[1]",
                                                     name: "Text",
                                                     text: "A V A R Y N",
                                                   ),
@@ -2629,32 +3547,41 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_98zabd7y",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_2bfu91ua",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[0]",
                                                     name: "Text",
                                                     text: "PAARDPROFIEL",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Stack_s57o9p7m",
                                                     type: "Stack",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[1]",
                                                     name: "Stack",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_svnjhl51",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[0]",
                                                         name: "Text",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_ubwyyjla",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[1].children[1]",
                                                         name: "Text",
                                                       ),
                                                     ],
@@ -2662,20 +3589,26 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Row_wewtrijp",
                                                     type: "Row",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[2]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[2]",
                                                     name: "Row",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_z71hkig2",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[2].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[2].children[0]",
                                                         name: "Text",
-                                                        text: "OfficiÃ«le naam:",
+                                                        text:
+                                                            "OfficiÃ«le naam:",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_sge7hpzy",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[2].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[2].children[1]",
                                                         name: "Text",
                                                       ),
                                                     ],
@@ -2683,75 +3616,108 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Wrap_bxo7cw0n",
                                                     type: "Wrap",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3]",
                                                     name: "Wrap",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_4hwig2k4",
+                                                        key:
+                                                            "Container_4hwig2k4",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[0]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_mghkmkex",
+                                                            key:
+                                                                "Text_mghkmkex",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[0].children[0]",
                                                             name: "Text",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_um68b2qo",
+                                                        key:
+                                                            "Container_um68b2qo",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[1]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_hcro1cjz",
+                                                            key:
+                                                                "Text_hcro1cjz",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[1].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[1].children[0]",
                                                             name: "Text",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_q7oy85ov",
+                                                        key:
+                                                            "Container_q7oy85ov",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[2]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_yipt6545",
+                                                            key:
+                                                                "Text_yipt6545",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[2].children[0]",
                                                             name: "Text",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_1rchlyi0",
+                                                        key:
+                                                            "Container_1rchlyi0",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[3]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_xurlnkzk",
+                                                            key:
+                                                                "Text_xurlnkzk",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[3].children[0]",
                                                             name: "Text",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_x25v5acb",
+                                                        key:
+                                                            "Container_x25v5acb",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[4]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[4]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_1t5gynrv",
+                                                            key:
+                                                                "Text_1t5gynrv",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[4].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[3].children[4].children[0]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -2761,38 +3727,55 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_3wvwrfr4",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_x8o66dno",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Icon_47hgbquq",
+                                                            key:
+                                                                "Icon_47hgbquq",
                                                             type: "Icon",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[0]",
                                                             name: "Icon",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Column_uomawx91",
+                                                            key:
+                                                                "Column_uomawx91",
                                                             type: "Column",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1]",
                                                             name: "Column",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_twxcy2wc",
+                                                                key:
+                                                                    "Text_twxcy2wc",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1].children[0]",
                                                                 name: "Text",
-                                                                text: "ACTUEEL AANDACHTSPUNT",
+                                                                text:
+                                                                    "ACTUEEL AANDACHTSPUNT",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_glbcnpeo",
+                                                                key:
+                                                                    "Text_glbcnpeo",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[4].children[0].children[1].children[1]",
                                                                 name: "Text",
                                                               ),
                                                             ],
@@ -2804,34 +3787,48 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Row_djql71xr",
                                                     type: "Row",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[5]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[5]",
                                                     name: "Row",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Button_clayfs93",
                                                         type: "Button",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[0]",
                                                         name: "Button",
-                                                        text: "Activiteit toevoegen",
-                                                        triggers: const <String>[
-                                                          "ON_TAP",
-                                                        ],
-                                                      ),
-                                                      ffai.ProjectWidgetHandle(
-                                                        key: "Container_imvue3v6",
-                                                        type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[1]",
-                                                        name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
-                                                          ffai.ProjectWidgetHandle(
-                                                            key: "Button_q4rprcas",
-                                                            type: "Button",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[1].children[0]",
-                                                            name: "EditHorseFromHeader",
-                                                            text: "Bewerken",
-                                                            triggers: const <String>[
+                                                        text:
+                                                            "Activiteit toevoegen",
+                                                        triggers:
+                                                            const <String>[
                                                               "ON_TAP",
                                                             ],
+                                                      ),
+                                                      ffai.ProjectWidgetHandle(
+                                                        key:
+                                                            "Container_imvue3v6",
+                                                        type: "Container",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[1]",
+                                                        name: "Container",
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
+                                                          ffai.ProjectWidgetHandle(
+                                                            key:
+                                                                "Button_q4rprcas",
+                                                            type: "Button",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[0].children[0].children[1].children[0].children[1].children[5].children[1].children[0]",
+                                                            name:
+                                                                "EditHorseFromHeader",
+                                                            text: "Bewerken",
+                                                            triggers:
+                                                                const <String>[
+                                                                  "ON_TAP",
+                                                                ],
                                                           ),
                                                         ],
                                                       ),
@@ -2850,47 +3847,56 @@ abstract final class OrionProfilePageWidgets {
                               ffai.ProjectWidgetHandle(
                                 key: "Container_m409rf8d",
                                 type: "Container",
-                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1]",
+                                path:
+                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1]",
                                 name: "HorseDetailSectionNavigation",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
                                     key: "Row_e6brk6vn",
                                     type: "Row",
-                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0]",
                                     name: "Row",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
                                         key: "Stack_pa8ynu5k",
                                         type: "Stack",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0]",
                                         name: "Stack",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_wedj13p2",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_f8xwaw3y",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_b5wivws0",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Overzicht",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_dgqr3gf3",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -2900,29 +3906,35 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_te411i00",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_ns7eb8dl",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_1jqm093x",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Overzicht",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_zf1wiq7z",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -2934,35 +3946,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Stack_5z4iaelm",
                                         type: "Stack",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1]",
                                         name: "Stack",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_8nmw0bse",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[0]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_ky9md98x",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_ild5t501",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Gezondheid",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_tz5v5478",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -2972,29 +3991,35 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_9g8vwzrz",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[1]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[1]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_ofy38f09",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[1].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[1].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_q2luuon2",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[1].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[1].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Gezondheid",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_ihq89kfd",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[1].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[1].children[1].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -3006,35 +4031,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Stack_tjz7aak1",
                                         type: "Stack",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2]",
                                         name: "Stack",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_g5c0ypba",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[0]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_vd5wbtvf",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_9esw8f3g",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Training",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_7aeenrnl",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -3044,29 +4076,35 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_klg29dpe",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[1]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[1]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_fak96gdp",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[1].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[1].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_84axes8p",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[1].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[1].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Training",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_okevxs4x",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[1].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[2].children[1].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -3078,35 +4116,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Stack_8mg1nlyf",
                                         type: "Stack",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3]",
                                         name: "Stack",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_qtv9bd4h",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[0]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_o4l8w41x",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_g3fmxlpb",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[0].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Voeding",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_bzlhrvut",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[0].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -3116,29 +4161,35 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_darbtv5m",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[1]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[1]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_ihjayvkm",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[1].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[1].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_erxn3ocr",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[1].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[1].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Voeding",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_s1gxadfq",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[1].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[3].children[1].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -3150,35 +4201,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Stack_g2dojyjp",
                                         type: "Stack",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4]",
                                         name: "Stack",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_w7sng1p8",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[0]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_7i6thiaa",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_jrpw934s",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[0].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Gegevens",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_8aodo22b",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[0].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -3188,29 +4246,35 @@ abstract final class OrionProfilePageWidgets {
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_79ws2ibw",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[1]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[1]",
                                             name: "Container",
-                                            triggers: const <String>[
-                                              "ON_TAP",
-                                            ],
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            triggers: const <String>["ON_TAP"],
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_95u7wwwy",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[1].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[1].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_ig4mmdm6",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[1].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[1].children[0].children[0]",
                                                     name: "Text",
                                                     text: "Gegevens",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_3nran6du",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[1].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[1].children[0].children[4].children[1].children[0].children[1]",
                                                     name: "Container",
                                                   ),
                                                 ],
@@ -3226,59 +4290,75 @@ abstract final class OrionProfilePageWidgets {
                               ffai.ProjectWidgetHandle(
                                 key: "Container_7anxsjke",
                                 type: "Container",
-                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2]",
+                                path:
+                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2]",
                                 name: "Container",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
                                     key: "Stack_02ors7p9",
                                     type: "Stack",
-                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0]",
                                     name: "HorseDetailSectionContent",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_dihvf6zw",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Column_0z913cfn",
                                             type: "Column",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0]",
                                             name: "Column",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Row_1rhrrpj4",
                                                 type: "Row",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0]",
                                                 name: "Row",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_g4h4nrdt",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_vr27c9r1",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Overzicht",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_etot8e9t",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[0].children[1]",
                                                         name: "Text",
-                                                        text: "De belangrijkste signalen en eerstvolgende stap op Ã©Ã©n plek.",
+                                                        text:
+                                                            "De belangrijkste signalen en eerstvolgende stap op Ã©Ã©n plek.",
                                                       ),
                                                     ],
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_nmllmjpo",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[1]",
                                                     name: "Text",
                                                     text: "VANDAAG",
                                                   ),
@@ -3287,109 +4367,167 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_z6lsy98s",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_i1cucx02",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Column_7q6aj28y",
                                                         type: "Column",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0]",
                                                         name: "Column",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_mm3g0psm",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Column_6btsgh1f",
+                                                                key:
+                                                                    "Column_6btsgh1f",
                                                                 type: "Column",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0]",
                                                                 name: "Column",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_3qd2is0r",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
-                                                                    name: "Text",
-                                                                    text: "DAGVORM",
+                                                                    key:
+                                                                        "Text_3qd2is0r",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "DAGVORM",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_prbx82qo",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[1]",
-                                                                    name: "Text",
-                                                                    text: "Actuele belastbaarheid",
+                                                                    key:
+                                                                        "Text_prbx82qo",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[1]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Actuele belastbaarheid",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Container_zodsu88c",
-                                                                type: "Container",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[1]",
-                                                                name: "Container",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                key:
+                                                                    "Container_zodsu88c",
+                                                                type:
+                                                                    "Container",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[1]",
+                                                                name:
+                                                                    "Container",
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_fo1xylxz",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[1].children[0]",
-                                                                    name: "Text",
+                                                                    key:
+                                                                        "Text_fo1xylxz",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[1].children[0]",
+                                                                    name:
+                                                                        "Text",
                                                                   ),
                                                                 ],
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_yhe66rl8",
+                                                            key:
+                                                                "Text_yhe66rl8",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[1]",
                                                             name: "Text",
-                                                            text: "Dagvorm bundelt herstel, welzijn en recente belasting tot Ã©Ã©n rustig dagelijks signaal.",
+                                                            text:
+                                                                "Dagvorm bundelt herstel, welzijn en recente belasting tot Ã©Ã©n rustig dagelijks signaal.",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_ijixxovv",
+                                                            key:
+                                                                "Container_ijixxovv",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[2]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[2]",
                                                             name: "Container",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_lkm2zk4o",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Container_rvh2k2jh",
-                                                                type: "Container",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3].children[0]",
-                                                                name: "Container",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                key:
+                                                                    "Container_rvh2k2jh",
+                                                                type:
+                                                                    "Container",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3].children[0]",
+                                                                name:
+                                                                    "Container",
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Icon_6178uivp",
-                                                                    type: "Icon",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3].children[0].children[0]",
-                                                                    name: "Icon",
+                                                                    key:
+                                                                        "Icon_6178uivp",
+                                                                    type:
+                                                                        "Icon",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3].children[0].children[0]",
+                                                                    name:
+                                                                        "Icon",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_654hym7s",
+                                                                key:
+                                                                    "Text_654hym7s",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3].children[1]",
                                                                 name: "Text",
                                                                 text: "Herstel",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_hmo5yy41",
+                                                                key:
+                                                                    "Text_hmo5yy41",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3].children[2]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[3].children[2]",
                                                                 name: "Text",
                                                                 text: "Volgen",
                                                               ),
@@ -3398,72 +4536,109 @@ abstract final class OrionProfilePageWidgets {
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_ljse2zs1",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Container_dke5nn3u",
-                                                                type: "Container",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4].children[0]",
-                                                                name: "Container",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                key:
+                                                                    "Container_dke5nn3u",
+                                                                type:
+                                                                    "Container",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4].children[0]",
+                                                                name:
+                                                                    "Container",
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Icon_uo7pcly0",
-                                                                    type: "Icon",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4].children[0].children[0]",
-                                                                    name: "Icon",
+                                                                    key:
+                                                                        "Icon_uo7pcly0",
+                                                                    type:
+                                                                        "Icon",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4].children[0].children[0]",
+                                                                    name:
+                                                                        "Icon",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_h34pn1q3",
+                                                                key:
+                                                                    "Text_h34pn1q3",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4].children[1]",
                                                                 name: "Text",
                                                                 text: "Welzijn",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_el9w8ubr",
+                                                                key:
+                                                                    "Text_el9w8ubr",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4].children[2]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[4].children[2]",
                                                                 name: "Text",
-                                                                text: "Dagelijks",
+                                                                text:
+                                                                    "Dagelijks",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_38ssije8",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Container_bc5kxleb",
-                                                                type: "Container",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5].children[0]",
-                                                                name: "Container",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                key:
+                                                                    "Container_bc5kxleb",
+                                                                type:
+                                                                    "Container",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5].children[0]",
+                                                                name:
+                                                                    "Container",
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Icon_0rspy1u9",
-                                                                    type: "Icon",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5].children[0].children[0]",
-                                                                    name: "Icon",
+                                                                    key:
+                                                                        "Icon_0rspy1u9",
+                                                                    type:
+                                                                        "Icon",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5].children[0].children[0]",
+                                                                    name:
+                                                                        "Icon",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_v6ssud8z",
+                                                                key:
+                                                                    "Text_v6ssud8z",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5].children[1]",
                                                                 name: "Text",
-                                                                text: "Belasting",
+                                                                text:
+                                                                    "Belasting",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_jd2w3h8p",
+                                                                key:
+                                                                    "Text_jd2w3h8p",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5].children[2]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[0].children[0].children[5].children[2]",
                                                                 name: "Text",
-                                                                text: "In context",
+                                                                text:
+                                                                    "In context",
                                                               ),
                                                             ],
                                                           ),
@@ -3474,92 +4649,138 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Stack_4h8qdvmc",
                                                     type: "Stack",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1]",
                                                     name: "Stack",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_aloqtusu",
+                                                        key:
+                                                            "Container_aloqtusu",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Column_o9bnca52",
+                                                            key:
+                                                                "Column_o9bnca52",
                                                             type: "Column",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0]",
                                                             name: "Column",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_x2r63y56",
+                                                                key:
+                                                                    "Text_x2r63y56",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "ACTUEEL AANDACHTSPUNT",
+                                                                text:
+                                                                    "ACTUEEL AANDACHTSPUNT",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_65ta7852",
+                                                                key:
+                                                                    "Text_65ta7852",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0].children[1]",
                                                                 name: "Text",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_fhitvcfq",
+                                                                key:
+                                                                    "Text_fhitvcfq",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0].children[2]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0].children[2]",
                                                                 name: "Text",
-                                                                text: "Neem dit signaal mee in de beoordeling vÃ³Ã³r de eerstvolgende belasting.",
+                                                                text:
+                                                                    "Neem dit signaal mee in de beoordeling vÃ³Ã³r de eerstvolgende belasting.",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Button_5iznoy4z",
+                                                                key:
+                                                                    "Button_5iznoy4z",
                                                                 type: "Button",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0].children[3]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[0].children[0].children[3]",
                                                                 name: "Button",
-                                                                text: "Beoordelen",
-                                                                triggers: const <String>[
-                                                                  "ON_TAP",
-                                                                ],
+                                                                text:
+                                                                    "Beoordelen",
+                                                                triggers:
+                                                                    const <
+                                                                      String
+                                                                    >["ON_TAP"],
                                                               ),
                                                             ],
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_p7h615hy",
+                                                        key:
+                                                            "Container_p7h615hy",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1]",
                                                         name: "Container",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_z3sdkv9l",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Icon_sgbyv3io",
+                                                                key:
+                                                                    "Icon_sgbyv3io",
                                                                 type: "Icon",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0].children[0]",
                                                                 name: "Icon",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Column_dlmdieta",
+                                                                key:
+                                                                    "Column_dlmdieta",
                                                                 type: "Column",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0].children[1]",
                                                                 name: "Column",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_y0v7j3ze",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0].children[1].children[0]",
-                                                                    name: "Text",
-                                                                    text: "Geen actueel aandachtspunt",
+                                                                    key:
+                                                                        "Text_y0v7j3ze",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0].children[1].children[0]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Geen actueel aandachtspunt",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_g1i1fgbm",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0].children[1].children[1]",
-                                                                    name: "Text",
-                                                                    text: "Nieuwe observaties verschijnen hier zodra ze worden geregistreerd.",
+                                                                    key:
+                                                                        "Text_g1i1fgbm",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[1].children[1].children[0].children[1].children[1]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Nieuwe observaties verschijnen hier zodra ze worden geregistreerd.",
                                                                   ),
                                                                 ],
                                                               ),
@@ -3572,88 +4793,136 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_wyizinhz",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Column_e7032kmz",
                                                         type: "Column",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0]",
                                                         name: "Column",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_7x20nwf1",
+                                                            key:
+                                                                "Text_7x20nwf1",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[0]",
                                                             name: "Text",
-                                                            text: "EERSTVOLGENDE ACTIVITEIT",
+                                                            text:
+                                                                "EERSTVOLGENDE ACTIVITEIT",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Stack_cx2c87ro",
+                                                            key:
+                                                                "Stack_cx2c87ro",
                                                             type: "Stack",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1]",
                                                             name: "Stack",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Row_7e7pzp3s",
+                                                                key:
+                                                                    "Row_7e7pzp3s",
                                                                 type: "Row",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[0]",
                                                                 name: "Row",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Container_uxffeo5k",
-                                                                    type: "Container",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[0].children[0]",
-                                                                    name: "Container",
-                                                                    children: <ffai.ProjectWidgetHandle>[
+                                                                    key:
+                                                                        "Container_uxffeo5k",
+                                                                    type:
+                                                                        "Container",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[0].children[0]",
+                                                                    name:
+                                                                        "Container",
+                                                                    children: <
+                                                                      ffai.ProjectWidgetHandle
+                                                                    >[
                                                                       ffai.ProjectWidgetHandle(
-                                                                        key: "Icon_lv74s54d",
-                                                                        type: "Icon",
-                                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[0].children[0].children[0]",
-                                                                        name: "Icon",
+                                                                        key:
+                                                                            "Icon_lv74s54d",
+                                                                        type:
+                                                                            "Icon",
+                                                                        path:
+                                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[0].children[0].children[0]",
+                                                                        name:
+                                                                            "Icon",
                                                                       ),
                                                                     ],
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_mkftesoh",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[0].children[1]",
-                                                                    name: "Text",
+                                                                    key:
+                                                                        "Text_mkftesoh",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[0].children[1]",
+                                                                    name:
+                                                                        "Text",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Row_qtopuan7",
+                                                                key:
+                                                                    "Row_qtopuan7",
                                                                 type: "Row",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[1]",
                                                                 name: "Row",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Icon_pvvrjf4t",
-                                                                    type: "Icon",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[1].children[0]",
-                                                                    name: "Icon",
+                                                                    key:
+                                                                        "Icon_pvvrjf4t",
+                                                                    type:
+                                                                        "Icon",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[1].children[0]",
+                                                                    name:
+                                                                        "Icon",
                                                                   ),
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_ml7j6wuj",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[1].children[1]",
-                                                                    name: "Text",
-                                                                    text: "Nog geen activiteit gepland",
+                                                                    key:
+                                                                        "Text_ml7j6wuj",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[1].children[1].children[1]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Nog geen activiteit gepland",
                                                                   ),
                                                                 ],
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Button_jxtk3uac",
+                                                            key:
+                                                                "Button_jxtk3uac",
                                                             type: "Button",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[2]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[2].children[0].children[2]",
                                                             name: "Button",
-                                                            text: "Activiteit bekijken",
-                                                            triggers: const <String>[
-                                                              "ON_TAP",
-                                                            ],
+                                                            text:
+                                                                "Activiteit bekijken",
+                                                            triggers:
+                                                                const <String>[
+                                                                  "ON_TAP",
+                                                                ],
                                                           ),
                                                         ],
                                                       ),
@@ -3662,53 +4931,80 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_y02p2gh0",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Column_06ayd58s",
                                                         type: "Column",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0]",
                                                         name: "Column",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_j1q01hf8",
+                                                            key:
+                                                                "Text_j1q01hf8",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[0]",
                                                             name: "Text",
-                                                            text: "PROFIELCONTEXT",
+                                                            text:
+                                                                "PROFIELCONTEXT",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_b5m5adrg",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Icon_baks061o",
+                                                                key:
+                                                                    "Icon_baks061o",
                                                                 type: "Icon",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1].children[0]",
                                                                 name: "Icon",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Container_pnzpszyk",
-                                                                type: "Container",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1].children[1]",
-                                                                name: "Container",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                key:
+                                                                    "Container_pnzpszyk",
+                                                                type:
+                                                                    "Container",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1].children[1]",
+                                                                name:
+                                                                    "Container",
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_d9s61vk1",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1].children[1].children[0]",
-                                                                    name: "Text",
-                                                                    text: "Ruiter",
+                                                                    key:
+                                                                        "Text_d9s61vk1",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1].children[1].children[0]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Ruiter",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_wzld7vyz",
+                                                                key:
+                                                                    "Text_wzld7vyz",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1].children[2]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[1].children[2]",
                                                                 name: "Text",
                                                               ),
                                                             ],
@@ -3716,34 +5012,52 @@ abstract final class OrionProfilePageWidgets {
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_y12rpfc8",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Icon_1o8armbw",
+                                                                key:
+                                                                    "Icon_1o8armbw",
                                                                 type: "Icon",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2].children[0]",
                                                                 name: "Icon",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Container_zul9t1gr",
-                                                                type: "Container",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2].children[1]",
-                                                                name: "Container",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                key:
+                                                                    "Container_zul9t1gr",
+                                                                type:
+                                                                    "Container",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2].children[1]",
+                                                                name:
+                                                                    "Container",
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_6srybug4",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2].children[1].children[0]",
-                                                                    name: "Text",
-                                                                    text: "Stal of locatie",
+                                                                    key:
+                                                                        "Text_6srybug4",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2].children[1].children[0]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Stal of locatie",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_rw1zmmld",
+                                                                key:
+                                                                    "Text_rw1zmmld",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2].children[2]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[2].children[2]",
                                                                 name: "Text",
                                                               ),
                                                             ],
@@ -3751,44 +5065,65 @@ abstract final class OrionProfilePageWidgets {
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_extrm4yi",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Icon_ti6tvmdj",
+                                                                key:
+                                                                    "Icon_ti6tvmdj",
                                                                 type: "Icon",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3].children[0]",
                                                                 name: "Icon",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Container_3zzy1ke4",
-                                                                type: "Container",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3].children[1]",
-                                                                name: "Container",
-                                                                children: <ffai.ProjectWidgetHandle>[
+                                                                key:
+                                                                    "Container_3zzy1ke4",
+                                                                type:
+                                                                    "Container",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3].children[1]",
+                                                                name:
+                                                                    "Container",
+                                                                children: <
+                                                                  ffai.ProjectWidgetHandle
+                                                                >[
                                                                   ffai.ProjectWidgetHandle(
-                                                                    key: "Text_mv5nlul6",
-                                                                    type: "Text",
-                                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3].children[1].children[0]",
-                                                                    name: "Text",
-                                                                    text: "Klasse",
+                                                                    key:
+                                                                        "Text_mv5nlul6",
+                                                                    type:
+                                                                        "Text",
+                                                                    path:
+                                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3].children[1].children[0]",
+                                                                    name:
+                                                                        "Text",
+                                                                    text:
+                                                                        "Klasse",
                                                                   ),
                                                                 ],
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_2lrp2hhl",
+                                                                key:
+                                                                    "Text_2lrp2hhl",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3].children[2]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[3].children[2]",
                                                                 name: "Text",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_xutwkisx",
+                                                            key:
+                                                                "Text_xutwkisx",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[4]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[3].children[0].children[4]",
                                                             name: "Text",
-                                                            text: "Training, gezondheid en voeding worden in vervolgstappen aan ditzelfde profiel gekoppeld.",
+                                                            text:
+                                                                "Training, gezondheid en voeding worden in vervolgstappen aan ditzelfde profiel gekoppeld.",
                                                           ),
                                                         ],
                                                       ),
@@ -3797,62 +5132,87 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_aym4g2bm",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Column_7ywfnbvj",
                                                         type: "Column",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0]",
                                                         name: "Column",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_ibe87u9o",
+                                                            key:
+                                                                "Text_ibe87u9o",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[0]",
                                                             name: "Text",
-                                                            text: "ONTWIKKELING",
+                                                            text:
+                                                                "ONTWIKKELING",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_d4c2cb9j",
+                                                            key:
+                                                                "Text_d4c2cb9j",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[1]",
                                                             name: "Text",
-                                                            text: "EÃ©n profiel voor dagelijkse performancecontext",
+                                                            text:
+                                                                "EÃ©n profiel voor dagelijkse performancecontext",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
                                                             key: "Row_rmjusfpq",
                                                             type: "Row",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[2]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[2]",
                                                             name: "Row",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_h2uaa4g2",
+                                                                key:
+                                                                    "Text_h2uaa4g2",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[2].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[2].children[0]",
                                                                 name: "Text",
-                                                                text: "Actuele Dagvorm",
+                                                                text:
+                                                                    "Actuele Dagvorm",
                                                               ),
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_0q4h10cx",
+                                                                key:
+                                                                    "Text_0q4h10cx",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[2].children[1]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[2].children[1]",
                                                                 name: "Text",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_ceoe5g0o",
+                                                            key:
+                                                                "Container_ceoe5g0o",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[3]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[3]",
                                                             name: "Container",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_nvemgl2m",
+                                                            key:
+                                                                "Text_nvemgl2m",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[4]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0].children[0].children[1].children[4].children[0].children[4]",
                                                             name: "Text",
-                                                            text: "Zodra er meer registraties zijn, toont AVARYN hier de ontwikkeling van belasting, herstel en Dagvorm.",
+                                                            text:
+                                                                "Zodra er meer registraties zijn, toont AVARYN hier de ontwikkeling van belasting, herstel en Dagvorm.",
                                                           ),
                                                         ],
                                                       ),
@@ -3867,58 +5227,77 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_hbeuv61c",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Column_iojr3a2p",
                                             type: "Column",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0]",
                                             name: "Column",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Row_fun3ujqi",
                                                 type: "Row",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0]",
                                                 name: "Row",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_jire25zl",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_jj8jpobt",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[0].children[0]",
                                                         name: "Text",
                                                         text: "Gegevens",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_asfezrdh",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[0].children[1]",
                                                         name: "Text",
-                                                        text: "De opgeslagen profielinformatie van dit paard.",
+                                                        text:
+                                                            "De opgeslagen profielinformatie van dit paard.",
                                                       ),
                                                     ],
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_9doq7inf",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[1]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Button_pdcr8yip",
                                                         type: "Button",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[1].children[0]",
-                                                        name: "EditHorseFromData",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[0].children[1].children[0]",
+                                                        name:
+                                                            "EditHorseFromData",
                                                         text: "Bewerken",
-                                                        triggers: const <String>[
-                                                          "ON_TAP",
-                                                        ],
+                                                        triggers:
+                                                            const <String>[
+                                                              "ON_TAP",
+                                                            ],
                                                       ),
                                                     ],
                                                   ),
@@ -3927,67 +5306,95 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_dnclx7t4",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_2300hzmm",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_plq1vt6z",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[0]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Icon_mcmj77ur",
+                                                            key:
+                                                                "Icon_mcmj77ur",
                                                             type: "Icon",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[0].children[0]",
                                                             name: "Icon",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_wjjefbnh",
+                                                            key:
+                                                                "Text_wjjefbnh",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[0].children[1]",
                                                             name: "Text",
-                                                            text: "Basisgegevens",
+                                                            text:
+                                                                "Basisgegevens",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_6qe1js1y",
+                                                        key:
+                                                            "Container_6qe1js1y",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_8uz9bnio",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[2]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_dd13uy7d",
+                                                            key:
+                                                                "Container_dd13uy7d",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[2].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_pqy9tlv0",
+                                                                key:
+                                                                    "Text_pqy9tlv0",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[2].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "OfficiÃ«le naam",
+                                                                text:
+                                                                    "OfficiÃ«le naam",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_zcb7qrpv",
+                                                            key:
+                                                                "Text_zcb7qrpv",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[2].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[2].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -3995,28 +5402,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_8j73x3l3",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[3]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_e54hl09r",
+                                                            key:
+                                                                "Container_e54hl09r",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[3].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_pclm791p",
+                                                                key:
+                                                                    "Text_pclm791p",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[3].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[3].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Roepnaam",
+                                                                text:
+                                                                    "Roepnaam",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_k2ftqlc0",
+                                                            key:
+                                                                "Text_k2ftqlc0",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[3].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[3].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4024,28 +5443,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_15j26pax",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[4]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[4]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_x0skau3k",
+                                                            key:
+                                                                "Container_x0skau3k",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[4].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[4].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_xxb13pko",
+                                                                key:
+                                                                    "Text_xxb13pko",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[4].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[4].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Geboortedatum",
+                                                                text:
+                                                                    "Geboortedatum",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_0xuhx18z",
+                                                            key:
+                                                                "Text_0xuhx18z",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[4].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[4].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4053,28 +5484,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_w0geg8bf",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[5]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[5]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_dhuvyppb",
+                                                            key:
+                                                                "Container_dhuvyppb",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[5].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[5].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_u88e2e6w",
+                                                                key:
+                                                                    "Text_u88e2e6w",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[5].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[5].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Geslacht",
+                                                                text:
+                                                                    "Geslacht",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_8mg3vxy0",
+                                                            key:
+                                                                "Text_8mg3vxy0",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[5].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[5].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4082,28 +5525,39 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_60o1wcqo",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[6]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[6]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_6nd4by30",
+                                                            key:
+                                                                "Container_6nd4by30",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[6].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[6].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_gc9p2xd4",
+                                                                key:
+                                                                    "Text_gc9p2xd4",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[6].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[6].children[0].children[0]",
                                                                 name: "Text",
                                                                 text: "Ras",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_67avpmc4",
+                                                            key:
+                                                                "Text_67avpmc4",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[6].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[6].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4111,28 +5565,39 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_5bb25ci5",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[7]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[7]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_o9bdatcc",
+                                                            key:
+                                                                "Container_o9bdatcc",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[7].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[7].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_xyj5olj0",
+                                                                key:
+                                                                    "Text_xyj5olj0",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[7].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[7].children[0].children[0]",
                                                                 name: "Text",
                                                                 text: "Kleur",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_tex0ep44",
+                                                            key:
+                                                                "Text_tex0ep44",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[7].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[1].children[0].children[7].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4144,67 +5609,94 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_uy50psz8",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_vqc39jug",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_598vz7jl",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[0]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Icon_nv5xyzj7",
+                                                            key:
+                                                                "Icon_nv5xyzj7",
                                                             type: "Icon",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[0].children[0]",
                                                             name: "Icon",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_mxzcijbx",
+                                                            key:
+                                                                "Text_mxzcijbx",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[0].children[1]",
                                                             name: "Text",
                                                             text: "Sport",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_e80q8duf",
+                                                        key:
+                                                            "Container_e80q8duf",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_0tfpw0y3",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[2]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_x6x4mnbf",
+                                                            key:
+                                                                "Container_x6x4mnbf",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[2].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_0ksr30ui",
+                                                                key:
+                                                                    "Text_0ksr30ui",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Discipline",
+                                                                text:
+                                                                    "Discipline",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_6sq6aznl",
+                                                            key:
+                                                                "Text_6sq6aznl",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[2].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[2].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4212,28 +5704,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_2x0bucrd",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[3]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_m2ec28u2",
+                                                            key:
+                                                                "Container_m2ec28u2",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[3].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_fm98kpz8",
+                                                                key:
+                                                                    "Text_fm98kpz8",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Huidige klasse",
+                                                                text:
+                                                                    "Huidige klasse",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_kpsjftph",
+                                                            key:
+                                                                "Text_kpsjftph",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[3].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[2].children[0].children[3].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4245,67 +5749,95 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_2a944xn5",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_o613zepk",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_hyxb91pu",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[0]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Icon_xay27zgv",
+                                                            key:
+                                                                "Icon_xay27zgv",
                                                             type: "Icon",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[0].children[0]",
                                                             name: "Icon",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_jtt6udn4",
+                                                            key:
+                                                                "Text_jtt6udn4",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[0].children[1]",
                                                             name: "Text",
-                                                            text: "Identificatie",
+                                                            text:
+                                                                "Identificatie",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_8sq5ehet",
+                                                        key:
+                                                            "Container_8sq5ehet",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_g6q2nmqa",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[2]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_qxi4c5nr",
+                                                            key:
+                                                                "Container_qxi4c5nr",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[2].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_y8m1vsbw",
+                                                                key:
+                                                                    "Text_y8m1vsbw",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[2].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[2].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Paspoort- of levensnummer",
+                                                                text:
+                                                                    "Paspoort- of levensnummer",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_n5ey177s",
+                                                            key:
+                                                                "Text_n5ey177s",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[2].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[2].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4313,28 +5845,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_540uzr7h",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[3]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_wu8f3cw7",
+                                                            key:
+                                                                "Container_wu8f3cw7",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[3].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_1nzqfsqv",
+                                                                key:
+                                                                    "Text_1nzqfsqv",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[3].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[3].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Chipnummer",
+                                                                text:
+                                                                    "Chipnummer",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_yyn3cpm8",
+                                                            key:
+                                                                "Text_yyn3cpm8",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[3].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[3].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4342,28 +5886,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_qu7ucwcm",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[4]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[4]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_1fnj398p",
+                                                            key:
+                                                                "Container_1fnj398p",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[4].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[4].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_f71tsyst",
+                                                                key:
+                                                                    "Text_f71tsyst",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[4].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[4].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Paspoort geldig tot en met",
+                                                                text:
+                                                                    "Paspoort geldig tot en met",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_b1il5gw7",
+                                                            key:
+                                                                "Text_b1il5gw7",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[4].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[3].children[0].children[4].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4375,67 +5931,95 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_zsm15lca",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_7bh5q94z",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_45l5jg2v",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[0]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Icon_xjf1jdi0",
+                                                            key:
+                                                                "Icon_xjf1jdi0",
                                                             type: "Icon",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[0].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[0].children[0]",
                                                             name: "Icon",
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_yy3vi4uw",
+                                                            key:
+                                                                "Text_yy3vi4uw",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[0].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[0].children[1]",
                                                             name: "Text",
-                                                            text: "Betrokkenen & locatie",
+                                                            text:
+                                                                "Betrokkenen & locatie",
                                                           ),
                                                         ],
                                                       ),
                                                       ffai.ProjectWidgetHandle(
-                                                        key: "Container_eilvlxxz",
+                                                        key:
+                                                            "Container_eilvlxxz",
                                                         type: "Container",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[1]",
                                                         name: "Container",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_3zajksbq",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[2]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[2]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_qmwue2e7",
+                                                            key:
+                                                                "Container_qmwue2e7",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[2].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[2].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_bgqfcvqp",
+                                                                key:
+                                                                    "Text_bgqfcvqp",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[2].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[2].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Eigenaar",
+                                                                text:
+                                                                    "Eigenaar",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_8jsp92o3",
+                                                            key:
+                                                                "Text_8jsp92o3",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[2].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[2].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4443,28 +6027,39 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_en2hzbmu",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[3]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[3]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_hsvrhzzx",
+                                                            key:
+                                                                "Container_hsvrhzzx",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[3].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[3].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_5irjey1p",
+                                                                key:
+                                                                    "Text_5irjey1p",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[3].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[3].children[0].children[0]",
                                                                 name: "Text",
                                                                 text: "Ruiter",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_m09uww9v",
+                                                            key:
+                                                                "Text_m09uww9v",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[3].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[3].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4472,28 +6067,40 @@ abstract final class OrionProfilePageWidgets {
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Row_aqmd3nmm",
                                                         type: "Row",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[4]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[4]",
                                                         name: "Row",
-                                                        children: <ffai.ProjectWidgetHandle>[
+                                                        children: <
+                                                          ffai.ProjectWidgetHandle
+                                                        >[
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Container_7tuxvsp2",
+                                                            key:
+                                                                "Container_7tuxvsp2",
                                                             type: "Container",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[4].children[0]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[4].children[0]",
                                                             name: "Container",
-                                                            children: <ffai.ProjectWidgetHandle>[
+                                                            children: <
+                                                              ffai.ProjectWidgetHandle
+                                                            >[
                                                               ffai.ProjectWidgetHandle(
-                                                                key: "Text_p0xa21st",
+                                                                key:
+                                                                    "Text_p0xa21st",
                                                                 type: "Text",
-                                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[4].children[0].children[0]",
+                                                                path:
+                                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[4].children[0].children[0]",
                                                                 name: "Text",
-                                                                text: "Stal of locatie",
+                                                                text:
+                                                                    "Stal of locatie",
                                                               ),
                                                             ],
                                                           ),
                                                           ffai.ProjectWidgetHandle(
-                                                            key: "Text_ez0i0x4g",
+                                                            key:
+                                                                "Text_ez0i0x4g",
                                                             type: "Text",
-                                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[4].children[1]",
+                                                            path:
+                                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[4].children[0].children[4].children[1]",
                                                             name: "Text",
                                                           ),
                                                         ],
@@ -4505,26 +6112,34 @@ abstract final class OrionProfilePageWidgets {
                                               ffai.ProjectWidgetHandle(
                                                 key: "Container_uz6jkwda",
                                                 type: "Container",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[5]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[5]",
                                                 name: "Container",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Column_37nx0ayf",
                                                     type: "Column",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[5].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[5].children[0]",
                                                     name: "Column",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_tz8hvo3n",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[5].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[5].children[0].children[0]",
                                                         name: "Text",
                                                         text: "NOTITIES",
                                                       ),
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Text_7hdv1aws",
                                                         type: "Text",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[5].children[0].children[1]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[1].children[0].children[5].children[0].children[1]",
                                                         name: "Text",
                                                       ),
                                                     ],
@@ -4538,31 +6153,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_6yigopwn",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_qjwhend4",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_n65zdlyt",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_dzsfkcr0",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0].children[0]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Icon_fdg9e82x",
                                                         type: "Icon",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0].children[0].children[0]",
                                                         name: "Icon",
                                                       ),
                                                     ],
@@ -4570,16 +6196,19 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_hb4rbjb8",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0].children[1]",
                                                     name: "Text",
                                                     text: "Gezondheid",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_6bwlk47w",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0].children[2]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[2].children[0].children[0].children[2]",
                                                     name: "Text",
-                                                    text: "Dit onderdeel wordt in een volgende versie uitgewerkt.",
+                                                    text:
+                                                        "Dit onderdeel wordt in een volgende versie uitgewerkt.",
                                                   ),
                                                 ],
                                               ),
@@ -4590,31 +6219,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_kmeryseg",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_k80gu1ou",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_07aufhtd",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_6y3tnvjy",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0].children[0]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Icon_vk74hti7",
                                                         type: "Icon",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0].children[0].children[0]",
                                                         name: "Icon",
                                                       ),
                                                     ],
@@ -4622,16 +6262,19 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_6dwucvw2",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0].children[1]",
                                                     name: "Text",
                                                     text: "Training",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_2m6d8yz7",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0].children[2]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[3].children[0].children[0].children[2]",
                                                     name: "Text",
-                                                    text: "Dit onderdeel wordt in een volgende versie uitgewerkt.",
+                                                    text:
+                                                        "Dit onderdeel wordt in een volgende versie uitgewerkt.",
                                                   ),
                                                 ],
                                               ),
@@ -4642,31 +6285,42 @@ abstract final class OrionProfilePageWidgets {
                                       ffai.ProjectWidgetHandle(
                                         key: "Container_g05q1tl4",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
                                             key: "Container_elon0yh3",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0]",
                                             name: "Container",
-                                            children: <ffai.ProjectWidgetHandle>[
+                                            children: <
+                                              ffai.ProjectWidgetHandle
+                                            >[
                                               ffai.ProjectWidgetHandle(
                                                 key: "Column_f3lllene",
                                                 type: "Column",
-                                                path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0]",
+                                                path:
+                                                    "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0]",
                                                 name: "Column",
-                                                children: <ffai.ProjectWidgetHandle>[
+                                                children: <
+                                                  ffai.ProjectWidgetHandle
+                                                >[
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Container_ucdpkee9",
                                                     type: "Container",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0].children[0]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0].children[0]",
                                                     name: "Container",
-                                                    children: <ffai.ProjectWidgetHandle>[
+                                                    children: <
+                                                      ffai.ProjectWidgetHandle
+                                                    >[
                                                       ffai.ProjectWidgetHandle(
                                                         key: "Icon_9rxmj0qt",
                                                         type: "Icon",
-                                                        path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0].children[0].children[0]",
+                                                        path:
+                                                            "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0].children[0].children[0]",
                                                         name: "Icon",
                                                       ),
                                                     ],
@@ -4674,16 +6328,19 @@ abstract final class OrionProfilePageWidgets {
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_n2aar20p",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0].children[1]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0].children[1]",
                                                     name: "Text",
                                                     text: "Voeding",
                                                   ),
                                                   ffai.ProjectWidgetHandle(
                                                     key: "Text_sffzyg6w",
                                                     type: "Text",
-                                                    path: "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0].children[2]",
+                                                    path:
+                                                        "OrionProfilePage.body[0].children[1].children[0].children[1].children[0].children[2].children[0].children[4].children[0].children[0].children[2]",
                                                     name: "Text",
-                                                    text: "Dit onderdeel wordt in een volgende versie uitgewerkt.",
+                                                    text:
+                                                        "Dit onderdeel wordt in een volgende versie uitgewerkt.",
                                                   ),
                                                 ],
                                               ),
@@ -4708,48 +6365,53 @@ abstract final class OrionProfilePageWidgets {
                     name: "HorseDetailMobileBottomNavigation",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_brb49gvr",
+                        key: "Container_lwv0vdrg",
                         type: "Container",
-                        path: "OrionProfilePage.body[0].children[1].children[1].children[0]",
+                        path:
+                            "OrionProfilePage.body[0].children[1].children[1].children[0]",
                         name: "AvarynMobileNavigationBody",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Row_tzwpycna",
+                            key: "Row_nsek4myo",
                             type: "Row",
-                            path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0]",
+                            path:
+                                "OrionProfilePage.body[0].children[1].children[1].children[0].children[0]",
                             name: "Row",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Container_4n5iy7t9",
+                                key: "Container_n14vs3fm",
                                 type: "Container",
-                                path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0]",
+                                path:
+                                    "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_b23mcp1n",
+                                    key: "Column_ea0867f0",
                                     type: "Column",
-                                    path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_sl0j1syj",
+                                        key: "Container_dqsrjy01",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_oxtclayl",
+                                        key: "Icon_klfu87mq",
                                         type: "Icon",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[1]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_0fapq5hi",
+                                        key: "Text_l9obkjzs",
                                         type: "Text",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[2]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[0].children[0].children[2]",
                                         name: "Text",
                                         text: "Vandaag",
                                       ),
@@ -4758,44 +6420,48 @@ abstract final class OrionProfilePageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_q77duhle",
+                                key: "Container_enpwttbr",
                                 type: "Container",
-                                path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1]",
+                                path:
+                                    "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_t07l13jq",
+                                    key: "Column_q9t5bp23",
                                     type: "Column",
-                                    path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_w3f1idhr",
+                                        key: "Container_w9h4mfp9",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_3cvj3v2m",
+                                        key: "Container_3fzz6dbi",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[1]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[1]",
                                         name: "Container",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_mu5pkui6",
+                                            key: "Container_qll624jx",
                                             type: "Container",
-                                            path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[1].children[0]",
+                                            path:
+                                                "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[1].children[0]",
                                             name: "AvarynHorseshoeIcon",
                                           ),
                                         ],
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_hmudrx9d",
+                                        key: "Text_ctvon287",
                                         type: "Text",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[2]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[1].children[0].children[2]",
                                         name: "Text",
                                         text: "Paarden",
                                       ),
@@ -4804,36 +6470,39 @@ abstract final class OrionProfilePageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_o3pr9lbi",
+                                key: "Container_cwgt7hil",
                                 type: "Container",
-                                path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2]",
+                                path:
+                                    "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_wbx1zorc",
+                                    key: "Column_1tl3lmf5",
                                     type: "Column",
-                                    path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_3ruhc8t2",
+                                        key: "Container_pv2bw42p",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_2aookkev",
+                                        key: "Icon_e22ob8ec",
                                         type: "Icon",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[1]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_ojj4wyaw",
+                                        key: "Text_jju3vle0",
                                         type: "Text",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[2]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[2].children[0].children[2]",
                                         name: "Text",
                                         text: "Planning",
                                       ),
@@ -4842,74 +6511,39 @@ abstract final class OrionProfilePageWidgets {
                                 ],
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Container_dqg2wze3",
+                                key: "Container_tdc75ic2",
                                 type: "Container",
-                                path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3]",
+                                path:
+                                    "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3]",
                                 name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
+                                triggers: const <String>["ON_TAP"],
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_9o7v4zwu",
+                                    key: "Column_gnj6iyi8",
                                     type: "Column",
-                                    path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0]",
+                                    path:
+                                        "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Container_7p6qx70v",
+                                        key: "Container_k43cslda",
                                         type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[0]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[0]",
                                         name: "Container",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Icon_g2wqmpnn",
+                                        key: "Icon_scv1ehql",
                                         type: "Icon",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[1]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[1]",
                                         name: "Icon",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_m3ihon4n",
+                                        key: "Text_dxf7vrnb",
                                         type: "Text",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[2]",
-                                        name: "Text",
-                                        text: "Wedstrijden",
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              ffai.ProjectWidgetHandle(
-                                key: "Container_jqh16dnb",
-                                type: "Container",
-                                path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[4]",
-                                name: "Container",
-                                triggers: const <String>[
-                                  "ON_TAP",
-                                ],
-                                children: <ffai.ProjectWidgetHandle>[
-                                  ffai.ProjectWidgetHandle(
-                                    key: "Column_5q2i3gq2",
-                                    type: "Column",
-                                    path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[4].children[0]",
-                                    name: "Column",
-                                    children: <ffai.ProjectWidgetHandle>[
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Container_9u74ghtv",
-                                        type: "Container",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[4].children[0].children[0]",
-                                        name: "Container",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Icon_9cqs0bnw",
-                                        type: "Icon",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[4].children[0].children[1]",
-                                        name: "Icon",
-                                      ),
-                                      ffai.ProjectWidgetHandle(
-                                        key: "Text_3e4usblq",
-                                        type: "Text",
-                                        path: "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[4].children[0].children[2]",
+                                        path:
+                                            "OrionProfilePage.body[0].children[1].children[1].children[0].children[0].children[3].children[0].children[2]",
                                         name: "Text",
                                         text: "Profiel",
                                       ),
@@ -4932,4 +6566,3 @@ abstract final class OrionProfilePageWidgets {
     ),
   );
 }
-
