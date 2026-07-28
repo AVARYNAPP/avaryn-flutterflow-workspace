@@ -5205,7 +5205,7 @@ Future<void> main(List<String> args) async {
   final options = _parseCliOptions(args);
   try {
     await flutterFlowAI(
-      buildAvarynPhase5B1,
+      buildAvarynPhase5B2,
       apiKey: options.apiKey,
       baseUrl: options.baseUrl,
       projectName: options.projectName,
@@ -5579,6 +5579,60 @@ void buildAvarynPhase5B1(App app) {
   });
 }
 
+/// Phase 5B.2 closes the cloud-backed Horse Alpha flow without reviving the
+/// legacy local prototype state. RLS and the existing mutation RPCs remain the
+/// only authority; the capability summary is display guidance only.
+void buildAvarynPhase5B2(App app) {
+  _configureAvarynTheme(app, existingProject: true);
+  _applyPhase4C7OperationalRuntimeResource(app);
+  final legacyHorsePages = <ProjectPageHandle>[
+    ff.Pages.horseFormPage,
+    ff.Pages.horseEditPage,
+    ff.Pages.orionProfilePage,
+  ];
+  for (final legacyPage in legacyHorsePages) {
+    app.editPageOnLoad(legacyPage, [
+      Navigate(
+        ff.Pages.horsesOverviewPage,
+        allowBack: false,
+        replaceRoute: true,
+      ),
+    ]);
+    app.editPage(legacyPage, (page) {
+      page.ensureReplaced(
+        legacyPage.widgets.byPath('${legacyPage.name}.body[0]').single,
+        _phase5B2LegacyHorseRedirectBody(),
+      );
+    });
+  }
+  app.raw((project) {
+    updatePage(
+      project,
+      name: 'HorsesOverviewPage',
+      description:
+          'RLS-backed Horse Alpha workspace for core profile management, explicit per-context access and non-authorizing team relationships.',
+    );
+    updatePage(
+      project,
+      name: 'HorseFormPage',
+      description:
+          'Legacy prototype Horse form retained outside active Alpha navigation; cloud creation is handled in HorsesOverviewPage.',
+    );
+    updatePage(
+      project,
+      name: 'HorseEditPage',
+      description:
+          'Legacy prototype Horse editor retained outside active Alpha navigation; cloud edits use optimistic RPC concurrency.',
+    );
+    updatePage(
+      project,
+      name: 'OrionProfilePage',
+      description:
+          'Legacy local Horse detail retained outside active Alpha navigation; the cloud Horse workspace is authoritative.',
+    );
+  });
+}
+
 String _loadPhase4BStableRuntimeWidgetCode() {
   final contextFile = _resolveDslSourceFile('phase_4b_context_model.dart');
   final managementFile = _resolveDslSourceFile(
@@ -5734,6 +5788,12 @@ void _applyPhase4C7OperationalRuntimeResource(App app) {
       addPubDependency(project, name: 'openpgp', version: '^3.10.7');
     } else if (openPgp.version != '^3.10.7') {
       updatePubDependency(project, name: 'openpgp', newVersion: '^3.10.7');
+    }
+    final crypto = findPubDependency(project, name: 'crypto');
+    if (crypto == null) {
+      addPubDependency(project, name: 'crypto', version: '^3.0.7');
+    } else if (crypto.version != '^3.0.7') {
+      updatePubDependency(project, name: 'crypto', newVersion: '^3.0.7');
     }
     final uuid = findPubDependency(project, name: 'uuid');
     if (uuid == null) {
@@ -11696,6 +11756,7 @@ void buildPhase4BStableRuntimeCompileTestApp(App app) {
 /// Standalone compile-only smoke app used by test/app_test.dart.
 void buildPhase4C7OperationalRuntimeCompileTestApp(App app) {
   _configureAvarynTheme(app, existingProject: false);
+  app.pubDependency('crypto', '^3.0.7');
   app.pubDependency('openpgp', '^3.10.7');
   app.pubDependency('timezone', '^0.10.1');
   final dynamic operationalRuntime = app.customWidget(
@@ -12949,6 +13010,47 @@ DslWidget _phase4BPageBody(String mode, {Object initialStableMemberId = ''}) =>
         ),
       ],
     );
+
+DslWidget _phase5B2LegacyHorseRedirectBody() => Container(
+  name: 'Phase5B2LegacyHorseRedirectBody',
+  color: Colors.primaryBackground,
+  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+  child: Column(
+    mainAxis: MainAxis.center,
+    crossAxis: CrossAxis.center,
+    spacing: 14,
+    children: [
+      Icon('cloud_done_outlined', size: 38, color: Colors.secondary),
+      Text(
+        'Paarden staan nu veilig in je cloudstal',
+        style: Styles.titleLarge,
+        color: Colors.primaryText,
+        textAlign: TextAlign.center,
+      ),
+      Text(
+        'Deze oude lokale route is uitgeschakeld. Open het beveiligde paardenoverzicht om verder te gaan.',
+        style: Styles.bodyMedium,
+        color: Colors.secondaryText,
+        textAlign: TextAlign.center,
+        maxLines: 4,
+        overflow: TextOverflow.ellipsis,
+      ),
+      Button(
+        'Naar paarden',
+        icon: 'arrow_forward',
+        width: 220,
+        color: Colors.primary,
+        textColor: Colors.accent1,
+        borderRadius: 12,
+        onTap: Navigate(
+          ff.Pages.horsesOverviewPage,
+          allowBack: false,
+          replaceRoute: true,
+        ),
+      ),
+    ],
+  ),
+);
 
 DslWidget _phase4C7OperationalPageBody({
   required String mode,

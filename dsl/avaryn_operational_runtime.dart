@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'phase_4c7_runtime_contract.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -145,6 +146,11 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   List<Map<String, dynamic>> _feedingPlans = const [];
   List<Map<String, dynamic>> _conflicts = const [];
   List<Map<String, dynamic>> _offlineSchedule = const [];
+  List<Map<String, dynamic>> _horseAccessGrants = const [];
+  List<Map<String, dynamic>> _horseRelationships = const [];
+  List<Map<String, dynamic>> _stableRoster = const [];
+  Map<String, dynamic> _actorMembership = const {};
+  Map<String, dynamic> _horseCapabilities = const {};
 
   StreamSubscription<AuthState>? _authSubscription;
   String _boundUserId = '';
@@ -341,6 +347,10 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   }
 
   String _friendlyError(Object error) {
+    if (error is StateError &&
+        error.message == 'DURABLE_REQUEST_STORAGE_REQUIRED') {
+      return 'Deze bewerking vereist veilige lokale request-opslag. Controleer de browseropslag en probeer opnieuw.';
+    }
     if (error is PostgrestException) {
       final message = error.message.toUpperCase();
       if (message.contains('NOT_AUTHORIZED')) {
@@ -351,6 +361,19 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       }
       if (message.contains('REQUEST_ID_REUSED')) {
         return 'Deze bewerking is al verwerkt. Vernieuw het overzicht.';
+      }
+      if (message.contains('INVALID_HORSE_PROFILE') ||
+          message.contains('INVALID_BIRTH_DATE')) {
+        return 'Controleer de kerngegevens en probeer opnieuw.';
+      }
+      if (message.contains('HORSE_ACCESS_ALREADY_ACTIVE')) {
+        return 'Deze toegang bestaat al. Trek haar eerst in om de rechten te wijzigen.';
+      }
+      if (message.contains('RELATIONSHIP_ALREADY_ACTIVE')) {
+        return 'Deze paard-teamrelatie bestaat al.';
+      }
+      if (message.contains('GRANT_NOT_ALLOWED')) {
+        return 'Deze combinatie van stalrol en paardtoegang is niet toegestaan.';
       }
     }
     return 'De beveiligde gegevens konden niet worden geladen. Probeer opnieuw.';
@@ -515,6 +538,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
 
   Future<void> _fetchOperationalData() async {
     final today = _operationalDateKey(_stableNow());
+    final userId = _client.auth.currentUser?.id ?? '';
     final results = await Future.wait<dynamic>([
       _client
           .from('horses')
@@ -539,13 +563,139 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           .neq('status', 'retired')
           .order('effective_from', ascending: false),
       _client.rpc('list_sync_conflicts', params: {'p_stable_id': _stableId}),
+      _client
+          .from('stable_memberships')
+          .select('id,stable_member_id,role,status,row_version')
+          .eq('stable_id', _stableId)
+          .eq('user_id', userId)
+          .eq('status', 'active')
+          .maybeSingle(),
     ]);
     _horses = _operationalRows(results[0]);
     _schedule = _operationalRows(results[1]);
     _feedingPlans = _operationalRows(results[2]);
     _conflicts = _operationalRows(results[3]);
+    _actorMembership = _operationalMap(results[4]);
+    if (_actorMembership.isEmpty) {
+      throw const PostgrestException(
+        message: 'MEMBERSHIP_UNAVAILABLE',
+        code: '42501',
+      );
+    }
+    if (_selectedHorseId.isNotEmpty &&
+        !_horses.any(
+          (horse) => _operationalString(horse['id']) == _selectedHorseId,
+        )) {
+      _selectedHorseId = '';
+    }
     if (_selectedHorseId.isEmpty && _horses.isNotEmpty) {
       _selectedHorseId = _operationalString(_horses.first['id']);
+    }
+    if (widget.mode == 'horses' && _selectedHorseId.isNotEmpty) {
+      await _fetchHorseManagementData();
+    } else {
+      _horseCapabilities = const {};
+      _horseAccessGrants = const [];
+      _horseRelationships = const [];
+      _stableRoster = const [];
+    }
+  }
+
+  bool get _isStableManager {
+    final role = _operationalString(_actorMembership['role']);
+    return role == 'owner' || role == 'admin';
+  }
+
+  bool get _canEditSelectedHorse =>
+      _horseCapabilities['can_edit_profile'] == true;
+
+  bool get _canArchiveSelectedHorse =>
+      _horseCapabilities['can_archive'] == true;
+
+  bool get _canManageHorseAccess =>
+      _horseCapabilities['can_manage_basic_access'] == true ||
+      _horseCapabilities['can_manage_schedule_access'] == true;
+
+  bool get _canManageHorseRelationships =>
+      _horseCapabilities['can_manage_relationships'] == true;
+
+  Future<void> _fetchHorseManagementData() async {
+    _horseCapabilities = _operationalMap(
+      await _client.rpc(
+        'get_horse_capabilities',
+        params: {'p_horse_id': _selectedHorseId},
+      ),
+    );
+    if (!_canManageHorseAccess && !_canManageHorseRelationships) {
+      _horseAccessGrants = const [];
+      _horseRelationships = const [];
+      _stableRoster = const [];
+      return;
+    }
+
+    final rosterRows = _operationalRows(
+      await _client
+          .from('stable_members')
+          .select('id,display_name,function_title,status')
+          .eq('stable_id', _stableId)
+          .eq('status', 'active')
+          .order('display_name'),
+    );
+    final membershipRows = _operationalRows(
+      await _client
+          .from('stable_memberships')
+          .select('id,user_id,stable_member_id,role,status,row_version')
+          .eq('stable_id', _stableId)
+          .eq('status', 'active'),
+    );
+    _stableRoster = rosterRows
+        .map((member) {
+          Map<String, dynamic>? membership;
+          for (final candidate in membershipRows) {
+            if (candidate['stable_member_id'] == member['id']) {
+              membership = candidate;
+              break;
+            }
+          }
+          return {
+            ...member,
+            'membership_id': membership?['id'],
+            'user_id': membership?['user_id'],
+            'role': membership?['role'],
+            'membership_row_version': membership?['row_version'],
+          };
+        })
+        .toList(growable: false);
+
+    if (_canManageHorseAccess) {
+      _horseAccessGrants = _operationalRows(
+        await _client
+            .from('horse_access_grants')
+            .select(
+              'id,membership_id,category,can_view,can_execute,can_edit,'
+              'can_manage,status,valid_from,valid_until,row_version,grant_reason',
+            )
+            .eq('horse_id', _selectedHorseId)
+            .eq('status', 'active')
+            .order('category'),
+      );
+    } else {
+      _horseAccessGrants = const [];
+    }
+    if (_canManageHorseRelationships) {
+      _horseRelationships = _operationalRows(
+        await _client
+            .from('horse_relationships')
+            .select(
+              'id,stable_member_id,relationship_type,label,status,'
+              'valid_from,valid_until,row_version',
+            )
+            .eq('horse_id', _selectedHorseId)
+            .eq('status', 'active')
+            .order('relationship_type'),
+      );
+    } else {
+      _horseRelationships = const [];
     }
   }
 
@@ -884,6 +1034,74 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     }
   }
 
+  Future<dynamic> _runDurableIdempotentRpc({
+    required String operation,
+    required String intentKey,
+    Map<String, String> initialReplayValues = const {},
+    required Map<String, dynamic> Function(
+      String requestId,
+      Map<String, String> replayValues,
+    )
+    buildParams,
+  }) async {
+    final digest =
+        sha256.convert(utf8.encode('$operation\n$intentKey')).toString();
+    final storageKey = _storageKey('request.$digest');
+    final persistedValue = await _secureStorage.read(key: storageKey);
+    Map<String, dynamic>? persistedRecord;
+    if (!phase5B2DurableStorageIsAbsent(persistedValue)) {
+      try {
+        persistedRecord = _operationalMap(jsonDecode(persistedValue!));
+      } catch (_) {
+        throw StateError('DURABLE_REQUEST_STORAGE_REQUIRED');
+      }
+    }
+    late Phase5B2DurableRequestRecord record;
+    try {
+      record = phase5B2ResolveDurableRequestRecord(
+        persistedRecord,
+        _uuid.v4,
+        initialReplayValues,
+      );
+    } catch (_) {
+      throw StateError('DURABLE_REQUEST_STORAGE_REQUIRED');
+    }
+    final encodedRecord = jsonEncode({
+      'request_id': record.requestId,
+      'replay_values': record.replayValues,
+    });
+    if (encodedRecord != persistedValue) {
+      await _secureStorage.write(key: storageKey, value: encodedRecord);
+      final persisted = await _secureStorage.read(key: storageKey);
+      if (persisted != encodedRecord) {
+        throw StateError('DURABLE_REQUEST_STORAGE_REQUIRED');
+      }
+    }
+    try {
+      final result = await _client.rpc(
+        operation,
+        params: buildParams(record.requestId, record.replayValues),
+      );
+      try {
+        await _secureStorage.delete(key: storageKey);
+      } catch (_) {
+        // Retaining a completed request ID is safe: the server will return
+        // the same idempotent outcome when this exact intent is retried.
+      }
+      return result;
+    } on PostgrestException catch (error) {
+      if (RegExp(r'^[0-9A-Z]{5}$').hasMatch(error.code ?? '')) {
+        try {
+          await _secureStorage.delete(key: storageKey);
+        } catch (_) {
+          // A stale definitive request ID remains harmless for the same
+          // payload and is removed by the account/stable purge boundary.
+        }
+      }
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>?> _showFeedingExecutionDialog() async {
     final quantity = TextEditingController();
     final remaining = TextEditingController();
@@ -1097,37 +1315,736 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   }
 
   Future<void> _createHorse() async {
-    final name = TextEditingController();
-    final confirmed = await _showFormDialog(
-      title: 'Paard toevoegen',
-      controller: name,
-      label: 'Roepnaam',
-      action: 'Toevoegen',
-    );
-    final displayName = name.text.trim();
-    name.dispose();
-    if (!confirmed || displayName.isEmpty) return;
+    final profile = await _showHorseProfileDialog();
+    if (profile == null) return;
     await _guarded(() async {
-      await _runIdempotentRpc(
-        operation: 'create_horse',
-        intentKey: displayName,
-        buildParams:
-            (requestId) => {
-              'p_stable_id': _stableId,
-              'p_display_name': displayName,
-              'p_request_id': requestId,
-              'p_official_name': null,
-              'p_birth_date': null,
-              'p_sex': 'unknown',
-              'p_breed': null,
-              'p_discipline': null,
-              'p_level': null,
-            },
+      final result = _operationalMap(
+        await _runDurableIdempotentRpc(
+          operation: 'create_horse',
+          intentKey: _horseProfileIntentKey('create', profile),
+          buildParams:
+              (requestId, _) => {
+                'p_stable_id': _stableId,
+                'p_display_name': profile['display_name'],
+                'p_request_id': requestId,
+                'p_official_name': profile['official_name'],
+                'p_birth_date': profile['birth_date'],
+                'p_sex': profile['sex'],
+                'p_breed': profile['breed'],
+                'p_discipline': profile['discipline'],
+                'p_level': profile['level'],
+              },
+        ),
       );
+      _selectedHorseId = _operationalString(result['horse_id']);
       _notice = 'Paard veilig toegevoegd.';
       await _load(quiet: true);
     });
   }
+
+  Future<void> _editSelectedHorse() async {
+    final horse = _selectedHorse;
+    if (horse == null) return;
+    final profile = await _showHorseProfileDialog(horse: horse);
+    if (profile == null) return;
+    final horseId = _operationalString(horse['id']);
+    final rowVersion = int.tryParse(_operationalString(horse['row_version']));
+    if (horseId.isEmpty || rowVersion == null || rowVersion < 1) {
+      setState(() => _error = 'Vernieuw het paard voordat je het bewerkt.');
+      return;
+    }
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'update_horse_profile',
+        intentKey:
+            '$horseId:$rowVersion:${_horseProfileIntentKey('update', profile)}',
+        buildParams:
+            (requestId, _) => {
+              'p_horse_id': horseId,
+              'p_expected_row_version': rowVersion,
+              'p_request_id': requestId,
+              'p_display_name': profile['display_name'],
+              'p_official_name': profile['official_name'],
+              'p_birth_date': profile['birth_date'],
+              'p_sex': profile['sex'],
+              'p_breed': profile['breed'],
+              'p_discipline': profile['discipline'],
+              'p_level': profile['level'],
+            },
+      );
+      _notice = 'Kerngegevens veilig bijgewerkt.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<void> _archiveSelectedHorse() async {
+    final horse = _selectedHorse;
+    if (horse == null) return;
+    final reason = TextEditingController();
+    final confirmed = await _showFormDialog(
+      title: 'Paard archiveren',
+      controller: reason,
+      label: 'Reden',
+      action: 'Archiveren',
+    );
+    final normalizedReason = reason.text.trim();
+    reason.dispose();
+    if (!confirmed || normalizedReason.isEmpty) return;
+    final horseId = _operationalString(horse['id']);
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'archive_horse',
+        intentKey: '$horseId:$normalizedReason',
+        buildParams:
+            (requestId, _) => {
+              'p_horse_id': horseId,
+              'p_request_id': requestId,
+              'p_reason': normalizedReason,
+            },
+      );
+      _selectedHorseId = '';
+      _notice = 'Paard gearchiveerd; historische gegevens blijven bewaard.';
+      await _load(quiet: true);
+    });
+  }
+
+  Map<String, dynamic>? get _selectedHorse {
+    for (final horse in _horses) {
+      if (_operationalString(horse['id']) == _selectedHorseId) return horse;
+    }
+    return null;
+  }
+
+  String _horseProfileIntentKey(
+    String operation,
+    Map<String, dynamic> profile,
+  ) => jsonEncode([
+    operation,
+    profile['display_name'],
+    profile['official_name'],
+    profile['birth_date'],
+    profile['sex'],
+    profile['breed'],
+    profile['discipline'],
+    profile['level'],
+  ]);
+
+  Future<Map<String, dynamic>?> _showHorseProfileDialog({
+    Map<String, dynamic>? horse,
+  }) async {
+    final displayName = TextEditingController(
+      text: _operationalString(horse?['display_name']),
+    );
+    final officialName = TextEditingController(
+      text: _operationalString(horse?['official_name']),
+    );
+    final birthDate = TextEditingController(
+      text: _operationalString(horse?['birth_date']),
+    );
+    final breed = TextEditingController(
+      text: _operationalString(horse?['breed']),
+    );
+    final discipline = TextEditingController(
+      text: _operationalString(horse?['discipline']),
+    );
+    final level = TextEditingController(
+      text: _operationalString(horse?['level']),
+    );
+    var sex =
+        const {'mare', 'gelding', 'stallion', 'unknown'}.contains(horse?['sex'])
+            ? _operationalString(horse?['sex'])
+            : 'unknown';
+    String? validationError;
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (dialogContext) => StatefulBuilder(
+            builder:
+                (context, setDialogState) => AlertDialog(
+                  title: Text(
+                    horse == null ? 'Paard toevoegen' : 'Kerngegevens bewerken',
+                  ),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextField(
+                          controller: displayName,
+                          autofocus: true,
+                          maxLength: 120,
+                          decoration: const InputDecoration(
+                            labelText: 'Roepnaam *',
+                          ),
+                        ),
+                        TextField(
+                          controller: officialName,
+                          maxLength: 200,
+                          decoration: const InputDecoration(
+                            labelText: 'Officiële naam',
+                          ),
+                        ),
+                        TextField(
+                          controller: birthDate,
+                          decoration: const InputDecoration(
+                            labelText: 'Geboortedatum (JJJJ-MM-DD)',
+                          ),
+                        ),
+                        DropdownButtonFormField<String>(
+                          value: sex,
+                          decoration: const InputDecoration(
+                            labelText: 'Geslacht',
+                          ),
+                          items:
+                              const {
+                                    'unknown': 'Onbekend',
+                                    'mare': 'Merrie',
+                                    'gelding': 'Ruin',
+                                    'stallion': 'Hengst',
+                                  }.entries
+                                  .map(
+                                    (entry) => DropdownMenuItem(
+                                      value: entry.key,
+                                      child: Text(entry.value),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged:
+                              (value) => setDialogState(
+                                () => sex = value ?? 'unknown',
+                              ),
+                        ),
+                        TextField(
+                          controller: breed,
+                          maxLength: 120,
+                          decoration: const InputDecoration(labelText: 'Ras'),
+                        ),
+                        TextField(
+                          controller: discipline,
+                          maxLength: 120,
+                          decoration: const InputDecoration(
+                            labelText: 'Discipline',
+                          ),
+                        ),
+                        TextField(
+                          controller: level,
+                          maxLength: 120,
+                          decoration: const InputDecoration(
+                            labelText: 'Niveau',
+                          ),
+                        ),
+                        if (validationError != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              validationError!,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: const Text('Annuleren'),
+                    ),
+                    FilledButton(
+                      onPressed: () {
+                        final normalizedName = displayName.text.trim();
+                        final normalizedBirth = birthDate.text.trim();
+                        final parsedBirth =
+                            normalizedBirth.isEmpty
+                                ? null
+                                : DateTime.tryParse(normalizedBirth);
+                        final today = DateTime.now();
+                        final currentDay = DateTime(
+                          today.year,
+                          today.month,
+                          today.day,
+                        );
+                        if (normalizedName.isEmpty) {
+                          setDialogState(
+                            () => validationError = 'Vul een roepnaam in.',
+                          );
+                          return;
+                        }
+                        if (normalizedBirth.isNotEmpty &&
+                            (parsedBirth == null ||
+                                parsedBirth.toIso8601String().substring(
+                                      0,
+                                      10,
+                                    ) !=
+                                    normalizedBirth ||
+                                parsedBirth.isAfter(currentDay))) {
+                          setDialogState(
+                            () =>
+                                validationError =
+                                    'Gebruik een geldige datum die niet in de toekomst ligt.',
+                          );
+                          return;
+                        }
+                        Navigator.pop(dialogContext, {
+                          'display_name': normalizedName,
+                          'official_name':
+                              officialName.text.trim().isEmpty
+                                  ? null
+                                  : officialName.text.trim(),
+                          'birth_date': parsedBirth
+                              ?.toIso8601String()
+                              .substring(0, 10),
+                          'sex': sex,
+                          'breed':
+                              breed.text.trim().isEmpty
+                                  ? null
+                                  : breed.text.trim(),
+                          'discipline':
+                              discipline.text.trim().isEmpty
+                                  ? null
+                                  : discipline.text.trim(),
+                          'level':
+                              level.text.trim().isEmpty
+                                  ? null
+                                  : level.text.trim(),
+                        });
+                      },
+                      child: Text(horse == null ? 'Toevoegen' : 'Opslaan'),
+                    ),
+                  ],
+                ),
+          ),
+    );
+    displayName.dispose();
+    officialName.dispose();
+    birthDate.dispose();
+    breed.dispose();
+    discipline.dispose();
+    level.dispose();
+    return result;
+  }
+
+  String _rosterNameFor({
+    String membershipId = '',
+    String stableMemberId = '',
+  }) {
+    for (final member in _stableRoster) {
+      if ((membershipId.isNotEmpty &&
+              _operationalString(member['membership_id']) == membershipId) ||
+          (stableMemberId.isNotEmpty &&
+              _operationalString(member['id']) == stableMemberId)) {
+        return _operationalString(member['display_name']);
+      }
+    }
+    return 'Teamlid';
+  }
+
+  Future<void> _grantSelectedHorseAccess() async {
+    final grant = await _showHorseAccessDialog();
+    if (grant == null) return;
+    final horseId = _selectedHorseId;
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'grant_horse_access',
+        intentKey: [
+          horseId,
+          grant['membership_id'],
+          grant['category'],
+          grant['access_level'],
+          grant['reason'],
+        ].map(_operationalString).join('|'),
+        buildParams:
+            (requestId, _) => {
+              'p_horse_id': horseId,
+              'p_membership_id': grant['membership_id'],
+              'p_category': grant['category'],
+              'p_can_view': true,
+              'p_can_execute':
+                  grant['access_level'] == 'work' &&
+                  grant['category'] == 'horse.schedule',
+              'p_can_edit':
+                  grant['access_level'] == 'work' &&
+                  grant['category'] == 'horse.basic',
+              'p_can_manage': false,
+              'p_valid_from': null,
+              'p_valid_until': null,
+              'p_grant_reason': grant['reason'],
+              'p_request_id': requestId,
+            },
+      );
+      _notice = 'Beperkte paardtoegang veilig toegekend.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<Map<String, dynamic>?> _showHorseAccessDialog() async {
+    final candidates = _stableRoster
+        .where(
+          (member) =>
+              _operationalString(member['membership_id']).isNotEmpty &&
+              _operationalString(member['membership_id']) !=
+                  _operationalString(_actorMembership['id']) &&
+              const {
+                'member',
+                'viewer',
+              }.contains(_operationalString(member['role'])),
+        )
+        .toList(growable: false);
+    if (candidates.isEmpty) {
+      setState(
+        () =>
+            _error =
+                'Er is geen actief member- of viewer-lid waaraan beperkte toegang kan worden gegeven.',
+      );
+      return null;
+    }
+    var membershipId = _operationalString(candidates.first['membership_id']);
+    var category = 'horse.basic';
+    var accessLevel = 'view';
+    final reason = TextEditingController();
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (dialogContext) => StatefulBuilder(
+            builder: (context, setDialogState) {
+              final selected = candidates.firstWhere(
+                (member) =>
+                    _operationalString(member['membership_id']) == membershipId,
+              );
+              final targetRole = _operationalString(selected['role']);
+              if (targetRole == 'viewer' && accessLevel == 'work') {
+                accessLevel = 'view';
+              }
+              return AlertDialog(
+                title: const Text('Beperkte paardtoegang'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DropdownButtonFormField<String>(
+                        value: membershipId,
+                        decoration: const InputDecoration(labelText: 'Teamlid'),
+                        items:
+                            candidates
+                                .map(
+                                  (member) => DropdownMenuItem(
+                                    value: _operationalString(
+                                      member['membership_id'],
+                                    ),
+                                    child: Text(
+                                      '${member['display_name']} · ${member['role']}',
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged:
+                            (value) => setDialogState(
+                              () => membershipId = value ?? membershipId,
+                            ),
+                      ),
+                      DropdownButtonFormField<String>(
+                        value: category,
+                        decoration: const InputDecoration(labelText: 'Context'),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'horse.basic',
+                            child: Text('Kerngegevens'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'horse.schedule',
+                            child: Text('Planning en uitvoering'),
+                          ),
+                        ],
+                        onChanged:
+                            (value) => setDialogState(
+                              () => category = value ?? category,
+                            ),
+                      ),
+                      DropdownButtonFormField<String>(
+                        value: accessLevel,
+                        decoration: const InputDecoration(labelText: 'Toegang'),
+                        items: [
+                          const DropdownMenuItem(
+                            value: 'view',
+                            child: Text('Alleen bekijken'),
+                          ),
+                          if (targetRole == 'member')
+                            DropdownMenuItem(
+                              value: 'work',
+                              child: Text(
+                                category == 'horse.basic'
+                                    ? 'Bekijken en bewerken'
+                                    : 'Bekijken en uitvoeren',
+                              ),
+                            ),
+                        ],
+                        onChanged:
+                            (value) => setDialogState(
+                              () => accessLevel = value ?? accessLevel,
+                            ),
+                      ),
+                      TextField(
+                        controller: reason,
+                        maxLength: 500,
+                        decoration: const InputDecoration(
+                          labelText: 'Reden (optioneel)',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Annuleren'),
+                  ),
+                  FilledButton(
+                    onPressed:
+                        () => Navigator.pop(dialogContext, {
+                          'membership_id': membershipId,
+                          'category': category,
+                          'access_level': accessLevel,
+                          'reason':
+                              reason.text.trim().isEmpty
+                                  ? null
+                                  : reason.text.trim(),
+                        }),
+                    child: const Text('Toekennen'),
+                  ),
+                ],
+              );
+            },
+          ),
+    );
+    reason.dispose();
+    return result;
+  }
+
+  Future<void> _revokeHorseAccess(Map<String, dynamic> grant) async {
+    final membershipId = _operationalString(grant['membership_id']);
+    final category = _operationalString(grant['category']);
+    final confirmed = await _confirmDialog(
+      title: 'Toegang intrekken',
+      body:
+          'Trek $category voor ${_rosterNameFor(membershipId: membershipId)} direct in?',
+      action: 'Intrekken',
+    );
+    if (!confirmed) return;
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'revoke_horse_access',
+        intentKey: '$_selectedHorseId:$membershipId:$category',
+        buildParams:
+            (requestId, _) => {
+              'p_horse_id': _selectedHorseId,
+              'p_membership_id': membershipId,
+              'p_category': category,
+              'p_request_id': requestId,
+            },
+      );
+      _notice = 'Paardtoegang direct ingetrokken.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<void> _addHorseRelationship() async {
+    final relationship = await _showHorseRelationshipDialog();
+    if (relationship == null) return;
+    final initialValidFrom = _operationalDateKey(_stableNow());
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'add_horse_relationship',
+        intentKey: [
+          _selectedHorseId,
+          relationship['stable_member_id'],
+          relationship['relationship_type'],
+          relationship['label'],
+        ].map(_operationalString).join('|'),
+        initialReplayValues: {'valid_from': initialValidFrom},
+        buildParams:
+            (requestId, replayValues) => {
+              'p_horse_id': _selectedHorseId,
+              'p_stable_member_id': relationship['stable_member_id'],
+              'p_relationship_type': relationship['relationship_type'],
+              'p_request_id': requestId,
+              'p_valid_from': replayValues['valid_from']!,
+              'p_label': relationship['label'],
+            },
+      );
+      _notice = 'Paard-teamrelatie toegevoegd; autorisatie blijft apart.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<Map<String, dynamic>?> _showHorseRelationshipDialog() async {
+    if (_stableRoster.isEmpty) {
+      setState(() => _error = 'Er zijn geen actieve stalteamleden.');
+      return null;
+    }
+    var stableMemberId = _operationalString(_stableRoster.first['id']);
+    var relationshipType = 'rider';
+    final label = TextEditingController();
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (dialogContext) => StatefulBuilder(
+            builder:
+                (context, setDialogState) => AlertDialog(
+                  title: const Text('Relatie met paard'),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DropdownButtonFormField<String>(
+                          value: stableMemberId,
+                          decoration: const InputDecoration(
+                            labelText: 'Teamlid',
+                          ),
+                          items:
+                              _stableRoster
+                                  .map(
+                                    (member) => DropdownMenuItem(
+                                      value: _operationalString(member['id']),
+                                      child: Text(
+                                        _operationalString(
+                                          member['display_name'],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged:
+                              (value) => setDialogState(
+                                () => stableMemberId = value ?? stableMemberId,
+                              ),
+                        ),
+                        DropdownButtonFormField<String>(
+                          value: relationshipType,
+                          decoration: const InputDecoration(
+                            labelText: 'Relatie',
+                          ),
+                          items:
+                              const {
+                                    'owner': 'Eigenaar',
+                                    'rider': 'Ruiter',
+                                    'groom': 'Groom',
+                                    'trainer': 'Trainer',
+                                    'veterinarian': 'Dierenarts',
+                                    'professional': 'Professional',
+                                    'other': 'Anders',
+                                  }.entries
+                                  .map(
+                                    (entry) => DropdownMenuItem(
+                                      value: entry.key,
+                                      child: Text(entry.value),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged:
+                              (value) => setDialogState(
+                                () =>
+                                    relationshipType =
+                                        value ?? relationshipType,
+                              ),
+                        ),
+                        TextField(
+                          controller: label,
+                          maxLength: 160,
+                          decoration: const InputDecoration(
+                            labelText: 'Toelichting (optioneel)',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: const Text('Annuleren'),
+                    ),
+                    FilledButton(
+                      onPressed:
+                          () => Navigator.pop(dialogContext, {
+                            'stable_member_id': stableMemberId,
+                            'relationship_type': relationshipType,
+                            'label':
+                                label.text.trim().isEmpty
+                                    ? null
+                                    : label.text.trim(),
+                          }),
+                      child: const Text('Toevoegen'),
+                    ),
+                  ],
+                ),
+          ),
+    );
+    label.dispose();
+    return result;
+  }
+
+  Future<void> _endHorseRelationship(Map<String, dynamic> relationship) async {
+    final relationshipId = _operationalString(relationship['id']);
+    final rowVersion = int.tryParse(
+      _operationalString(relationship['row_version']),
+    );
+    if (relationshipId.isEmpty || rowVersion == null || rowVersion < 1) {
+      setState(() => _error = 'Vernieuw de relatie voordat je haar beëindigt.');
+      return;
+    }
+    final confirmed = await _confirmDialog(
+      title: 'Relatie beëindigen',
+      body:
+          'Beëindig de relatie ${relationship['relationship_type']} met '
+          '${_rosterNameFor(stableMemberId: _operationalString(relationship['stable_member_id']))}?',
+      action: 'Beëindigen',
+    );
+    if (!confirmed) return;
+    final initialValidUntil = _operationalDateKey(_stableNow());
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'end_horse_relationship',
+        intentKey: '$relationshipId:$rowVersion',
+        initialReplayValues: {'valid_until': initialValidUntil},
+        buildParams:
+            (requestId, replayValues) => {
+              'p_relationship_id': relationshipId,
+              'p_expected_row_version': rowVersion,
+              'p_request_id': requestId,
+              'p_valid_until': replayValues['valid_until']!,
+            },
+      );
+      _notice = 'Paard-teamrelatie beëindigd; historie blijft bewaard.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<bool> _confirmDialog({
+    required String title,
+    required String body,
+    required String action,
+  }) async =>
+      await showDialog<bool>(
+        context: context,
+        builder:
+            (dialogContext) => AlertDialog(
+              title: Text(title),
+              content: Text(body),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: const Text('Annuleren'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(dialogContext, true),
+                  child: Text(action),
+                ),
+              ],
+            ),
+      ) ??
+      false;
 
   Future<void> _createScheduleItem() async {
     if (_horses.isEmpty) {
@@ -1325,6 +2242,11 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     _feedingPlans = const [];
     _conflicts = const [];
     _offlineSchedule = const [];
+    _horseAccessGrants = const [];
+    _horseRelationships = const [];
+    _stableRoster = const [];
+    _actorMembership = const {};
+    _horseCapabilities = const {};
     _selectedHorseId = '';
   }
 
@@ -1505,21 +2427,22 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         title: 'Nog geen toegankelijke paarden',
         body:
             'Een beheerder kan een paard toevoegen of je expliciete toegang geven.',
-        actionLabel: _offline ? null : 'Paard toevoegen',
-        onPressed: _offline ? null : _createHorse,
+        actionLabel: _offline || !_isStableManager ? null : 'Paard toevoegen',
+        onPressed: _offline || !_isStableManager ? null : _createHorse,
       );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: FilledButton.icon(
-            onPressed: _offline || _busy ? null : _createHorse,
-            icon: const Icon(Icons.add),
-            label: const Text('Paard toevoegen'),
+        if (_isStableManager)
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton.icon(
+              onPressed: _offline || _busy ? null : _createHorse,
+              icon: const Icon(Icons.add),
+              label: const Text('Paard toevoegen'),
+            ),
           ),
-        ),
         const SizedBox(height: 12),
         ..._horses.map(
           (horse) => _dataCard(
@@ -1534,13 +2457,181 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
             trailing: 'v${horse['row_version']}',
             selected: _selectedHorseId == _operationalString(horse['id']),
             onTap: () {
-              setState(
-                () => _selectedHorseId = _operationalString(horse['id']),
-              );
+              final horseId = _operationalString(horse['id']);
+              if (_selectedHorseId == horseId || _busy) return;
+              setState(() => _selectedHorseId = horseId);
+              unawaited(_load(quiet: true));
             },
           ),
         ),
+        if (_selectedHorse != null) ...[
+          const SizedBox(height: 18),
+          _selectedHorseManagement(theme),
+        ],
       ],
+    );
+  }
+
+  Widget _selectedHorseManagement(FlutterFlowTheme theme) {
+    final horse = _selectedHorse!;
+    final metadata = [
+      _operationalString(horse['official_name']),
+      _operationalString(horse['birth_date']),
+      _operationalString(horse['sex']),
+      _operationalString(horse['breed']),
+      _operationalString(horse['discipline']),
+      _operationalString(horse['level']),
+    ].where((value) => value.isNotEmpty).join(' · ');
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: theme.secondaryBackground,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: theme.alternate),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            _operationalString(horse['display_name']),
+            style: theme.titleLarge.copyWith(
+              color: theme.primaryText,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            metadata.isEmpty ? 'Geen aanvullende kerngegevens.' : metadata,
+            style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              if (_canEditSelectedHorse)
+                OutlinedButton.icon(
+                  onPressed: _offline || _busy ? null : _editSelectedHorse,
+                  icon: const Icon(Icons.edit_outlined),
+                  label: const Text('Kerngegevens'),
+                ),
+              if (_canArchiveSelectedHorse)
+                OutlinedButton.icon(
+                  onPressed: _offline || _busy ? null : _archiveSelectedHorse,
+                  icon: const Icon(Icons.archive_outlined),
+                  label: const Text('Archiveren'),
+                ),
+              if (_canManageHorseAccess)
+                FilledButton.tonalIcon(
+                  onPressed:
+                      _offline || _busy ? null : _grantSelectedHorseAccess,
+                  icon: const Icon(Icons.key_outlined),
+                  label: const Text('Toegang geven'),
+                ),
+              if (_canManageHorseRelationships)
+                FilledButton.tonalIcon(
+                  onPressed: _offline || _busy ? null : _addHorseRelationship,
+                  icon: const Icon(Icons.people_outline),
+                  label: const Text('Relatie toevoegen'),
+                ),
+            ],
+          ),
+          if (_canManageHorseAccess) ...[
+            const SizedBox(height: 20),
+            Text(
+              'Expliciete toegang',
+              style: theme.titleMedium.copyWith(
+                color: theme.primaryText,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            if (_horseAccessGrants.isEmpty)
+              Text(
+                'Geen actieve expliciete grants. Stalrollen blijven afzonderlijk van paardtoegang.',
+                style: theme.bodySmall.copyWith(color: theme.secondaryText),
+              )
+            else
+              ..._horseAccessGrants.map(
+                (grant) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.shield_outlined),
+                  title: Text(
+                    _rosterNameFor(
+                      membershipId: _operationalString(grant['membership_id']),
+                    ),
+                  ),
+                  subtitle: Text(
+                    [
+                      _operationalString(grant['category']),
+                      if (grant['can_execute'] == true) 'uitvoeren',
+                      if (grant['can_edit'] == true) 'bewerken',
+                    ].join(' · '),
+                  ),
+                  trailing: IconButton(
+                    tooltip: 'Toegang intrekken',
+                    onPressed:
+                        _offline || _busy
+                            ? null
+                            : () => _revokeHorseAccess(grant),
+                    icon: const Icon(Icons.remove_circle_outline),
+                  ),
+                ),
+              ),
+          ],
+          if (_canManageHorseRelationships) ...[
+            const SizedBox(height: 20),
+            Text(
+              'Ruiter, eigenaar en team',
+              style: theme.titleMedium.copyWith(
+                color: theme.primaryText,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Deze relaties beschrijven samenwerking en geven op zichzelf geen toegang.',
+              style: theme.bodySmall.copyWith(color: theme.secondaryText),
+            ),
+            if (_horseRelationships.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Nog geen actieve relaties.',
+                  style: theme.bodySmall.copyWith(color: theme.secondaryText),
+                ),
+              )
+            else
+              ..._horseRelationships.map(
+                (relationship) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.badge_outlined),
+                  title: Text(
+                    _rosterNameFor(
+                      stableMemberId: _operationalString(
+                        relationship['stable_member_id'],
+                      ),
+                    ),
+                  ),
+                  subtitle: Text(
+                    [
+                      _operationalString(relationship['relationship_type']),
+                      _operationalString(relationship['label']),
+                    ].where((value) => value.isNotEmpty).join(' · '),
+                  ),
+                  trailing: IconButton(
+                    tooltip: 'Relatie beëindigen',
+                    onPressed:
+                        _offline || _busy
+                            ? null
+                            : () => _endHorseRelationship(relationship),
+                    icon: const Icon(Icons.link_off_outlined),
+                  ),
+                ),
+              ),
+          ],
+        ],
+      ),
     );
   }
 

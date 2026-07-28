@@ -26,9 +26,9 @@ De server-side bron van waarheid bestaat uit de migraties en tests onder
 | A05 | stal/werkomgeving kiezen | Stable Handoff, Picker, selector | `stable_memberships`, `set_selected_stable` | fase-4B SQL-, context- en managementtests | wissel stal A → B → A, inclusief lege scope | aanwezig, onvoldoende getest |
 | A06 | stal en klein team beheren | Create Stable, Details, Members, Roles | `stables`, memberships en authority-RPC's | fase-4B RLS/security/concurrency | owner/admin/member/viewer-matrix doorlopen | aanwezig, onvoldoende getest |
 | A07 | teamlid uitnodigen/accepteren | Invite, Pending, Invitation | invitation Edge Function en invitation-RPC's | 23 lokale integratieasserties plus concurrency | create, preview, accept, decline, resend en revoke via eenmalige lokale manual-share-link | aanwezig, onvoldoende getest |
-| A08 | Horse aanmaken en lezen | Horses Overview/operational runtime | `horses`, `create_horse`, RLS | 4C.2A SQL/concurrency en runtimecompile | maak Horse, ververs en zie hem uitsluitend in juiste stal | aanwezig, onvoldoende getest: formeel E2E ontbreekt |
-| A09 | Horse-kerngegevens beheren | Horse Detail/Edit versus operational runtime | `update_horse_profile`, `archive_horse` | backendtests bestaan | wijzig naam/kernveld met row-version; bewijs conflict | aanwezig, functioneel onvolledig: actuele Alpha-runtime ontsluit update/archive niet |
-| A10 | Horse-relaties en beperkte toegang | Stable Access/Member Details en Horse-context | `horse_relationships`, `horse_access_grants`, grant/revoke-RPC's | 4C.2A/2B SQL en concurrency | geef beperkte Horse-toegang, revoke, test cross-stable denial | aanwezig, functioneel onvolledig: geen complete Horse-grantflow in Alpha-UI |
+| A08 | Horse aanmaken en lezen | Horses Overview/operational runtime | `horses`, `create_horse`, RLS | 4C.2A SQL/concurrency, 5B.2 lokale acceptatie en runtimecompile | maak Horse, ververs en zie hem uitsluitend in juiste stal | aanwezig, onvoldoende getest: formeel browser-E2E ontbreekt |
+| A09 | Horse-kerngegevens beheren | Horses Overview/operational runtime | `update_horse_profile`, `archive_horse`, `get_horse_capabilities` | 4C.2A SQL/concurrency, 5B.2 upgrade- en broncontracttests | wijzig kernveld met row-version, bewijs conflict en archiveer met reden | aanwezig, onvoldoende getest: browser-E2E en responsive bewijs ontbreken |
+| A10 | Horse-relaties en beperkte toegang | Horses Overview/operational runtime | `horse_relationships`, `horse_access_grants`, grant/revoke- en relationship-RPC's | 4C.2A/2B SQL en 5B.2 herhaalde concurrency/denialtests | geef beperkte basis- of planningtoegang, revoke, beheer losse teamrelatie en test cross-stable denial | aanwezig, onvoldoende getest: multi-user browser-E2E ontbreekt |
 | A11 | taak aanmaken | Planning/operational runtime | `schedule_items`, `create_schedule_item` | 4C.3 SQL/concurrency en runtimecompile | maak een taak met Horse, tijd en categorie | aanwezig, functioneel onvolledig: alleen minimale taakcreate |
 | A12 | terugkerende routines | Planning en Today | `schedule_series`, materialisatie-RPC's | backend recurrence- en racetests | maak drie series; materialiseer en controleer twee dagen | aanwezig, functioneel onvolledig: geen serie-UI |
 | A13 | taak toewijzen | Planning/Team | `schedule_assignments`, `assign_schedule_item` | backend RLS/concurrency | wijs groom toe; andere gebruiker ziet opdracht niet | aanwezig, functioneel onvolledig: geen assignment-UI |
@@ -44,11 +44,11 @@ De server-side bron van waarheid bestaat uit de migraties en tests onder
 | A23 | revoke/authority-reset | alle drie runtimes | authorityversion, topicrotatie, device revoke | SQL races, purgecontract en audit | revoke tijdens sessie/offline; oude data direct weg bij detectie | aanwezig, onvoldoende getest: multi-client acceptatie ontbreekt |
 | A24 | loading/empty/error/offline/denied/conflict | account-, stable- en operational runtime | RLS/RPC-foutcodes | bronasserties en compiletests | forceer iedere state en controleer herstelactie | aanwezig, onvoldoende getest |
 | A25 | navigatie zonder doodlopers | alle Alpha-routes | auth- en membershipgate | route-/bronasserties | doorloop mobiel/tablet/desktop en browser back/refresh/deeplink | aanwezig, onvoldoende getest |
-| A26 | Paard/Ruiter/Team gescheiden | Horse-, Profile- en Teamroutes | gescheiden profiles, semantische relationships, grants en memberships | schema- en RLS-tests | persona-labels en Horse-relaties verlenen geen authority | aanwezig, onvoldoende getest: UI-copy en E2E controleren |
+| A26 | Paard/Ruiter/Team gescheiden | Horse-, Profile- en Teamroutes | gescheiden profiles, semantische relationships, grants en memberships | schema- en RLS-tests plus expliciete 5B.2 UI-copy | persona-labels en Horse-relaties verlenen geen authority | aanwezig, onvoldoende getest: multi-user E2E controleren |
 | A27 | notificaties/reminders | geen actuele operationele Alpha-runtime | geen fase-4 notificationbackend; besluitrecord beperkt scope tot reeds contractueel geïmplementeerd | besluitrecord `AVARYN-P5-2026-07-27` | n.v.t.; voeg geen nieuwe notificationfeature toe | buiten fase 5 op grond van de actuele bindende scope |
 | A28 | responsive en basis-a11y | alle Alpha-routes | n.v.t. | webbuild en eerdere auth-boundaryscreenshots | 390×844, tablet en desktop; keyboard, focus, labels, contrast | aanwezig, onvoldoende getest |
-| A29 | één cloudbron zonder lokale split-brain | operationele pagina's plus oude Horse/Activity/Feeding/Nutrition-routes | cloud-RLS/RPC moet de autoritatieve bron blijven | generated snapshot toont nog lokale sample-seeding en lokale formwrites | start schoon, navigeer alle routes, bewijs dat geen prototypegegevens verschijnen of clouddata overschrijven | aanwezig, functioneel onvolledig: lokale seeding en oude lokale schrijfroutes moeten worden verwijderd, geïsoleerd of veilig omgeleid |
-| A30 | geldige FlutterFlow-stateconfiguratie | AppState en formroutes | n.v.t. | laatste run is groen maar meldt vijf nullable-statewaarschuwingen | cold start, refresh en deeplink zonder null-crash | aanwezig, onvoldoende getest: warnings oplossen of aantoonbaar als veilige nullable state documenteren |
+| A29 | één cloudbron zonder lokale split-brain | operationele pagina's plus oude Horse/Activity/Feeding/Nutrition-routes | cloud-RLS/RPC blijft de autoritatieve bron | 5B.1-navigatie leidt naar cloudruntime; 5B.2 vervangt on-load/body van oude Horse-form/edit/detailroutes door een harde replace-redirect; generated route-audit bevestigt alle drie redirects | start schoon, navigeer en deeplink alle actieve/legacy routes en bewijs dat geen prototypegegevens verschijnen of clouddata overschrijven | aanwezig, onvoldoende getest: browser back/deeplinkbewijs blijft nodig |
+| A30 | geldige FlutterFlow-stateconfiguratie | AppState en formroutes | n.v.t. | laatste run is groen maar meldt vier bestaande nullable-statewaarschuwingen | cold start, refresh en deeplink zonder null-crash | aanwezig, onvoldoende getest: warnings oplossen of aantoonbaar als veilige nullable state documenteren |
 | A31 | lokale uitnodigingsoverdracht | Invite/Invitation | lokale Edge Function; raw token nooit duurzaam opslaan | Ruby-integratiesuite | fictieve invite via eenmalige lokale manual-share-link, zonder echte e-mail | aanwezig, onvoldoende getest: hosted mail/deeplink blijft deploymentvoorwaarde |
 | A32 | onboarding voltooien | Onboarding/account-runtime | eigen `profiles`-record en server-side Auth-UUID | fase-4A RLS en runtimecompile | doorloop verplichte profielstappen en cold refresh | aanwezig, onvoldoende getest: formeel E2E ontbreekt |
 | A33 | persoonlijk profiel en avatar beheren | Personal Profile/account-runtime | eigen `profiles`, private `avatars` en padcontrole | fase-4A RLS, Storage-integratie en runtimecompile | wijzig profiel, upload/verwijder fictieve avatar, test cross-user denial | aanwezig, onvoldoende getest: formeel UI-E2E ontbreekt |
@@ -74,12 +74,11 @@ P1 voor een bruikbare Alpha:
 
 1. lokale sample-seeding en lokale/cloud-split-brain verwijderen of isoleren;
 2. vijf FlutterFlow nullable-statewaarschuwingen afhandelen;
-3. Horse update/archive en expliciete Horse-grants end-to-end ontsluiten;
-4. terugkerende series, assignments en datumgedreven Today-flow ontsluiten;
-5. Feeding version/item/activation/momentflow afmaken;
-6. private media upload/download/archive aan een Horse of execution koppelen;
-7. conflictresolver en stateherstel zichtbaar maken;
-8. auth-, invitation-, multi-session Realtime- en lifecycle-E2E toevoegen.
+3. terugkerende series, assignments en datumgedreven Today-flow ontsluiten;
+4. Feeding version/item/activation/momentflow afmaken;
+5. private media upload/download/archive aan een Horse of execution koppelen;
+6. conflictresolver en stateherstel zichtbaar maken;
+7. auth-, invitation-, Horse-, multi-session Realtime- en lifecycle-E2E toevoegen.
 
 P2 voor formele testgereedheid:
 
@@ -128,3 +127,21 @@ zijn uitgevoerd; de technische 5B.1-subfase zelf is groen.
 De invitation-integratiesuite bevat nu 27 controles en de workspace bevat 89
 groene Darttests. De gegenereerde webapp bouwt lokaal met de projectgebonden
 Flutter 3.35.7-toolchain. Er is niets gepubliceerd of gedeployed.
+
+## 7. Fase-5B.2-checkpoint
+
+Op 28 juli 2026 is de cloud-backed Horse Alpha-flow lokaal afgerond. De
+operationele runtime ontsluit nu creatie, kerngegevens met optimistische
+concurrency, archivering met reden, beperkte basis-/planningtoegang en
+afzonderlijke niet-autoriserende paard-teamrelaties.
+
+De capability-RPC is uitsluitend read-only en retourneert alleen de effectieve
+rechten van de ingelogde actor voor een Horse die die actor al mag zien. RLS en
+de bestaande mutatie-RPC's blijven de enige authority. De lokale lege reset,
+upgrade-met-databehoud, denialmatrix en concurrencyruns staan beschreven in
+`docs/phase-5b2-horse-management-access.md`.
+
+A08–A10 en het technische deel van A26 zijn daarmee niet langer functioneel
+onvolledig. Zij blijven voor de formele fase-5D-status `aanwezig, onvoldoende
+getest` totdat de gegenereerde export-, responsive en multi-user browser-E2E
+zijn bewezen. Er is niets gepubliceerd of gedeployed.

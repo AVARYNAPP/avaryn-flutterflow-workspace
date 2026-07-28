@@ -54,6 +54,51 @@ Set<String> phase4C7SecureKeysForAccount(
   return keys.where((key) => key.startsWith(prefix)).toSet();
 }
 
+typedef Phase5B2DurableRequestRecord =
+    ({String requestId, Map<String, String> replayValues});
+
+bool phase5B2DurableStorageIsAbsent(String? persistedValue) =>
+    persistedValue == null;
+
+Phase5B2DurableRequestRecord phase5B2ResolveDurableRequestRecord(
+  Map<String, dynamic>? persisted,
+  String Function() create,
+  Map<String, String> initialReplayValues,
+) {
+  final uuidV4 = RegExp(
+    r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+    caseSensitive: false,
+  );
+  if (persisted != null) {
+    final existing = persisted['request_id']?.toString().trim() ?? '';
+    final rawValues = persisted['replay_values'];
+    if (!uuidV4.hasMatch(existing) || rawValues is! Map) {
+      throw StateError('Invalid durable request record');
+    }
+    final replayValues = <String, String>{};
+    for (final entry in rawValues.entries) {
+      if (entry.key is! String || entry.value is! String) {
+        throw StateError('Invalid durable request record');
+      }
+      replayValues[entry.key as String] = entry.value as String;
+    }
+    for (final requiredKey in initialReplayValues.keys) {
+      if ((replayValues[requiredKey] ?? '').isEmpty) {
+        throw StateError('Invalid durable request record');
+      }
+    }
+    return (requestId: existing, replayValues: replayValues);
+  }
+  final created = create().trim();
+  if (!uuidV4.hasMatch(created)) {
+    throw StateError('A valid UUID v4 request ID is required');
+  }
+  return (
+    requestId: created,
+    replayValues: Map<String, String>.from(initialReplayValues),
+  );
+}
+
 bool phase4C7DaysetMetadataMatches({
   required Map<String, dynamic> envelope,
   required Map<String, dynamic> plaintext,
