@@ -76,7 +76,8 @@ void main() {
     expect(phase5B2, contains('replaceRoute: true'));
     expect(phase5B2, contains("name: 'HorsesOverviewPage'"));
     expect(source, contains("name: 'Phase5B2LegacyHorseRedirectBody'"));
-    expect(source, contains('buildAvarynPhase5B2,'));
+    expect(source, contains('void buildAvarynPhase5B2(App app)'));
+    expect(source, contains('buildAvarynPhase5B4,'));
   });
 
   test('ambiguous Horse requests survive widget and app restart safely', () {

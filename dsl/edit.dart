@@ -5205,7 +5205,7 @@ Future<void> main(List<String> args) async {
   final options = _parseCliOptions(args);
   try {
     await flutterFlowAI(
-      buildAvarynPhase5B2,
+      buildAvarynPhase5B4,
       apiKey: options.apiKey,
       baseUrl: options.baseUrl,
       projectName: options.projectName,
@@ -5633,6 +5633,34 @@ void buildAvarynPhase5B2(App app) {
   });
 }
 
+/// Phase 5B.4 exposes the existing private-media authority in the operational
+/// Alpha runtime. Signed upload/download material is transient client memory;
+/// RLS, Storage and the media Edge Function remain the only authority.
+void buildAvarynPhase5B4(App app) {
+  _configureAvarynTheme(app, existingProject: true);
+  _applyPhase4C7OperationalRuntimeResource(app);
+  app.raw((project) {
+    updatePage(
+      project,
+      name: 'HorsesOverviewPage',
+      description:
+          'RLS-backed Horse workspace with private Horse media using server-selected paths, verified finalize and short-lived downloads.',
+    );
+    updatePage(
+      project,
+      name: 'TodayDashboardPage',
+      description:
+          'RLS-backed Today execution workspace with target-bound private evidence uploads and short-lived downloads.',
+    );
+    updatePage(
+      project,
+      name: 'PlanningPage',
+      description:
+          'RLS-backed planning workspace with completed-execution context and private operational evidence.',
+    );
+  });
+}
+
 String _loadPhase4BStableRuntimeWidgetCode() {
   final contextFile = _resolveDslSourceFile('phase_4b_context_model.dart');
   final managementFile = _resolveDslSourceFile(
@@ -5806,6 +5834,18 @@ void _applyPhase4C7OperationalRuntimeResource(App app) {
       addPubDependency(project, name: 'timezone', version: '^0.10.1');
     } else if (timezone.version != '^0.10.1') {
       updatePubDependency(project, name: 'timezone', newVersion: '^0.10.1');
+    }
+    final image = findPubDependency(project, name: 'image');
+    if (image == null) {
+      addPubDependency(project, name: 'image', version: '^4.8.0');
+    } else if (image.version != '^4.8.0') {
+      updatePubDependency(project, name: 'image', newVersion: '^4.8.0');
+    }
+    final jsonPath = findPubDependency(project, name: 'json_path');
+    if (jsonPath == null) {
+      addPubDependency(project, name: 'json_path', version: '0.7.2');
+    } else if (jsonPath.version != '0.7.2') {
+      updatePubDependency(project, name: 'json_path', newVersion: '0.7.2');
     }
 
     final operationalWidget = findCustomWidget(

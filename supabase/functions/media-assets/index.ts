@@ -706,6 +706,15 @@ Deno.serve(async (request: Request) => {
         max_byte_size: number
       }>
     }
+    if (session.status === 'ready') {
+      return response(200, {
+        media_asset_id: session.media_asset_id,
+        row_version: session.row_version,
+        status: session.status,
+        idempotent: true,
+        uploads: [],
+      })
+    }
     if (session.status !== 'pending') {
       return response(409, { code: 'MEDIA_UPLOAD_SESSION_CLOSED' })
     }
@@ -729,6 +738,7 @@ Deno.serve(async (request: Request) => {
     return response(200, {
       media_asset_id: session.media_asset_id,
       row_version: session.row_version,
+      status: session.status,
       idempotent: session.idempotent,
       uploads,
     })

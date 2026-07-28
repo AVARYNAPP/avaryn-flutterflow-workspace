@@ -4,20 +4,24 @@ import 'dart:typed_data';
 
 import 'phase_4c7_runtime_contract.dart';
 import 'package:crypto/crypto.dart';
+import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutterflow_generated/app_state.dart';
 import 'package:flutterflow_generated/flutter_flow/flutter_flow_theme.dart';
 import 'package:flutterflow_generated/flutter_flow/flutter_flow_util.dart';
+import 'package:image/image.dart' as image;
 import 'package:openpgp/openpgp.dart';
 import 'package:realtime_client/realtime_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timezone/data/latest.dart' as timezone_data;
 import 'package:timezone/timezone.dart' as timezone;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 bool _operationalTimezonesInitialized = false;
+const String _operationalMediaStorageHost = 'nfduzjgtrtugerzmzynm.supabase.co';
 final Set<String> _operationalPendingPurgeAccounts = <String>{};
 final Map<RealtimeChannel, SupabaseClient> _operationalPendingChannelRemovals =
     <RealtimeChannel, SupabaseClient>{};
@@ -105,6 +109,16 @@ List<Map<String, dynamic>> _operationalRows(dynamic value) =>
             .toList(growable: false)
         : const <Map<String, dynamic>>[];
 
+class _OperationalMediaException implements Exception {
+  const _OperationalMediaException(this.status, this.code);
+
+  final int status;
+  final String code;
+
+  @override
+  String toString() => code;
+}
+
 DateTime? _operationalDate(dynamic value) =>
     value is DateTime
         ? value
@@ -148,6 +162,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   List<Map<String, dynamic>> _offlineSchedule = const [];
   List<Map<String, dynamic>> _horseAccessGrants = const [];
   List<Map<String, dynamic>> _horseRelationships = const [];
+  List<Map<String, dynamic>> _horseMedia = const [];
   List<Map<String, dynamic>> _stableRoster = const [];
   Map<String, dynamic> _actorMembership = const {};
   Map<String, dynamic> _horseCapabilities = const {};
@@ -332,6 +347,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
 
   bool _requiresSecurityReset(Object error) {
     if (error is AuthException) return true;
+    if (error is FunctionException && error.status == 401) return true;
     if (error is StateError && error.message == 'LOCAL_PURGE_INCOMPLETE') {
       return true;
     }
@@ -350,6 +366,36 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     if (error is StateError &&
         error.message == 'DURABLE_REQUEST_STORAGE_REQUIRED') {
       return 'Deze bewerking vereist veilige lokale request-opslag. Controleer de browseropslag en probeer opnieuw.';
+    }
+    final mediaCode = _mediaFailureCode(error);
+    if (mediaCode.isNotEmpty) {
+      if (mediaCode.contains('EDIT_REQUIRED') ||
+          mediaCode.contains('FORBIDDEN')) {
+        return 'Je hebt voor deze private mediahandeling onvoldoende rechten.';
+      }
+      if (mediaCode.contains('VERSION_CONFLICT')) {
+        return 'Deze media is intussen gewijzigd. Vernieuw en probeer opnieuw.';
+      }
+      if (mediaCode.contains('CONTENT_TYPE') ||
+          mediaCode.contains('VARIANT') ||
+          mediaCode.contains('THUMBNAIL') ||
+          mediaCode.contains('BYTE_SIZE')) {
+        return 'Het mediabestand is niet veilig te verwerken. Kies een geldige JPG, PNG of PDF.';
+      }
+      if (mediaCode.contains('UPLOAD_INCOMPLETE')) {
+        return 'De upload is nog niet compleet. Probeer dezelfde bijlage opnieuw.';
+      }
+      if (mediaCode.contains('STATUS_UNCERTAIN') ||
+          mediaCode.contains('SESSION_CLOSED')) {
+        return 'De uploadstatus wordt veilig hersteld. Probeer exact dezelfde bijlage opnieuw.';
+      }
+      if (mediaCode.contains('UNAVAILABLE') ||
+          mediaCode.contains('NOT_READY')) {
+        return 'Deze private media is niet meer beschikbaar.';
+      }
+    }
+    if (error is StorageException) {
+      return 'De private upload kon niet worden bevestigd. Probeer dezelfde bijlage opnieuw.';
     }
     if (error is PostgrestException) {
       final message = error.message.toUpperCase();
@@ -572,7 +618,9 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           .maybeSingle(),
     ]);
     _horses = _operationalRows(results[0]);
-    _schedule = _operationalRows(results[1]);
+    _schedule = await _attachLatestScheduleExecutions(
+      _operationalRows(results[1]),
+    );
     _feedingPlans = _operationalRows(results[2]);
     _conflicts = _operationalRows(results[3]);
     _actorMembership = _operationalMap(results[4]);
@@ -597,6 +645,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       _horseCapabilities = const {};
       _horseAccessGrants = const [];
       _horseRelationships = const [];
+      _horseMedia = const [];
       _stableRoster = const [];
     }
   }
@@ -614,10 +663,17 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
 
   bool get _canManageHorseAccess =>
       _horseCapabilities['can_manage_basic_access'] == true ||
-      _horseCapabilities['can_manage_schedule_access'] == true;
+      _horseCapabilities['can_manage_schedule_access'] == true ||
+      _horseCapabilities['can_manage_media_access'] == true;
 
   bool get _canManageHorseRelationships =>
       _horseCapabilities['can_manage_relationships'] == true;
+
+  bool get _canViewSelectedHorseMedia =>
+      _horseCapabilities['can_view_media'] == true;
+
+  bool get _canEditSelectedHorseMedia =>
+      _horseCapabilities['can_edit_media'] == true;
 
   Future<void> _fetchHorseManagementData() async {
     _horseCapabilities = _operationalMap(
@@ -626,6 +682,10 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         params: {'p_horse_id': _selectedHorseId},
       ),
     );
+    _horseMedia =
+        _canViewSelectedHorseMedia
+            ? await _fetchLinkedMedia(horseId: _selectedHorseId)
+            : const [];
     if (!_canManageHorseAccess && !_canManageHorseRelationships) {
       _horseAccessGrants = const [];
       _horseRelationships = const [];
@@ -697,6 +757,69 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     } else {
       _horseRelationships = const [];
     }
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchLinkedMedia({
+    String horseId = '',
+    String scheduleExecutionId = '',
+  }) async {
+    if (horseId.isEmpty && scheduleExecutionId.isEmpty) return const [];
+    dynamic query = _client
+        .from('media_links')
+        .select('media_asset_id')
+        .isFilter('archived_at', null);
+    query =
+        scheduleExecutionId.isNotEmpty
+            ? query.eq('schedule_execution_id', scheduleExecutionId)
+            : query
+                .eq('horse_id', horseId)
+                .isFilter('schedule_execution_id', null);
+    final links = _operationalRows(await query);
+    final assetIds = links
+        .map((link) => _operationalString(link['media_asset_id']))
+        .where((id) => id.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+    if (assetIds.isEmpty) return const [];
+    return _operationalRows(
+      await _client
+          .from('media_assets')
+          .select(
+            'id,horse_id,status,original_filename,mime_type,byte_size,'
+            'row_version,ready_at',
+          )
+          .inFilter('id', assetIds)
+          .eq('status', 'ready')
+          .order('ready_at', ascending: false),
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> _attachLatestScheduleExecutions(
+    List<Map<String, dynamic>> schedule,
+  ) async {
+    return Future.wait(
+      schedule.map((item) async {
+        if (_operationalString(item['item_kind']) == 'feeding' ||
+            _operationalString(item['state']) != 'completed') {
+          return item;
+        }
+        final itemId = _operationalString(item['schedule_item_id']);
+        if (itemId.isEmpty) return item;
+        final executions = _operationalRows(
+          await _client.rpc(
+            'list_schedule_executions',
+            params: {'p_schedule_item_id': itemId},
+          ),
+        );
+        if (executions.isEmpty) return item;
+        final execution = executions.last;
+        return {
+          ...item,
+          'execution_id': execution['execution_id'],
+          'execution_actor_user_id': execution['actor_user_id'],
+        };
+      }),
+    );
   }
 
   Future<void> _readOfflineAvailability() async {
@@ -1100,6 +1223,574 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       }
       rethrow;
     }
+  }
+
+  String _mediaFailureCode(Object error) {
+    if (error is _OperationalMediaException) return error.code;
+    if (error is FunctionException) {
+      final details =
+          error.details is Map
+              ? Map<String, dynamic>.from(error.details as Map)
+              : const <String, dynamic>{};
+      return _operationalString(details['code']);
+    }
+    return '';
+  }
+
+  int _mediaFailureStatus(Object error) {
+    if (error is _OperationalMediaException) return error.status;
+    if (error is FunctionException) return error.status;
+    return 0;
+  }
+
+  bool _mediaFailureIsDefinitive(Object error) {
+    final status = _mediaFailureStatus(error);
+    final code = _mediaFailureCode(error);
+    if (status < 400 || status >= 500) return false;
+    return !const {
+      'MEDIA_UPLOAD_INCOMPLETE',
+      'MEDIA_UPLOAD_SIGNING_UNAVAILABLE',
+      'MEDIA_DOWNLOAD_SIGNING_UNAVAILABLE',
+      'MEDIA_UPLOAD_SESSION_CLOSED',
+      'MEDIA_UPLOAD_STATUS_UNCERTAIN',
+    }.contains(code);
+  }
+
+  Future<void> _deleteDurableMediaRecord(String storageKey) async {
+    try {
+      await _secureStorage.delete(key: storageKey);
+    } catch (_) {
+      // The exact request envelope remains safe and the account/stable purge
+      // will remove it. A later retry is still idempotent server-side.
+    }
+  }
+
+  Future<bool> _recoverCompletedMediaUpload(String createRequestId) async {
+    final actorId = _client.auth.currentUser?.id ?? '';
+    if (actorId.isEmpty || createRequestId.isEmpty) return false;
+    final recovered = _operationalMap(
+      await _client
+          .from('media_assets')
+          .select('id,status')
+          .eq('uploaded_by_user_id', actorId)
+          .eq('created_request_id', createRequestId)
+          .eq('status', 'ready')
+          .maybeSingle(),
+    );
+    return _operationalString(recovered['id']).isNotEmpty &&
+        _operationalString(recovered['status']) == 'ready';
+  }
+
+  String _mediaMimeType(String extension) => switch (extension) {
+    'jpg' || 'jpeg' => 'image/jpeg',
+    'png' => 'image/png',
+    'pdf' => 'application/pdf',
+    _ => '',
+  };
+
+  Uint8List _buildMediaThumbnail(Uint8List bytes, String mimeType) {
+    final image.Decoder decoder = switch (mimeType) {
+      'image/jpeg' => image.JpegDecoder(),
+      'image/png' => image.PngDecoder(),
+      _ =>
+        throw const _OperationalMediaException(
+          400,
+          'MEDIA_CONTENT_TYPE_INVALID',
+        ),
+    };
+    final info = decoder.startDecode(bytes);
+    if (info == null ||
+        info.numFrames != 1 ||
+        info.width <= 0 ||
+        info.height <= 0 ||
+        info.width * info.height * 4 > 32 * 1024 * 1024) {
+      throw const _OperationalMediaException(400, 'MEDIA_CONTENT_TYPE_INVALID');
+    }
+    final decoded = decoder.decodeFrame(0);
+    if (decoded == null) {
+      throw const _OperationalMediaException(400, 'MEDIA_CONTENT_TYPE_INVALID');
+    }
+    var maxDimension = 512;
+    while (maxDimension >= 192) {
+      final resized =
+          decoded.width >= decoded.height
+              ? image.copyResize(
+                decoded,
+                width: maxDimension,
+                interpolation: image.Interpolation.average,
+              )
+              : image.copyResize(
+                decoded,
+                height: maxDimension,
+                interpolation: image.Interpolation.average,
+              );
+      final encoded = switch (mimeType) {
+        'image/jpeg' => image.encodeJpg(resized, quality: 82),
+        'image/png' => image.encodePng(resized, level: 9),
+        _ => Uint8List(0),
+      };
+      if (encoded.isNotEmpty && encoded.length <= 1024 * 1024) {
+        return encoded;
+      }
+      maxDimension = (maxDimension * 0.75).floor();
+    }
+    throw const _OperationalMediaException(400, 'MEDIA_THUMBNAIL_INVALID');
+  }
+
+  Future<Uint8List?> _readPickedMediaBytes(
+    file_picker.PlatformFile file,
+    int maxBytes,
+  ) async {
+    final inMemory = file.bytes;
+    if (inMemory != null) {
+      return inMemory.length <= maxBytes ? inMemory : null;
+    }
+    final stream = file.readStream;
+    if (stream == null) return null;
+    final builder = BytesBuilder(copy: false);
+    await for (final chunk in stream) {
+      if (builder.length + chunk.length > maxBytes) return null;
+      builder.add(chunk);
+    }
+    return builder.takeBytes();
+  }
+
+  Future<void> _pickAndUploadMedia({
+    required String horseId,
+    String scheduleExecutionId = '',
+  }) async {
+    if (_offline || _busy || horseId.isEmpty) return;
+    final picked = await file_picker.FilePicker.pickFiles(
+      type: file_picker.FileType.custom,
+      allowedExtensions: const ['jpg', 'jpeg', 'png', 'pdf'],
+      allowMultiple: false,
+      withData: false,
+      withReadStream: true,
+    );
+    if (picked == null || picked.files.isEmpty) return;
+    final file = picked.files.single;
+    final filename = file.name.trim();
+    final extension = (file.extension ?? '').trim().toLowerCase();
+    final mimeType = _mediaMimeType(extension);
+    if (filename.isEmpty || mimeType.isEmpty) {
+      setState(() => _error = 'Kies een geldige JPG-, PNG- of PDF-bijlage.');
+      return;
+    }
+    final maxBytes =
+        mimeType == 'application/pdf' ? 20 * 1024 * 1024 : 10 * 1024 * 1024;
+    if (file.size <= 0 || file.size > maxBytes) {
+      setState(
+        () =>
+            _error =
+                mimeType == 'application/pdf'
+                    ? 'Kies een PDF kleiner dan 20 MB.'
+                    : 'Kies een afbeelding kleiner dan 10 MB.',
+      );
+      return;
+    }
+    final bytes = await _readPickedMediaBytes(file, maxBytes);
+    if (bytes == null || bytes.isEmpty || bytes.length != file.size) {
+      setState(
+        () => _error = 'Het gekozen bestand kon niet volledig worden gelezen.',
+      );
+      return;
+    }
+    await _guarded(() async {
+      final thumbnail =
+          mimeType == 'application/pdf'
+              ? null
+              : _buildMediaThumbnail(bytes, mimeType);
+      await _uploadMediaBytes(
+        horseId: horseId,
+        scheduleExecutionId: scheduleExecutionId,
+        filename: filename,
+        mimeType: mimeType,
+        original: bytes,
+        thumbnail: thumbnail,
+      );
+      _notice =
+          scheduleExecutionId.isEmpty
+              ? 'Private Horse-media veilig toegevoegd.'
+              : 'Privébewijs veilig aan de uitvoering gekoppeld.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<void> _uploadMediaBytes({
+    required String horseId,
+    required String scheduleExecutionId,
+    required String filename,
+    required String mimeType,
+    required Uint8List original,
+    required Uint8List? thumbnail,
+  }) async {
+    final contentHash = sha256.convert(original).toString();
+    final intentKey = [
+      horseId,
+      scheduleExecutionId,
+      filename,
+      mimeType,
+      contentHash,
+    ].join('|');
+    final digest =
+        sha256.convert(utf8.encode('media-upload\n$intentKey')).toString();
+    final storageKey = _storageKey('request.$digest');
+    final persistedValue = await _secureStorage.read(key: storageKey);
+    Map<String, dynamic>? persistedRecord;
+    if (!phase5B2DurableStorageIsAbsent(persistedValue)) {
+      try {
+        persistedRecord = _operationalMap(jsonDecode(persistedValue!));
+      } catch (_) {
+        throw StateError('DURABLE_REQUEST_STORAGE_REQUIRED');
+      }
+    }
+    late Phase5B2DurableRequestRecord record;
+    try {
+      record = phase5B2ResolveDurableRequestRecord(persistedRecord, _uuid.v4, {
+        'finalize_request_id': _uuid.v4(),
+      });
+    } catch (_) {
+      throw StateError('DURABLE_REQUEST_STORAGE_REQUIRED');
+    }
+    final encodedRecord = jsonEncode({
+      'request_id': record.requestId,
+      'replay_values': record.replayValues,
+    });
+    if (persistedValue != encodedRecord) {
+      await _secureStorage.write(key: storageKey, value: encodedRecord);
+      if (await _secureStorage.read(key: storageKey) != encodedRecord) {
+        throw StateError('DURABLE_REQUEST_STORAGE_REQUIRED');
+      }
+    }
+
+    String mediaAssetId = '';
+    int? rowVersion;
+    try {
+      late FunctionResponse created;
+      try {
+        created = await _client.functions.invoke(
+          'media-assets',
+          body: {
+            'action': 'create',
+            'horse_id': horseId,
+            'schedule_execution_id':
+                scheduleExecutionId.isEmpty ? null : scheduleExecutionId,
+            'original_filename': filename,
+            'mime_type': mimeType,
+            'request_id': record.requestId,
+          },
+        );
+      } on FunctionException catch (error) {
+        if (_mediaFailureCode(error) == 'MEDIA_UPLOAD_SESSION_CLOSED') {
+          try {
+            if (await _recoverCompletedMediaUpload(record.requestId)) {
+              await _deleteDurableMediaRecord(storageKey);
+              return;
+            }
+          } catch (_) {
+            // The prior finalize outcome stays ambiguous. Retain the durable
+            // request envelope and retry this exact attachment later.
+          }
+          throw const _OperationalMediaException(
+            503,
+            'MEDIA_UPLOAD_STATUS_UNCERTAIN',
+          );
+        }
+        rethrow;
+      }
+      final createData = _operationalMap(created.data);
+      if (created.status != 200) {
+        final createCode = _operationalString(createData['code']);
+        if (createCode == 'MEDIA_UPLOAD_SESSION_CLOSED') {
+          if (await _recoverCompletedMediaUpload(record.requestId)) {
+            await _deleteDurableMediaRecord(storageKey);
+            return;
+          }
+          throw const _OperationalMediaException(
+            503,
+            'MEDIA_UPLOAD_STATUS_UNCERTAIN',
+          );
+        }
+        throw _OperationalMediaException(created.status, createCode);
+      }
+      mediaAssetId = _operationalString(createData['media_asset_id']);
+      rowVersion = int.tryParse(_operationalString(createData['row_version']));
+      final uploads = _operationalRows(createData['uploads']);
+      if (_operationalString(createData['status']) == 'ready' &&
+          mediaAssetId.isNotEmpty &&
+          rowVersion != null &&
+          uploads.isEmpty) {
+        await _deleteDurableMediaRecord(storageKey);
+        return;
+      }
+      if (mediaAssetId.isEmpty || rowVersion == null || uploads.isEmpty) {
+        throw const _OperationalMediaException(
+          503,
+          'MEDIA_UPLOAD_SIGNING_UNAVAILABLE',
+        );
+      }
+      for (final upload in uploads) {
+        final variant = _operationalString(upload['variant']);
+        final objectPath = _operationalString(upload['object_path']);
+        final uploadToken = _operationalString(upload['upload_token']);
+        final expectedMime = _operationalString(upload['expected_mime_type']);
+        final variantBytes =
+            variant == 'original'
+                ? original
+                : variant == 'thumbnail'
+                ? thumbnail
+                : null;
+        if (objectPath.isEmpty ||
+            uploadToken.isEmpty ||
+            expectedMime != mimeType ||
+            variantBytes == null ||
+            variantBytes.isEmpty) {
+          throw const _OperationalMediaException(409, 'MEDIA_VARIANT_MISMATCH');
+        }
+        try {
+          await _client.storage
+              .from('horse-media')
+              .uploadBinaryToSignedUrl(
+                objectPath,
+                uploadToken,
+                variantBytes,
+                FileOptions(contentType: mimeType, upsert: true),
+              );
+        } on StorageException {
+          // The PUT result can be ambiguous. Finalize is the authority: it
+          // downloads and validates the exact server-side bytes.
+        }
+      }
+      final finalized = await _client.functions.invoke(
+        'media-assets',
+        body: {
+          'action': 'finalize',
+          'media_asset_id': mediaAssetId,
+          'expected_row_version': rowVersion,
+          'request_id': record.replayValues['finalize_request_id']!,
+        },
+      );
+      final finalizeData = _operationalMap(finalized.data);
+      if (finalized.status != 200) {
+        throw _OperationalMediaException(
+          finalized.status,
+          _operationalString(finalizeData['code']),
+        );
+      }
+      await _deleteDurableMediaRecord(storageKey);
+    } catch (error) {
+      if (_mediaFailureIsDefinitive(error)) {
+        await _deleteDurableMediaRecord(storageKey);
+        if (mediaAssetId.isNotEmpty && rowVersion != null) {
+          try {
+            await _runDurableIdempotentRpc(
+              operation: 'archive_media_asset',
+              intentKey: '$mediaAssetId:$rowVersion:rejected-upload',
+              buildParams:
+                  (requestId, _) => {
+                    'p_media_asset_id': mediaAssetId,
+                    'p_expected_row_version': rowVersion,
+                    'p_request_id': requestId,
+                  },
+            );
+          } catch (_) {
+            // Pending/quarantined media stays unreadable and can be archived
+            // on a later authorized retry.
+          }
+        }
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> _openMediaAsset(Map<String, dynamic> asset) async {
+    if (_busy || _offline) return;
+    await _guarded(() async {
+      final response = await _client.functions.invoke(
+        'media-assets',
+        body: {
+          'action': 'download',
+          'media_asset_id': asset['id'],
+          'variant': 'original',
+        },
+      );
+      final data = _operationalMap(response.data);
+      if (response.status != 200) {
+        throw _OperationalMediaException(
+          response.status,
+          _operationalString(data['code']),
+        );
+      }
+      final uri = Uri.tryParse(_operationalString(data['signed_download_url']));
+      if (uri == null ||
+          uri.scheme != 'https' ||
+          uri.host.toLowerCase() != _operationalMediaStorageHost ||
+          !uri.path.startsWith('/storage/v1/object/sign/horse-media/')) {
+        throw const _OperationalMediaException(
+          503,
+          'MEDIA_DOWNLOAD_SIGNING_UNAVAILABLE',
+        );
+      }
+      final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!opened) {
+        throw const _OperationalMediaException(
+          503,
+          'MEDIA_DOWNLOAD_SIGNING_UNAVAILABLE',
+        );
+      }
+    });
+  }
+
+  Future<void> _archiveMediaAsset(Map<String, dynamic> asset) async {
+    final assetId = _operationalString(asset['id']);
+    final rowVersion = int.tryParse(_operationalString(asset['row_version']));
+    if (assetId.isEmpty || rowVersion == null) return;
+    final confirmed = await _confirmDialog(
+      title: 'Media archiveren',
+      body:
+          'Archiveer ${_operationalString(asset['original_filename'])}? '
+          'De historie blijft bewaard.',
+      action: 'Archiveren',
+    );
+    if (!confirmed) return;
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'archive_media_asset',
+        intentKey: '$assetId:$rowVersion',
+        buildParams:
+            (requestId, _) => {
+              'p_media_asset_id': assetId,
+              'p_expected_row_version': rowVersion,
+              'p_request_id': requestId,
+            },
+      );
+      _notice = 'Media gearchiveerd; de historie blijft bewaard.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<void> _showExecutionMedia(Map<String, dynamic> item) async {
+    final executionId = _operationalString(item['execution_id']);
+    final horseId = _operationalString(item['horse_id']);
+    if (_busy || _offline || executionId.isEmpty || horseId.isEmpty) return;
+    setState(() {
+      _busy = true;
+      _error = '';
+    });
+    List<Map<String, dynamic>> media = const [];
+    var canEditMedia = false;
+    try {
+      media = await _fetchLinkedMedia(scheduleExecutionId: executionId);
+      try {
+        final capabilities = _operationalMap(
+          await _client.rpc(
+            'get_horse_capabilities',
+            params: {'p_horse_id': horseId},
+          ),
+        );
+        canEditMedia = capabilities['can_edit_media'] == true;
+      } catch (_) {
+        // Execution-minimal access intentionally does not open the Horse
+        // dossier. The execution actor may still upload to this exact target.
+      }
+    } catch (error) {
+      if (_requiresSecurityReset(error)) {
+        await _purgeOperationalState(clearSelectedStable: true);
+      }
+      if (mounted) setState(() => _error = _friendlyError(error));
+      return;
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+    if (!mounted) return;
+    final actorId = _client.auth.currentUser?.id ?? '';
+    final canUpload =
+        canEditMedia ||
+        (actorId.isNotEmpty &&
+            actorId == _operationalString(item['execution_actor_user_id']));
+    final theme = FlutterFlowTheme.of(context);
+    await showDialog<void>(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: const Text('Privébewijs bij uitvoering'),
+            content: SizedBox(
+              width: 520,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Alleen geautoriseerde gebruikers krijgen per aanvraag '
+                      'een downloadlink van 60 seconden.',
+                      style: theme.bodySmall.copyWith(
+                        color: theme.secondaryText,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    if (media.isEmpty)
+                      const Text('Nog geen toegankelijk bewijs.')
+                    else
+                      ...media.map(
+                        (asset) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.verified_user_outlined),
+                          title: Text(
+                            _operationalString(asset['original_filename']),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            _operationalString(asset['mime_type']),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Veilig openen',
+                                onPressed:
+                                    () => unawaited(_openMediaAsset(asset)),
+                                icon: const Icon(Icons.open_in_new_outlined),
+                              ),
+                              if (canEditMedia)
+                                IconButton(
+                                  tooltip: 'Media archiveren',
+                                  onPressed:
+                                      () =>
+                                          unawaited(_archiveMediaAsset(asset)),
+                                  icon: const Icon(Icons.archive_outlined),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: const Text('Sluiten'),
+              ),
+              if (canUpload)
+                FilledButton.icon(
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                    unawaited(
+                      _pickAndUploadMedia(
+                        horseId: horseId,
+                        scheduleExecutionId: executionId,
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.upload_file_outlined),
+                  label: const Text('Bewijs toevoegen'),
+                ),
+            ],
+          ),
+    );
   }
 
   Future<Map<String, dynamic>?> _showFeedingExecutionDialog() async {
@@ -1665,7 +2356,10 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                   grant['category'] == 'horse.schedule',
               'p_can_edit':
                   grant['access_level'] == 'work' &&
-                  grant['category'] == 'horse.basic',
+                  const {
+                    'horse.basic',
+                    'horse.media',
+                  }.contains(grant['category']),
               'p_can_manage': false,
               'p_valid_from': null,
               'p_valid_until': null,
@@ -1679,6 +2373,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   }
 
   Future<Map<String, dynamic>?> _showHorseAccessDialog() async {
+    final actorRole = _operationalString(_actorMembership['role']);
     final candidates = _stableRoster
         .where(
           (member) =>
@@ -1686,9 +2381,12 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
               _operationalString(member['membership_id']) !=
                   _operationalString(_actorMembership['id']) &&
               const {
+                'admin',
                 'member',
                 'viewer',
-              }.contains(_operationalString(member['role'])),
+              }.contains(_operationalString(member['role'])) &&
+              (actorRole == 'owner' ||
+                  _operationalString(member['role']) != 'admin'),
         )
         .toList(growable: false);
     if (candidates.isEmpty) {
@@ -1756,6 +2454,10 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                             value: 'horse.schedule',
                             child: Text('Planning en uitvoering'),
                           ),
+                          DropdownMenuItem(
+                            value: 'horse.media',
+                            child: Text('Private operationele media'),
+                          ),
                         ],
                         onChanged:
                             (value) => setDialogState(
@@ -1770,14 +2472,14 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                             value: 'view',
                             child: Text('Alleen bekijken'),
                           ),
-                          if (targetRole == 'member')
+                          if (targetRole != 'viewer')
                             DropdownMenuItem(
                               value: 'work',
-                              child: Text(
-                                category == 'horse.basic'
-                                    ? 'Bekijken en bewerken'
-                                    : 'Bekijken en uitvoeren',
-                              ),
+                              child: Text(switch (category) {
+                                'horse.basic' => 'Bekijken en bewerken',
+                                'horse.media' => 'Bekijken en uploaden',
+                                _ => 'Bekijken en uitvoeren',
+                              }),
                             ),
                         ],
                         onChanged:
@@ -1788,8 +2490,12 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                       TextField(
                         controller: reason,
                         maxLength: 500,
-                        decoration: const InputDecoration(
-                          labelText: 'Reden (optioneel)',
+                        onChanged: (_) => setDialogState(() {}),
+                        decoration: InputDecoration(
+                          labelText:
+                              category == 'horse.media'
+                                  ? 'Reden (verplicht voor media)'
+                                  : 'Reden (optioneel)',
                         ),
                       ),
                     ],
@@ -1802,15 +2508,17 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                   ),
                   FilledButton(
                     onPressed:
-                        () => Navigator.pop(dialogContext, {
-                          'membership_id': membershipId,
-                          'category': category,
-                          'access_level': accessLevel,
-                          'reason':
-                              reason.text.trim().isEmpty
-                                  ? null
-                                  : reason.text.trim(),
-                        }),
+                        category == 'horse.media' && reason.text.trim().isEmpty
+                            ? null
+                            : () => Navigator.pop(dialogContext, {
+                              'membership_id': membershipId,
+                              'category': category,
+                              'access_level': accessLevel,
+                              'reason':
+                                  reason.text.trim().isEmpty
+                                      ? null
+                                      : reason.text.trim(),
+                            }),
                     child: const Text('Toekennen'),
                   ),
                 ],
@@ -2244,6 +2952,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     _offlineSchedule = const [];
     _horseAccessGrants = const [];
     _horseRelationships = const [];
+    _horseMedia = const [];
     _stableRoster = const [];
     _actorMembership = const {};
     _horseCapabilities = const {};
@@ -2630,6 +3339,88 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                 ),
               ),
           ],
+          if (_canViewSelectedHorseMedia) ...[
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Private operationele media',
+                    style: theme.titleMedium.copyWith(
+                      color: theme.primaryText,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (_canEditSelectedHorseMedia)
+                  FilledButton.tonalIcon(
+                    onPressed:
+                        _offline || _busy
+                            ? null
+                            : () =>
+                                _pickAndUploadMedia(horseId: _selectedHorseId),
+                    icon: const Icon(Icons.upload_file_outlined),
+                    label: const Text('Uploaden'),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Bestanden blijven privé. Downloadlinks zijn kort geldig en '
+              'toegang wordt bij iedere aanvraag opnieuw gecontroleerd.',
+              style: theme.bodySmall.copyWith(color: theme.secondaryText),
+            ),
+            if (_horseMedia.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Nog geen toegankelijke media.',
+                  style: theme.bodySmall.copyWith(color: theme.secondaryText),
+                ),
+              )
+            else
+              ..._horseMedia.map(
+                (asset) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    _operationalString(asset['mime_type']) == 'application/pdf'
+                        ? Icons.picture_as_pdf_outlined
+                        : Icons.image_outlined,
+                  ),
+                  title: Text(
+                    _operationalString(asset['original_filename']),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    '${_operationalString(asset['mime_type'])} · '
+                    '${((int.tryParse(_operationalString(asset['byte_size'])) ?? 0) / 1024).ceil()} KB',
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        tooltip: 'Veilig openen',
+                        onPressed:
+                            _offline || _busy
+                                ? null
+                                : () => _openMediaAsset(asset),
+                        icon: const Icon(Icons.open_in_new_outlined),
+                      ),
+                      if (_canEditSelectedHorseMedia)
+                        IconButton(
+                          tooltip: 'Media archiveren',
+                          onPressed:
+                              _offline || _busy
+                                  ? null
+                                  : () => _archiveMediaAsset(asset),
+                          icon: const Icon(Icons.archive_outlined),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
         ],
       ),
     );
@@ -2683,6 +3474,9 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
             'cancelled',
             'pending_sync',
           }.contains(state);
+          final hasExecutionMediaContext =
+              state == 'completed' &&
+              _operationalString(item['execution_id']).isNotEmpty;
           return _dataCard(
             theme,
             leading:
@@ -2693,8 +3487,20 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
             subtitle:
                 '${_stableClock(item['scheduled_start_at'])} · '
                 '${_operationalString(item['priority'])} · $state',
-            trailing: terminal ? 'Klaar' : 'Afronden',
-            onTap: terminal || _busy ? null : () => _completeSchedule(item),
+            trailing:
+                hasExecutionMediaContext
+                    ? 'Media'
+                    : terminal
+                    ? 'Klaar'
+                    : 'Afronden',
+            onTap:
+                _busy
+                    ? null
+                    : hasExecutionMediaContext
+                    ? () => _showExecutionMedia(item)
+                    : terminal
+                    ? null
+                    : () => _completeSchedule(item),
           );
         }),
         const SizedBox(height: 14),

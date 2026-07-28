@@ -35,7 +35,7 @@ De server-side bron van waarheid bestaat uit de migraties en tests onder
 | A14 | Today op logische dagen | Today/operational runtime | `list_today_schedule` | SQL-tests en runtimecompile | vandaag plus tweede lokale staldag/DST-rand | aanwezig, onvoldoende getest; datumkeuze/fixturebewijs ontbreekt |
 | A15 | uitvoering registreren | Today/Feeding Execution | record- en sync-execution-RPC's | SQL, idempotentie en concurrency | voltooi toegewezen taak exact eenmaal | aanwezig, onvoldoende getest: formeel E2E ontbreekt |
 | A16 | voerplanversionering en activatie | Feeding Overview | feeding plans, versions en lifecycle-RPC's | 4C.4 SQL/concurrency | draft, versie, approve, activate en retire met denied-tegenproef | aanwezig, functioneel onvolledig: UI maakt alleen een conceptplan |
-| A17 | private operationele media | Horse/executioncontext nog niet ontsloten | private bucket, media-assets/links en media-RPC's | 4C.5 SQL, Ruby Storage/Edge en concurrency | upload, finalize, authorize, archive; denial voor andere Horse/stal | aanwezig, functioneel onvolledig: geen operationele mediaflow in Alpha-UI |
+| A17 | private operationele media | Horses Overview en afgeronde Today/Planning-executioncontext | private bucket, media-assets/links, media-RPC's en media Edge Function | 4C.5 SQL/Ruby plus 5B.4 capability-, bron-, upgrade- en concurrencytests | upload, finalize, download en archive; revoke en denial voor andere Horse/stal | aanwezig, onvoldoende getest: multi-user browser-E2E en viewportbewijs ontbreken |
 | A18 | private Realtime-update | operational runtime | private topics plus `pull_operation_changes` | 4C.6 SQL/concurrency en generated build | wijzig in sessie A, veilige refresh in sessie B | aanwezig, onvoldoende getest: multi-session Alpha-E2E ontbreekt |
 | A19 | offline dagset en pending-sync | operational runtime op ondersteund native/desktop | device/dayset/sync-RPC's | 4C.6 SQL/concurrency en 4C.7 contracttests | prepare, verbreek netwerk, execute, restart, reconnect | aanwezig, onvoldoende getest: native E2E ontbreekt |
 | A20 | browseroffline | web-runtime | bewust uitgeschakeld; geen goedgekeurde browserkeystore | webbuild en fail-closed bronasserties | netwerk weg: geen plaintext/fallback en duidelijke state | productbeslissing: beveiligde webopslag vereist nieuw contract |
@@ -145,3 +145,21 @@ A08–A10 en het technische deel van A26 zijn daarmee niet langer functioneel
 onvolledig. Zij blijven voor de formele fase-5D-status `aanwezig, onvoldoende
 getest` totdat de gegenereerde export-, responsive en multi-user browser-E2E
 zijn bewezen. Er is niets gepubliceerd of gedeployed.
+
+## 8. Fase-5B.4-checkpoint
+
+De private-mediaketen uit 4C.5 is in de operationele Alpha-runtime aangesloten
+op zowel de Horse- als de exacte schedule-executioncontext. Upload en finalize
+gebruiken duurzame idempotente request-ID's, terwijl signed materiaal,
+objectpaden en mediabytes uitsluitend tijdelijk in geheugen bestaan.
+
+De aanvullende capabilityvelden zijn alleen UI-guidance. De bestaande
+media-RLS, Storage-policy's, mutatie-RPC's en Edge Function blijven de
+authority. De reproduceerbare reset-, upgrade-, denial-, Storage- en
+concurrencygate staat in
+`docs/phase-5b4-private-operational-media.md`.
+
+A17 is daarmee niet langer functioneel onvolledig. De formele status blijft
+`aanwezig, onvoldoende getest` totdat de multi-user browser-, viewport- en
+handmatige Alpha-E2E in fase 5D zijn bewezen. Er is niets gepubliceerd of
+gedeployed.

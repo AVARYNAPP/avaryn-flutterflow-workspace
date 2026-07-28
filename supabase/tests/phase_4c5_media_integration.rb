@@ -844,14 +844,25 @@ closed_create = edge(
   },
   session: owner_session,
 )
-assert!(closed_create.code.to_i == 409, 'Ready asset reissued upload credentials')
+assert!(
+  closed_create.code.to_i == 200,
+  'Ready asset exact create retry did not acknowledge completed upload',
+)
+closed_create_data = json_body(closed_create)
+assert!(
+  closed_create_data.fetch('media_asset_id') == asset_id &&
+    closed_create_data.fetch('status') == 'ready' &&
+    closed_create_data.fetch('idempotent') == true &&
+    closed_create_data.fetch('uploads').empty?,
+  'Ready asset retry did not return a credential-free idempotent result',
+)
 assert!(
   !closed_create.body.include?('signed_') &&
     !closed_create.body.include?('upload_token') &&
     !closed_create.body.include?('object_path'),
   'Closed upload session leaked transport credentials',
 )
-pass('finalize is idempotent and a ready asset cannot reissue upload credentials')
+pass('lost finalize response resumes as success without reissuing credentials')
 
 asset_query = request(
   :get,
