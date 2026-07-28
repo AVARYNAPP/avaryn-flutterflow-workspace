@@ -158,6 +158,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   List<Map<String, dynamic>> _horses = const [];
   List<Map<String, dynamic>> _schedule = const [];
   List<Map<String, dynamic>> _feedingPlans = const [];
+  List<Map<String, dynamic>> _feedingPlanVersions = const [];
+  List<Map<String, dynamic>> _feedingPlanItems = const [];
   List<Map<String, dynamic>> _conflicts = const [];
   List<Map<String, dynamic>> _offlineSchedule = const [];
   List<Map<String, dynamic>> _horseAccessGrants = const [];
@@ -173,6 +175,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   String _stableId = '';
   String _stableTimezone = '';
   String _selectedHorseId = '';
+  String _selectedFeedingPlanId = '';
+  String _selectedFeedingVersionId = '';
   String _error = '';
   String _notice = '';
   DateTime? _scheduleDate;
@@ -432,6 +436,21 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       if (message.contains('GRANT_NOT_ALLOWED')) {
         return 'Deze combinatie van stalrol en paardtoegang is niet toegestaan.';
       }
+      if (message.contains('FEEDING_VERSION_IMMUTABLE') ||
+          message.contains('FEEDING_VERSION_NOT_APPROVABLE')) {
+        return 'Deze voerplanversie kan niet meer worden gewijzigd of mist geldige items.';
+      }
+      if (message.contains('FEEDING_UNIT_CONVERSION_REQUIRED')) {
+        return 'Gebruik exact dezelfde eenheid als het geactiveerde voerplan.';
+      }
+      if (message.contains('FEEDING_ACTIVATION') ||
+          message.contains('FEEDING_TEMPORARY') ||
+          message.contains('FEEDING_STANDARD')) {
+        return 'Dit voerplan kan niet veilig worden geactiveerd. Controleer datumvensters en voerslots.';
+      }
+      if (message.contains('NUTRITION_UNAVAILABLE')) {
+        return 'Dit voerplan is niet beschikbaar binnen je actuele toegang.';
+      }
     }
     return 'De beveiligde gegevens konden niet worden geladen. Probeer opnieuw.';
   }
@@ -620,15 +639,17 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         'list_today_schedule',
         params: {'p_stable_id': _stableId, 'p_local_date': selectedDate},
       ),
-      _client
-          .from('feeding_plans')
-          .select(
-            'id,horse_id,name,plan_type,status,effective_from,'
-            'effective_until,row_version,active_version_id',
-          )
-          .eq('stable_id', _stableId)
-          .neq('status', 'retired')
-          .order('effective_from', ascending: false),
+      widget.mode == 'feeding'
+          ? _client
+              .from('feeding_plans')
+              .select(
+                'id,horse_id,name,plan_type,status,effective_from,'
+                'effective_until,row_version,active_version_id',
+              )
+              .eq('stable_id', _stableId)
+              .neq('status', 'retired')
+              .order('effective_from', ascending: false)
+          : Future<dynamic>.value(const <Map<String, dynamic>>[]),
       _client.rpc('list_sync_conflicts', params: {'p_stable_id': _stableId}),
       _client
           .from('stable_memberships')
@@ -637,7 +658,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           .eq('user_id', userId)
           .eq('status', 'active')
           .maybeSingle(),
-      widget.mode == 'planning'
+      widget.mode == 'planning' || widget.mode == 'feeding'
           ? _client
               .from('stable_members')
               .select('id,display_name,function_title,status')
@@ -677,6 +698,78 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       _horseRelationships = const [];
       _horseMedia = const [];
       _stableRoster = const [];
+    }
+    if (widget.mode == 'feeding') {
+      await _fetchFeedingManagementData();
+    } else {
+      _feedingPlanVersions = const [];
+      _feedingPlanItems = const [];
+      _selectedFeedingPlanId = '';
+      _selectedFeedingVersionId = '';
+    }
+  }
+
+  Future<void> _fetchFeedingManagementData() async {
+    final planIds = _feedingPlans
+        .map((plan) => _operationalString(plan['id']))
+        .where((id) => id.isNotEmpty)
+        .toList(growable: false);
+    if (planIds.isEmpty) {
+      _feedingPlanVersions = const [];
+      _feedingPlanItems = const [];
+      _selectedFeedingPlanId = '';
+      _selectedFeedingVersionId = '';
+      return;
+    }
+    if (!planIds.contains(_selectedFeedingPlanId)) {
+      _selectedFeedingPlanId = planIds.first;
+    }
+    _feedingPlanVersions = _operationalRows(
+      await _client
+          .from('feeding_plan_versions')
+          .select(
+            'id,feeding_plan_id,version_number,status,row_version,'
+            'change_reason,approved_at',
+          )
+          .inFilter('feeding_plan_id', planIds)
+          .order('version_number', ascending: false),
+    );
+    final versionIds = _feedingPlanVersions
+        .map((version) => _operationalString(version['id']))
+        .where((id) => id.isNotEmpty)
+        .toList(growable: false);
+    _feedingPlanItems =
+        versionIds.isEmpty
+            ? const []
+            : _operationalRows(
+              await _client
+                  .from('feeding_plan_items')
+                  .select(
+                    'id,feeding_plan_version_id,product_brand,product_name,'
+                    'product_variant,source_status,planned_quantity,unit_code,'
+                    'offering_method,round_code,local_time,weekdays,'
+                    'interval_days,override_key,default_stable_member_id,'
+                    'batch_lot,expires_on,instruction,row_version',
+                  )
+                  .inFilter('feeding_plan_version_id', versionIds)
+                  .order('round_code')
+                  .order('local_time'),
+            );
+    final selectedVersions = _feedingPlanVersions
+        .where(
+          (version) =>
+              _operationalString(version['feeding_plan_id']) ==
+              _selectedFeedingPlanId,
+        )
+        .toList(growable: false);
+    if (!selectedVersions.any(
+      (version) =>
+          _operationalString(version['id']) == _selectedFeedingVersionId,
+    )) {
+      _selectedFeedingVersionId =
+          selectedVersions.isEmpty
+              ? ''
+              : _operationalString(selectedVersions.first['id']);
     }
   }
 
@@ -829,8 +922,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   ) async {
     return Future.wait(
       schedule.map((item) async {
-        if (_operationalString(item['item_kind']) == 'feeding' ||
-            _operationalString(item['state']) != 'completed') {
+        if (_operationalString(item['state']) != 'completed') {
           return item;
         }
         final itemId = _operationalString(item['schedule_item_id']);
@@ -1851,194 +1943,249 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     );
   }
 
-  Future<Map<String, dynamic>?> _showFeedingExecutionDialog() async {
+  Future<Map<String, dynamic>?> _showFeedingExecutionDialog({
+    String title = 'Werkelijk gevoerd',
+  }) async {
     final quantity = TextEditingController();
     final remaining = TextEditingController();
     var unitCode = 'portion';
     var deviationCode = 'none';
     String? validationError;
+    BuildContext? openedDialogContext;
+    Route<dynamic>? openedDialogRoute;
     final result = await showDialog<Map<String, dynamic>>(
       context: context,
-      builder:
-          (dialogContext) => StatefulBuilder(
-            builder:
-                (context, setDialogState) => AlertDialog(
-                  title: const Text('Werkelijk gevoerd'),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextField(
-                          controller: quantity,
-                          autofocus: true,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Werkelijke hoeveelheid',
-                          ),
+      builder: (dialogContext) {
+        final dialogRoute = ModalRoute.of(dialogContext);
+        openedDialogContext = dialogContext;
+        openedDialogRoute = dialogRoute;
+        _sensitivePlanningDialogContext = dialogContext;
+        _sensitivePlanningDialogRoute = dialogRoute;
+        return StatefulBuilder(
+          builder:
+              (context, setDialogState) => AlertDialog(
+                title: Text(title),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: quantity,
+                        autofocus: true,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
                         ),
-                        const SizedBox(height: 12),
-                        DropdownButtonFormField<String>(
-                          value: unitCode,
-                          decoration: const InputDecoration(
-                            labelText: 'Eenheid van het voerplan',
-                          ),
-                          items:
-                              const [
-                                    'g',
-                                    'kg',
-                                    'ml',
-                                    'l',
-                                    'scoop',
-                                    'portion',
-                                    'piece',
-                                  ]
-                                  .map(
-                                    (value) => DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged:
-                              (value) => setDialogState(
-                                () => unitCode = value ?? unitCode,
-                              ),
+                        decoration: const InputDecoration(
+                          labelText: 'Werkelijke hoeveelheid',
                         ),
-                        const SizedBox(height: 12),
-                        TextField(
-                          controller: remaining,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Resterend (optioneel)',
-                          ),
+                      ),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String>(
+                        value: unitCode,
+                        decoration: const InputDecoration(
+                          labelText: 'Eenheid van het voerplan',
                         ),
-                        const SizedBox(height: 12),
-                        DropdownButtonFormField<String>(
-                          value: deviationCode,
-                          decoration: const InputDecoration(
-                            labelText: 'Afwijking',
-                          ),
-                          items:
-                              const [
-                                    'none',
-                                    'less',
-                                    'more',
-                                    'refused',
-                                    'spilled',
-                                    'substituted',
-                                    'other',
-                                  ]
-                                  .map(
-                                    (value) => DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged:
-                              (value) => setDialogState(
-                                () => deviationCode = value ?? deviationCode,
-                              ),
-                        ),
-                        if (validationError != null) ...[
-                          const SizedBox(height: 10),
-                          Text(
-                            validationError!,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
+                        items:
+                            const [
+                                  'g',
+                                  'kg',
+                                  'ml',
+                                  'l',
+                                  'scoop',
+                                  'portion',
+                                  'piece',
+                                ]
+                                .map(
+                                  (value) => DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged:
+                            (value) => setDialogState(
+                              () => unitCode = value ?? unitCode,
                             ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: remaining,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: 'Resterend (optioneel)',
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String>(
+                        value: deviationCode,
+                        decoration: const InputDecoration(
+                          labelText: 'Afwijking',
+                        ),
+                        items:
+                            const [
+                                  'none',
+                                  'less',
+                                  'more',
+                                  'refused',
+                                  'spilled',
+                                  'substituted',
+                                  'other',
+                                ]
+                                .map(
+                                  (value) => DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged:
+                            (value) => setDialogState(
+                              () => deviationCode = value ?? deviationCode,
+                            ),
+                      ),
+                      if (validationError != null) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          validationError!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
                           ),
-                        ],
+                        ),
                       ],
-                    ),
+                    ],
                   ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(dialogContext),
-                      child: const Text('Annuleren'),
-                    ),
-                    FilledButton(
-                      onPressed: () {
-                        final actual = double.tryParse(
-                          quantity.text.trim().replaceAll(',', '.'),
-                        );
-                        final remainingValue =
-                            remaining.text.trim().isEmpty
-                                ? null
-                                : double.tryParse(
-                                  remaining.text.trim().replaceAll(',', '.'),
-                                );
-                        if (actual == null ||
-                            actual < 0 ||
-                            (remaining.text.trim().isNotEmpty &&
-                                (remainingValue == null ||
-                                    remainingValue < 0))) {
-                          setDialogState(
-                            () =>
-                                validationError =
-                                    'Vul geldige niet-negatieve hoeveelheden in.',
-                          );
-                          return;
-                        }
-                        Navigator.pop(dialogContext, {
-                          'actual_quantity': actual,
-                          'unit_code': unitCode,
-                          'remaining_quantity': remainingValue,
-                          'deviation_code': deviationCode,
-                        });
-                      },
-                      child: const Text('Registreren'),
-                    ),
-                  ],
                 ),
-          ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Annuleren'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      final actual = double.tryParse(
+                        quantity.text.trim().replaceAll(',', '.'),
+                      );
+                      final remainingValue =
+                          remaining.text.trim().isEmpty
+                              ? null
+                              : double.tryParse(
+                                remaining.text.trim().replaceAll(',', '.'),
+                              );
+                      if (actual == null ||
+                          actual < 0 ||
+                          (remaining.text.trim().isNotEmpty &&
+                              (remainingValue == null || remainingValue < 0))) {
+                        setDialogState(
+                          () =>
+                              validationError =
+                                  'Vul geldige niet-negatieve hoeveelheden in.',
+                        );
+                        return;
+                      }
+                      Navigator.pop(dialogContext, {
+                        'actual_quantity': actual,
+                        'unit_code': unitCode,
+                        'remaining_quantity': remainingValue,
+                        'deviation_code': deviationCode,
+                      });
+                    },
+                    child: const Text('Registreren'),
+                  ),
+                ],
+              ),
+        );
+      },
     );
+    if (identical(_sensitivePlanningDialogContext, openedDialogContext) &&
+        identical(_sensitivePlanningDialogRoute, openedDialogRoute)) {
+      _sensitivePlanningDialogContext = null;
+      _sensitivePlanningDialogRoute = null;
+    }
     quantity.dispose();
     remaining.dispose();
     return result;
   }
 
   Future<void> _completeSchedule(Map<String, dynamic> item) async {
+    final isFeeding = item['item_kind'] == 'feeding';
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final generation = _sensitiveStateGeneration;
     final feedingDetails =
-        item['item_kind'] == 'feeding'
-            ? await _showFeedingExecutionDialog()
-            : null;
-    if (item['item_kind'] == 'feeding' && feedingDetails == null) return;
+        isFeeding ? await _showFeedingExecutionDialog() : null;
+    if (isFeeding &&
+        (feedingDetails == null ||
+            !_planningScopeMatches(
+              generation: generation,
+              actorUserId: actorUserId,
+              stableId: stableId,
+            ))) {
+      return;
+    }
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: generation,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    );
     if (_offline) {
+      if (isFeeding) scopePreflight();
       await _queueOfflineCompletion(item, feedingDetails: feedingDetails);
       return;
     }
     await _guarded(() async {
       final now = DateTime.now();
-      if (item['item_kind'] == 'feeding') {
-        await _runIdempotentRpc(
+      if (isFeeding) {
+        final scheduleItemId = _operationalString(item['schedule_item_id']);
+        final completedAt = now.toUtc().toIso8601String();
+        final recordedLocalAt = _stableLocalTimestamp(now);
+        await _runDurableIdempotentRpc(
           operation: 'record_feeding_execution',
-          intentKey: _operationalString(item['schedule_item_id']),
+          intentKey:
+              '$scheduleItemId:${feedingDetails!['actual_quantity']}:'
+              '${feedingDetails['unit_code']}:'
+              '${feedingDetails['remaining_quantity']}:'
+              '${feedingDetails['deviation_code']}',
+          initialReplayValues: {
+            'schedule_item_id': scheduleItemId,
+            'completed_at': completedAt,
+            'recorded_local_at': recordedLocalAt,
+            'recorded_timezone': _stableTimezone,
+            'actual_quantity': feedingDetails['actual_quantity'].toString(),
+            'unit_code': feedingDetails['unit_code'].toString(),
+            'remaining_quantity':
+                feedingDetails['remaining_quantity']?.toString() ?? '',
+            'deviation_code': feedingDetails['deviation_code'].toString(),
+          },
+          scopePreflight: scopePreflight,
           buildParams:
-              (requestId) => {
-                'p_schedule_item_id': item['schedule_item_id'],
+              (requestId, replayValues) => {
+                'p_schedule_item_id': replayValues['schedule_item_id'],
                 'p_corrects_execution_id': null,
                 'p_request_id': requestId,
                 'p_execution_status': 'completed',
                 'p_actual_started_at': null,
-                'p_actual_completed_at': now.toUtc().toIso8601String(),
-                'p_recorded_local_at': _stableLocalTimestamp(now),
-                'p_recorded_timezone': _stableTimezone,
+                'p_actual_completed_at': replayValues['completed_at'],
+                'p_recorded_local_at': replayValues['recorded_local_at'],
+                'p_recorded_timezone': replayValues['recorded_timezone'],
                 'p_source': 'online',
                 'p_device_instance_id': null,
                 'p_note': null,
-                'p_actual_quantity': feedingDetails!['actual_quantity'],
-                'p_unit_code': feedingDetails['unit_code'],
-                'p_remaining_quantity': feedingDetails['remaining_quantity'],
-                'p_deviation_code': feedingDetails['deviation_code'],
+                'p_actual_quantity': double.parse(
+                  replayValues['actual_quantity']!,
+                ),
+                'p_unit_code': replayValues['unit_code'],
+                'p_remaining_quantity':
+                    replayValues['remaining_quantity']!.isEmpty
+                        ? null
+                        : double.parse(replayValues['remaining_quantity']!),
+                'p_deviation_code': replayValues['deviation_code'],
                 'p_observation': null,
                 'p_batch_lot': null,
               },
         );
+        scopePreflight();
       } else {
         await _runIdempotentRpc(
           operation: 'record_schedule_execution',
@@ -2059,6 +2206,142 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         );
       }
       _notice = 'Uitvoering veilig geregistreerd.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<void> _showCompletedExecutionActions(Map<String, dynamic> item) async {
+    final isFeeding = _operationalString(item['item_kind']) == 'feeding';
+    BuildContext? openedDialogContext;
+    Route<dynamic>? openedDialogRoute;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        final dialogRoute = ModalRoute.of(dialogContext);
+        openedDialogContext = dialogContext;
+        openedDialogRoute = dialogRoute;
+        _sensitivePlanningDialogContext = dialogContext;
+        _sensitivePlanningDialogRoute = dialogRoute;
+        return AlertDialog(
+          title: const Text('Geregistreerde uitvoering'),
+          content: Text(
+            isFeeding
+                ? 'De oorspronkelijke voederregistratie blijft immutable. '
+                    'Een correctie wordt als nieuwe uitvoering toegevoegd.'
+                : 'Open de private media van deze uitvoering.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Sluiten'),
+            ),
+            OutlinedButton.icon(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                unawaited(_showExecutionMedia(item));
+              },
+              icon: const Icon(Icons.lock_outline),
+              label: const Text('Private media'),
+            ),
+            if (isFeeding)
+              FilledButton.icon(
+                onPressed: () {
+                  Navigator.pop(dialogContext);
+                  unawaited(_correctFeedingExecution(item));
+                },
+                icon: const Icon(Icons.history_outlined),
+                label: const Text('Correctie'),
+              ),
+          ],
+        );
+      },
+    );
+    if (identical(_sensitivePlanningDialogContext, openedDialogContext) &&
+        identical(_sensitivePlanningDialogRoute, openedDialogRoute)) {
+      _sensitivePlanningDialogContext = null;
+      _sensitivePlanningDialogRoute = null;
+    }
+  }
+
+  Future<void> _correctFeedingExecution(Map<String, dynamic> item) async {
+    final originalExecutionId = _operationalString(item['execution_id']);
+    final scheduleItemId = _operationalString(item['schedule_item_id']);
+    if (originalExecutionId.isEmpty || scheduleItemId.isEmpty) {
+      setState(() {
+        _error =
+            'De oorspronkelijke uitvoering is niet beschikbaar. Vernieuw '
+            'voordat je corrigeert.';
+      });
+      return;
+    }
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final generation = _sensitiveStateGeneration;
+    final details = await _showFeedingExecutionDialog(
+      title: 'Correctie registreren',
+    );
+    if (details == null ||
+        !_planningScopeMatches(
+          generation: generation,
+          actorUserId: actorUserId,
+          stableId: stableId,
+        )) {
+      return;
+    }
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: generation,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    );
+    await _guarded(() async {
+      final now = DateTime.now();
+      await _runDurableIdempotentRpc(
+        operation: 'record_feeding_execution',
+        intentKey:
+            'correction:$originalExecutionId:'
+            '${details['actual_quantity']}:${details['unit_code']}:'
+            '${details['remaining_quantity']}:${details['deviation_code']}',
+        initialReplayValues: {
+          'schedule_item_id': scheduleItemId,
+          'corrects_execution_id': originalExecutionId,
+          'completed_at': now.toUtc().toIso8601String(),
+          'recorded_local_at': _stableLocalTimestamp(now),
+          'recorded_timezone': _stableTimezone,
+          'actual_quantity': details['actual_quantity'].toString(),
+          'unit_code': details['unit_code'].toString(),
+          'remaining_quantity': details['remaining_quantity']?.toString() ?? '',
+          'deviation_code': details['deviation_code'].toString(),
+        },
+        scopePreflight: scopePreflight,
+        buildParams:
+            (requestId, replayValues) => {
+              'p_schedule_item_id': replayValues['schedule_item_id'],
+              'p_corrects_execution_id': replayValues['corrects_execution_id'],
+              'p_request_id': requestId,
+              'p_execution_status': 'completed',
+              'p_actual_started_at': null,
+              'p_actual_completed_at': replayValues['completed_at'],
+              'p_recorded_local_at': replayValues['recorded_local_at'],
+              'p_recorded_timezone': replayValues['recorded_timezone'],
+              'p_source': 'online',
+              'p_device_instance_id': null,
+              'p_note': 'Append-only correctie',
+              'p_actual_quantity': double.parse(
+                replayValues['actual_quantity']!,
+              ),
+              'p_unit_code': replayValues['unit_code'],
+              'p_remaining_quantity':
+                  replayValues['remaining_quantity']!.isEmpty
+                      ? null
+                      : double.parse(replayValues['remaining_quantity']!),
+              'p_deviation_code': replayValues['deviation_code'],
+              'p_observation': null,
+              'p_batch_lot': null,
+            },
+      );
+      scopePreflight();
+      _notice =
+          'Correctie toegevoegd; de oorspronkelijke uitvoering is bewaard.';
       await _load(quiet: true);
     });
   }
@@ -3639,31 +3922,1028 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       setState(() => _error = 'Voeg eerst een paard toe.');
       return;
     }
-    final name = TextEditingController();
-    final confirmed = await _showFormDialog(
-      title: 'Voerplan starten',
-      controller: name,
-      label: 'Naam van het plan',
-      action: 'Aanmaken',
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final generation = _sensitiveStateGeneration;
+    final input = await _showFeedingPlanDialog();
+    if (input == null ||
+        !_planningScopeMatches(
+          generation: generation,
+          actorUserId: actorUserId,
+          stableId: stableId,
+        )) {
+      return;
+    }
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: generation,
+      actorUserId: actorUserId,
+      stableId: stableId,
     );
-    final planName = name.text.trim();
-    name.dispose();
-    if (!confirmed || planName.isEmpty) return;
     await _guarded(() async {
-      await _runIdempotentRpc(
-        operation: 'create_feeding_plan',
-        intentKey: '$_selectedHorseId:$planName',
+      final created = _operationalMap(
+        await _runDurableIdempotentRpc(
+          operation: 'create_feeding_plan_with_version',
+          intentKey:
+              '${input['horse_id']}:${input['plan_type']}:'
+              '${input['effective_from']}:${input['effective_until']}:'
+              '${input['name']}',
+          initialReplayValues: {...input, 'version_request_id': _uuid.v4()},
+          scopePreflight: scopePreflight,
+          buildParams:
+              (requestId, replayValues) => {
+                'p_horse_id': replayValues['horse_id'],
+                'p_plan_type': replayValues['plan_type'],
+                'p_name': replayValues['name'],
+                'p_effective_from': replayValues['effective_from'],
+                'p_effective_until':
+                    replayValues['effective_until']!.isEmpty
+                        ? null
+                        : replayValues['effective_until'],
+                'p_change_reason': replayValues['change_reason'],
+                'p_create_request_id': requestId,
+                'p_version_request_id': replayValues['version_request_id'],
+              },
+        ),
+      );
+      scopePreflight();
+      final planId = _operationalString(created['feeding_plan_id']);
+      final versionId = _operationalString(created['feeding_plan_version_id']);
+      if (planId.isEmpty || versionId.isEmpty) {
+        throw StateError('FEEDING_RESULT_INVALID');
+      }
+      _selectedFeedingPlanId = planId;
+      _selectedFeedingVersionId = versionId;
+      _notice = 'Conceptvoerplan met eerste versie veilig aangemaakt.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<Map<String, String>?> _showFeedingPlanDialog() async {
+    final name = TextEditingController();
+    var horseId =
+        _selectedHorseId.isNotEmpty
+            ? _selectedHorseId
+            : _operationalString(_horses.first['id']);
+    var planType = 'standard';
+    var temporaryDays = 7;
+    var showNameError = false;
+    BuildContext? openedDialogContext;
+    Route<dynamic>? openedDialogRoute;
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (dialogContext) {
+        final dialogRoute = ModalRoute.of(dialogContext);
+        openedDialogContext = dialogContext;
+        openedDialogRoute = dialogRoute;
+        _sensitivePlanningDialogContext = dialogContext;
+        _sensitivePlanningDialogRoute = dialogRoute;
+        return StatefulBuilder(
+          builder:
+              (context, setDialogState) => AlertDialog(
+                title: const Text('Voerplan starten'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DropdownButtonFormField<String>(
+                        initialValue: horseId,
+                        decoration: const InputDecoration(labelText: 'Paard'),
+                        items: _horses
+                            .map(
+                              (horse) => DropdownMenuItem(
+                                value: _operationalString(horse['id']),
+                                child: Text(
+                                  _operationalString(horse['display_name']),
+                                ),
+                              ),
+                            )
+                            .toList(growable: false),
+                        onChanged:
+                            (value) => setDialogState(
+                              () => horseId = value ?? horseId,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String>(
+                        initialValue: planType,
+                        decoration: const InputDecoration(labelText: 'Type'),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'standard',
+                            child: Text('Standaardplan'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'temporary',
+                            child: Text('Tijdelijke override'),
+                          ),
+                        ],
+                        onChanged:
+                            (value) => setDialogState(
+                              () => planType = value ?? planType,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: name,
+                        autofocus: true,
+                        maxLength: 160,
+                        decoration: InputDecoration(
+                          labelText: 'Naam van het plan',
+                          errorText:
+                              showNameError
+                                  ? 'Vul een duidelijke naam in.'
+                                  : null,
+                        ),
+                      ),
+                      if (planType == 'temporary') ...[
+                        const SizedBox(height: 4),
+                        DropdownButtonFormField<int>(
+                          initialValue: temporaryDays,
+                          decoration: const InputDecoration(
+                            labelText: 'Geldigheid vanaf vandaag',
+                          ),
+                          items: const [1, 3, 7, 14, 30]
+                              .map(
+                                (days) => DropdownMenuItem(
+                                  value: days,
+                                  child: Text(
+                                    '$days dag${days == 1 ? '' : 'en'}',
+                                  ),
+                                ),
+                              )
+                              .toList(growable: false),
+                          onChanged:
+                              (value) => setDialogState(
+                                () => temporaryDays = value ?? temporaryDays,
+                              ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Annuleren'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      final normalizedName = name.text.trim();
+                      if (normalizedName.isEmpty) {
+                        setDialogState(() => showNameError = true);
+                        return;
+                      }
+                      final start = _stableNow();
+                      final end = start.add(Duration(days: temporaryDays - 1));
+                      Navigator.pop(dialogContext, {
+                        'horse_id': horseId,
+                        'plan_type': planType,
+                        'name': normalizedName,
+                        'effective_from': _operationalDateKey(start),
+                        'effective_until':
+                            planType == 'temporary'
+                                ? _operationalDateKey(end)
+                                : '',
+                        'change_reason':
+                            planType == 'temporary'
+                                ? 'Tijdelijke Alpha-override'
+                                : 'Eerste Alpha-versie',
+                      });
+                    },
+                    child: const Text('Aanmaken'),
+                  ),
+                ],
+              ),
+        );
+      },
+    );
+    if (identical(_sensitivePlanningDialogContext, openedDialogContext) &&
+        identical(_sensitivePlanningDialogRoute, openedDialogRoute)) {
+      _sensitivePlanningDialogContext = null;
+      _sensitivePlanningDialogRoute = null;
+    }
+    name.dispose();
+    return result;
+  }
+
+  Map<String, dynamic>? get _selectedFeedingPlan {
+    for (final plan in _feedingPlans) {
+      if (_operationalString(plan['id']) == _selectedFeedingPlanId) {
+        return plan;
+      }
+    }
+    return null;
+  }
+
+  Map<String, dynamic>? get _selectedFeedingVersion {
+    for (final version in _feedingPlanVersions) {
+      if (_operationalString(version['id']) == _selectedFeedingVersionId) {
+        return version;
+      }
+    }
+    return null;
+  }
+
+  List<Map<String, dynamic>> get _selectedFeedingItems => _feedingPlanItems
+      .where(
+        (item) =>
+            _operationalString(item['feeding_plan_version_id']) ==
+            _selectedFeedingVersionId,
+      )
+      .toList(growable: false);
+
+  List<Map<String, dynamic>> get _selectedFeedingVersions =>
+      _feedingPlanVersions
+          .where(
+            (version) =>
+                _operationalString(version['feeding_plan_id']) ==
+                _selectedFeedingPlanId,
+          )
+          .toList(growable: false);
+
+  List<String> get _activeStandardOverrideKeys {
+    final activeVersionIds =
+        _feedingPlans
+            .where(
+              (plan) =>
+                  _operationalString(plan['plan_type']) == 'standard' &&
+                  _operationalString(plan['status']) == 'active' &&
+                  _operationalString(plan['horse_id']) ==
+                      _operationalString(_selectedFeedingPlan?['horse_id']),
+            )
+            .map((plan) => _operationalString(plan['active_version_id']))
+            .where((id) => id.isNotEmpty)
+            .toSet();
+    final keys = _feedingPlanItems
+        .where(
+          (item) => activeVersionIds.contains(
+            _operationalString(item['feeding_plan_version_id']),
+          ),
+        )
+        .map((item) => _operationalString(item['override_key']))
+        .where((key) => key.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+    keys.sort();
+    return keys;
+  }
+
+  Future<String?> _showSensitiveTextDialog({
+    required String title,
+    required String label,
+    required String action,
+    int maxLength = 500,
+  }) async {
+    final controller = TextEditingController();
+    var showError = false;
+    BuildContext? openedDialogContext;
+    Route<dynamic>? openedDialogRoute;
+    final result = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        final dialogRoute = ModalRoute.of(dialogContext);
+        openedDialogContext = dialogContext;
+        openedDialogRoute = dialogRoute;
+        _sensitivePlanningDialogContext = dialogContext;
+        _sensitivePlanningDialogRoute = dialogRoute;
+        return StatefulBuilder(
+          builder:
+              (context, setDialogState) => AlertDialog(
+                title: Text(title),
+                content: TextField(
+                  controller: controller,
+                  autofocus: true,
+                  maxLength: maxLength,
+                  decoration: InputDecoration(
+                    labelText: label,
+                    errorText: showError ? 'Dit veld is verplicht.' : null,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Annuleren'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      final value = controller.text.trim();
+                      if (value.isEmpty) {
+                        setDialogState(() => showError = true);
+                        return;
+                      }
+                      Navigator.pop(dialogContext, value);
+                    },
+                    child: Text(action),
+                  ),
+                ],
+              ),
+        );
+      },
+    );
+    if (identical(_sensitivePlanningDialogContext, openedDialogContext) &&
+        identical(_sensitivePlanningDialogRoute, openedDialogRoute)) {
+      _sensitivePlanningDialogContext = null;
+      _sensitivePlanningDialogRoute = null;
+    }
+    controller.dispose();
+    return result;
+  }
+
+  Future<void> _createFeedingVersion() async {
+    final plan = _selectedFeedingPlan;
+    if (plan == null) return;
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final generation = _sensitiveStateGeneration;
+    final reason = await _showSensitiveTextDialog(
+      title: 'Nieuwe planversie',
+      label: 'Reden voor de wijziging',
+      action: 'Versie starten',
+    );
+    if (reason == null ||
+        !_planningScopeMatches(
+          generation: generation,
+          actorUserId: actorUserId,
+          stableId: stableId,
+        )) {
+      return;
+    }
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: generation,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    );
+    final planId = _operationalString(plan['id']);
+    await _guarded(() async {
+      final created = _operationalMap(
+        await _runDurableIdempotentRpc(
+          operation: 'create_feeding_plan_version',
+          intentKey: '$planId:$reason',
+          initialReplayValues: {'plan_id': planId, 'reason': reason},
+          scopePreflight: scopePreflight,
+          buildParams:
+              (requestId, replayValues) => {
+                'p_feeding_plan_id': replayValues['plan_id'],
+                'p_source_kind': 'user',
+                'p_source_reference': null,
+                'p_change_reason': replayValues['reason'],
+                'p_request_id': requestId,
+              },
+        ),
+      );
+      scopePreflight();
+      _selectedFeedingVersionId = _operationalString(
+        created['feeding_plan_version_id'],
+      );
+      _notice = 'Nieuwe conceptversie veilig gestart.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<void> _upsertFeedingItem([Map<String, dynamic>? existing]) async {
+    final plan = _selectedFeedingPlan;
+    final version = _selectedFeedingVersion;
+    if (plan == null || version == null) return;
+    final temporary = _operationalString(plan['plan_type']) == 'temporary';
+    final overrideKeys = _activeStandardOverrideKeys;
+    if (temporary && overrideKeys.isEmpty) {
+      setState(() {
+        _error =
+            'Activeer eerst een standaardplan met een voerslot voordat je '
+            'een tijdelijke override toevoegt.';
+      });
+      return;
+    }
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final generation = _sensitiveStateGeneration;
+    final input = await _showFeedingItemDialog(
+      existing: existing,
+      temporary: temporary,
+      overrideKeys: overrideKeys,
+    );
+    if (input == null ||
+        !_planningScopeMatches(
+          generation: generation,
+          actorUserId: actorUserId,
+          stableId: stableId,
+        )) {
+      return;
+    }
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: generation,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    );
+    final versionId = _operationalString(version['id']);
+    final itemId = _operationalString(existing?['id']);
+    final rowVersion = _operationalString(existing?['row_version']);
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'upsert_feeding_plan_item',
+        intentKey:
+            '$versionId:${itemId.isEmpty ? 'new' : itemId}:'
+            '${input['override_key']}:${input['product_name']}:'
+            '${input['planned_quantity']}:${input['local_time']}',
+        initialReplayValues: {
+          ...input,
+          'version_id': versionId,
+          'item_id': itemId,
+          'row_version': rowVersion,
+        },
+        scopePreflight: scopePreflight,
         buildParams:
-            (requestId) => {
-              'p_horse_id': _selectedHorseId,
-              'p_plan_type': 'standard',
-              'p_name': planName,
-              'p_effective_from': _operationalDateKey(_stableNow()),
-              'p_effective_until': null,
+            (requestId, replayValues) => {
+              'p_feeding_plan_version_id': replayValues['version_id'],
+              'p_feeding_plan_item_id':
+                  replayValues['item_id']!.isEmpty
+                      ? null
+                      : replayValues['item_id'],
+              'p_expected_row_version':
+                  replayValues['row_version']!.isEmpty
+                      ? null
+                      : int.parse(replayValues['row_version']!),
+              'p_product_brand':
+                  replayValues['product_brand']!.isEmpty
+                      ? null
+                      : replayValues['product_brand'],
+              'p_product_name': replayValues['product_name'],
+              'p_product_variant': null,
+              'p_source_status': 'user_entered',
+              'p_planned_quantity': double.parse(
+                replayValues['planned_quantity']!,
+              ),
+              'p_unit_code': replayValues['unit_code'],
+              'p_offering_method': replayValues['offering_method'],
+              'p_round_code': replayValues['round_code'],
+              'p_local_time': replayValues['local_time'],
+              'p_weekdays': null,
+              'p_interval_days': null,
+              'p_override_key': replayValues['override_key'],
+              'p_default_stable_member_id':
+                  replayValues['stable_member_id']!.isEmpty
+                      ? null
+                      : replayValues['stable_member_id'],
+              'p_batch_lot': null,
+              'p_expires_on': null,
+              'p_instruction':
+                  replayValues['instruction']!.isEmpty
+                      ? null
+                      : replayValues['instruction'],
               'p_request_id': requestId,
             },
       );
-      _notice = 'Conceptvoerplan veilig aangemaakt.';
+      scopePreflight();
+      _notice =
+          existing == null
+              ? 'Voeritem veilig toegevoegd.'
+              : 'Voeritem conflictveilig bijgewerkt.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<Map<String, String>?> _showFeedingItemDialog({
+    required Map<String, dynamic>? existing,
+    required bool temporary,
+    required List<String> overrideKeys,
+  }) async {
+    final productName = TextEditingController(
+      text: _operationalString(existing?['product_name']),
+    );
+    final productBrand = TextEditingController(
+      text: _operationalString(existing?['product_brand']),
+    );
+    final quantity = TextEditingController(
+      text: _operationalString(existing?['planned_quantity']),
+    );
+    final instruction = TextEditingController(
+      text: _operationalString(existing?['instruction']),
+    );
+    var unitCode =
+        _operationalString(existing?['unit_code']).isEmpty
+            ? 'kg'
+            : _operationalString(existing?['unit_code']);
+    var offeringMethod =
+        _operationalString(existing?['offering_method']).isEmpty
+            ? 'bucket'
+            : _operationalString(existing?['offering_method']);
+    var roundCode =
+        _operationalString(existing?['round_code']).isEmpty
+            ? 'ochtend'
+            : _operationalString(existing?['round_code']);
+    final roundController = TextEditingController(text: roundCode);
+    final parsedTime = _operationalString(existing?['local_time']).split(':');
+    var selectedHour =
+        parsedTime.isNotEmpty ? int.tryParse(parsedTime[0]) ?? 7 : 7;
+    var selectedMinute =
+        parsedTime.length > 1 ? int.tryParse(parsedTime[1]) ?? 0 : 0;
+    var overrideKey = _operationalString(existing?['override_key']);
+    if (temporary && !overrideKeys.contains(overrideKey)) {
+      overrideKey = overrideKeys.first;
+    }
+    final overrideController = TextEditingController(
+      text: temporary ? '' : overrideKey,
+    );
+    var stableMemberId = _operationalString(
+      existing?['default_stable_member_id'],
+    );
+    var validationError = '';
+    BuildContext? openedDialogContext;
+    Route<dynamic>? openedDialogRoute;
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (dialogContext) {
+        final dialogRoute = ModalRoute.of(dialogContext);
+        openedDialogContext = dialogContext;
+        openedDialogRoute = dialogRoute;
+        _sensitivePlanningDialogContext = dialogContext;
+        _sensitivePlanningDialogRoute = dialogRoute;
+        return StatefulBuilder(
+          builder:
+              (context, setDialogState) => AlertDialog(
+                title: Text(
+                  existing == null ? 'Voeritem toevoegen' : 'Voeritem wijzigen',
+                ),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: productName,
+                        autofocus: true,
+                        maxLength: 200,
+                        decoration: const InputDecoration(
+                          labelText: 'Productnaam',
+                        ),
+                      ),
+                      TextField(
+                        controller: productBrand,
+                        maxLength: 160,
+                        decoration: const InputDecoration(
+                          labelText: 'Merk (optioneel)',
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: quantity,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              decoration: const InputDecoration(
+                                labelText: 'Hoeveelheid',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              initialValue: unitCode,
+                              decoration: const InputDecoration(
+                                labelText: 'Eenheid',
+                              ),
+                              items: const [
+                                    'g',
+                                    'kg',
+                                    'ml',
+                                    'l',
+                                    'scoop',
+                                    'portion',
+                                    'piece',
+                                  ]
+                                  .map(
+                                    (value) => DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    ),
+                                  )
+                                  .toList(growable: false),
+                              onChanged:
+                                  (value) => setDialogState(
+                                    () => unitCode = value ?? unitCode,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        decoration: const InputDecoration(labelText: 'Ronde'),
+                        controller: roundController,
+                        onChanged: (value) => roundCode = value.trim(),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: DropdownButtonFormField<int>(
+                              initialValue: selectedHour,
+                              decoration: const InputDecoration(
+                                labelText: 'Uur',
+                              ),
+                              items: List.generate(
+                                24,
+                                (hour) => DropdownMenuItem(
+                                  value: hour,
+                                  child: Text(hour.toString().padLeft(2, '0')),
+                                ),
+                              ),
+                              onChanged:
+                                  (value) => setDialogState(
+                                    () => selectedHour = value ?? selectedHour,
+                                  ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: DropdownButtonFormField<int>(
+                              initialValue: selectedMinute,
+                              decoration: const InputDecoration(
+                                labelText: 'Minuut',
+                              ),
+                              items: const [0, 15, 30, 45]
+                                  .map(
+                                    (minute) => DropdownMenuItem(
+                                      value: minute,
+                                      child: Text(
+                                        minute.toString().padLeft(2, '0'),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(growable: false),
+                              onChanged:
+                                  (value) => setDialogState(
+                                    () =>
+                                        selectedMinute =
+                                            value ?? selectedMinute,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      if (temporary)
+                        DropdownButtonFormField<String>(
+                          initialValue: overrideKey,
+                          decoration: const InputDecoration(
+                            labelText: 'Te vervangen standaardvoerslot',
+                          ),
+                          items: overrideKeys
+                              .map(
+                                (key) => DropdownMenuItem(
+                                  value: key,
+                                  child: Text(key),
+                                ),
+                              )
+                              .toList(growable: false),
+                          onChanged:
+                              (value) => setDialogState(
+                                () => overrideKey = value ?? overrideKey,
+                              ),
+                        )
+                      else
+                        TextField(
+                          controller: overrideController,
+                          maxLength: 160,
+                          decoration: const InputDecoration(
+                            labelText: 'Unieke voerslotsleutel',
+                            helperText:
+                                'Blijft gelijk over versies, bijvoorbeeld ochtend-brok.',
+                          ),
+                        ),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String>(
+                        initialValue: stableMemberId,
+                        decoration: const InputDecoration(
+                          labelText: 'Standaard verantwoordelijke',
+                        ),
+                        items: [
+                          const DropdownMenuItem(
+                            value: '',
+                            child: Text('Niet toegewezen'),
+                          ),
+                          ..._planningRoster.map(
+                            (member) => DropdownMenuItem(
+                              value: _operationalString(member['id']),
+                              child: Text(
+                                _operationalString(member['display_name']),
+                              ),
+                            ),
+                          ),
+                        ],
+                        onChanged:
+                            (value) => setDialogState(
+                              () => stableMemberId = value ?? '',
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String>(
+                        initialValue: offeringMethod,
+                        decoration: const InputDecoration(
+                          labelText: 'Aanbiedingswijze',
+                        ),
+                        items: const [
+                              'bucket',
+                              'manger',
+                              'hay_net',
+                              'pasture',
+                              'hand',
+                              'other',
+                            ]
+                            .map(
+                              (value) => DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              ),
+                            )
+                            .toList(growable: false),
+                        onChanged:
+                            (value) => setDialogState(
+                              () => offeringMethod = value ?? offeringMethod,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: instruction,
+                        maxLength: 1000,
+                        minLines: 2,
+                        maxLines: 4,
+                        decoration: const InputDecoration(
+                          labelText: 'Instructie (optioneel)',
+                        ),
+                      ),
+                      if (validationError.isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          validationError,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Annuleren'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      final normalizedName = productName.text.trim();
+                      final parsedQuantity = double.tryParse(
+                        quantity.text.trim().replaceAll(',', '.'),
+                      );
+                      final normalizedRound = roundCode.trim();
+                      final normalizedOverride =
+                          temporary
+                              ? overrideKey
+                              : overrideController.text.trim();
+                      if (normalizedName.isEmpty ||
+                          parsedQuantity == null ||
+                          parsedQuantity <= 0 ||
+                          normalizedRound.isEmpty ||
+                          normalizedOverride.isEmpty) {
+                        setDialogState(() {
+                          validationError =
+                              'Vul product, positieve hoeveelheid, ronde en voerslotsleutel in.';
+                        });
+                        return;
+                      }
+                      Navigator.pop(dialogContext, {
+                        'product_name': normalizedName,
+                        'product_brand': productBrand.text.trim(),
+                        'planned_quantity': parsedQuantity.toString(),
+                        'unit_code': unitCode,
+                        'offering_method': offeringMethod,
+                        'round_code': normalizedRound,
+                        'local_time':
+                            '${selectedHour.toString().padLeft(2, '0')}:'
+                            '${selectedMinute.toString().padLeft(2, '0')}:00',
+                        'override_key': normalizedOverride,
+                        'stable_member_id': stableMemberId,
+                        'instruction': instruction.text.trim(),
+                      });
+                    },
+                    child: Text(existing == null ? 'Toevoegen' : 'Opslaan'),
+                  ),
+                ],
+              ),
+        );
+      },
+    );
+    if (identical(_sensitivePlanningDialogContext, openedDialogContext) &&
+        identical(_sensitivePlanningDialogRoute, openedDialogRoute)) {
+      _sensitivePlanningDialogContext = null;
+      _sensitivePlanningDialogRoute = null;
+    }
+    productName.dispose();
+    productBrand.dispose();
+    quantity.dispose();
+    instruction.dispose();
+    roundController.dispose();
+    overrideController.dispose();
+    return result;
+  }
+
+  Future<bool> _confirmSensitiveFeedingAction({
+    required String title,
+    required String body,
+    required String action,
+  }) async {
+    BuildContext? openedDialogContext;
+    Route<dynamic>? openedDialogRoute;
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        final dialogRoute = ModalRoute.of(dialogContext);
+        openedDialogContext = dialogContext;
+        openedDialogRoute = dialogRoute;
+        _sensitivePlanningDialogContext = dialogContext;
+        _sensitivePlanningDialogRoute = dialogRoute;
+        return AlertDialog(
+          title: Text(title),
+          content: Text(body),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Annuleren'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text(action),
+            ),
+          ],
+        );
+      },
+    );
+    if (identical(_sensitivePlanningDialogContext, openedDialogContext) &&
+        identical(_sensitivePlanningDialogRoute, openedDialogRoute)) {
+      _sensitivePlanningDialogContext = null;
+      _sensitivePlanningDialogRoute = null;
+    }
+    return result ?? false;
+  }
+
+  Future<void> _approveSelectedFeedingVersion() async {
+    final version = _selectedFeedingVersion;
+    if (version == null || _selectedFeedingItems.isEmpty) return;
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final generation = _sensitiveStateGeneration;
+    final confirmed = await _confirmSensitiveFeedingAction(
+      title: 'Versie goedkeuren',
+      body:
+          'Na goedkeuring zijn de voeritems immutable. Maak voor latere '
+          'wijzigingen een nieuwe versie.',
+      action: 'Goedkeuren',
+    );
+    if (!confirmed ||
+        !_planningScopeMatches(
+          generation: generation,
+          actorUserId: actorUserId,
+          stableId: stableId,
+        )) {
+      return;
+    }
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: generation,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    );
+    final versionId = _operationalString(version['id']);
+    final rowVersion = _operationalString(version['row_version']);
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'approve_feeding_plan_version',
+        intentKey: '$versionId:$rowVersion',
+        initialReplayValues: {
+          'version_id': versionId,
+          'row_version': rowVersion,
+        },
+        scopePreflight: scopePreflight,
+        buildParams:
+            (requestId, replayValues) => {
+              'p_feeding_plan_version_id': replayValues['version_id'],
+              'p_expected_row_version': int.parse(replayValues['row_version']!),
+              'p_request_id': requestId,
+            },
+      );
+      scopePreflight();
+      _notice = 'Voerplanversie goedgekeurd en immutable gemaakt.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<void> _activateSelectedFeedingVersion() async {
+    final plan = _selectedFeedingPlan;
+    final version = _selectedFeedingVersion;
+    if (plan == null || version == null) return;
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final generation = _sensitiveStateGeneration;
+    final confirmed = await _confirmSensitiveFeedingAction(
+      title: 'Versie activeren',
+      body:
+          'Dit materialiseert de komende 30 lokale dagen en vervangt alleen '
+          'de contractueel overeenkomende voerslots.',
+      action: 'Activeren',
+    );
+    if (!confirmed ||
+        !_planningScopeMatches(
+          generation: generation,
+          actorUserId: actorUserId,
+          stableId: stableId,
+        )) {
+      return;
+    }
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: generation,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    );
+    final stableToday = _stableNow();
+    DateTime through = stableToday.add(const Duration(days: 29));
+    final planEnd = _operationalDate(plan['effective_until']);
+    if (planEnd != null && planEnd.isBefore(through)) through = planEnd;
+    final versionId = _operationalString(version['id']);
+    final rowVersion = _operationalString(version['row_version']);
+    final throughLocalDate = _operationalDateKey(through);
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'activate_feeding_plan_version',
+        intentKey: '$versionId:$rowVersion:$throughLocalDate',
+        initialReplayValues: {
+          'version_id': versionId,
+          'row_version': rowVersion,
+          'through_local_date': throughLocalDate,
+        },
+        scopePreflight: scopePreflight,
+        buildParams:
+            (requestId, replayValues) => {
+              'p_feeding_plan_version_id': replayValues['version_id'],
+              'p_expected_row_version': int.parse(replayValues['row_version']!),
+              'p_through_local_date': replayValues['through_local_date'],
+              'p_request_id': requestId,
+            },
+      );
+      scopePreflight();
+      _notice = 'Voerplan veilig geactiveerd en in Planning gezet.';
+      await _load(quiet: true);
+    });
+  }
+
+  Future<void> _retireSelectedFeedingPlan() async {
+    final plan = _selectedFeedingPlan;
+    if (plan == null) return;
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final generation = _sensitiveStateGeneration;
+    final reason = await _showSensitiveTextDialog(
+      title: 'Voerplan stoppen',
+      label: 'Reden',
+      action: 'Plan stoppen',
+    );
+    if (reason == null ||
+        !_planningScopeMatches(
+          generation: generation,
+          actorUserId: actorUserId,
+          stableId: stableId,
+        )) {
+      return;
+    }
+    void scopePreflight() => _assertPlanningScopeCurrent(
+      generation: generation,
+      actorUserId: actorUserId,
+      stableId: stableId,
+    );
+    final planId = _operationalString(plan['id']);
+    final rowVersion = _operationalString(plan['row_version']);
+    await _guarded(() async {
+      await _runDurableIdempotentRpc(
+        operation: 'retire_feeding_plan',
+        intentKey: '$planId:$rowVersion:$reason',
+        initialReplayValues: {
+          'plan_id': planId,
+          'row_version': rowVersion,
+          'reason': reason,
+        },
+        scopePreflight: scopePreflight,
+        buildParams:
+            (requestId, replayValues) => {
+              'p_feeding_plan_id': replayValues['plan_id'],
+              'p_expected_row_version': int.parse(replayValues['row_version']!),
+              'p_reason': replayValues['reason'],
+              'p_request_id': requestId,
+            },
+      );
+      scopePreflight();
+      _selectedFeedingPlanId = '';
+      _selectedFeedingVersionId = '';
+      _notice = 'Voerplan gestopt; uitvoeringshistorie blijft bewaard.';
       await _load(quiet: true);
     });
   }
@@ -3805,6 +5085,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     _horses = const [];
     _schedule = const [];
     _feedingPlans = const [];
+    _feedingPlanVersions = const [];
+    _feedingPlanItems = const [];
     _conflicts = const [];
     _offlineSchedule = const [];
     _horseAccessGrants = const [];
@@ -3815,6 +5097,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     _actorMembership = const {};
     _horseCapabilities = const {};
     _selectedHorseId = '';
+    _selectedFeedingPlanId = '';
+    _selectedFeedingVersionId = '';
     _scheduleDate = null;
   }
 
@@ -4392,7 +5676,9 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                 '${_operationalString(item['priority'])} · $state',
             trailing:
                 hasExecutionMediaContext
-                    ? 'Media'
+                    ? item['item_kind'] == 'feeding'
+                        ? 'Details'
+                        : 'Media'
                     : terminal
                     ? 'Klaar'
                     : 'Afronden',
@@ -4400,7 +5686,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                 _busy
                     ? null
                     : hasExecutionMediaContext
-                    ? () => _showExecutionMedia(item)
+                    ? () => _showCompletedExecutionActions(item)
                     : terminal
                     ? null
                     : () => _completeSchedule(item),
@@ -4450,6 +5736,16 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         onPressed: _offline ? null : _createFeedingPlan,
       );
     }
+    final selectedPlan = _selectedFeedingPlan;
+    final selectedVersion = _selectedFeedingVersion;
+    final selectedItems = _selectedFeedingItems;
+    final versionStatus = _operationalString(selectedVersion?['status']);
+    final activeVersionId = _operationalString(
+      selectedPlan?['active_version_id'],
+    );
+    final selectedVersionId = _operationalString(selectedVersion?['id']);
+    final versionIsActive =
+        selectedVersionId.isNotEmpty && selectedVersionId == activeVersionId;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -4472,8 +5768,166 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                 '${_operationalString(plan['status'])} · '
                 'v${plan['row_version']}',
             trailing: plan['active_version_id'] == null ? 'Concept' : 'Actief',
+            selected: _operationalString(plan['id']) == _selectedFeedingPlanId,
+            onTap:
+                _busy
+                    ? null
+                    : () {
+                      final planId = _operationalString(plan['id']);
+                      final versions = _feedingPlanVersions
+                          .where(
+                            (version) =>
+                                _operationalString(
+                                  version['feeding_plan_id'],
+                                ) ==
+                                planId,
+                          )
+                          .toList(growable: false);
+                      setState(() {
+                        _selectedFeedingPlanId = planId;
+                        _selectedFeedingVersionId =
+                            versions.isEmpty
+                                ? ''
+                                : _operationalString(versions.first['id']);
+                      });
+                    },
           ),
         ),
+        if (selectedPlan != null) ...[
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: theme.secondaryBackground,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: theme.alternate),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Planbeheer',
+                  style: theme.titleMedium.copyWith(
+                    color: theme.primaryText,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '${_operationalString(selectedPlan['plan_type'])} · '
+                  '${_operationalString(selectedPlan['effective_from'])}'
+                  '${_operationalString(selectedPlan['effective_until']).isEmpty ? '' : ' t/m ${_operationalString(selectedPlan['effective_until'])}'}',
+                  style: theme.bodySmall.copyWith(color: theme.secondaryText),
+                ),
+                const SizedBox(height: 12),
+                if (_selectedFeedingVersions.isNotEmpty)
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedFeedingVersionId,
+                    decoration: const InputDecoration(labelText: 'Versie'),
+                    items: _selectedFeedingVersions
+                        .map(
+                          (version) => DropdownMenuItem(
+                            value: _operationalString(version['id']),
+                            child: Text(
+                              'Versie ${version['version_number']} · '
+                              '${_operationalString(version['status'])}',
+                            ),
+                          ),
+                        )
+                        .toList(growable: false),
+                    onChanged:
+                        _busy
+                            ? null
+                            : (value) {
+                              if (value == null) return;
+                              setState(() => _selectedFeedingVersionId = value);
+                            },
+                  ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    if (versionStatus != 'draft')
+                      OutlinedButton.icon(
+                        onPressed:
+                            _offline || _busy ? null : _createFeedingVersion,
+                        icon: const Icon(Icons.copy_all_outlined),
+                        label: const Text('Nieuwe versie'),
+                      ),
+                    if (versionStatus == 'draft')
+                      FilledButton.icon(
+                        onPressed:
+                            _offline || _busy
+                                ? null
+                                : () => _upsertFeedingItem(),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Voeritem'),
+                      ),
+                    if (versionStatus == 'draft' && selectedItems.isNotEmpty)
+                      OutlinedButton.icon(
+                        onPressed:
+                            _offline || _busy
+                                ? null
+                                : _approveSelectedFeedingVersion,
+                        icon: const Icon(Icons.verified_outlined),
+                        label: const Text('Goedkeuren'),
+                      ),
+                    if (versionStatus == 'approved' && !versionIsActive)
+                      FilledButton.icon(
+                        onPressed:
+                            _offline || _busy
+                                ? null
+                                : _activateSelectedFeedingVersion,
+                        icon: const Icon(Icons.play_arrow_outlined),
+                        label: const Text('Activeren'),
+                      ),
+                    OutlinedButton.icon(
+                      onPressed:
+                          _offline || _busy ? null : _retireSelectedFeedingPlan,
+                      icon: const Icon(Icons.stop_circle_outlined),
+                      label: const Text('Plan stoppen'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                if (selectedVersion == null)
+                  Text(
+                    'Dit plan heeft nog geen toegankelijke versie.',
+                    style: theme.bodyMedium.copyWith(
+                      color: theme.secondaryText,
+                    ),
+                  )
+                else if (selectedItems.isEmpty)
+                  Text(
+                    'Nog geen voeritems in deze versie.',
+                    style: theme.bodyMedium.copyWith(
+                      color: theme.secondaryText,
+                    ),
+                  )
+                else
+                  ...selectedItems.map(
+                    (item) => _dataCard(
+                      theme,
+                      leading: Icons.restaurant_outlined,
+                      title: _operationalString(item['product_name']),
+                      subtitle:
+                          '${item['planned_quantity']} '
+                          '${_operationalString(item['unit_code'])} · '
+                          '${_operationalString(item['round_code'])} · '
+                          '${_operationalString(item['local_time'])}',
+                      trailing:
+                          versionStatus == 'draft' ? 'Wijzigen' : 'Immutable',
+                      onTap:
+                          _offline || _busy || versionStatus != 'draft'
+                              ? null
+                              : () => _upsertFeedingItem(item),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }

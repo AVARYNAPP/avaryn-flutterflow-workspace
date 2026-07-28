@@ -29,12 +29,12 @@ De server-side bron van waarheid bestaat uit de migraties en tests onder
 | A08 | Horse aanmaken en lezen | Horses Overview/operational runtime | `horses`, `create_horse`, RLS | 4C.2A SQL/concurrency, 5B.2 lokale acceptatie en runtimecompile | maak Horse, ververs en zie hem uitsluitend in juiste stal | aanwezig, onvoldoende getest: formeel browser-E2E ontbreekt |
 | A09 | Horse-kerngegevens beheren | Horses Overview/operational runtime | `update_horse_profile`, `archive_horse`, `get_horse_capabilities` | 4C.2A SQL/concurrency, 5B.2 upgrade- en broncontracttests | wijzig kernveld met row-version, bewijs conflict en archiveer met reden | aanwezig, onvoldoende getest: browser-E2E en responsive bewijs ontbreken |
 | A10 | Horse-relaties en beperkte toegang | Horses Overview/operational runtime | `horse_relationships`, `horse_access_grants`, grant/revoke- en relationship-RPC's | 4C.2A/2B SQL en 5B.2 herhaalde concurrency/denialtests | geef beperkte basis- of planningtoegang, revoke, beheer losse teamrelatie en test cross-stable denial | aanwezig, onvoldoende getest: multi-user browser-E2E ontbreekt |
-| A11 | taak aanmaken | Planning/operational runtime | `schedule_items`, `create_schedule_item` | 4C.3 SQL/concurrency en runtimecompile | maak een taak met Horse, tijd en categorie | aanwezig, functioneel onvolledig: alleen minimale taakcreate |
-| A12 | terugkerende routines | Planning en Today | `schedule_series`, materialisatie-RPC's | backend recurrence- en racetests | maak drie series; materialiseer en controleer twee dagen | aanwezig, functioneel onvolledig: geen serie-UI |
-| A13 | taak toewijzen | Planning/Team | `schedule_assignments`, `assign_schedule_item` | backend RLS/concurrency | wijs groom toe; andere gebruiker ziet opdracht niet | aanwezig, functioneel onvolledig: geen assignment-UI |
-| A14 | Today op logische dagen | Today/operational runtime | `list_today_schedule` | SQL-tests en runtimecompile | vandaag plus tweede lokale staldag/DST-rand | aanwezig, onvoldoende getest; datumkeuze/fixturebewijs ontbreekt |
-| A15 | uitvoering registreren | Today/Feeding Execution | record- en sync-execution-RPC's | SQL, idempotentie en concurrency | voltooi toegewezen taak exact eenmaal | aanwezig, onvoldoende getest: formeel E2E ontbreekt |
-| A16 | voerplanversionering en activatie | Feeding Overview | feeding plans, versions en lifecycle-RPC's | 4C.4 SQL/concurrency | draft, versie, approve, activate en retire met denied-tegenproef | aanwezig, functioneel onvolledig: UI maakt alleen een conceptplan |
+| A11 | taak aanmaken | Planning/operational runtime | `schedule_items`, `create_schedule_item` | 4C.3 plus 5D.1 atomische SQL/replay/concurrency | maak een taak met Horse, tijd en categorie | aanwezig, onvoldoende getest: browser-E2E blijft nodig |
+| A12 | terugkerende routines | Planning en Today | `schedule_series`, materialisatie-RPC's | 5D.1 drie routines, exacte 13-daagse horizon en races | maak drie series; materialiseer en controleer twee dagen | aanwezig, onvoldoende getest: browser-E2E blijft nodig |
+| A13 | taak toewijzen | Planning/Team | `schedule_assignments`, `assign_schedule_item` | 5D.1 atomiciteit, assigned-only cardinaliteit en denial | wijs groom toe; andere gebruiker ziet opdracht niet | aanwezig, onvoldoende getest: multi-user browser-E2E blijft nodig |
+| A14 | Today op logische dagen | Today/operational runtime | `list_today_schedule` | 5D.1 datumkeuze, twee lokale dagen en fixturebewijs | vandaag plus tweede lokale staldag/DST-rand | aanwezig, onvoldoende getest: viewport- en DST-browserbewijs blijft nodig |
+| A15 | uitvoering registreren | Today/Feeding Execution | record- en sync-execution-RPC's | SQL, 5D.1 idempotentie en concurrency | voltooi toegewezen taak exact eenmaal | aanwezig, onvoldoende getest: formeel browser-E2E blijft nodig |
+| A16 | voerplanversionering en activatie | Feeding Overview | feeding plans, versions en lifecycle-RPC's | 4C.4 plus 5D.2 atomische planstart, lifecycle en races | draft, versie, approve, activate en retire met denied-tegenproef | aanwezig, onvoldoende getest: browser-E2E blijft nodig |
 | A17 | private operationele media | Horses Overview en afgeronde Today/Planning-executioncontext | private bucket, media-assets/links, media-RPC's en media Edge Function | 4C.5 SQL/Ruby plus 5B.4 capability-, bron-, upgrade- en concurrencytests | upload, finalize, download en archive; revoke en denial voor andere Horse/stal | aanwezig, onvoldoende getest: multi-user browser-E2E en viewportbewijs ontbreken |
 | A18 | private Realtime-update | operational runtime | private topics plus `pull_operation_changes` | 4C.6 SQL/concurrency en generated build | wijzig in sessie A, veilige refresh in sessie B | aanwezig, onvoldoende getest: multi-session Alpha-E2E ontbreekt |
 | A19 | offline dagset en pending-sync | operational runtime op ondersteund native/desktop | device/dayset/sync-RPC's | 4C.6 SQL/concurrency en 4C.7 contracttests | prepare, verbreek netwerk, execute, restart, reconnect | aanwezig, onvoldoende getest: native E2E ontbreekt |
@@ -52,8 +52,8 @@ De server-side bron van waarheid bestaat uit de migraties en tests onder
 | A31 | lokale uitnodigingsoverdracht | Invite/Invitation | lokale Edge Function; raw token nooit duurzaam opslaan | Ruby-integratiesuite | fictieve invite via eenmalige lokale manual-share-link, zonder echte e-mail | aanwezig, onvoldoende getest: hosted mail/deeplink blijft deploymentvoorwaarde |
 | A32 | onboarding voltooien | Onboarding/account-runtime | eigen `profiles`-record en server-side Auth-UUID | fase-4A RLS en runtimecompile | doorloop verplichte profielstappen en cold refresh | aanwezig, onvoldoende getest: formeel E2E ontbreekt |
 | A33 | persoonlijk profiel en avatar beheren | Personal Profile/account-runtime | eigen `profiles`, private `avatars` en padcontrole | fase-4A RLS, Storage-integratie en runtimecompile | wijzig profiel, upload/verwijder fictieve avatar, test cross-user denial | aanwezig, onvoldoende getest: formeel UI-E2E ontbreekt |
-| A34 | voeritems, units en tijdelijke overrides | Feeding Overview | plan items, inclusive effective dates, round-specific overlap en unit fail-closed | 4C.4 SQL/concurrency | voeg items toe, test geldige unit, geweigerde unit en overlappende tijdelijke override | aanwezig, functioneel onvolledig: geen item/override-UI |
-| A35 | voederuitvoering en correctie | Feeding Execution | immutable executions, actual/remainder/deviation en correction-RPC | 4C.4 SQL/concurrency plus 4C.7 dialogcontract | registreer actual, remainder en deviation; corrigeer zonder historie te overschrijven | aanwezig, functioneel onvolledig: uitvoering bestaat, correctie-UI ontbreekt |
+| A34 | voeritems, units en tijdelijke overrides | Feeding Overview | plan items, inclusive effective dates, round-specific overlap en unit fail-closed | 4C.4 plus 5D.2 exact-slot UI/SQL en twee racepasses | voeg items toe, test geldige unit, geweigerde unit en overlappende tijdelijke override | aanwezig, onvoldoende getest: responsive browser-E2E blijft nodig |
+| A35 | voederuitvoering en correctie | Feeding Execution | immutable executions, actual/remainder/deviation en correction-RPC | 5D.2 assigned-only uitvoering, durable replay en append-only correctie | registreer actual, remainder en deviation; corrigeer zonder historie te overschrijven | aanwezig, onvoldoende getest: formeel browser-E2E blijft nodig |
 
 ## 3. Backend- en testdekking per domein
 
@@ -205,3 +205,39 @@ staat op 112/112 groene tests. De resetguard vereist expliciete bevestiging,
 de exacte project-ID, een lokale Unix-Dockercontext en het exacte
 Supabase-projectlabel. Er is geen automatische seed, externe databaseactie,
 FlutterFlow-projectwijziging, publicatie of deployment uitgevoerd.
+
+## 11. Fase-5D.1-checkpoint
+
+Planning en Today bieden nu lokale-dagnavigatie, dagelijkse en wekelijkse
+routines, eenmalige taken en optionele verantwoordelijke toewijzing. Plan plus
+assignment en serie plus materialisatie gebruiken atomische wrappers en
+duurzame exact-payloadreplay.
+
+Het lokale Basis-profiel bewijst drie routines, twee logische dagen, een
+exacte inclusieve horizon van dertien dagen, assigned-only cardinaliteit,
+revoked denial en herhaalde 4C.3-races. De generated-code-analyse en
+Flutter-webreleasebuild zijn groen met de projectcompatibele Flutter 3.35.7
+SDK. Details staan in `docs/phase-5d1-planning-acceptance.md`.
+
+A11–A15 zijn niet langer functioneel onvolledig. Het resterende formele bewijs
+is browser-, viewport-, DST- en multi-user-E2E. Er is niets gepubliceerd of
+gedeployed.
+
+## 12. Fase-5D.2-checkpoint
+
+De voedingsruntime ontsluit nu dezelfde bestaande 4C.4-bron voor atomische
+planstart, versionering, items, duurzame `override_key`, tijdelijke
+exact-slotvervanging, verantwoordelijke assignment, goedkeuring, activatie en
+retirement. Feitelijke uitvoering gebruikt duurzame exact-payloadreplay; een
+correctie is een nieuwe uitvoering die naar de immutable oorspronkelijke
+registratie verwijst.
+
+De lokale gate bewijst een verse migratieketen, Basis-fixture, atomische
+plan-/versiereplay, twee lokale override-dagen, assigned-only uitvoering,
+append-only correctie, idempotente correctiereplay, cross-stable en revoked
+denial en twee volledige 4C.4-racepasses. Details staan in
+`docs/phase-5d2-feeding-acceptance.md`.
+
+A16, A34 en A35 zijn niet langer functioneel onvolledig. Responsive en
+multi-user browser-E2E blijven formele 5D-gates. Er is niets gepubliceerd of
+gedeployed.

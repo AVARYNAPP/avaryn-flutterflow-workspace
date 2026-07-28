@@ -25,7 +25,7 @@ void main() {
   test(
     'active edit flow includes the Phase 5D.1 planning acceptance slice',
     () {
-      expect(edit, contains('buildAvarynPhase5D1,'));
+      expect(edit, contains('buildAvarynPhase5D2,'));
       expect(edit, contains('void buildAvarynPhase5D1(App app)'));
       expect(edit, contains('_applyPhase4C7OperationalRuntimeResource(app);'));
     },

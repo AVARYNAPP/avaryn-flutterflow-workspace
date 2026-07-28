@@ -5205,7 +5205,7 @@ Future<void> main(List<String> args) async {
   final options = _parseCliOptions(args);
   try {
     await flutterFlowAI(
-      buildAvarynPhase5D1,
+      buildAvarynPhase5D2,
       apiKey: options.apiKey,
       baseUrl: options.baseUrl,
       projectName: options.projectName,
@@ -5704,6 +5704,29 @@ void buildAvarynPhase5D1(App app) {
       name: 'PlanningPage',
       description:
           'RLS-backed Alpha planning for dated one-off tasks, responsible-member assignment and daily or weekly recurring routines.',
+    );
+  });
+}
+
+/// Phase 5D.2 closes the existing feeding contract without adding a second
+/// data model. Testers can version plans, manage exact logical feeding slots,
+/// activate temporary overrides and append a correction to an immutable
+/// execution. RLS and the Phase 4C.4 RPCs remain the only authority.
+void buildAvarynPhase5D2(App app) {
+  _configureAvarynTheme(app, existingProject: true);
+  _applyPhase4C7OperationalRuntimeResource(app);
+  app.raw((project) {
+    updatePage(
+      project,
+      name: 'FeedingOverviewPage',
+      description:
+          'RLS-backed feeding plan lifecycle with immutable versions, exact temporary override slots and durable activation.',
+    );
+    updatePage(
+      project,
+      name: 'FeedingRoundExecutionPage',
+      description:
+          'Assigned feeding execution with exact units, durable retries, private evidence and append-only correction history.',
     );
   });
 }
