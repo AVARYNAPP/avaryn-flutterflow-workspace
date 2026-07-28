@@ -183,6 +183,9 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   bool _offlineReady = false;
   bool _secureCleanupPending = false;
   Timer? _wakeDebounce;
+  BuildContext? _sensitiveConflictDialogContext;
+  Route<dynamic>? _sensitiveConflictDialogRoute;
+  int _sensitiveStateGeneration = 0;
 
   String get _storagePrefix {
     final userId =
@@ -215,6 +218,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
 
   @override
   void dispose() {
+    _dismissSensitiveConflictDialog();
     _authSubscription?.cancel();
     _wakeDebounce?.cancel();
     for (final channel in _channels) {
@@ -1161,12 +1165,14 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     required String operation,
     required String intentKey,
     Map<String, String> initialReplayValues = const {},
+    void Function()? scopePreflight,
     required Map<String, dynamic> Function(
       String requestId,
       Map<String, String> replayValues,
     )
     buildParams,
   }) async {
+    scopePreflight?.call();
     final digest =
         sha256.convert(utf8.encode('$operation\n$intentKey')).toString();
     final storageKey = _storageKey('request.$digest');
@@ -1199,6 +1205,17 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       if (persisted != encodedRecord) {
         throw StateError('DURABLE_REQUEST_STORAGE_REQUIRED');
       }
+    }
+    try {
+      scopePreflight?.call();
+    } catch (_) {
+      try {
+        await _secureStorage.delete(key: storageKey);
+      } catch (_) {
+        // The account-wide purge retry remains the fail-closed cleanup path
+        // if the exact stale request record cannot be removed immediately.
+      }
+      rethrow;
     }
     try {
       final result = await _client.rpc(
@@ -2001,6 +2018,201 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         );
       }
       _notice = 'Uitvoering veilig geregistreerd.';
+      await _load(quiet: true);
+    });
+  }
+
+  String _conflictFieldLabel(String field) => switch (field) {
+    'display_name' => 'Roepnaam',
+    'official_name' => 'Officiële naam',
+    'birth_date' => 'Geboortedatum',
+    'sex' => 'Geslacht',
+    'breed' => 'Ras',
+    'discipline' => 'Discipline',
+    'level' => 'Niveau',
+    _ => 'Onbekend veld',
+  };
+
+  String _conflictValue(dynamic value) {
+    if (value == null) return 'leegmaken';
+    if (value is! String && value is! num && value is! bool) {
+      return 'ongeldige waarde';
+    }
+    final normalized = value.toString().trim();
+    if (normalized.isEmpty) return 'leegmaken';
+    return normalized.length <= 96
+        ? normalized
+        : '${normalized.substring(0, 93)}…';
+  }
+
+  Future<void> _resolveSyncConflict(Map<String, dynamic> conflict) async {
+    if (_offline || _busy) return;
+    final actorUserId = _client.auth.currentUser?.id ?? '';
+    final stableId = _stableId;
+    final sensitiveStateGeneration = _sensitiveStateGeneration;
+    if (actorUserId.isEmpty || stableId.isEmpty) return;
+    final conflictId = _operationalString(conflict['conflict_id']);
+    final entityType = _operationalString(conflict['entity_type']);
+    final patch = _operationalMap(conflict['client_patch']);
+    const allowedFields = {
+      'display_name',
+      'official_name',
+      'birth_date',
+      'sex',
+      'breed',
+      'discipline',
+      'level',
+    };
+    if (conflictId.isEmpty ||
+        entityType != 'horse_basic_noncritical' ||
+        patch.keys.any((field) => !allowedFields.contains(field))) {
+      setState(
+        () =>
+            _error =
+                'Dit conflict heeft een onverwachte vorm en is niet aangepast.',
+      );
+      return;
+    }
+
+    final reason = TextEditingController();
+    String? validationError;
+    BuildContext? openedDialogContext;
+    Route<dynamic>? openedDialogRoute;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        final dialogRoute = ModalRoute.of(dialogContext);
+        openedDialogContext = dialogContext;
+        openedDialogRoute = dialogRoute;
+        _sensitiveConflictDialogContext = dialogContext;
+        _sensitiveConflictDialogRoute = dialogRoute;
+        return StatefulBuilder(
+          builder:
+              (context, setDialogState) => AlertDialog(
+                title: const Text('Synchronisatieconflict beoordelen'),
+                content: SizedBox(
+                  width: 520,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Text(
+                          'De serverversie blijft actief. Je kunt dit '
+                          'conflict sluiten en de lokale wijziging later '
+                          'bewust opnieuw invoeren.',
+                        ),
+                        const SizedBox(height: 14),
+                        Text(
+                          'Paardprofiel · lokaal v'
+                          '${_operationalString(conflict['base_row_version'])}'
+                          ' · server v'
+                          '${_operationalString(conflict['server_row_version'])}',
+                        ),
+                        const SizedBox(height: 10),
+                        if (patch.isEmpty)
+                          const Text('Geen leesbare lokale wijziging.')
+                        else
+                          ...patch.entries.map(
+                            (entry) => Padding(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                '${_conflictFieldLabel(entry.key)}: '
+                                '${_conflictValue(entry.value)}',
+                              ),
+                            ),
+                          ),
+                        const SizedBox(height: 14),
+                        TextField(
+                          controller: reason,
+                          autofocus: true,
+                          minLines: 2,
+                          maxLines: 4,
+                          maxLength: 500,
+                          decoration: const InputDecoration(
+                            labelText: 'Reden (verplicht)',
+                            hintText:
+                                'Waarom blijft de actuele serverversie behouden?',
+                          ),
+                        ),
+                        if (validationError != null)
+                          Text(
+                            validationError!,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext, false),
+                    child: const Text('Annuleren'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      final normalized = reason.text.trim();
+                      if (normalized.isEmpty || normalized.length > 500) {
+                        setDialogState(
+                          () =>
+                              validationError =
+                                  'Vul een reden van maximaal 500 tekens in.',
+                        );
+                        return;
+                      }
+                      Navigator.pop(dialogContext, true);
+                    },
+                    child: const Text('Serverversie behouden'),
+                  ),
+                ],
+              ),
+        );
+      },
+    );
+    if (identical(_sensitiveConflictDialogContext, openedDialogContext) &&
+        identical(_sensitiveConflictDialogRoute, openedDialogRoute)) {
+      _sensitiveConflictDialogContext = null;
+      _sensitiveConflictDialogRoute = null;
+    }
+    final normalizedReason = reason.text.trim();
+    reason.dispose();
+    if (confirmed != true ||
+        normalizedReason.isEmpty ||
+        sensitiveStateGeneration != _sensitiveStateGeneration ||
+        _client.auth.currentUser?.id != actorUserId ||
+        _stableId != stableId) {
+      return;
+    }
+
+    await _guarded(() async {
+      final reasonHash =
+          sha256.convert(utf8.encode(normalizedReason)).toString();
+      await _runDurableIdempotentRpc(
+        operation: 'resolve_sync_conflict',
+        intentKey: '$conflictId:resolved_server:$reasonHash',
+        initialReplayValues: {
+          'resolution': 'resolved_server',
+          'reason': normalizedReason,
+        },
+        scopePreflight: () {
+          if (sensitiveStateGeneration != _sensitiveStateGeneration ||
+              _client.auth.currentUser?.id != actorUserId ||
+              _stableId != stableId) {
+            throw StateError('STALE_CONFLICT_CONFIRMATION');
+          }
+        },
+        buildParams:
+            (requestId, replayValues) => {
+              'p_conflict_id': conflictId,
+              'p_resolution': replayValues['resolution'],
+              'p_reason': replayValues['reason'],
+              'p_request_id': requestId,
+            },
+      );
+      _notice =
+          'Conflict gesloten; de actuele serverversie is bewust behouden.';
       await _load(quiet: true);
     });
   }
@@ -2901,6 +3113,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         _boundUserId.isNotEmpty
             ? _boundUserId
             : (_client.auth.currentUser?.id ?? '');
+    _dismissSensitiveConflictDialog();
     final channels = List<RealtimeChannel>.from(_channels);
     _channels.clear();
     _wakeDebounce?.cancel();
@@ -2942,6 +3155,21 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       );
     }
     return !_secureCleanupPending;
+  }
+
+  void _dismissSensitiveConflictDialog() {
+    _sensitiveStateGeneration += 1;
+    final dialogContext = _sensitiveConflictDialogContext;
+    final dialogRoute = _sensitiveConflictDialogRoute;
+    _sensitiveConflictDialogContext = null;
+    _sensitiveConflictDialogRoute = null;
+    if (dialogContext == null ||
+        !dialogContext.mounted ||
+        dialogRoute == null ||
+        !dialogRoute.isActive) {
+      return;
+    }
+    Navigator.of(dialogContext).removeRoute<dynamic>(dialogRoute, false);
   }
 
   void _clearDecryptedState() {
@@ -3110,9 +3338,17 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           ),
         ),
         if (_conflicts.isNotEmpty)
-          Text(
-            '${_conflicts.length} conflict${_conflicts.length == 1 ? '' : 'en'}',
-            style: theme.labelMedium.copyWith(color: theme.error),
+          TextButton.icon(
+            onPressed:
+                _offline || _busy
+                    ? null
+                    : () => _resolveSyncConflict(_conflicts.first),
+            icon: Icon(Icons.sync_problem_outlined, color: theme.error),
+            label: Text(
+              '${_conflicts.length} '
+              'conflict${_conflicts.length == 1 ? '' : 'en'}',
+              style: theme.labelMedium.copyWith(color: theme.error),
+            ),
           ),
       ],
     ),

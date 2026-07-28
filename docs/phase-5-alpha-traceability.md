@@ -40,7 +40,7 @@ De server-side bron van waarheid bestaat uit de migraties en tests onder
 | A19 | offline dagset en pending-sync | operational runtime op ondersteund native/desktop | device/dayset/sync-RPC's | 4C.6 SQL/concurrency en 4C.7 contracttests | prepare, verbreek netwerk, execute, restart, reconnect | aanwezig, onvoldoende getest: native E2E ontbreekt |
 | A20 | browseroffline | web-runtime | bewust uitgeschakeld; geen goedgekeurde browserkeystore | webbuild en fail-closed bronasserties | netwerk weg: geen plaintext/fallback en duidelijke state | productbeslissing: beveiligde webopslag vereist nieuw contract |
 | A21 | retries en idempotentie | operational runtime | mutation receipts en request-ID-contract | SQL 100-retrytests en pure ledgertests | simuleer ambigue response en retry exact dezelfde payload | aanwezig, onvoldoende getest: transport-E2E ontbreekt |
-| A22 | conflicten | operationele conflictindicator | `sync_conflicts`, list/resolve-RPC's | 4C.6 RLS/idempotentietests | forceer base-versionconflict; alleen actor ziet hem | aanwezig, functioneel onvolledig: indicator bestaat, resolver-UI niet |
+| A22 | conflicten | operationele conflictindicator en serverversie-resolver | `sync_conflicts`, list/resolve-RPC's | 4C.6 RLS/idempotentietests plus 5B.5 resolvercontract | forceer base-versionconflict; alleen actor ziet hem en kan met reden de serverversie behouden | aanwezig, onvoldoende getest: multi-session browser/native-E2E ontbreekt |
 | A23 | revoke/authority-reset | alle drie runtimes | authorityversion, topicrotatie, device revoke | SQL races, purgecontract en audit | revoke tijdens sessie/offline; oude data direct weg bij detectie | aanwezig, onvoldoende getest: multi-client acceptatie ontbreekt |
 | A24 | loading/empty/error/offline/denied/conflict | account-, stable- en operational runtime | RLS/RPC-foutcodes | bronasserties en compiletests | forceer iedere state en controleer herstelactie | aanwezig, onvoldoende getest |
 | A25 | navigatie zonder doodlopers | alle Alpha-routes | auth- en membershipgate | route-/bronasserties | doorloop mobiel/tablet/desktop en browser back/refresh/deeplink | aanwezig, onvoldoende getest |
@@ -163,3 +163,21 @@ A17 is daarmee niet langer functioneel onvolledig. De formele status blijft
 `aanwezig, onvoldoende getest` totdat de multi-user browser-, viewport- en
 handmatige Alpha-E2E in fase 5D zijn bewezen. Er is niets gepubliceerd of
 gedeployed.
+
+## 9. Fase-5B.5-checkpoint
+
+Het bestaande 4C.6-contract voor private Realtime, versleutelde native
+offline-dagsets, pending-sync en authorityrotatie blijft ongewijzigd. De
+operationele runtime maakt de eigen open, niet-kritieke
+Horse-profielconflicten nu zichtbaar en kan die expliciet afsluiten met behoud
+van de actuele serverversie en een verplichte reden.
+
+De UI biedt geen client-wins of automatische merge: de serverrij blijft de
+autoritatieve toestand. De resolutie gebruikt een duurzaam idempotent
+requestrecord en de bestaande actor-/owner-/admin-RPC-authority; de lijst blijft
+beperkt tot de eigen Auth-UUID.
+
+A22 is daarmee niet langer functioneel onvolledig. A18–A23 blijven voor de
+formele fase-5D-status `aanwezig, onvoldoende getest` totdat multi-session,
+native-offline, revoke-, responsive en browserbewijs als afzonderlijke
+acceptatierecords zijn uitgevoerd. Er is niets gepubliceerd of gedeployed.

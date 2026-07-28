@@ -113,8 +113,9 @@ void main() {
     );
   });
 
-  test('Phase 5B.4 is the active structural FlutterFlow edit flow', () {
-    expect(edit, contains('buildAvarynPhase5B4,'));
+  test('Phase 5B.4 remains integrated in the active FlutterFlow edit flow', () {
+    expect(edit, contains('buildAvarynPhase5B5,'));
+    expect(edit, contains('void buildAvarynPhase5B4(App app)'));
     expect(edit, contains("findPubDependency(project, name: 'image')"));
     expect(edit, contains("version: '^4.8.0'"));
     expect(edit, contains("findPubDependency(project, name: 'json_path')"));

@@ -5205,7 +5205,7 @@ Future<void> main(List<String> args) async {
   final options = _parseCliOptions(args);
   try {
     await flutterFlowAI(
-      buildAvarynPhase5B4,
+      buildAvarynPhase5B5,
       apiKey: options.apiKey,
       baseUrl: options.baseUrl,
       projectName: options.projectName,
@@ -5658,6 +5658,30 @@ void buildAvarynPhase5B4(App app) {
       description:
           'RLS-backed planning workspace with completed-execution context and private operational evidence.',
     );
+  });
+}
+
+/// Phase 5B.5 makes the existing bounded sync-conflict contract actionable.
+/// The Alpha UI can explicitly retain the authoritative server version; it
+/// never pretends to merge or apply a stale client patch.
+void buildAvarynPhase5B5(App app) {
+  _configureAvarynTheme(app, existingProject: true);
+  _applyPhase4C7OperationalRuntimeResource(app);
+  app.raw((project) {
+    for (final pageName in const [
+      'TodayDashboardPage',
+      'HorsesOverviewPage',
+      'PlanningPage',
+      'FeedingOverviewPage',
+      'FeedingRoundExecutionPage',
+    ]) {
+      updatePage(
+        project,
+        name: pageName,
+        description:
+            'RLS-backed operational Alpha workspace with private Realtime wake-ups, encrypted native offline sync and explicit server-version conflict recovery.',
+      );
+    }
   });
 }
 
