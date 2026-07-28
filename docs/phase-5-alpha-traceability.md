@@ -265,3 +265,26 @@ workspace-Darttests zijn groen. Details en reproduceerbare commando's staan in
 `docs/phase-5d3-browser-multisession-acceptance.md`. A03, A04, A18, A23 en A29
 zijn daarmee `gereed en bewezen`; A20 blijft bewust een productbeslissing voor
 beveiligde browserofflineopslag. Er is niets gepubliceerd of gedeployed.
+
+## 14. Fase-5E-checkpoint
+
+Het repositorymatige Alpha-testprotocol, operationele runbook,
+testaccountverwijderingsprocedure, incident- en rollbackpad, drie geredigeerde
+bewijsformats en de formele staging-/deploymentgate staan in:
+
+- `docs/phase-5e-alpha-test-protocol.md`;
+- `docs/phase-5e-operations-runbook.md`;
+- `docs/phase-5e-deployment-gate.md`;
+- `docs/templates/phase-5-alpha-*.md`.
+
+De gate houdt de webalpha online-only, maakt persona en authority expliciet
+verschillend en staat geen staging, echte uitnodiging, betaalde dienst of
+productiehandeling toe. Hosted auth-, invitation-, Horse-, media- en
+conflictjourneys blijven verplichte staging-smokes; juridische/privacytekst,
+accountverwijdering, e-mailconfiguratie en expliciete acceptatie van de
+online-only webgrens blijven voorwaarden vóór echte testers.
+
+`tool/test_phase_5e_local.sh` controleert de documentset, alle fase-5-shelltools,
+de afwezigheid van uitvoerbare deploymentcommando's en de volledige
+FlutterFlow-workspacesuite. Fase 5E bereikt daarmee de externe
+deploymentbeslisgrens zonder zelf iets te publiceren.
