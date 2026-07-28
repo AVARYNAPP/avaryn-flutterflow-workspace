@@ -565,14 +565,18 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     for (final topic in topics) {
       final token = _operationalString(topic['topic']);
       if (token.isEmpty) continue;
-      final channel =
-          _client
-              .channel(token, opts: const RealtimeChannelConfig(private: true))
-              .onBroadcast(
-                event: 'change_available',
-                callback: (_) => _scheduleWakeRefresh(),
-              )
-              .subscribe();
+      final channel = _client
+          .channel(token, opts: const RealtimeChannelConfig(private: true))
+          .onBroadcast(
+            event: 'change_available',
+            callback: (_) => _scheduleWakeRefresh(),
+          );
+      channel.subscribe((status, error) {
+        if (status == RealtimeSubscribeStatus.channelError ||
+            status == RealtimeSubscribeStatus.timedOut) {
+          _scheduleWakeRefresh();
+        }
+      });
       _channels.add(channel);
     }
     await _secureStorage.write(

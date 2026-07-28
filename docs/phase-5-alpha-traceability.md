@@ -21,8 +21,8 @@ De server-side bron van waarheid bestaat uit de migraties en tests onder
 | --- | --- | --- | --- | --- | --- | --- |
 | A01 | account aanmaken en bevestigen | Auth Create, Verify, Callback; account-runtime | Supabase Auth, `profiles` | fase-4A auth-, RLS- en compiletests | registreer fictief lokaal account, open Mailpit-link, bereik gate | aanwezig, onvoldoende getest: formeel browser-E2E ontbreekt |
 | A02 | login en wachtwoordherstel | Auth Login, Forgot, Reset | Supabase Auth | account-runtime compiletest en lokale authsuite | login, fout wachtwoord, resetlink, nieuw wachtwoord | aanwezig, onvoldoende getest |
-| A03 | veilig uitloggen | Profile/account-runtime | Auth sign-out plus UUID-scoped secure purge | fase-4C.7 purge-/contracttests | logout vanuit operationeel scherm; geen vorige data zichtbaar | aanwezig, onvoldoende getest: Alpha-E2E ontbreekt |
-| A04 | accountwissel zonder datalek | Auth Gate/account-runtime | auth UUID, accountscopes, secure purge | fase-4B contexttests en 4C.7 audit | A → logout → B; geen A-data of selectie zichtbaar | aanwezig, onvoldoende getest: browser/native acceptatie ontbreekt |
+| A03 | veilig uitloggen | Profile/account-runtime | Auth sign-out plus UUID-scoped secure purge | fase-4C.7 purge-/contracttests plus 5D.3 browserlogout | logout vanuit operationeel scherm; geen vorige data zichtbaar | gereed en bewezen |
+| A04 | accountwissel zonder datalek | Auth Gate/account-runtime | auth UUID, accountscopes, secure purge | fase-4B contexttests, 4C.7 audit en 5D.3 groom → Owner B-browserwissel | A → logout → B; geen A-data of selectie zichtbaar | gereed en bewezen |
 | A05 | stal/werkomgeving kiezen | Stable Handoff, Picker, selector | `stable_memberships`, `set_selected_stable` | fase-4B SQL-, context- en managementtests | wissel stal A → B → A, inclusief lege scope | aanwezig, onvoldoende getest |
 | A06 | stal en klein team beheren | Create Stable, Details, Members, Roles | `stables`, memberships en authority-RPC's | fase-4B RLS/security/concurrency | owner/admin/member/viewer-matrix doorlopen | aanwezig, onvoldoende getest |
 | A07 | teamlid uitnodigen/accepteren | Invite, Pending, Invitation | invitation Edge Function en invitation-RPC's | 23 lokale integratieasserties plus concurrency | create, preview, accept, decline, resend en revoke via eenmalige lokale manual-share-link | aanwezig, onvoldoende getest |
@@ -36,18 +36,18 @@ De server-side bron van waarheid bestaat uit de migraties en tests onder
 | A15 | uitvoering registreren | Today/Feeding Execution | record- en sync-execution-RPC's | SQL, 5D.1 idempotentie en concurrency | voltooi toegewezen taak exact eenmaal | aanwezig, onvoldoende getest: formeel browser-E2E blijft nodig |
 | A16 | voerplanversionering en activatie | Feeding Overview | feeding plans, versions en lifecycle-RPC's | 4C.4 plus 5D.2 atomische planstart, lifecycle en races | draft, versie, approve, activate en retire met denied-tegenproef | aanwezig, onvoldoende getest: browser-E2E blijft nodig |
 | A17 | private operationele media | Horses Overview en afgeronde Today/Planning-executioncontext | private bucket, media-assets/links, media-RPC's en media Edge Function | 4C.5 SQL/Ruby plus 5B.4 capability-, bron-, upgrade- en concurrencytests | upload, finalize, download en archive; revoke en denial voor andere Horse/stal | aanwezig, onvoldoende getest: multi-user browser-E2E en viewportbewijs ontbreken |
-| A18 | private Realtime-update | operational runtime | private topics plus `pull_operation_changes` | 4C.6 SQL/concurrency en generated build | wijzig in sessie A, veilige refresh in sessie B | aanwezig, onvoldoende getest: multi-session Alpha-E2E ontbreekt |
+| A18 | private Realtime-update | operational runtime | private topics plus `pull_operation_changes` | 4C.6 SQL/concurrency, 5D.3 Realtime-policytests en twee gelijktijdige browsersessies | wijzig in sessie A, veilige refresh in sessie B | gereed en bewezen |
 | A19 | offline dagset en pending-sync | operational runtime op ondersteund native/desktop | device/dayset/sync-RPC's | 4C.6 SQL/concurrency en 4C.7 contracttests | prepare, verbreek netwerk, execute, restart, reconnect | aanwezig, onvoldoende getest: native E2E ontbreekt |
-| A20 | browseroffline | web-runtime | bewust uitgeschakeld; geen goedgekeurde browserkeystore | webbuild en fail-closed bronasserties | netwerk weg: geen plaintext/fallback en duidelijke state | productbeslissing: beveiligde webopslag vereist nieuw contract |
+| A20 | browseroffline | web-runtime | bewust uitgeschakeld; geen goedgekeurde browserkeystore | webbuild, fail-closed bronasserties en 5D.3 lokale gateway-uitval met purge | netwerk weg: geen plaintext/fallback en duidelijke state | productbeslissing: fail-closed browsergedrag bewezen; beveiligde webopslag vereist nieuw contract |
 | A21 | retries en idempotentie | operational runtime | mutation receipts en request-ID-contract | SQL 100-retrytests en pure ledgertests | simuleer ambigue response en retry exact dezelfde payload | aanwezig, onvoldoende getest: transport-E2E ontbreekt |
 | A22 | conflicten | operationele conflictindicator en serverversie-resolver | `sync_conflicts`, list/resolve-RPC's | 4C.6 RLS/idempotentietests plus 5B.5 resolvercontract | forceer base-versionconflict; alleen actor ziet hem en kan met reden de serverversie behouden | aanwezig, onvoldoende getest: multi-session browser/native-E2E ontbreekt |
-| A23 | revoke/authority-reset | alle drie runtimes | authorityversion, topicrotatie, device revoke | SQL races, purgecontract en audit | revoke tijdens sessie/offline; oude data direct weg bij detectie | aanwezig, onvoldoende getest: multi-client acceptatie ontbreekt |
+| A23 | revoke/authority-reset | alle drie runtimes | authorityversion, topicrotatie, device revoke en payloadarme wake op oude topics | SQL-races, 5D.3 handshake-/wake-tests en live revoke met purge zonder refresh | revoke tijdens sessie/offline; oude data direct weg bij detectie | gereed en bewezen |
 | A24 | loading/empty/error/offline/denied/conflict | account-, stable- en operational runtime | RLS/RPC-foutcodes | bronasserties en compiletests | forceer iedere state en controleer herstelactie | aanwezig, onvoldoende getest |
-| A25 | navigatie zonder doodlopers | alle Alpha-routes | auth- en membershipgate | route-/bronasserties | doorloop mobiel/tablet/desktop en browser back/refresh/deeplink | aanwezig, onvoldoende getest |
+| A25 | navigatie zonder doodlopers | alle Alpha-routes | auth- en membershipgate | route-/bronasserties plus 5D.3 Today/Paarden/Planning en drie legacy-Horse-deeplinks met back/refresh | doorloop mobiel/tablet/desktop en browser back/refresh/deeplink | aanwezig, onvoldoende getest: overige Alpha-routes blijven handmatig te doorlopen |
 | A26 | Paard/Ruiter/Team gescheiden | Horse-, Profile- en Teamroutes | gescheiden profiles, semantische relationships, grants en memberships | schema- en RLS-tests plus expliciete 5B.2 UI-copy | persona-labels en Horse-relaties verlenen geen authority | aanwezig, onvoldoende getest: multi-user E2E controleren |
 | A27 | notificaties/reminders | geen actuele operationele Alpha-runtime | geen fase-4 notificationbackend; besluitrecord beperkt scope tot reeds contractueel geïmplementeerd | besluitrecord `AVARYN-P5-2026-07-27` | n.v.t.; voeg geen nieuwe notificationfeature toe | buiten fase 5 op grond van de actuele bindende scope |
-| A28 | responsive en basis-a11y | alle Alpha-routes | n.v.t. | webbuild en eerdere auth-boundaryscreenshots | 390×844, tablet en desktop; keyboard, focus, labels, contrast | aanwezig, onvoldoende getest |
-| A29 | één cloudbron zonder lokale split-brain | operationele pagina's plus oude Horse/Activity/Feeding/Nutrition-routes | cloud-RLS/RPC blijft de autoritatieve bron | 5B.1-navigatie leidt naar cloudruntime; 5B.2 vervangt on-load/body van oude Horse-form/edit/detailroutes door een harde replace-redirect; generated route-audit bevestigt alle drie redirects | start schoon, navigeer en deeplink alle actieve/legacy routes en bewijs dat geen prototypegegevens verschijnen of clouddata overschrijven | aanwezig, onvoldoende getest: browser back/deeplinkbewijs blijft nodig |
+| A28 | responsive en basis-a11y | alle Alpha-routes | n.v.t. | webbuild en 5D.3-browserbewijs op 390×844, 820×1180 en 1440×900 met keyboard-login en semantische labels | 390×844, tablet en desktop; keyboard, focus, labels, contrast | aanwezig, onvoldoende getest: resterende Alpha-routes en contrastmatrix ontbreken |
+| A29 | één cloudbron zonder lokale split-brain | operationele pagina's plus oude Horse/Activity/Feeding/Nutrition-routes | cloud-RLS/RPC blijft de autoritatieve bron | 5B.1 cloudnavigatie, 5B.2 harde legacy-redirects en 5D.3 browserdeeplinks/back/refresh zonder prototypegegevens | start schoon, navigeer en deeplink alle actieve/legacy routes en bewijs dat geen prototypegegevens verschijnen of clouddata overschrijven | gereed en bewezen |
 | A30 | geldige FlutterFlow-stateconfiguratie | AppState en formroutes | n.v.t. | laatste run is groen maar meldt vier bestaande nullable-statewaarschuwingen | cold start, refresh en deeplink zonder null-crash | aanwezig, onvoldoende getest: warnings oplossen of aantoonbaar als veilige nullable state documenteren |
 | A31 | lokale uitnodigingsoverdracht | Invite/Invitation | lokale Edge Function; raw token nooit duurzaam opslaan | Ruby-integratiesuite | fictieve invite via eenmalige lokale manual-share-link, zonder echte e-mail | aanwezig, onvoldoende getest: hosted mail/deeplink blijft deploymentvoorwaarde |
 | A32 | onboarding voltooien | Onboarding/account-runtime | eigen `profiles`-record en server-side Auth-UUID | fase-4A RLS en runtimecompile | doorloop verplichte profielstappen en cold refresh | aanwezig, onvoldoende getest: formeel E2E ontbreekt |
@@ -241,3 +241,27 @@ denial en twee volledige 4C.4-racepasses. Details staan in
 A16, A34 en A35 zijn niet langer functioneel onvolledig. Responsive en
 multi-user browser-E2E blijven formele 5D-gates. Er is niets gepubliceerd of
 gedeployed.
+
+## 13. Fase-5D.3-checkpoint
+
+FlutterFlow-projectcommit `273uNhvKI33OfF2VFdRi` bevat de clientzijde van de
+private Realtime- en lifecycleherstelgrens. De lokale servermigratie verleent
+de handshakefunctie alleen aan `authenticated`, houdt de topiccontrole
+fail-closed en verstuurt vóór authorityrotatie een payloadarme wake naar de
+oude privé-topics. Naast de authorityversie bevat die uitsluitend de door
+Realtime verplichte willekeurige technische bericht-ID.
+
+Twee gelijktijdige, door origin geïsoleerde browsersessies bewezen een
+assigned-only update zonder refresh, gevolgd door suspension en onmiddellijke
+purge van eerder zichtbare data zonder refresh. Logout en accountwissel naar
+een tweede owner lekten geen stal- of taakdata. De drie oude Horse-deeplinks,
+browser-back en refresh bleven bij de cloudruntime. Een gecontroleerde lokale
+gateway-uitval purgeerde zichtbare data en viel terug op een veilige
+fout/empty-state zonder plaintext browsercache.
+
+De lege lokale reset, volledige 4C.6 SQL- en concurrencyregressie,
+5D.3-handshake-/cross-stable-/revoked-/old-topic-waketests en alle 134
+workspace-Darttests zijn groen. Details en reproduceerbare commando's staan in
+`docs/phase-5d3-browser-multisession-acceptance.md`. A03, A04, A18, A23 en A29
+zijn daarmee `gereed en bewezen`; A20 blijft bewust een productbeslissing voor
+beveiligde browserofflineopslag. Er is niets gepubliceerd of gedeployed.
