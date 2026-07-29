@@ -3,7 +3,7 @@
 library;
 
 abstract final class Project {
-  static const id = "a-v-a-r-y-n-consumer-app-8yb89s";
-  static const name = "AVARYN Consumer App";
+  static const id = "a-v-a-r-y-n-alpha-ynvyuq";
+  static const name = "AVARYN Alpha";
   static const sdkMetaVersion = 2;
 }

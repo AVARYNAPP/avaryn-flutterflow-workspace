@@ -11,6 +11,6 @@ files under `lib/flutterflow_project/` with a barrel at `lib/flutterflow_project
   files at `lib/flutterflow_project/components/<slug>.dart`. Edits to one page only
   rewrite that page's file.
 - Successful `flutterflow ai run` pushes refresh the typed SDK automatically.
-- Run `flutterflow ai refresh-context a-v-a-r-y-n-consumer-app-8yb89s` after remote changes made
+- Run `flutterflow ai refresh-context a-v-a-r-y-n-alpha-ynvyuq` after remote changes made
   outside this workspace.
 - Use `generated_code/` only for runtime, layout, build, and render debugging.

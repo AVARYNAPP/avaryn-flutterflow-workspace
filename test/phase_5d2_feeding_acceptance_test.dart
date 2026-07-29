@@ -61,7 +61,7 @@ void main() {
   test('feeding lifecycle exposes versions items overrides and activation', () {
     for (final operation in const [
       'create_feeding_plan_version',
-      'upsert_feeding_plan_item',
+      'upsert_feeding_plan_item_v2',
       'approve_feeding_plan_version',
       'activate_feeding_plan_version',
       'retire_feeding_plan',
@@ -130,9 +130,7 @@ void main() {
     expect(sql, contains('Non-matching standard slots were not preserved'));
     expect(
       sql,
-      contains(
-        'Assigned groom saw more or fewer than one total feeding task',
-      ),
+      contains('Assigned groom saw more or fewer than one total feeding task'),
     );
     expect(
       sql,
@@ -148,7 +146,10 @@ void main() {
   test('local runner is reset-guarded and repeats feeding races', () {
     expect(runner, contains("'--confirm-local-reset'"));
     expect(runner, contains("expected_label='avaryn-flutterflow-workspace'"));
-    expect(runner, contains('provisioner failure was not the allowed final 502'));
+    expect(
+      runner,
+      contains('provisioner failure was not the allowed final 502'),
+    );
     expect(runner, contains('unexpected status[[:space:]]+502'));
     expect(runner, contains('phase_5d2_feeding_alpha_acceptance.sql'));
     expect(

@@ -28,7 +28,7 @@ then
 else
   cat "$reset_log" >&2
   if ! grep -Eqi \
-    '502[[:space:]]+Bad Gateway|unexpected status[[:space:]]+502|status code[[:space:]]+502|received a[[:space:]]+502' \
+    '502[[:space:]]+Bad Gateway|unexpected status[[:space:]]+502|status code[[:space:]]+502|received a[[:space:]]+502|Error[[:space:]]+status[[:space:]]+502' \
     "$reset_log"; then
     echo 'Refusing recovery: provisioner failure was not the allowed final 502.' >&2
     exit 2
@@ -60,6 +60,11 @@ docker exec -i "$db_container" \
   psql -X -U postgres -d postgres -v ON_ERROR_STOP=1 \
   -v avaryn_local_test=1 -f /dev/stdin \
   < supabase/tests/phase_5d2_feeding_alpha_acceptance.sql
+
+docker exec -i "$db_container" \
+  psql -X -U postgres -d postgres -v ON_ERROR_STOP=1 \
+  -v avaryn_local_test=1 -f /dev/stdin \
+  < supabase/tests/phase_5_alpha_product_recovery.sql
 
 ruby supabase/tests/phase_4c4_feeding_concurrency.rb
 ruby supabase/tests/phase_4c4_feeding_concurrency.rb

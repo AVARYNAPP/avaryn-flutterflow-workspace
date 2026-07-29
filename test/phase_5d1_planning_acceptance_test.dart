@@ -14,7 +14,7 @@ void main() {
     migration =
         File(
           'supabase/migrations/'
-          '202607280003_phase_5d1_planning_atomic_flows.sql',
+          '202607290001_phase_5_alpha_product_recovery.sql',
         ).readAsStringSync();
     sql =
         File(
@@ -31,24 +31,25 @@ void main() {
     },
   );
 
-  test('logical stable-day navigation drives the authoritative Today RPC', () {
-    expect(runtime, contains('DateTime? _scheduleDate;'));
-    expect(runtime, contains("'p_local_date': selectedDate"));
-    expect(runtime, contains("tooltip: 'Vorige dag'"));
-    expect(runtime, contains("tooltip: 'Volgende dag'"));
-    expect(runtime, contains("child: const Text('Terug naar vandaag')"));
-    expect(
-      runtime,
-      isNot(
-        contains("params: {'p_stable_id': _stableId, 'p_local_date': today}"),
-      ),
-    );
-  });
+  test(
+    'day week and month navigation drive one authoritative calendar RPC',
+    () {
+      expect(runtime, contains('DateTime? _scheduleDate;'));
+      expect(runtime, contains("'p_from_local_date':"));
+      expect(runtime, contains("'p_through_local_date':"));
+      expect(runtime, contains("tooltip: 'Vorige periode'"));
+      expect(runtime, contains("tooltip: 'Volgende periode'"));
+      expect(runtime, contains("child: const Text('Terug naar vandaag')"));
+      expect(runtime, contains("value: 'day'"));
+      expect(runtime, contains("value: 'week'"));
+      expect(runtime, contains("value: 'month'"));
+    },
+  );
 
   test('recurring routines use one atomic durable server workflow', () {
     expect(
       runtime,
-      contains("operation: 'create_schedule_series_with_occurrences'"),
+      contains("operation: 'create_schedule_series_with_occurrences_v2'"),
     );
     expect(runtime, contains('_runDurableIdempotentRpc('));
     expect(runtime, contains("'p_frequency': replayValues['frequency']"));
@@ -61,7 +62,7 @@ void main() {
       migration,
       contains(
         'create or replace function public.'
-        'create_schedule_series_with_occurrences(',
+        'create_schedule_series_with_occurrences_v2(',
       ),
     );
     expect(migration, contains('public.materialize_schedule_occurrences('));
@@ -75,7 +76,7 @@ void main() {
     expect(runtime, contains("labelText: 'Verantwoordelijke'"));
     expect(
       runtime,
-      contains("operation: 'create_schedule_task_with_assignment'"),
+      contains("operation: 'create_schedule_task_with_assignment_v2'"),
     );
     expect(runtime, contains("'stable_member_id': memberId"));
     expect(runtime, contains("'assignment_request_id': _uuid.v4()"));
