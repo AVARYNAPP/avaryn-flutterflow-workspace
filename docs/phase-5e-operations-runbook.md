@@ -5,6 +5,14 @@
 Dit runbook geldt voor lokale tests en, pas na expliciete toestemming, voor
 een afzonderlijke stagingomgeving. Het bevat geen productieprocedure.
 
+De verwerkingsverantwoordelijke voor de concept-Alpha is:
+
+> **SDS Group B.V., handelend onder de handelsnaam AVARYN**
+> KvK 91614112
+> Nieuwe Rijksweg 2a, 4472 AB ’s-Heer Hendrikskinderen
+> Privacy- en securitycontact:
+> **[NOG IN TE VULLEN — NIET ACTIEF; GEEN E-MAILADRES GEPUBLICEERD]**
+
 Voor een echte testsessie moeten vooraf namen of rollen worden ingevuld voor:
 
 - testleider;
@@ -15,6 +23,41 @@ Voor een echte testsessie moeten vooraf namen of rollen worden ingevuld voor:
 
 Geen van deze rollen mag een service-role- of andere serversecret in een
 client, chat, ticket, screenshot of repository plaatsen.
+
+### Alpha-identiteit en domeinstatus
+
+| Onderdeel | Vastgelegde waarde |
+| --- | --- |
+| Primaire Alpha-URL | `https://alpha.avaryn.eu` |
+| Terugvaladres | `https://avaryn-alpha.flutterflow.app` |
+| FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` (`AVARYN Alpha`) |
+| Supabaseproject | `ipdovjdtnfslrftvrdrl` (`AVARYN Staging`, Central EU/Frankfurt) |
+| Registrar/DNS | Porkbun |
+| Custom-domainrecord | host `alpha`, type `A`, TTL 600, FlutterFlow-doelwaarde `34.136.28.237` |
+| Indexering | FlutterFlow “Allow Search Engine Indexing” uit; extern `noindex` bewezen |
+
+De koppeling is op 2026-07-29 zonder extra domeinslot, upgrade of nieuwe
+betaling uitgevoerd binnen het ene inbegrepen Basic-domeinslot. FlutterFlow
+meldde `Domain Connected` en publiceerde dezelfde Alpha-build naar beide
+Alpha-hostnamen. Het legacyproject en de legacypublicatie zijn niet gewijzigd.
+
+Externe nacontrole bewees:
+
+- HTTPS 200 en een geldig certificaat voor beide Alpha-hostnamen;
+- dezelfde HTML- en JavaScript-build op custom en fallback;
+- uitsluitend Supabase Staging en geen legacy-/productieprojectreferentie;
+- geen serversecret, service-rolemarker of onverwachte analyticsmarker;
+- login, sessieherstel, logout, lokale purge, routebescherming en herlogin;
+- permanente verwijdering van een zero-footprint `example.invalid`-account,
+  gevolgd door afwezige Auth-user en geweigerde herlogin;
+- bruikbare mobiele weergave op 390×844 en desktopweergave op 1280×720;
+- ongewijzigde DNSSEC-, nameserver- en e-mailgerelateerde recordsets; alleen
+  het expliciete `alpha`-record is toegevoegd.
+
+Het terugvaladres blijft verplicht actief totdat een afzonderlijke
+rollbackbeslissing is genomen. Verwijder of wijzig het custom domain nooit om
+een app- of databaseprobleem te herstellen; gebruik eerst het werkende
+terugvaladres en volg hoofdstuk 7.
 
 ## 2. Lokale provisioning en reset
 
@@ -43,7 +86,7 @@ toestemming een afzonderlijk, expliciet target en een dry-runreview.
 De besloten webalpha vereist in het afzonderlijke stagingproject:
 
 ```text
-AVARYN_INVITATION_URL=https://avaryn-alpha.flutterflow.app/uitnodiging
+AVARYN_INVITATION_URL=https://alpha.avaryn.eu/uitnodiging
 ```
 
 Deze waarde is geen credential, maar wordt als server-side
@@ -52,6 +95,21 @@ legacyproject of een productiehost verwijzen. De uitnodigingsfunctie voegt het
 ruwe token uitsluitend als URL-fragment toe. De client promoveert dit eerst via
 een anonieme serverpreview naar een niet-geheime invitation-ID en wist daarna
 het fragment uit de adresbalk; alleen die ID mag de login-handoff overleven.
+
+De Supabase Auth Site URL is `https://alpha.avaryn.eu`. Toegestane
+redirect-URL's zijn exact:
+
+```text
+https://alpha.avaryn.eu/auth/callback
+https://alpha.avaryn.eu/auth/reset-password
+https://avaryn-alpha.flutterflow.app/auth/callback
+https://avaryn-alpha.flutterflow.app/auth/reset-password
+```
+
+De twee fallbackredirects blijven actief. Controleer vóór een echte
+testeruitnodiging afzonderlijk dat de server-side `AVARYN_INVITATION_URL`
+overeenkomt met de canonieke custom URL; deze domeintaak heeft geen uitnodiging
+gegenereerd en geen echte e-mail verstuurd.
 
 Alle Flutter web Edge Functions moeten in hun CORS-allowlist minimaal
 `authorization, x-client-info, apikey, content-type` toelaten. Anders slaagt de
