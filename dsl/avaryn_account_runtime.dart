@@ -192,6 +192,74 @@ String _phase4AAuthError(Object error) {
   return 'Er ging iets mis. Probeer het opnieuw.';
 }
 
+String _phase5AccountDeletionCode(Object error) {
+  if (error is! FunctionException) return '';
+  dynamic details = error.details;
+  if (details is String) {
+    try {
+      details = jsonDecode(details);
+    } catch (_) {
+      return '';
+    }
+  }
+  return details is Map ? _phase4ANullableString(details['code']) : '';
+}
+
+String _phase5AccountDeletionMessage(String code) {
+  return switch (code) {
+    'ACTIVE_STABLE_OWNER_REQUIRES_TRANSFER' =>
+      'Draag eerst het fictieve staleigenaarschap aantoonbaar over.',
+    'ACTIVE_MEMBERSHIPS_REQUIRE_RESOLUTION' =>
+      'Verlaat of laat eerst alle actieve fictieve stallen verwijderen.',
+    'ACCOUNT_HISTORY_REQUIRES_ADMIN_REVIEW' =>
+      'Dit account heeft bewaarde historie en vereist gecontroleerde '
+          'beheerdersverwerking.',
+    'APPLE_REVOCATION_NOT_CONFIGURED' =>
+      'Apple-intrekking is nog niet veilig ingericht; verwijderen blijft '
+          'geblokkeerd.',
+    'AVATAR_CLEANUP_REQUIRES_ADMIN_REVIEW' =>
+      'De profielfoto-opslag vereist gecontroleerde beheerdersverwerking.',
+    _ =>
+      'Veilige accountverwijdering kon niet worden bevestigd. '
+          'Er is niets als verwijderd gemeld.',
+  };
+}
+
+void _phase5ClearDeletedAccountState(String authUserId) {
+  final state = FFAppState();
+  state.update(() {
+    state.authProfileCaches =
+        state.authProfileCaches
+            .where((profile) => profile.id != authUserId)
+            .toList();
+    state.localAccountScopes =
+        state.localAccountScopes
+            .where((scope) => scope.authUserId != authUserId)
+            .toList();
+    state.phase4BAccountOperationalBackups =
+        state.phase4BAccountOperationalBackups
+            .where((scope) => scope.authUserId != authUserId)
+            .toList();
+    state.stableMembershipCaches =
+        state.stableMembershipCaches
+            .where((cache) => cache.authUserId != authUserId)
+            .toList();
+    state.localStableCloudLinks =
+        state.localStableCloudLinks
+            .where((link) => link.authUserId != authUserId)
+            .toList();
+    state.activeAuthAccountId = '';
+    state.currentAuthProfile = AuthProfileDataStruct();
+    state.selectedCloudStableId = '';
+    state.pendingStableInvitationToken = '';
+    state.pendingStableInvitationId = '';
+    state.pendingStableCreateRequestId = '';
+    state.pendingStableCreatePayloadKey = '';
+    state.stableAccessStatus = 'signed_out';
+  });
+  _phase4AClearWorkingSet();
+}
+
 AuthProfileDataStruct _phase4AProfileFromMap(Map<String, dynamic> data) {
   return AuthProfileDataStruct(
     id: _phase4ANullableString(data['id']),
@@ -682,6 +750,43 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
 
   User? get _user => _client.auth.currentUser;
 
+  bool _phase5IsTerminalSessionError(AuthException error) {
+    final status = error.statusCode ?? '';
+    if (status == '401' || status == '403' || status == '404') return true;
+    final code = (error.code ?? '').toLowerCase();
+    final message = error.message.toLowerCase();
+    return code == 'user_not_found' ||
+        code == 'bad_jwt' ||
+        message.contains('user from sub claim') ||
+        message.contains('user does not exist') ||
+        message.contains('invalid jwt');
+  }
+
+  Future<User?> _phase5ValidatedCurrentUser() async {
+    final session = _client.auth.currentSession;
+    if (session == null) return null;
+    try {
+      final response = await _client.auth.getUser(session.accessToken);
+      return response.user;
+    } on AuthException catch (error) {
+      if (!_phase5IsTerminalSessionError(error)) {
+        // A retryable transport or server outage may use the authenticated
+        // offline cache; an explicit 401/403/404 never may.
+        return session.user;
+      }
+      await _phase4APurgeOperationalSecureState(session.user.id);
+      _phase5ClearDeletedAccountState(session.user.id);
+      // The server has already rejected or removed this identity. Clear the
+      // persisted client session without depending on a second server call.
+      await _client.auth.signOut(scope: SignOutScope.local);
+      return null;
+    } catch (_) {
+      // Preserve the documented offline profile path only when the server
+      // could not make an authoritative statement about the session.
+      return session.user;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -869,21 +974,26 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
         context.goNamed('AuthWelcomePage');
         return;
       }
-      final emailProvider =
-          (session.user.appMetadata['provider'] ?? '') == 'email';
-      if (session.user.emailConfirmedAt == null && emailProvider) {
-        FFAppState().authPendingEmail = session.user.email ?? '';
+      final user = await _phase5ValidatedCurrentUser();
+      if (user == null) {
+        if (!mounted) return;
+        context.goNamed('AuthWelcomePage');
+        return;
+      }
+      final emailProvider = (user.appMetadata['provider'] ?? '') == 'email';
+      if (user.emailConfirmedAt == null && emailProvider) {
+        FFAppState().authPendingEmail = user.email ?? '';
         if (!mounted) return;
         context.goNamed('AuthVerifyEmailPage');
         return;
       }
-      final profile = await _loadOrCreateProfile(session.user);
+      final profile = await _loadOrCreateProfile(user);
       final previousAuthId = FFAppState().activeAuthAccountId.trim();
-      if (previousAuthId.isNotEmpty && previousAuthId != session.user.id) {
+      if (previousAuthId.isNotEmpty && previousAuthId != user.id) {
         await _phase4APurgeOperationalSecureState(previousAuthId);
       }
-      _phase4AActivateScope(session.user.id);
-      await _hydrateSelectedStableFromServer(session.user);
+      _phase4AActivateScope(user.id);
+      await _hydrateSelectedStableFromServer(user);
       _applyTheme(profile.themeMode);
       if (!mounted) return;
       setState(() {
@@ -892,7 +1002,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
         // Alpha data source or onboarding decision.
         _legacyPrompt = false;
       });
-      _continueAfterProfile(profile, session.user);
+      _continueAfterProfile(profile, user);
     } catch (error) {
       _setError(_phase4AAuthError(error));
     } finally {
@@ -967,7 +1077,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
   Future<void> _bootstrapProfileScreen() async {
     _setBusy(true);
     try {
-      final user = _user;
+      final user = await _phase5ValidatedCurrentUser();
       if (user == null) {
         if (!mounted) return;
         context.goNamed('AuthWelcomePage');
@@ -1462,6 +1572,74 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       context.goNamed('AuthWelcomePage');
     } catch (error) {
       _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    if (_busy) return;
+    final user = _user;
+    if (user == null) {
+      _setError('Meld je opnieuw aan voordat je het account verwijdert.');
+      return;
+    }
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: const Text('Account permanent verwijderen?'),
+            content: const Text(
+              'Dit verwijdert uitsluitend een account zonder stal-, team- of '
+              'bewaarde historie. Actieve rollen, historie en Apple-accounts '
+              'blijven fail-closed geblokkeerd. Deze actie kan niet ongedaan '
+              'worden gemaakt.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Annuleren'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: const Text('Permanent verwijderen'),
+              ),
+            ],
+          ),
+    );
+    if (confirmed != true || _busy) return;
+    _setBusy(true);
+    try {
+      final authUserId = user.id;
+      final response = await _client.functions.invoke(
+        'delete-account',
+        headers: const <String, String>{'Content-Type': 'application/json'},
+        // functions_client 2.4.2 encodes non-string bodies through a web
+        // isolate. Sending the already-valid empty JSON object avoids that
+        // transport-only failure without changing server authorization.
+        body: '{}',
+      );
+      final data =
+          response.data is Map
+              ? Map<String, dynamic>.from(response.data as Map)
+              : const <String, dynamic>{};
+      final code = _phase4ANullableString(data['code']);
+      if (response.status != 200 || code != 'ACCOUNT_DELETED') {
+        throw FunctionException(status: response.status, details: data);
+      }
+      await _phase4APurgeOperationalSecureState(authUserId);
+      _phase5ClearDeletedAccountState(authUserId);
+      // Admin deletion revokes the server identity and refresh tokens. The
+      // client only needs to remove its now-invalid persisted session.
+      await _client.auth.signOut(scope: SignOutScope.local);
+      if (!mounted) return;
+      context.goNamed('AuthWelcomePage');
+    } on FunctionException catch (error) {
+      _setError(
+        _phase5AccountDeletionMessage(_phase5AccountDeletionCode(error)),
+      );
+    } catch (_) {
+      _setError(_phase5AccountDeletionMessage(''));
     } finally {
       _setBusy(false);
     }
@@ -2446,7 +2624,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       ),
       const SizedBox(height: 12),
       DropdownButtonFormField<String>(
-        initialValue: {'nl', 'en'}.contains(_locale) ? _locale : 'nl',
+        value: {'nl', 'en'}.contains(_locale) ? _locale : 'nl',
         decoration: _fieldDecoration(theme, 'Taal'),
         items: const [
           DropdownMenuItem(value: 'nl', child: Text('Nederlands')),
@@ -2673,7 +2851,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              initialValue: {'nl', 'en'}.contains(_locale) ? _locale : 'nl',
+              value: {'nl', 'en'}.contains(_locale) ? _locale : 'nl',
               decoration: _fieldDecoration(theme, 'Taalvoorkeur'),
               items: const [
                 DropdownMenuItem(value: 'nl', child: Text('Nederlands')),
@@ -2686,7 +2864,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              initialValue:
+              value:
                   {'system', 'light', 'dark'}.contains(_themeMode)
                       ? _themeMode
                       : 'system',
@@ -2810,13 +2988,15 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
             _secondaryButton(theme, 'Uitloggen', _logout, icon: Icons.logout),
             const SizedBox(height: 12),
             OutlinedButton.icon(
-              onPressed: null,
+              onPressed: _busy ? null : _deleteAccount,
               icon: const Icon(Icons.delete_forever_outlined),
-              label: const Text('Account verwijderen — nog niet beschikbaar'),
+              label: const Text('Account permanent verwijderen'),
             ),
             const SizedBox(height: 6),
             Text(
-              'De beveiligde serverfunctie is voorbereid maar niet uitgerold. Apple-intrekking en providerconfiguratie moeten eerst aantoonbaar werken; er wordt geen fictieve verwijdering gemeld.',
+              'Zelfbediening is uitsluitend beschikbaar voor een account '
+              'zonder stal-, team- of bewaarde historie. Actieve rollen, '
+              'historie en Apple-intrekking blijven veilig geblokkeerd.',
               style: theme.bodySmall.copyWith(color: theme.secondaryText),
             ),
           ]),

@@ -44,7 +44,8 @@ void main() {
 
   test('operations are local-first and fail closed on security incidents', () {
     for (final required in [
-      'SAFE_ACCOUNT_DELETION_NOT_AVAILABLE',
+      'ACCOUNT_DELETED',
+      'ACCOUNT_HISTORY_REQUIRES_ADMIN_REVIEW',
       'Auth-UUID',
       'authorityrotatie',
       'service-role',

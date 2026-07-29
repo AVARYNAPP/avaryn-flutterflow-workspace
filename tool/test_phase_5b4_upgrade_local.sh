@@ -14,7 +14,7 @@ docker exec -i "$db_container" \
   psql -X -U postgres -d postgres -v ON_ERROR_STOP=1 \
   -f /dev/stdin < supabase/tests/phase_5b4_upgrade_fixture.sql
 
-.flutterflow/sdk/bin/supabase migration up --local
+.flutterflow/sdk/bin/supabase migration up --local --include-all
 
 docker exec -i "$db_container" \
   psql -X -U postgres -d postgres -v ON_ERROR_STOP=1 \

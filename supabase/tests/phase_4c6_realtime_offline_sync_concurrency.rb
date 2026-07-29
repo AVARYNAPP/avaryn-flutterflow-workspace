@@ -115,6 +115,72 @@ ensure
   end
 end
 
+def ordered_cursor_race(psql, first_statement, second_statement)
+  hold_key = SecureRandom.random_number(2_000_000_000) + 1
+  tag = SecureRandom.hex(8)
+  hold_in, hold_out, hold_err, hold_wait = Open3.popen3(*psql)
+  hold_out_reader = Thread.new { hold_out.read }
+  hold_err_reader = Thread.new { hold_err.read }
+  hold_in.write("select pg_advisory_lock(#{hold_key});\n")
+  hold_in.flush
+  acquisition_deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 8
+  loop do
+    break if sql!(
+      psql,
+      "select pg_try_advisory_lock(#{hold_key});",
+    ).strip == 'f'
+    raise 'Cursor coordinator barrier was not acquired' if
+      Process.clock_gettime(Process::CLOCK_MONOTONIC) >= acquisition_deadline
+
+    sleep 0.01
+  end
+
+  first_thread = Thread.new do
+    sql_result(
+      psql,
+      <<~SQL,
+        begin;
+        set local application_name = 'ffai-4c6-#{tag}-cursor-first';
+        #{first_statement}
+        select pg_advisory_lock_shared(#{hold_key});
+        select pg_advisory_unlock_shared(#{hold_key});
+        commit;
+      SQL
+    )
+  end
+  # The first transaction has inserted its event and now holds the stable
+  # authority row lock while waiting at the coordinator barrier.
+  wait_for_barrier(psql, hold_key, tag, 1)
+
+  second_thread = Thread.new do
+    sql_result(
+      psql,
+      <<~SQL,
+        begin;
+        set local application_name = 'ffai-4c6-#{tag}-cursor-second';
+        #{second_statement}
+        commit;
+      SQL
+    )
+  end
+  # The second transaction must be blocked on the same authority row before
+  # the first commit is released. This proves ordering without scheduler sleeps.
+  wait_for_barrier(psql, hold_key, tag, 2)
+
+  hold_in.write("select pg_advisory_unlock(#{hold_key});\n\\q\n")
+  hold_in.close
+  Timeout.timeout(20) { hold_wait.value }
+  hold_out_reader.value
+  hold_err_reader.value
+  Timeout.timeout(20) { [first_thread.value, second_thread.value] }
+ensure
+  hold_in&.close unless hold_in&.closed?
+  if hold_wait&.alive?
+    Process.kill('TERM', hold_wait.pid)
+    hold_wait.value
+  end
+end
+
 execution_first = 0
 revoke_first = 0
 cursor_ordered = 0
@@ -601,46 +667,31 @@ iterations.times do |iteration|
   first_source_event = SecureRandom.random_number(1_000_000_000) +
                        3_000_000_000
   second_source_event = first_source_event + 1
-  cursor_participants = [
-    {
-      name: 'cursor-first',
-      superuser: true,
-      delay: 0.0,
-      statement: <<~SQL.strip,
-        with inserted as (
-          insert into public.stable_change_events (
-            stable_id, horse_id, entity_type, entity_id, change_kind,
-            data_category, row_version, source_stream, source_event_id
-          )
-          values (
-            '#{ids[:stable]}', '#{ids[:horse]}', 'horse',
-            '#{ids[:horse]}', 'cursor_first', 'horse.basic', 1,
-            'legacy_import', #{first_source_event}
-          )
-          returning sequence_id
-        )
-        select pg_sleep(0.05) from inserted;
-      SQL
-    },
-    {
-      name: 'cursor-second',
-      superuser: true,
-      delay: 0.01,
-      statement: <<~SQL.strip,
-        insert into public.stable_change_events (
-          stable_id, horse_id, entity_type, entity_id, change_kind,
-          data_category, row_version, source_stream, source_event_id
-        )
-        values (
-          '#{ids[:stable]}', '#{ids[:horse]}', 'horse',
-          '#{ids[:horse]}', 'cursor_second', 'horse.basic', 1,
-          'legacy_import', #{second_source_event}
-        );
-      SQL
-    },
-  ]
-  first_cursor_result, second_cursor_result =
-    race(psql, cursor_participants)
+  first_cursor_result, second_cursor_result = ordered_cursor_race(
+    psql,
+    <<~SQL.strip,
+      insert into public.stable_change_events (
+        stable_id, horse_id, entity_type, entity_id, change_kind,
+        data_category, row_version, source_stream, source_event_id
+      )
+      values (
+        '#{ids[:stable]}', '#{ids[:horse]}', 'horse',
+        '#{ids[:horse]}', 'cursor_first', 'horse.basic', 1,
+        'legacy_import', #{first_source_event}
+      );
+    SQL
+    <<~SQL.strip,
+      insert into public.stable_change_events (
+        stable_id, horse_id, entity_type, entity_id, change_kind,
+        data_category, row_version, source_stream, source_event_id
+      )
+      values (
+        '#{ids[:stable]}', '#{ids[:horse]}', 'horse',
+        '#{ids[:horse]}', 'cursor_second', 'horse.basic', 1,
+        'legacy_import', #{second_source_event}
+      );
+    SQL
+  )
   raise "First cursor participant failed: #{first_cursor_result[1]}" unless
     first_cursor_result[2]
   raise "Second cursor participant failed: #{second_cursor_result[1]}" unless

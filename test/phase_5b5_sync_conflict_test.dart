@@ -117,7 +117,7 @@ void main() {
 
   test('sensitive conflict state is dismissed before every purge', () {
     expect(runtime, contains('Route<dynamic>? _sensitiveConflictDialogRoute;'));
-    expect(runtime, contains(').removeRoute<dynamic>(conflictRoute, false)'));
+    expect(runtime, contains(').removeRoute(conflictRoute)'));
     expect(
       runtime,
       contains('sensitiveStateGeneration != _sensitiveStateGeneration'),

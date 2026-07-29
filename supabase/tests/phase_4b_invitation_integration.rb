@@ -146,15 +146,17 @@ existing_email = "phase4b-existing-#{suffix}@example.test"
 new_email = "phase4b-new-#{suffix}@example.test"
 wrong_email = "phase4b-wrong-#{suffix}@example.test"
 second_owner_email = "phase4b-owner2-#{suffix}@example.test"
+deletion_email = "phase4b-delete-#{suffix}@example.test"
 
-[owner_email, existing_email, wrong_email, second_owner_email].each do |email|
+[owner_email, existing_email, wrong_email, second_owner_email, deletion_email].each do |email|
   register_and_confirm(api_url, mailpit_url, api_key, email, password)
 end
 owner_session = session(api_url, api_key, owner_email, password)
 existing_session = session(api_url, api_key, existing_email, password)
 wrong_session = session(api_url, api_key, wrong_email, password)
 second_owner_session = session(api_url, api_key, second_owner_email, password)
-pass('four isolated local test accounts registered and confirmed')
+deletion_session = session(api_url, api_key, deletion_email, password)
+pass('five isolated local test accounts registered and confirmed')
 
 owner_headers = auth_headers(api_key, owner_session)
 create = rpc(
@@ -763,15 +765,28 @@ member_delete = request(
 unaffiliated_delete = request(
   :post,
   delete_function_url,
-  headers: auth_headers(api_key, wrong_session),
+  headers: auth_headers(api_key, deletion_session),
   json: {},
 )
 assert!(owner_delete.code.to_i == 409, 'Active owner deletion was not blocked')
 assert!(member_delete.code.to_i == 409, 'Active member deletion was not blocked')
 assert!(
-  unaffiliated_delete.code.to_i == 503,
-  'Incomplete full account deletion did not fail closed',
+  unaffiliated_delete.code.to_i == 200,
+  'Zero-footprint account was not deleted',
 )
-pass('account deletion fails closed for owner, active member and incomplete deletion')
+assert!(
+  json_body(unaffiliated_delete)['code'] == 'ACCOUNT_DELETED',
+  'Account deletion returned an unexpected success contract',
+)
+deleted_user = request(
+  :get,
+  "#{api_url}/auth/v1/admin/users/#{deletion_session.fetch('user').fetch('id')}",
+  headers: service_headers,
+)
+assert!(
+  deleted_user.code.to_i == 404,
+  'Deleted zero-footprint Auth account is still present',
+)
+pass('account deletion blocks active roles and removes a zero-footprint account')
 
-puts 'SUMMARY: 27 Phase 4B invitation integration assertions passed'
+puts 'SUMMARY: 28 Phase 4B invitation integration assertions passed'

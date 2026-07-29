@@ -160,11 +160,15 @@ void main() {
       contains('_phase4APurgeOperationalSecureState(authId)'),
     );
     expect(accountSource, contains('phase4C7SecureKeysForAccount('));
+    final logoutStart = accountSource.indexOf('Future<void> _logout()');
+    final logoutEnd = accountSource.indexOf(
+      'Future<void> _deleteAccount()',
+      logoutStart,
+    );
+    final logoutSource = accountSource.substring(logoutStart, logoutEnd);
     expect(
-      accountSource.indexOf(
-        'await _phase4APurgeOperationalSecureState(authId)',
-      ),
-      lessThan(accountSource.indexOf('await _client.auth.signOut();')),
+      logoutSource.indexOf('await _phase4APurgeOperationalSecureState(authId)'),
+      lessThan(logoutSource.indexOf('await _client.auth.signOut();')),
     );
 
     final scheduleExecutionStart = source.indexOf(

@@ -38,7 +38,27 @@ exacte containerlabel bewijzen. Stop bij iedere afwijking. Gebruik deze
 commando's nooit tegen staging of productie; externe provisioning krijgt na
 toestemming een afzonderlijk, expliciet target en een dry-runreview.
 
-## 3. Bekende beperkingen
+## 3. Staging Edge Function-configuratie
+
+De besloten webalpha vereist in het afzonderlijke stagingproject:
+
+```text
+AVARYN_INVITATION_URL=https://avaryn-alpha.flutterflow.app/uitnodiging
+```
+
+Deze waarde is geen credential, maar wordt als server-side
+Edge Function-omgevingswaarde beheerd. Zij mag nooit naar localhost, het
+legacyproject of een productiehost verwijzen. De uitnodigingsfunctie voegt het
+ruwe token uitsluitend als URL-fragment toe. De client promoveert dit eerst via
+een anonieme serverpreview naar een niet-geheime invitation-ID en wist daarna
+het fragment uit de adresbalk; alleen die ID mag de login-handoff overleven.
+
+Alle Flutter web Edge Functions moeten in hun CORS-allowlist minimaal
+`authorization, x-client-info, apikey, content-type` toelaten. Anders slaagt de
+preflight wel, maar blokkeert de browser de daadwerkelijke geauthenticeerde
+`POST`.
+
+## 4. Bekende beperkingen
 
 | ID | Beperking | Gevolg en beleid |
 | --- | --- | --- |
@@ -46,7 +66,7 @@ toestemming een afzonderlijk, expliciet target en een dry-runreview.
 | KL-02 | Native/desktop-offline is bron-, SQL- en concurrencygetest maar niet als formele native E2E | geen offlineclaim voor webtesters |
 | KL-03 | FlutterFlow meldt vier nullable activity-draftwaarschuwingen | waarden zijn bewust leegbaar; cold-start/deeplink blijft staging-smokecriterium |
 | KL-04 | Gegenereerde Fluttercode bevat bestaande lintwaarschuwingen | nul compile-errors vereist; generated code blijft read-only |
-| KL-05 | `delete-account` faalt bewust met `SAFE_ACCOUNT_DELETION_NOT_AVAILABLE` | geen zelfbedieningsverwijdering; handmatige gecontroleerde verwijdering vereist |
+| KL-05 | `delete-account` verwijdert uitsluitend een zero-footprint account zonder Apple-identiteit, membership of historie | actieve rollen en historische referenties blijven fail-closed met `ACCOUNT_HISTORY_REQUIRES_ADMIN_REVIEW`; bredere verwijdering vereist een juridisch retentie- en beheerdersproces |
 | KL-06 | Apple accountrevocation is niet geconfigureerd | Apple-login en accountverwijdering niet inschakelen |
 | KL-07 | Juridische voorwaarden en privacytekst zijn niet repositorymatig goedgekeurd | geen echte testers vóór juridische goedkeuring |
 | KL-08 | Notificatie/reminderbackend bestaat niet binnen het contract | niet beloven of testen als Alpha-feature |
@@ -55,7 +75,7 @@ toestemming een afzonderlijk, expliciet target en een dry-runreview.
 Geen bekende beperking mag worden gebruikt om RLS, autorisatie, purge,
 idempotentie of tenantisolatie af te zwakken.
 
-## 4. Incidentclassificatie
+## 5. Incidentclassificatie
 
 | Niveau | Voorbeeld | Eerste actie |
 | --- | --- | --- |
@@ -66,7 +86,7 @@ idempotentie of tenantisolatie af te zwakken.
 
 Een mogelijk security- of privacyincident is nooit alleen een P3.
 
-## 5. Incidentprocedure
+## 6. Incidentprocedure
 
 1. Stop de test en noteer UTC-tijd, omgeving, releasecommit en actorlabel.
 2. Deel geen ruwe tokens, headers, signed URLs, private media of echte data.
@@ -86,7 +106,7 @@ Een mogelijk security- of privacyincident is nooit alleen een P3.
 
 Gebruik `docs/templates/phase-5-alpha-incident-record.md`.
 
-## 6. Herstelvolgorde
+## 7. Herstelvolgorde
 
 Bij een appregressie:
 
@@ -110,11 +130,14 @@ Bij een database- of migratieprobleem:
 Securitymigraties worden niet teruggedraaid naar een bekend onveilig beleid om
 beschikbaarheid te herstellen.
 
-## 7. Testaccount- en gegevensverwijdering
+## 8. Testaccount- en gegevensverwijdering
 
-Zelfbedieningsverwijdering is nog niet beschikbaar. De Edge Function weigert
-bewust zolang volledige server-side verwijdering en Apple-revocation niet zijn
-bewezen.
+De Edge Function ondersteunt een harde zelfbedieningsverwijdering uitsluitend
+voor een zero-footprint account zonder Apple-identiteit, actieve of historische
+membership en zonder meer dan 999 avatarobjecten. Zij verwijdert eerst
+avatarobjecten via de server-only Storage-client en daarna de Auth-UUID. Actieve
+owners/members en iedere historische membership blijven fail-closed. Apple-
+revocation is niet geconfigureerd.
 
 Voor een goedgekeurd stagingtestaccount:
 
@@ -126,7 +149,9 @@ Voor een goedgekeurd stagingtestaccount:
 5. archiveer of verwijder private testmedia volgens de goedgekeurde
    retentie-instructie;
 6. verwijder het Auth-account uitsluitend met server-side
-   beheerdersbevoegdheid in de exacte stagingomgeving;
+   beheerdersbevoegdheid in de exacte stagingomgeving en pas nadat het
+   goedgekeurde retentie-/pseudonimiseringsbesluit alle niet-null audit-FK's
+   afdekt;
 7. controleer dat geen actieve membership, grant, device of Storage-object
    bereikbaar blijft;
 8. leg alleen Auth-UUID, tijd, uitvoerder en resultaat vast; geen secret of
@@ -136,10 +161,12 @@ Audit- en securityevents kunnen wettelijke of beveiligingsretentie hebben en
 worden niet automatisch gewist. De exacte bewaartermijn en omgang met
 backups vereisen vóór echte testers juridische/privacygoedkeuring.
 
-Lokale fictieve accounts worden alleen verwijderd door de expliciete lokale
-resettools. Productieaccounts vallen buiten dit runbook.
+De lokale integratiesuite bewijst daarnaast dat een volledig ongebruikt
+fictief account na `ACCOUNT_DELETED` niet meer via de Auth Admin API bestaat.
+Lokale fixtureaccounts met historie worden verder alleen verwijderd door de
+expliciete lokale resettools. Productieaccounts vallen buiten dit runbook.
 
-## 8. Feedback en bugmeldingen
+## 9. Feedback en bugmeldingen
 
 Gebruik uitsluitend:
 
@@ -152,7 +179,7 @@ analytics-, crashreporting-, tracking- of externe feedback-SDK toe. Screenshots
 worden vooraf gecontroleerd op persoonsgegevens, tokens, browserstorage,
 signed URLs en private media.
 
-## 9. Juridische en privacyvoorwaarden vóór echte testers
+## 10. Juridische en privacyvoorwaarden vóór echte testers
 
 De volgende onderdelen zijn deploymentvoorwaarden en geen door Codex
 ingevulde juridische garanties:

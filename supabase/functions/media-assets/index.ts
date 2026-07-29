@@ -7,7 +7,8 @@ import decodeWebp, {
 } from 'npm:@jsquash/webp@1.5.0/decode.js'
 
 const responseHeaders = {
-  'Access-Control-Allow-Headers': 'authorization, apikey, content-type',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',

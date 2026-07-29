@@ -5715,6 +5715,7 @@ void buildAvarynPhase5D1(App app) {
 void buildAvarynPhase5D2(App app) {
   _configureAvarynTheme(app, existingProject: true);
   _applyPhase4C7OperationalRuntimeResource(app);
+  _configurePhase5InvitationBootstrap(app);
   app.raw((project) {
     updatePage(
       project,
@@ -5728,6 +5729,88 @@ void buildAvarynPhase5D2(App app) {
       description:
           'Assigned feeding execution with exact units, durable retries, private evidence and append-only correction history.',
     );
+  });
+}
+
+const String _phase5InvitationBootstrapHeader = r'''
+<script data-avaryn-invite-bootstrap="phase5-v1">
+(function () {
+  var fragment = window.location.hash || '';
+  var fragmentQuery =
+      fragment.charAt(0) === '#' ? fragment.substring(1) : fragment;
+  var rawToken = new URLSearchParams(fragmentQuery).get('token');
+  if (!rawToken) return;
+
+  document.documentElement.style.visibility = 'hidden';
+  window.history.replaceState(
+    null,
+    '',
+    window.location.pathname + window.location.search
+  );
+
+  var unavailable = function () {
+    window.location.replace('/uitnodiging?invitation_status=unavailable');
+  };
+  if (rawToken.length < 40 || rawToken.length > 128) {
+    unavailable();
+    return;
+  }
+
+  fetch(
+    'https://ipdovjdtnfslrftvrdrl.supabase.co/functions/v1/stable-invitations',
+    {
+      method: 'POST',
+      credentials: 'omit',
+      cache: 'no-store',
+      referrerPolicy: 'no-referrer',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({action: 'preview', token: rawToken})
+    }
+  )
+    .then(function (response) {
+      if (!response.ok) throw new Error('preview unavailable');
+      return response.json();
+    })
+    .then(function (preview) {
+      var invitationId =
+          typeof preview.invitation_id === 'string'
+              ? preview.invitation_id
+              : '';
+      var validInvitationId =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+              .test(invitationId);
+      if (preview.status !== 'pending' || !validInvitationId) {
+        throw new Error('invitation unavailable');
+      }
+      window.location.replace(
+        '/uitnodiging?invitation_id=' + encodeURIComponent(invitationId)
+      );
+    })
+    .catch(unavailable);
+})();
+</script>
+''';
+
+void _configurePhase5InvitationBootstrap(App app) {
+  app.raw((project) {
+    final allWebSettings =
+        project.ensureAppSettings().ensureAllWebSettings().webSettings;
+    if (allWebSettings.isEmpty) {
+      throw StateError(
+        'Expected at least one environment-scoped web setting.',
+      );
+    }
+    for (final settings in allWebSettings.values) {
+      settings.allowSearchEngineIndexing = false;
+      if (!settings.customHeaders.contains(
+        'data-avaryn-invite-bootstrap="phase5-v1"',
+      )) {
+        settings.customHeaders = [
+          settings.customHeaders.trim(),
+          _phase5InvitationBootstrapHeader.trim(),
+        ].where((value) => value.isNotEmpty).join('\n');
+      }
+    }
   });
 }
 

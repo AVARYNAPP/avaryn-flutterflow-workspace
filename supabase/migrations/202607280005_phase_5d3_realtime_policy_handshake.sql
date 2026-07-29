@@ -89,7 +89,19 @@ using (
   private.can_join_realtime_topic(realtime.topic())
 );
 
-comment on policy realtime_messages_private_read on realtime.messages is
-  'Private channel joins are authorized by opaque topic, active membership, '
-  'current authority version, and current Horse capability. Realtime join '
-  'probes do not expose message extension/private columns as stored rows.';
+-- Hosted Supabase owns realtime.messages as supabase_realtime_admin. The
+-- project postgres role may alter its policies but cannot always attach policy
+-- comments. Keep this non-security metadata best-effort so a fresh hosted
+-- deployment does not roll back the authorization fix.
+do $$
+begin
+  comment on policy realtime_messages_private_read on realtime.messages is
+    'Private channel joins are authorized by opaque topic, active membership, '
+    'current authority version, and current Horse capability. Realtime join '
+    'probes do not expose message extension/private columns as stored rows.';
+exception
+  when insufficient_privilege then
+    raise notice
+      'Skipping realtime policy comment: hosted owner retains metadata control';
+end;
+$$;

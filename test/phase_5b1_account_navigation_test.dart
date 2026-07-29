@@ -66,6 +66,106 @@ void main() {
     expect(runtime, isNot(contains('_passwordRecoveryAuthorized')));
   });
 
+  test('account deletion is server-authoritative and purges local scope', () {
+    final runtime = File('dsl/avaryn_account_runtime.dart').readAsStringSync();
+    final edgeFunction =
+        File('supabase/functions/delete-account/index.ts').readAsStringSync();
+    final mediaEdgeFunction =
+        File('supabase/functions/media-assets/index.ts').readAsStringSync();
+    final invitationEdgeFunction =
+        File('supabase/functions/stable-invitations/index.ts')
+            .readAsStringSync();
+
+    expect(runtime, contains("functions.invoke(\n        'delete-account'"));
+    expect(runtime, contains("'Content-Type': 'application/json'"));
+    expect(runtime, contains("body: '{}'"));
+    expect(runtime, contains("code != 'ACCOUNT_DELETED'"));
+    expect(runtime, contains('_phase5AccountDeletionCode(error)'));
+    expect(runtime, contains('ACTIVE_STABLE_OWNER_REQUIRES_TRANSFER'));
+    expect(runtime, contains('ACTIVE_MEMBERSHIPS_REQUIRE_RESOLUTION'));
+    expect(runtime, contains('ACCOUNT_HISTORY_REQUIRES_ADMIN_REVIEW'));
+    expect(runtime, contains('APPLE_REVOCATION_NOT_CONFIGURED'));
+    expect(
+      runtime,
+      contains('_phase4APurgeOperationalSecureState(authUserId)'),
+    );
+    expect(runtime, contains('_phase5ClearDeletedAccountState(authUserId)'));
+    expect(runtime, contains('scope.authUserId != authUserId'));
+    expect(runtime, contains('cache.authUserId != authUserId'));
+    expect(runtime, contains('link.authUserId != authUserId'));
+    expect(
+      runtime,
+      contains('await _client.auth.signOut(scope: SignOutScope.local)'),
+    );
+    expect(runtime, contains('onPressed: _busy ? null : _deleteAccount'));
+    expect(runtime, contains('Account permanent verwijderen'));
+    expect(
+      runtime,
+      isNot(contains('Account verwijderen — nog niet beschikbaar')),
+    );
+    expect(
+      edgeFunction,
+      contains('authorization, x-client-info, apikey, content-type'),
+      reason:
+          'Flutter web sends x-client-info during the CORS preflight; the '
+          'browser must be allowed to continue with the authenticated POST.',
+    );
+    expect(
+      edgeFunction,
+      contains(
+        "await serviceClient\n"
+        "    .from('stable_memberships')\n"
+        "    .select('id,role,status')",
+      ),
+      reason:
+          'Historical memberships hidden by caller RLS must block deletion '
+          'before any avatar cleanup starts.',
+    );
+    expect(
+      edgeFunction.indexOf("await serviceClient\n    .from('stable_memberships')"),
+      lessThan(edgeFunction.indexOf("serviceClient.storage.from('avatars')")),
+    );
+    for (final source in [mediaEdgeFunction, invitationEdgeFunction]) {
+      expect(
+        source,
+        contains('authorization, x-client-info, apikey, content-type'),
+        reason:
+            'Every Flutter web Edge Function preflight must allow the '
+            'Supabase client metadata header.',
+      );
+    }
+  });
+
+  test('revoked sessions purge every local scope before offline fallback', () {
+    final runtime = File('dsl/avaryn_account_runtime.dart').readAsStringSync();
+
+    expect(runtime, contains('_phase5ValidatedCurrentUser()'));
+    expect(
+      runtime,
+      contains('await _client.auth.getUser(session.accessToken)'),
+    );
+    expect(runtime, contains("_phase5IsTerminalSessionError(error)"));
+    expect(runtime, contains("status == '401'"));
+    expect(runtime, contains("status == '403'"));
+    expect(runtime, contains("status == '404'"));
+    expect(
+      runtime,
+      contains('await _phase4APurgeOperationalSecureState(session.user.id)'),
+    );
+    expect(
+      runtime,
+      contains('_phase5ClearDeletedAccountState(session.user.id)'),
+    );
+    expect(
+      runtime,
+      contains('await _client.auth.signOut(scope: SignOutScope.local)'),
+    );
+    expect(
+      runtime,
+      contains('final user = await _phase5ValidatedCurrentUser()'),
+    );
+  });
+
   test('avatar extension cannot spoof the image signature', () {
     expect(
       phase5ImageSignatureMatches(const [0xFF, 0xD8, 0xFF, 0x00], 'image/jpeg'),
@@ -137,9 +237,78 @@ void main() {
     expect(stable, contains('pendingStableInvitationToken.trim()'));
     expect(stable, contains("'action': 'resume'"));
     expect(stable, contains("'invitation_id': _transientInvitationId"));
-    expect(stable, contains('_phase5StripInvitationTokenFromLocation()'));
-    expect(stable, contains('SystemNavigator.routeInformationUpdated('));
-    expect(stable, contains('replace: true'));
+    expect(
+      stable,
+      contains('void _phase5StripInvitationTokenFromLocation('),
+    );
+    expect(stable, contains('BuildContext context,'));
+    final idAssignment = stable.indexOf(
+      'FFAppState().pendingStableInvitationId = invitationId;',
+    );
+    final durableWrite = stable.indexOf(
+      'await FFAppState().secureStorage.setString(',
+      idAssignment,
+    );
+    final rawTokenClear = stable.indexOf(
+      "FFAppState().pendingStableInvitationToken = '';",
+      durableWrite,
+    );
+    final urlStrip = stable.indexOf(
+      '_phase5StripInvitationTokenFromLocation(\n'
+      '              context,\n'
+      '              invitationId: invitationId,',
+      rawTokenClear,
+    );
+    expect(idAssignment, greaterThanOrEqualTo(0));
+    expect(durableWrite, greaterThan(idAssignment));
+    expect(rawTokenClear, greaterThan(durableWrite));
+    expect(
+      urlStrip,
+      greaterThan(rawTokenClear),
+      reason:
+          'The raw fragment is removed only after the server promotes and '
+          'durably stores a non-secret invitation ID for the login hand-off.',
+    );
+    expect(
+      stable,
+      contains("<String, String>{'invitation_id': safeInvitationId}"),
+    );
+    expect(stable, contains('final routeUri = GoRouterState.of(context).uri;'));
+    expect(
+      stable,
+      contains("routeUri.queryParameters['invitation_id']"),
+    );
+    expect(stable, contains('final fragment = routeUri.fragment;'));
+    expect(stable, isNot(contains('Uri.base.queryParameters')));
+    expect(stable, isNot(contains('Uri.base.fragment')));
+    expect(stable, isNot(contains('SystemNavigator.routeInformationUpdated(')));
+    expect(
+      edit,
+      contains('data-avaryn-invite-bootstrap="phase5-v1"'),
+      reason:
+          'Flutter path routing discards URL fragments before page widgets '
+          'mount, so the raw token must be exchanged before Flutter boots.',
+    );
+    expect(edit, contains("window.location.hash || ''"));
+    expect(edit, contains('window.history.replaceState('));
+    expect(
+      edit,
+      contains(
+        "'https://ipdovjdtnfslrftvrdrl.supabase.co/functions/v1/"
+        "stable-invitations'",
+      ),
+    );
+    expect(edit, contains("credentials: 'omit'"));
+    expect(edit, contains("referrerPolicy: 'no-referrer'"));
+    expect(edit, contains("cache: 'no-store'"));
+    expect(
+      edit,
+      contains(
+        "'/uitnodiging?invitation_id=' + encodeURIComponent(invitationId)",
+      ),
+    );
+    expect(edit, isNot(contains('sb_publishable_')));
+    expect(edit, isNot(contains('service_role')));
     expect(stable, contains("accept ? 'StablePickerPage'"));
     expect(stable, contains(": 'StableOnboardingHandoffPage'"));
     expect(stable, contains("'request_id': requestId"));
@@ -188,10 +357,7 @@ void main() {
           File('dsl/avaryn_account_runtime.dart').readAsStringSync();
       final stable = File('dsl/avaryn_stable_runtime.dart').readAsStringSync();
 
-      expect(
-        account,
-        contains('_hydrateSelectedStableFromServer(session.user)'),
-      );
+      expect(account, contains('_hydrateSelectedStableFromServer(user)'));
       expect(account, contains("from('account_workspace_preferences')"));
       expect(account, contains("'last_selected_stable_id'"));
       expect(account, contains("from('stable_memberships')"));

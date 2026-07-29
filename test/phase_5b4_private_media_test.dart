@@ -129,8 +129,19 @@ void main() {
     expect(runtime, contains("uri.scheme != 'https'"));
     expect(
       runtime,
-      contains('uri.host.toLowerCase() != _operationalMediaStorageHost'),
+      contains(
+        'final configuredStorageUri = Uri.tryParse(_client.storage.url);',
+      ),
     );
+    expect(runtime, contains("configuredStorageUri.scheme != 'https'"));
+    expect(
+      runtime,
+      contains(
+        'uri.host.toLowerCase() != configuredStorageUri.host.toLowerCase()',
+      ),
+    );
+    expect(runtime, contains('uri.port != configuredStorageUri.port'));
+    expect(runtime, isNot(contains('nfduzjgtrtugerzmzynm.supabase.co')));
     expect(
       runtime,
       contains("uri.path.startsWith('/storage/v1/object/sign/horse-media/')"),

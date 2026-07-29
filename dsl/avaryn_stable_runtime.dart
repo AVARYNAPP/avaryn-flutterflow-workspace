@@ -23,26 +23,24 @@ DateTime? _phase4BDate(dynamic value) =>
         ? DateTime.tryParse(value)
         : null;
 
-void _phase5StripInvitationTokenFromLocation() {
-  if (!kIsWeb) return;
-  final current = Uri.base;
-  final fragment = current.fragment;
+void _phase5StripInvitationTokenFromLocation(
+  BuildContext context, {
+  String invitationId = '',
+}) {
+  if (!kIsWeb || !context.mounted) return;
+  final fragment = GoRouterState.of(context).uri.fragment;
   if (fragment.isEmpty || !fragment.contains('token=')) return;
-
-  final separator = fragment.indexOf('?');
-  final route = separator >= 0 ? fragment.substring(0, separator) : '';
-  final encodedQuery =
-      separator >= 0 ? fragment.substring(separator + 1) : fragment;
-  final query = Map<String, String>.from(Uri.splitQueryString(encodedQuery))
-    ..remove('token');
-  final safeFragment =
-      query.isEmpty
-          ? route
-          : '${route.isEmpty ? '' : '$route?'}${Uri(queryParameters: query).query}';
-  final safeLocation = current.replace(fragment: safeFragment);
-  SystemNavigator.routeInformationUpdated(
-    uri: safeLocation,
-    replace: true,
+  // Read and replace through the active GoRouter state. Uri.base reflects the
+  // document base in Flutter web and can omit route query/fragment data.
+  final safeInvitationId = invitationId.trim();
+  context.replace(
+    Uri(
+      path: '/uitnodiging',
+      queryParameters:
+          safeInvitationId.isEmpty
+              ? null
+              : <String, String>{'invitation_id': safeInvitationId},
+    ).toString(),
   );
 }
 
@@ -407,7 +405,16 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
   }
 
   void _readTransientToken() {
-    final fragment = Uri.base.fragment;
+    final routeUri = GoRouterState.of(context).uri;
+    final invitationIdFromUri =
+        routeUri.queryParameters['invitation_id']?.trim() ?? '';
+    if (RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-'
+      r'[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
+    ).hasMatch(invitationIdFromUri)) {
+      FFAppState().pendingStableInvitationId = invitationIdFromUri;
+    }
+    final fragment = routeUri.fragment;
     final query =
         fragment.contains('?')
             ? fragment.substring(fragment.indexOf('?') + 1)
@@ -420,12 +427,9 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
     if (token.length >= 40 && token.length <= 128) {
       _transientInvitationToken = token;
       FFAppState().pendingStableInvitationToken = token;
-      if (tokenFromUri.isNotEmpty) {
-        _phase5StripInvitationTokenFromLocation();
-      }
     } else if (tokenFromUri.isNotEmpty) {
       FFAppState().pendingStableInvitationToken = '';
-      _phase5StripInvitationTokenFromLocation();
+      _phase5StripInvitationTokenFromLocation(context);
     }
   }
 
@@ -770,8 +774,8 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
       if (mounted) setState(() {});
       return;
     }
+    final useToken = _transientInvitationToken.isNotEmpty;
     try {
-      final useToken = _transientInvitationToken.isNotEmpty;
       final response = await _client.functions.invoke(
         'stable-invitations',
         body:
@@ -788,11 +792,31 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
         if (invitationId.isNotEmpty) {
           _transientInvitationId = invitationId;
           FFAppState().pendingStableInvitationId = invitationId;
-          _transientInvitationToken = '';
+          // The generated setter persists asynchronously. Complete the
+          // non-secret hand-off before replacing the browser route, which can
+          // rebuild this widget immediately.
+          try {
+            await FFAppState().secureStorage.setString(
+              'ff_pendingStableInvitationId',
+              invitationId,
+            );
+          } catch (_) {
+            // The non-secret ID remains in singleton memory for the current
+            // SPA auth flow. A redirect that cannot persist it fails closed
+            // and requires the invitation link again.
+          }
           FFAppState().pendingStableInvitationToken = '';
+          _transientInvitationToken = '';
+          if (useToken) {
+            _phase5StripInvitationTokenFromLocation(
+              context,
+              invitationId: invitationId,
+            );
+          }
         }
       } else if (status == 'accepted') {
         final stableId = _phase4BString(_invitationPreview?['stable_id']);
+        if (useToken) _phase5StripInvitationTokenFromLocation(context);
         _transientInvitationToken = '';
         _transientInvitationId = '';
         FFAppState().pendingStableInvitationToken = '';
@@ -802,16 +826,25 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
         }
         if (mounted) context.goNamed('StablePickerPage');
       } else if (status == 'declined') {
+        if (useToken) _phase5StripInvitationTokenFromLocation(context);
         _transientInvitationToken = '';
         _transientInvitationId = '';
         FFAppState().pendingStableInvitationToken = '';
         FFAppState().pendingStableInvitationId = '';
         if (mounted) context.goNamed('StableOnboardingHandoffPage');
       } else {
+        if (useToken) _phase5StripInvitationTokenFromLocation(context);
+        _transientInvitationToken = '';
+        _transientInvitationId = '';
         FFAppState().pendingStableInvitationToken = '';
         FFAppState().pendingStableInvitationId = '';
       }
     } catch (_) {
+      if (useToken) _phase5StripInvitationTokenFromLocation(context);
+      _transientInvitationToken = '';
+      _transientInvitationId = '';
+      FFAppState().pendingStableInvitationToken = '';
+      FFAppState().pendingStableInvitationId = '';
       _invitationPreview = {'status': 'unavailable'};
     }
     if (mounted) setState(() {});
@@ -1809,7 +1842,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
         if (_management.allowedInvitationRoles.isNotEmpty) ...[
           const SizedBox(height: 12),
           DropdownButtonFormField<Phase4BRole>(
-            initialValue: _selectedInviteRole,
+            value: _selectedInviteRole,
             decoration: const InputDecoration(labelText: 'Aangeboden rol'),
             items:
                 _management.allowedInvitationRoles
@@ -1933,7 +1966,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           DropdownButtonFormField<String>(
-            initialValue: _phase4BString(selected['stable_member_id']),
+            value: _phase4BString(selected['stable_member_id']),
             decoration: const InputDecoration(labelText: 'Medewerker'),
             items:
                 _managementMembers
@@ -1981,7 +2014,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
           if (replacementRoles.isNotEmpty && canManageTarget) ...[
             const SizedBox(height: 16),
             DropdownButtonFormField<Phase4BRole>(
-              initialValue: _selectedReplacementRole,
+              value: _selectedReplacementRole,
               decoration: const InputDecoration(labelText: 'Nieuwe rol'),
               items:
                   replacementRoles
@@ -2030,7 +2063,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
               linkableMemberships.isNotEmpty) ...[
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              initialValue:
+              value:
                   linkableMemberships.any(
                         (candidate) =>
                             candidate['membership_id'] == _linkMembershipId,

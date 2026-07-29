@@ -21,7 +21,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 bool _operationalTimezonesInitialized = false;
-const String _operationalMediaStorageHost = 'nfduzjgtrtugerzmzynm.supabase.co';
 final Set<String> _operationalPendingPurgeAccounts = <String>{};
 final Map<RealtimeChannel, SupabaseClient> _operationalPendingChannelRemovals =
     <RealtimeChannel, SupabaseClient>{};
@@ -1776,9 +1775,13 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         );
       }
       final uri = Uri.tryParse(_operationalString(data['signed_download_url']));
+      final configuredStorageUri = Uri.tryParse(_client.storage.url);
       if (uri == null ||
+          configuredStorageUri == null ||
           uri.scheme != 'https' ||
-          uri.host.toLowerCase() != _operationalMediaStorageHost ||
+          configuredStorageUri.scheme != 'https' ||
+          uri.host.toLowerCase() != configuredStorageUri.host.toLowerCase() ||
+          uri.port != configuredStorageUri.port ||
           !uri.path.startsWith('/storage/v1/object/sign/horse-media/')) {
         throw const _OperationalMediaException(
           503,
@@ -3430,7 +3433,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       DropdownButtonFormField<String>(
-                        initialValue: horseId,
+                        value: horseId,
                         decoration: const InputDecoration(labelText: 'Paard'),
                         items: _horses
                             .map(
@@ -3462,7 +3465,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                       ),
                       const SizedBox(height: 4),
                       DropdownButtonFormField<String>(
-                        initialValue: stableMemberId,
+                        value: stableMemberId,
                         decoration: const InputDecoration(
                           labelText: 'Verantwoordelijke',
                         ),
@@ -3490,7 +3493,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                         children: [
                           Expanded(
                             child: DropdownButtonFormField<int>(
-                              initialValue: selectedHour,
+                              value: selectedHour,
                               decoration: const InputDecoration(
                                 labelText: 'Uur',
                               ),
@@ -3510,7 +3513,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: DropdownButtonFormField<int>(
-                              initialValue: selectedMinute,
+                              value: selectedMinute,
                               decoration: const InputDecoration(
                                 labelText: 'Minuut',
                               ),
@@ -3697,7 +3700,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       DropdownButtonFormField<String>(
-                        initialValue: horseId,
+                        value: horseId,
                         decoration: const InputDecoration(labelText: 'Paard'),
                         items: _horses
                             .map(
@@ -3729,7 +3732,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                       ),
                       const SizedBox(height: 4),
                       DropdownButtonFormField<String>(
-                        initialValue: frequency,
+                        value: frequency,
                         decoration: const InputDecoration(
                           labelText: 'Herhaling',
                         ),
@@ -3753,7 +3756,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                         children: [
                           Expanded(
                             child: DropdownButtonFormField<int>(
-                              initialValue: selectedHour,
+                              value: selectedHour,
                               decoration: const InputDecoration(
                                 labelText: 'Uur',
                               ),
@@ -3773,7 +3776,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: DropdownButtonFormField<int>(
-                              initialValue: selectedMinute,
+                              value: selectedMinute,
                               decoration: const InputDecoration(
                                 labelText: 'Minuut',
                               ),
@@ -4010,7 +4013,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       DropdownButtonFormField<String>(
-                        initialValue: horseId,
+                        value: horseId,
                         decoration: const InputDecoration(labelText: 'Paard'),
                         items: _horses
                             .map(
@@ -4029,7 +4032,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                       ),
                       const SizedBox(height: 12),
                       DropdownButtonFormField<String>(
-                        initialValue: planType,
+                        value: planType,
                         decoration: const InputDecoration(labelText: 'Type'),
                         items: const [
                           DropdownMenuItem(
@@ -4062,7 +4065,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                       if (planType == 'temporary') ...[
                         const SizedBox(height: 4),
                         DropdownButtonFormField<int>(
-                          initialValue: temporaryDays,
+                          value: temporaryDays,
                           decoration: const InputDecoration(
                             labelText: 'Geldigheid vanaf vandaag',
                           ),
@@ -4504,7 +4507,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: DropdownButtonFormField<String>(
-                              initialValue: unitCode,
+                              value: unitCode,
                               decoration: const InputDecoration(
                                 labelText: 'Eenheid',
                               ),
@@ -4543,7 +4546,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                         children: [
                           Expanded(
                             child: DropdownButtonFormField<int>(
-                              initialValue: selectedHour,
+                              value: selectedHour,
                               decoration: const InputDecoration(
                                 labelText: 'Uur',
                               ),
@@ -4563,7 +4566,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: DropdownButtonFormField<int>(
-                              initialValue: selectedMinute,
+                              value: selectedMinute,
                               decoration: const InputDecoration(
                                 labelText: 'Minuut',
                               ),
@@ -4590,7 +4593,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                       const SizedBox(height: 12),
                       if (temporary)
                         DropdownButtonFormField<String>(
-                          initialValue: overrideKey,
+                          value: overrideKey,
                           decoration: const InputDecoration(
                             labelText: 'Te vervangen standaardvoerslot',
                           ),
@@ -4619,7 +4622,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                         ),
                       const SizedBox(height: 12),
                       DropdownButtonFormField<String>(
-                        initialValue: stableMemberId,
+                        value: stableMemberId,
                         decoration: const InputDecoration(
                           labelText: 'Standaard verantwoordelijke',
                         ),
@@ -4644,7 +4647,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                       ),
                       const SizedBox(height: 12),
                       DropdownButtonFormField<String>(
-                        initialValue: offeringMethod,
+                        value: offeringMethod,
                         decoration: const InputDecoration(
                           labelText: 'Aanbiedingswijze',
                         ),
@@ -5075,13 +5078,13 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         conflictContext.mounted &&
         conflictRoute != null &&
         conflictRoute.isActive) {
-      Navigator.of(conflictContext).removeRoute<dynamic>(conflictRoute, false);
+      Navigator.of(conflictContext).removeRoute(conflictRoute);
     }
     if (planningContext != null &&
         planningContext.mounted &&
         planningRoute != null &&
         planningRoute.isActive) {
-      Navigator.of(planningContext).removeRoute<dynamic>(planningRoute, false);
+      Navigator.of(planningContext).removeRoute(planningRoute);
     }
   }
 
@@ -5826,7 +5829,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                 const SizedBox(height: 12),
                 if (_selectedFeedingVersions.isNotEmpty)
                   DropdownButtonFormField<String>(
-                    initialValue: _selectedFeedingVersionId,
+                    value: _selectedFeedingVersionId,
                     decoration: const InputDecoration(labelText: 'Versie'),
                     items: _selectedFeedingVersions
                         .map(
