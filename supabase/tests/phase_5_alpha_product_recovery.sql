@@ -44,6 +44,9 @@ begin
     or to_regprocedure(
       'public.upsert_feeding_plan_item_v2(uuid,uuid,bigint,text,text,text,text,text,numeric,text,text,text,time,smallint[],integer,text,uuid,text,date,text,uuid)'
     ) is null
+    or to_regprocedure(
+      'public.set_horse_profile_media(uuid,uuid,bigint,uuid)'
+    ) is null
   then
     raise exception 'One or more recovery RPCs are missing';
   end if;
@@ -58,6 +61,11 @@ begin
       'public.upsert_feeding_plan_item_v2(uuid,uuid,bigint,text,text,text,text,text,numeric,text,text,text,time,smallint[],integer,text,uuid,text,date,text,uuid)',
       'execute'
     )
+    or has_function_privilege(
+      'anon',
+      'public.set_horse_profile_media(uuid,uuid,bigint,uuid)',
+      'execute'
+    )
   then
     raise exception 'Anonymous role can execute a recovery RPC';
   end if;
@@ -69,6 +77,27 @@ begin
   )
   then
     raise exception 'Authenticated role cannot read the RLS-aware calendar';
+  end if;
+
+  if not has_function_privilege(
+    'authenticated',
+    'public.set_horse_profile_media(uuid,uuid,bigint,uuid)',
+    'execute'
+  ) then
+    raise exception 'Authenticated role cannot use the profile-media RPC';
+  end if;
+
+  if not exists (
+    select 1
+    from pg_catalog.pg_constraint constraint_row
+    where constraint_row.conrelid =
+      'public.horse_profile_change_events'::regclass
+      and constraint_row.conname =
+        'horse_profile_change_events_changed_fields'
+      and pg_catalog.pg_get_constraintdef(constraint_row.oid)
+        like '%profile_media_asset_id%'
+  ) then
+    raise exception 'Profile-media audit field is not allow-listed';
   end if;
 end;
 $$;

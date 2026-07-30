@@ -151,8 +151,10 @@ void main() {
     );
     expect(
       runtime,
-      contains('Offline dagsets zijn bewust uitgeschakeld in de webapp:'),
+      isNot(
+        contains('Offline dagsets zijn bewust uitgeschakeld in de webapp:'),
+      ),
     );
-    expect(runtime, contains('OS-backed sleutelopslag is verplicht.'));
+    expect(runtime, isNot(contains('OS-backed sleutelopslag is verplicht.')));
   });
 }

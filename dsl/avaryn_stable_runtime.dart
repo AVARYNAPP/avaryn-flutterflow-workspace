@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'phase_4b_context_model.dart';
@@ -369,6 +370,7 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
   Phase4BRole _selectedReplacementRole = Phase4BRole.member;
   late final Phase4BManagementController _management;
   late final Phase4BMemberSelectionCoordinator _memberSelection;
+  bool _dependenciesInitialized = false;
 
   @override
   void initState() {
@@ -383,9 +385,18 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
       initialStableMemberId: widget.initialStableMemberId ?? '',
       requireExplicitSelection: widget.mode == 'memberDetails',
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_dependenciesInitialized) return;
+    _dependenciesInitialized = true;
     _readTransientToken();
     _transientInvitationId = FFAppState().pendingStableInvitationId.trim();
-    _load();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(_load());
+    });
   }
 
   @override
@@ -1344,20 +1355,14 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
         membership == null
             ? null
             : Map<String, dynamic>.from(membership['stables'] as Map);
-    final title =
-        _loading
-            ? 'Stalcontext laden…'
-            : stable == null
-            ? (_client.auth.currentUser == null
-                ? 'Veilige stalcontext'
-                : 'Geen actieve stal')
-            : _phase4BString(stable['name']);
+    final title = _loading ? 'A V A R Y N' : 'A V A R Y N';
     final subtitle =
         stable == null
             ? (_client.auth.currentUser == null
                 ? 'Meld aan om een stal te kiezen'
                 : 'Open stalkeuze of onboarding')
-            : '${membership!['role']}${_offline ? ' · offline lezen' : ''}';
+            : '${_offline ? 'OFFLINE' : 'STAL ONLINE'} · '
+                '${_phase4BString(membership!['role']).toUpperCase()}';
     final canOpenPicker =
         !_loading && _client.auth.currentUser != null && !_busy;
     return Material(
@@ -1369,11 +1374,21 @@ class _AvarynStableRuntimeState extends State<AvarynStableRuntime>
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
-              Icon(
-                stable?['kind'] == 'personal'
-                    ? Icons.person_outline
-                    : Icons.home_work_outlined,
-                color: Colors.white,
+              Container(
+                width: 34,
+                height: 34,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(color: theme.secondary.withOpacity(0.9)),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Text(
+                  'A',
+                  style: theme.titleMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(

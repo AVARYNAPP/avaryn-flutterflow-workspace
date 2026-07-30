@@ -133,7 +133,7 @@ void main() {
       contains("throw StateError('OFFLINE_REQUIRES_OS_KEYSTORE')"),
     );
     expect(source, contains("if (kIsWeb || _stableId.isEmpty) return false;"));
-    expect(source, contains("OS-backed sleutelopslag is verplicht."));
+    expect(source, isNot(contains("OS-backed sleutelopslag is verplicht.")));
     expect(source, contains("_clearDecryptedState();"));
     expect(source, contains("message.contains('SYNC_RESET_REQUIRED')"));
     expect(source, contains("error.code == '42501'"));

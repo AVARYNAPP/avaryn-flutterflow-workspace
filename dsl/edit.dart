@@ -5730,6 +5730,87 @@ void buildAvarynPhase5D2(App app) {
           'Assigned feeding execution with exact units, durable retries, private evidence and append-only correction history.',
     );
   });
+  _applyAvarynAlphaUxRecovery(app);
+}
+
+/// Restores the proven AVARYN product presentation around the existing
+/// Phase 4/5 authority, schedule and feeding contracts.
+void _applyAvarynAlphaUxRecovery(App app) {
+  app.raw((project) {
+    updateCustomWidget(
+      project,
+      name: 'AvarynStableRuntime',
+      code: _loadPhase4BStableRuntimeWidgetCode(),
+      description:
+          'Responsive stable authority and onboarding with a compact AVARYN selector.',
+    );
+  });
+
+  final operationalPages = <
+    ({ProjectPageHandle page, String mode, String activeTab})
+  >[
+    (page: ff.Pages.todayDashboardPage, mode: 'today', activeTab: 'Vandaag'),
+    (page: ff.Pages.horsesOverviewPage, mode: 'horses', activeTab: 'Paarden'),
+    (page: ff.Pages.planningPage, mode: 'planning', activeTab: 'Planning'),
+    (page: ff.Pages.feedingOverviewPage, mode: 'feeding', activeTab: 'Voeding'),
+    (
+      page: ff.Pages.feedingRoundExecutionPage,
+      mode: 'feedingExecution',
+      activeTab: 'Voeding',
+    ),
+  ];
+  for (final spec in operationalPages) {
+    app.editPage(spec.page, (page) {
+      page.ensureReplaced(
+        spec.page.widgets.byPath('${spec.page.name}.body[0]').single,
+        _phase4C7OperationalPageBody(
+          mode: spec.mode,
+          activeTab: spec.activeTab,
+        ),
+      );
+    });
+  }
+
+  app.raw((project) {
+    for (final spec in operationalPages) {
+      updatePage(
+        project,
+        name: spec.page.name,
+        description:
+            'AVARYN Alpha product route backed by the existing RLS-scoped Phase 4/5 contracts.',
+      );
+      final page = findPage(project, name: spec.page.name);
+      if (page == null) {
+        throw StateError('Expected ${spec.page.name}.');
+      }
+      final desktop = findDescendants(
+        page.node,
+        (node) => node.name == 'Phase4C7DesktopSideNavigation',
+      );
+      final mobile = findDescendants(
+        page.node,
+        (node) => node.name == 'Phase4C7MobileBottomNavigation',
+      );
+      if (desktop.length == 1) {
+        setResponsiveVisibility(
+          desktop.single,
+          phoneHidden: true,
+          tabletHidden: true,
+          tabletLandscapeHidden: true,
+          desktopHidden: false,
+        );
+      }
+      if (mobile.length == 1) {
+        setResponsiveVisibility(
+          mobile.single,
+          phoneHidden: false,
+          tabletHidden: false,
+          tabletLandscapeHidden: false,
+          desktopHidden: true,
+        );
+      }
+    }
+  });
 }
 
 const String _phase5InvitationBootstrapHeader = r'''
@@ -5796,9 +5877,7 @@ void _configurePhase5InvitationBootstrap(App app) {
     final allWebSettings =
         project.ensureAppSettings().ensureAllWebSettings().webSettings;
     if (allWebSettings.isEmpty) {
-      throw StateError(
-        'Expected at least one environment-scoped web setting.',
-      );
+      throw StateError('Expected at least one environment-scoped web setting.');
     }
     for (final settings in allWebSettings.values) {
       settings.allowSearchEngineIndexing = false;
@@ -13285,46 +13364,53 @@ DslWidget _phase4C7OperationalPageBody({
         bindParams: false,
         activeTab: activeTab,
         horsesTarget: ff.Pages.horsesOverviewPage,
+        feedingTarget: ff.Pages.feedingOverviewPage,
         planningTarget: ff.Pages.planningPage,
         profileTarget: 'PersonalProfilePage',
       ),
     ),
     Expanded(
-      Column(
-        crossAxis: CrossAxis.stretch,
-        children: [
-          Container(
-            name: 'Phase4C7StableContextSelector',
-            height: 78,
-            padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-            color: Colors.primary,
-            child: CustomWidget(
-              name: 'Phase4C7StableContextRuntime',
-              widgetName: 'AvarynStableRuntime',
-              arguments: const {
-                'mode': 'selector',
-                'initialStableMemberId': '',
-              },
+      Container(
+        name: 'Phase4C7OperationalColumnBounds',
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
+          crossAxis: CrossAxis.stretch,
+          children: [
+            Container(
+              name: 'Phase4C7StableContextSelector',
+              height: 78,
+              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+              color: Colors.primary,
+              child: CustomWidget(
+                name: 'Phase4C7StableContextRuntime',
+                widgetName: 'AvarynStableRuntime',
+                arguments: const {
+                  'mode': 'selector',
+                  'initialStableMemberId': '',
+                },
+              ),
             ),
-          ),
-          Expanded(
-            CustomWidget(
-              name: 'Phase4C7OperationalRuntime',
-              widgetName: 'AvarynOperationalRuntime',
-              arguments: {'mode': mode},
+            Expanded(
+              CustomWidget(
+                name: 'Phase4C7OperationalRuntime',
+                widgetName: 'AvarynOperationalRuntime',
+                arguments: {'mode': mode},
+              ),
             ),
-          ),
-          Container(
-            name: 'Phase4C7MobileBottomNavigation',
-            child: _mobileNavigationBody(
-              bindParams: false,
-              activeTab: activeTab,
-              horsesTarget: ff.Pages.horsesOverviewPage,
-              planningTarget: ff.Pages.planningPage,
-              profileTarget: 'PersonalProfilePage',
+            Container(
+              name: 'Phase4C7MobileBottomNavigation',
+              child: _mobileNavigationBody(
+                bindParams: false,
+                activeTab: activeTab,
+                horsesTarget: ff.Pages.horsesOverviewPage,
+                feedingTarget: ff.Pages.feedingOverviewPage,
+                planningTarget: ff.Pages.planningPage,
+                profileTarget: 'PersonalProfilePage',
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   ],
@@ -13334,6 +13420,7 @@ DslWidget _mobileNavigationBody({
   bool bindParams = true,
   String activeTab = 'Vandaag',
   Object? horsesTarget,
+  Object? feedingTarget,
   Object? planningTarget,
   Object? profileTarget,
 }) => Container(
@@ -13354,6 +13441,7 @@ DslWidget _mobileNavigationBody({
         bindParam: bindParams,
         currentTab: activeTab,
         horsesTarget: horsesTarget,
+        feedingTarget: feedingTarget,
         planningTarget: planningTarget,
         profileTarget: profileTarget,
       ),
@@ -13365,9 +13453,23 @@ DslWidget _mobileNavigationBody({
         bindParam: bindParams,
         currentTab: activeTab,
         horsesTarget: horsesTarget,
+        feedingTarget: feedingTarget,
         planningTarget: planningTarget,
         profileTarget: profileTarget,
       ),
+      if (!bindParams)
+        _mobileNavItem(
+          'restaurant_menu',
+          'Voeding',
+          'feedingAction',
+          active: activeTab == 'Voeding',
+          bindParam: false,
+          currentTab: activeTab,
+          horsesTarget: horsesTarget,
+          feedingTarget: feedingTarget,
+          planningTarget: planningTarget,
+          profileTarget: profileTarget,
+        ),
       _mobileNavItem(
         'event_note',
         'Planning',
@@ -13376,6 +13478,7 @@ DslWidget _mobileNavigationBody({
         bindParam: bindParams,
         currentTab: activeTab,
         horsesTarget: horsesTarget,
+        feedingTarget: feedingTarget,
         planningTarget: planningTarget,
         profileTarget: profileTarget,
       ),
@@ -13387,6 +13490,7 @@ DslWidget _mobileNavigationBody({
         bindParam: bindParams,
         currentTab: activeTab,
         horsesTarget: horsesTarget,
+        feedingTarget: feedingTarget,
         planningTarget: planningTarget,
         profileTarget: profileTarget,
       ),
@@ -13402,6 +13506,7 @@ DslWidget _mobileNavItem(
   bool bindParam = true,
   String currentTab = 'Vandaag',
   Object? horsesTarget,
+  Object? feedingTarget,
   Object? planningTarget,
   Object? profileTarget,
 }) => Container(
@@ -13415,6 +13520,7 @@ DslWidget _mobileNavItem(
             label,
             currentTab: currentTab,
             horsesTarget: horsesTarget,
+            feedingTarget: feedingTarget,
             planningTarget: planningTarget,
             profileTarget: profileTarget,
           ),
@@ -13449,6 +13555,7 @@ DslWidget _desktopNavigationBody({
   bool bindParams = true,
   String activeTab = 'Vandaag',
   Object? horsesTarget,
+  Object? feedingTarget,
   Object? planningTarget,
   Object? profileTarget,
 }) => Container(
@@ -13484,6 +13591,7 @@ DslWidget _desktopNavigationBody({
         bindParam: bindParams,
         currentTab: activeTab,
         horsesTarget: horsesTarget,
+        feedingTarget: feedingTarget,
         planningTarget: planningTarget,
         profileTarget: profileTarget,
       ),
@@ -13494,9 +13602,23 @@ DslWidget _desktopNavigationBody({
         bindParam: bindParams,
         currentTab: activeTab,
         horsesTarget: horsesTarget,
+        feedingTarget: feedingTarget,
         planningTarget: planningTarget,
         profileTarget: profileTarget,
       ),
+      if (!bindParams)
+        _desktopNavItem(
+          'restaurant_menu',
+          'Voeding',
+          'feedingAction',
+          active: activeTab == 'Voeding',
+          bindParam: false,
+          currentTab: activeTab,
+          horsesTarget: horsesTarget,
+          feedingTarget: feedingTarget,
+          planningTarget: planningTarget,
+          profileTarget: profileTarget,
+        ),
       _desktopNavItem(
         'event_note',
         'Planning',
@@ -13505,6 +13627,7 @@ DslWidget _desktopNavigationBody({
         bindParam: bindParams,
         currentTab: activeTab,
         horsesTarget: horsesTarget,
+        feedingTarget: feedingTarget,
         planningTarget: planningTarget,
         profileTarget: profileTarget,
       ),
@@ -13516,6 +13639,7 @@ DslWidget _desktopNavigationBody({
         bindParam: bindParams,
         currentTab: activeTab,
         horsesTarget: horsesTarget,
+        feedingTarget: feedingTarget,
         planningTarget: planningTarget,
         profileTarget: profileTarget,
       ),
@@ -13559,6 +13683,7 @@ DslWidget _desktopNavItem(
   bool bindParam = true,
   String currentTab = 'Vandaag',
   Object? horsesTarget,
+  Object? feedingTarget,
   Object? planningTarget,
   Object? profileTarget,
 }) => Container(
@@ -13589,6 +13714,7 @@ DslWidget _desktopNavItem(
                     label,
                     currentTab: currentTab,
                     horsesTarget: horsesTarget,
+                    feedingTarget: feedingTarget,
                     planningTarget: planningTarget,
                     profileTarget: profileTarget,
                   ),
@@ -13605,6 +13731,7 @@ DslWidget _desktopHorseNavItem(
   bool bindParam = true,
   String currentTab = 'Vandaag',
   Object? horsesTarget,
+  Object? feedingTarget,
   Object? planningTarget,
   Object? profileTarget,
 }) => Container(
@@ -13617,6 +13744,7 @@ DslWidget _desktopHorseNavItem(
             label,
             currentTab: currentTab,
             horsesTarget: horsesTarget,
+            feedingTarget: feedingTarget,
             planningTarget: planningTarget,
             profileTarget: profileTarget,
           ),
@@ -13653,6 +13781,7 @@ DslAction _navigationAction(
   String label, {
   String currentTab = 'Vandaag',
   Object? horsesTarget,
+  Object? feedingTarget,
   Object? planningTarget,
   Object? profileTarget,
 }) {
@@ -13667,6 +13796,11 @@ DslAction _navigationAction(
     return target == null
         ? Snackbar('Paarden is al geselecteerd')
         : Navigate(target);
+  }
+  if (label == 'Voeding') {
+    return feedingTarget == null
+        ? Snackbar('Voeding is al geselecteerd')
+        : Navigate(feedingTarget);
   }
   return switch (label) {
     'Planning' =>
