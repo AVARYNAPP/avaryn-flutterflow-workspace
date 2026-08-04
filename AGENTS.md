@@ -2,6 +2,35 @@
 
 FlutterFlow AI is a local workspace for creating and editing FlutterFlow apps with a coding agent.
 
+## AVARYN task governance
+
+Before every task, read [`docs/status/CURRENT_STATE.md`](docs/status/CURRENT_STATE.md)
+and verify the requested baseline, branch, full commit SHA, and clean-worktree
+expectation. Stop without changing anything when the required baseline differs
+or a destructive step is unclear.
+
+For Account Model v2, the leading technical document is
+[`docs/architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md`](docs/architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md)
+after its recorded approval. Bindende task/product instructions outrank older
+phase documents. Preserve these working rules:
+
+- Never modify or rewrite `snapshot/latest-alpha-2026-08-04`; it is the
+  evidence and rollback point.
+- Use one bounded task per branch. Do not combine later phases implicitly.
+- Do not change database, Auth, RLS, storage, Edge Functions, test data,
+  FlutterFlow, deployment, or live environments without an explicit task that
+  authorizes that exact scope.
+- Do not build compatibility or migration complexity solely to preserve old
+  fictitious test data.
+- `stable_id`, workspace state, relationships, ownership, visible UI, e-mail,
+  and client/JWT metadata never grant implicit permissions.
+- Enforce identity, scope, status, time windows, roles, permissions,
+  revocation, transfers, and privilege boundaries server-side.
+- Every implementation task requires positive and negative tests proportional
+  to risk, final diff/status checks, and an explicit completion report.
+- Stop and request direction before any ambiguous destructive, reset, remote,
+  deployment, or authority-changing action.
+
 ## Files
 
 - `dsl/create.dart`
@@ -828,5 +857,5 @@ The general rule: any field with `[deprecated = true]` or a name starting with `
 
 ## Project
 
-- `projectId`: `a-v-a-r-y-n-consumer-app-8yb89s`
+- `projectId`: `a-v-a-r-y-n-alpha-ynvyuq`
 - `baseUrl`: `https://api.flutterflow.io/v2`
