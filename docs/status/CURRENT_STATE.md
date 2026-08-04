@@ -8,17 +8,26 @@ Laatst bijgewerkt: 2026-08-04
   FlutterFlow-project te behouden en de stalgebonden backend grotendeels schoon
   te vervangen voor Account Model v2.
 - **C-002:** technisch contract opgesteld.
-- **C-002A:** formele reviewcorrecties op het technische contract uitgevoerd.
+- **C-002A:** formele reviewcorrecties op het technische contract uitgevoerd,
+  inhoudelijk beoordeeld en definitief goedgekeurd door Silas de Steur op
+  2026-08-04.
 - **C-002A-besluit:** een organization-horse link wordt pas actief nadat de
   horse- en organizationcontext ieder afzonderlijk, expliciet en server-side
   geautoriseerd hebben bevestigd. De link zelf verleent geen toegang.
-- **Contractstatus:** **Proposed – awaiting Silas approval**.
+- **C-002B:** uitsluitend de lokale approval-statuscommit; geen wijziging van
+  de goedgekeurde normatieve technische inhoud.
+- **Contractstatus:** **Approved**.
+- **Goedgekeurde inhoudscommit:**
+  `4288944ae77cee9e1f0bf42f9369956b342e0097`.
+- **C-003A:** nog niet gestart en mag uitsluitend na een afzonderlijke exacte
+  opdracht beginnen.
 - Er is nog geen Account Model v2-functionaliteit geïmplementeerd.
 - Er zijn geen migrations geschreven of uitgevoerd en geen database-, Auth-,
   RLS-, storage-, Edge-, FlutterFlow- of applicatiewijzigingen uitgevoerd als
-  onderdeel van C-002 of C-002A.
+  onderdeel van C-002, C-002A of C-002B.
+- Er is niets gepusht, gemerged of gedeployed als onderdeel van C-002B.
 
-Het voorgestelde contract staat in
+Het goedgekeurde contract staat in
 [Account Model v2 Technical Contract](../architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md).
 
 ## Repository- en FlutterFlow-basis
@@ -29,7 +38,7 @@ Het voorgestelde contract staat in
 | Snapshotcommit | `1634ef281084a76ae862fcb595dff8b08048ff48` |
 | Actieve architectuurbranch | `architecture/account-model-v2-contract` |
 | C-002A-basiscommit | `dc93b1c574eab185a95f9aa5113e65415d784d2a` |
-| C-002A-documentatiecommit | Lokale Git HEAD van deze afgeronde correctieronde (`docs: refine account model v2 contract`) |
+| Goedgekeurde inhoudscommit | `4288944ae77cee9e1f0bf42f9369956b342e0097` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
 | FlutterFlow-revisie | `LOTvjLR6TzQjoalLhZWh` |
 | Live Alpha | <https://alpha.avaryn.eu/> |
@@ -67,13 +76,15 @@ De snapshotbranch is het bewijs- en rollbackpunt en mag niet worden gewijzigd.
   SDK-build (`2c299209` naar `b5c8a09d`, beide rapporteren versie `0.0.40`). De
   C-002A-check kon door een lokaal Dart-kernel-/netwerkprobleem niet afronden.
   Er is niet geüpgraded.
-- De live Alpha en rollback-URL zijn in C-001 read-only geobserveerd; C-002 en
-  C-002A hebben geen live omgeving benaderd of gewijzigd.
+- De live Alpha en rollback-URL zijn in C-001 read-only geobserveerd; C-002,
+  C-002A en C-002B hebben geen live omgeving benaderd of gewijzigd.
 
 ## Eerstvolgende stappen en afzonderlijke gates
 
-De eerstvolgende stap is dat Silas het gecorrigeerde C-002A-contract goedkeurt
-of opnieuw gerichte contractcorrecties vraagt. Daarna is C-003 opgesplitst in:
+De eerstvolgende mogelijke implementatiestap is C-003A, maar uitsluitend nadat
+de nieuwe lokale C-002B-commit-SHA als exacte basis is gecontroleerd én een
+afzonderlijke exacte opdracht voor C-003A is gegeven. C-003 blijft opgesplitst
+in:
 
 1. C-003A — Identity and audit foundation;
 2. C-003B — Organizations and memberships;
@@ -87,7 +98,7 @@ eigen branch, begrensde scope, eigen tests, securitygate, handmatig
 goedkeuringsmoment en rollbackpunt. Een fase start of omvat nooit impliciet de
 volgende fase. Zie sectie L van het technische contract voor de exacte scopes.
 
-**Niet uitgevoerd in C-002A:** geen implementatie, stagingreset, migration,
-remote Supabasehandeling, push, merge, deployment of FlutterFlow-/live-
-wijziging. Deze handelingen blijven verboden zonder een afzonderlijke opdracht
-die de exacte scope autoriseert.
+**Niet uitgevoerd in C-002B:** geen implementatie, C-003A, stagingreset,
+migration, database-/Supabase-/Auth-handeling, push, merge, deployment of
+FlutterFlow-/livewijziging. Deze handelingen blijven verboden zonder een
+afzonderlijke opdracht die de exacte scope autoriseert.

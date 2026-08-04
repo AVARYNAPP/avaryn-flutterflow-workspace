@@ -5,10 +5,14 @@
 | Veld | Waarde |
 | --- | --- |
 | Document | AVARYN Account Model v2 Technical Contract |
-| Versie | 1.1-proposed (C-002A reviewcorrectie) |
-| Status | **Proposed – awaiting Silas approval** |
+| Versie | 1.1-approved |
+| Status | **Approved by Silas** |
 | Datum | 2026-08-04 |
 | Taak | C-002A |
+| Goedgekeurd door | Silas de Steur |
+| Goedkeuringsdatum | 2026-08-04 |
+| Approval gate | C-002B |
+| Goedgekeurde inhoudscommit | `4288944ae77cee9e1f0bf42f9369956b342e0097` |
 | Basisbranch | `snapshot/latest-alpha-2026-08-04` |
 | Basiscommit | `1634ef281084a76ae862fcb595dff8b08048ff48` |
 | Architectuurbranch | `architecture/account-model-v2-contract` |
@@ -25,7 +29,7 @@ Bij tegenstrijdigheid geldt, van hoog naar laag:
 
 1. De bindende productbesluiten en formele reviewcorrecties in taak C-002A.
 2. De bindende uitkomst van de read-only C-001-architectuuraudit.
-3. Dit technische contract na expliciete goedkeuring door Silas.
+3. Dit technische contract, goedgekeurd door Silas op 2026-08-04.
 4. Concrete beveiligings- en integriteitspatronen uit de huidige code.
 5. Oudere fase-4- en fase-5-documentatie voor zover die niet strijdig is met
    Account Model v2.
@@ -46,8 +50,8 @@ zelfstandig normatief voor de technische Account Model v2-kern.
   wijzigen.
 - **Codebewijs:** bewezen eigenschap van de huidige implementatie; alleen
   herbruikbaar wanneer passend bij v2.
-- **Technische ontwerpkeuze:** voorgestelde implementatiegrens in dit contract;
-  wordt bindend na Silas' goedkeuring.
+- **Technische ontwerpkeuze:** de door Silas goedgekeurde implementatiegrens in
+  dit contract.
 
 ## B. Begrippenlijst
 
@@ -856,7 +860,8 @@ fixtures nodig voor:
 
 ### Verplichte gates vóór stagingreset of migrations
 
-1. Silas keurt het door C-002A gecorrigeerde contract expliciet goed.
+1. Silas heeft het door C-002A gecorrigeerde contract in C-002B expliciet
+   goedgekeurd op 2026-08-04.
 2. C-003A tot en met C-003F zijn ieder afzonderlijk goedgekeurd en leveren
    hun begrensde lokale schema/RLS/RPC-tests; C-003F sluit af met een
    onafhankelijke securityaudit.
