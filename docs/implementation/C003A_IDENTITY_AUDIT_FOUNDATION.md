@@ -8,6 +8,8 @@
   `5eb07f54ffa7464f8f7e325f8b112411936298e8`.
 - Normatieve inhoudscommit:
   `4288944ae77cee9e1f0bf42f9369956b342e0097`.
+- Startcommit van de security-hardening:
+  `7ecddccb6cf7dabea2a6597d8245b707f6110ff4`.
 - Scope: uitsluitend personal profiles, Auth-koppeling/provisioning,
   server-side actorafleiding, profile-RLS/grants, profile versions,
   append-only audit en de lokale deletion-/anonimiseringsbasis.
@@ -78,10 +80,147 @@ fail-closed variant, zonder client-EXECUTE.
   `avatar_object_path`, `locale`, `phone_e164` en `time_zone`.
 - Auth-, lifecycle-, version- en technische timestampkolommen zijn niet direct
   clientschrijfbaar.
-- `audit_events` heeft geen clientpolicy en geen client- of service-role-DML-
-  grants.
+- `audit_events` heeft geen clientpolicy en geen `anon`-, `authenticated`- of
+  `service_role`-DML-grants.
 - Interne audit- en anonymiseringsfuncties hebben geen `PUBLIC`, `anon`,
-  `authenticated` of service-role `EXECUTE`.
+  `authenticated` of `service_role` `EXECUTE`.
+
+### Private-schema-inventaris en allowlist
+
+De inventaris is na een fresh build rechtstreeks uit `pg_proc`,
+`pg_namespace`, `pg_roles`, `proacl`/`aclexplode`,
+`has_function_privilege()` en `has_schema_privilege()` opgebouwd. Hij bevat
+**96 functies, 0 procedures, 70 SECURITY DEFINER- en 26 invokerfuncties**. Voor
+iedere rij gelden: owner `postgres`, functie (geen procedure) en
+`search_path=""`. De kolom `D/I` hieronder betekent SECURITY DEFINER/invoker.
+
+De volledige clientallowlist bestaat uit de volgende 19 routines. Iedere rij
+heeft expliciete ACL `{postgres=X/postgres,authenticated=X/postgres}` en
+effectief EXECUTE `PUBLIC=false`, `anon=false`, `authenticated=true`,
+`service_role=false`:
+
+```text
+I c003a_is_valid_iana_time_zone(p_time_zone text)
+D can_join_realtime_topic(p_topic text)
+D can_manage_horse_grants(p_horse_id uuid, p_category text)
+D can_select_feeding_execution_detail(p_execution_id uuid)
+D can_select_feeding_plan(p_feeding_plan_id uuid)
+D can_select_feeding_version(p_feeding_plan_version_id uuid)
+D can_select_schedule_assignment_base(p_schedule_assignment_id uuid)
+D can_select_schedule_item_base(p_schedule_item_id uuid)
+D can_select_schedule_series_base(p_schedule_series_id uuid)
+D can_view_media_asset(p_media_asset_id uuid)
+D can_view_media_audit(p_media_asset_id uuid)
+D can_view_media_link(p_media_link_id uuid)
+D current_membership_id(p_stable_id uuid)
+D current_profile_id()
+D current_role(p_stable_id uuid)
+D has_horse_capability(p_horse_id uuid, p_category text, p_capability text)
+D is_active_member(p_stable_id uuid)
+D is_stable_manager(p_stable_id uuid)
+D schedule_item_access_level(p_schedule_item_id uuid)
+```
+
+De overige 77 routines zijn intern. Iedere rij heeft expliciete ACL
+`{postgres=X/postgres}` en effectief EXECUTE `PUBLIC=false`, `anon=false`,
+`authenticated=false`, `service_role=false`:
+
+```text
+D active_sync_membership(p_stable_id uuid)
+D assert_exactly_one_active_owner_for_membership()
+D assert_exactly_one_active_owner_for_stable()
+D assign_stable_change_sequence()
+I c003a_audit_json_keys_allowed(p_value jsonb, p_allowed_keys text[])
+D c003a_audit_profile_insert()
+D c003a_audit_safe_profile_update()
+I c003a_prevent_audit_mutation()
+D c003a_write_profile_audit(p_event_type text, p_profile_id uuid, p_actor_profile_id uuid, p_system_actor_code text, p_correlation_id uuid, p_channel text, p_old_status text, p_new_status text, p_row_version_before bigint, p_row_version_after bigint, p_access_version_before bigint, p_access_version_after bigint, p_metadata jsonb)
+D capture_feeding_change()
+D capture_horse_change()
+D capture_schedule_change()
+D enforce_offline_execution_device()
+D ensure_sync_authority(p_stable_id uuid)
+D event_is_visible(p_stable_id uuid, p_horse_id uuid, p_entity_type text, p_entity_id uuid, p_data_category text)
+I feeding_item_matches_date(p_item feeding_plan_items, p_effective_from date, p_local_date date)
+D feeding_membership_can_edit(p_membership stable_memberships, p_horse_id uuid)
+D feeding_membership_can_manage(p_membership stable_memberships, p_horse_id uuid)
+D feeding_receipt_result(p_actor_user_id uuid, p_request_id uuid, p_operation_name text, p_payload_hash bytea)
+D finalize_profile_anonymization(p_profile_id uuid, p_expected_row_version bigint, p_correlation_id uuid)
+I guard_feeding_plan_item_draft()
+D guard_media_link_scope()
+I horse_profile_json(p_horse horses)
+D legacy_import_mapping_is_current(p_item_id uuid)
+D legacy_job_access(p_job_id uuid, p_lock boolean)
+I legacy_source_manifest_hash(p_source_inventory jsonb, p_items jsonb)
+D lock_client_request(p_actor_user_id uuid, p_request_id uuid)
+D lock_feeding_context(p_stable_id uuid, p_horse_id uuid)
+D lock_media_actor_context(p_actor_user_id uuid, p_stable_id uuid, p_horse_id uuid)
+D lock_media_context(p_stable_id uuid, p_horse_id uuid)
+D lock_media_request(p_actor_user_id uuid, p_request_id uuid)
+D lock_schedule_context(p_stable_id uuid, p_horse_id uuid)
+D lock_stable_membership_mutation(p_stable_id uuid)
+D lock_sync_membership(p_stable_id uuid)
+D media_actor_can_continue_asset_upload(p_actor_user_id uuid, p_media_asset_id uuid)
+D media_actor_can_upload_to_target(p_actor_user_id uuid, p_horse_id uuid, p_schedule_execution_id uuid)
+D media_actor_can_view_asset(p_actor_user_id uuid, p_media_asset_id uuid)
+D media_actor_can_view_link(p_actor_user_id uuid, p_media_link_id uuid)
+D media_actor_has_capability(p_actor_user_id uuid, p_horse_id uuid, p_capability text)
+D media_actor_membership(p_actor_user_id uuid, p_stable_id uuid)
+D media_actor_schedule_access_level(p_actor_user_id uuid, p_schedule_item_id uuid)
+D media_receipt_result(p_actor_user_id uuid, p_request_id uuid, p_operation_name text, p_payload_hash bytea)
+D media_upload_session_result(p_media_asset_id uuid, p_idempotent boolean)
+D prepare_profile_auth_removal(p_profile_id uuid, p_expected_row_version bigint, p_correlation_id uuid)
+I prevent_media_append_only_mutation()
+I prevent_schedule_append_only_mutation()
+D publish_stable_change()
+D require_current_profile_id()
+D require_sync_device(p_device_instance_id uuid, p_stable_id uuid, p_expected_authority_version bigint)
+D reserve_execution_request_namespace()
+D rotate_sync_authority()
+I schedule_derived_request_id(p_request_id uuid, p_suffix text)
+D schedule_membership_can_edit(p_membership stable_memberships, p_horse_id uuid)
+D schedule_membership_can_execute(p_membership stable_memberships, p_horse_id uuid)
+I schedule_payload_hash(p_payload jsonb)
+D schedule_receipt_result(p_actor_user_id uuid, p_request_id uuid, p_operation_name text, p_payload_hash bytea)
+I schedule_series_matches_date(p_series schedule_series, p_local_date date)
+I sync_payload_hash(p_payload jsonb)
+I touch_feeding_plan()
+I touch_feeding_plan_item()
+I touch_feeding_plan_version()
+I touch_horse()
+I touch_horse_access_grant()
+I touch_horse_identifier()
+I touch_horse_relationship()
+I touch_media_asset()
+I touch_membership()
+I touch_schedule_assignment()
+I touch_schedule_item()
+I touch_schedule_series()
+I touch_updated_at()
+D write_feeding_change_event(p_stable_id uuid, p_horse_id uuid, p_feeding_plan_id uuid, p_feeding_plan_version_id uuid, p_feeding_plan_item_id uuid, p_schedule_item_id uuid, p_execution_id uuid, p_actor_membership_id uuid, p_request_id uuid, p_event_type text, p_row_version bigint, p_reason text)
+D write_horse_security_event(p_stable_id uuid, p_horse_id uuid, p_event_type text, p_actor_membership_id uuid, p_subject_membership_id uuid, p_request_id uuid, p_metadata jsonb)
+D write_legacy_import_change(p_job legacy_import_jobs, p_change_kind text)
+D write_media_change_event(p_stable_id uuid, p_horse_id uuid, p_media_asset_id uuid, p_media_link_id uuid, p_actor_user_id uuid, p_actor_membership_id uuid, p_request_id uuid, p_event_type text, p_row_version bigint)
+D write_schedule_change_event(p_stable_id uuid, p_schedule_series_id uuid, p_schedule_item_id uuid, p_schedule_assignment_id uuid, p_schedule_execution_id uuid, p_actor_membership_id uuid, p_request_id uuid, p_event_type text, p_data_category text, p_row_version bigint, p_reason text)
+D write_security_event(p_stable_id uuid, p_event_type text, p_actor_membership_id uuid, p_subject_membership_id uuid, p_subject_stable_member_id uuid, p_invitation_id uuid, p_request_id uuid, p_metadata jsonb)
+```
+
+De afhankelijkheidscontrole vond 28 RLS-policies, 41 niet-interne triggers en
+70 publieke functies/RPC's als bewuste aanroepers van private helpers. De
+19 clientbereikbare helpers zijn uitsluitend RLS-/capabilityprojecties of de
+timezonevalidator; hun definities muteren geen data buiten de bestaande
+RPC-/RLS-grenzen. Alle 18 bereikbare SECURITY DEFINER-helpers hebben een lege
+vaste search path. `authenticated`-`USAGE` op schema `private` blijft daarom
+nodig voor policies en deze allowlist. `anon` en `service_role` hebben geen
+schema-`USAGE`; `PUBLIC`, `anon` en `service_role` hebben geen effectieve
+EXECUTE op private routines. Er is geen aantoonbaar onveilig legacyrecht
+gevonden en daarom is geen brede legacy-revoke uitgevoerd. Alleen de C-003A-
+routines zijn ook expliciet van `service_role` ingetrokken.
+
+De securitytest vergelijkt de effectieve catalogusrechten met deze exacte
+allowlist. Hij faalt bij een onverwachte private routine, clienttoegang tot een
+interne C-003A-writer/lifecyclefunctie, een onverwacht bereikbare SECURITY
+DEFINER of een bereikbare SECURITY DEFINER zonder `search_path=""`.
 
 ### Audit
 
@@ -102,8 +241,11 @@ Allowlisted events zijn:
 Metadata accepteert per event uitsluitend de benodigde codevelden:
 `changed_fields`, `dependency_checks_complete=false` of `denial_code`. Audit
 neemt geen e-mail, naam-/displaywaarde, telefoonwaarde, vrije tekst, secret,
-token, token digest, signed URL of volledige payload over. Een before-trigger
-weigert iedere directe `UPDATE` en `DELETE`, ook via de database-eigenaar.
+token, token digest, signed URL of volledige payload over. Row-level
+before-triggers weigeren iedere directe `UPDATE` en `DELETE`; een afzonderlijke
+`BEFORE TRUNCATE ... FOR EACH STATEMENT`-trigger weigert ook `TRUNCATE`. Alle
+drie leveren `AUDIT_EVENTS_APPEND_ONLY`, ook bij rechtstreeks
+database-ownergebruik.
 
 ## Deletion- en anonimiseringbasis
 
@@ -115,7 +257,10 @@ weigert iedere directe `UPDATE` en `DELETE`, ook via de database-eigenaar.
 - verhoogt access- en row-version;
 - auditeert atomair;
 - levert bij retry dezelfde vastgelegde versions terug zonder tweede mutatie;
-- auditeert stale/niet-actieve lifecyclepogingen idempotent met codes;
+- auditeert een stale versionpoging idempotent met een technische code;
+- bewaart alleen de exacte bestaande correlation-replay na de eerste aanvraag
+  en weigert iedere nieuwe aanvraag vanuit `deletion_pending`,
+  `auth_removal_pending` of `anonymized` met `ACTIVE_PROFILE_REQUIRED`;
 - retourneert uitsluitend een getypeerd technisch resultaat.
 
 De niet-publieke functies `private.prepare_profile_auth_removal(...)` en
@@ -134,30 +279,96 @@ productieanonimisering is niet veilig vóór die uitbreidingen en de C-003F-gate
 
 ## Lokale verificatie
 
-De bestaande actieve workspace-stack is niet gereset. Voor C-003A is een aparte
-tijdelijke stack gebruikt met project-ID `avaryn-c003a-isolated-6alvm5` en
-afwijkende poorten.
+De bestaande actieve workspace-stack is niet gereset. Alle databasehandelingen
+zijn uitgevoerd in de disposable lokale stack
+`/private/tmp/avaryn-c003a-hardening.u7IsRq`, project-ID
+`avaryn-c003a-hardening-u7isrq`, met eigen poorten en zonder `.env`, link,
+remote credentials of seed. Alleen de databasecontainer was nodig.
 
-Uitgevoerde controles:
+### Fresh build, C-003A en catalogus
 
-1. `supabase db reset --local --no-seed` in de geïsoleerde stack: **PASS**;
-   alle migrations van `202607250001` tot en met `202608040001` bouwden vanaf
-   een lege database.
-2. `supabase test db supabase/tests/c003a_identity_audit_foundation.sql --local`:
-   **PASS**, `Files=1, Tests=1, Result: PASS`.
-3. `supabase db lint --local --level warning`: **PASS voor C-003A**; uitsluitend
-   vier reeds bestaande waarschuwingen in legacy planning/syncfuncties, geen
-   C-003A-waarschuwing.
-4. PostgreSQL-catalogusinspectie: **PASS** voor RLS, policies, kolomgrants,
-   triggeractivatie, `ON DELETE SET NULL`, SECURITY DEFINER en lege
-   `search_path`.
-5. `git diff --check`: **PASS**.
+1. `.flutterflow/sdk/bin/supabase db reset --local --no-seed --workdir
+   /private/tmp/avaryn-c003a-hardening.u7IsRq`: **PASS**; alle migrations
+   `202607250001` t/m de geharde `202608040001` bouwden vanaf een lege database.
+2. `.flutterflow/sdk/bin/supabase test db
+   supabase/tests/c003a_identity_audit_foundation.sql --local --workdir
+   /private/tmp/avaryn-c003a-hardening.u7IsRq`: **PASS**;
+   `Files=1, Tests=1, Result: PASS`.
+3. `.flutterflow/sdk/bin/supabase db lint --local --level warning --workdir
+   /private/tmp/avaryn-c003a-hardening.u7IsRq`: **PASS voor C-003A**. Alleen
+   drie reeds bestaande warnings bleven staan: ongebruikte variabele
+   `membership` in `public.pull_operation_changes` en
+   `public.register_sync_device`, en `assignment_result` in
+   `public.create_schedule_series_with_occurrences_v2`.
+4. Read-only catalogusqueries op `pg_proc`, `pg_namespace`, `pg_class`,
+   `pg_trigger`, `pg_policies`, `proacl`/`aclexplode` en de effectieve
+   privilegefuncties: **PASS**. `profiles` en `audit_events` hebben RLS en owner
+   `postgres`; private-schema-USAGE is `anon=false`, `authenticated=true`,
+   `service_role=false`; effectieve private EXECUTE-aantallen zijn `0/19/0`;
+   alle 96 routines hebben owner `postgres` en `search_path=""`; bereikbare
+   onveilige SECURITY DEFINER-routines: `0`; beide append-onlytriggers zijn
+   enabled en hebben de verwachte row-/statementdefinitie.
 
-De test bevat positieve en negatieve gevallen voor provisioning, één-op-één-
-Auth, missing/duplicate/spoofed actors, anonymous/cross-profiletoegang,
-allowlisted displayupdates, directe DML, IANA-timezones, versions, stale
-concurrency, retries, auditimmutabiliteit, PII-uitsluiting, Auth-unlinkvolgorde,
-pseudonimisering, herstel na de externe Auth-stap en duurzame actorhistorie.
+De uitgebreide C-003A-test gebruikt daadwerkelijk `SET LOCAL ROLE anon`,
+`authenticated` en `service_role`. Voor iedere rol worden audit-`INSERT`,
+`UPDATE`, `DELETE` en `TRUNCATE` geweigerd en blijven bestaande auditregels
+staan. Directe aanroepen van de interne auditwriter en lifecyclefuncties worden
+eveneens geweigerd. Database-owner-`UPDATE`, `DELETE` en `TRUNCATE` leveren
+allemaal `AUDIT_EVENTS_APPEND_ONLY`, terwijl normale interne auditwriting blijft
+werken.
+
+Voor `deletion_pending`, `auth_removal_pending` en `anonymized` gebruikt de
+test telkens het oorspronkelijke Auth-subject als `authenticated`, plus
+gespoofde profile-/rolmetadata. Per status is bewezen dat
+`private.current_profile_id()` null geeft, profile-RLS niets leest, een veilige
+clientupdate nul rijen wijzigt en een nieuwe deletion-RPC-aanroep
+`ACTIVE_PROFILE_REQUIRED` krijgt. `auth_removal_pending` is vóór Auth-unlink
+getest; `anonymized` na unlink/finalisatie met de oude stale claim. Bestaande
+idempotency-, version-, audit-, PII- en duurzame-actorcontroles blijven groen.
+
+### Bestaande regressiesuite
+
+De bestaande suite bevat zowel functionele eindstaattests als upgrade-fixtures.
+Daarom zijn de upgradeparen met `supabase db reset --version <predecessor>` en
+vervolgens `psql` fixture -> migration -> verification op hun historische
+grens uitgevoerd. Alle acht paren zijn **PASS**:
+
+- 4C.2A, 4C.2B, 4C.3, 4C.4, 4C.5 en 4C.6;
+- 5B.2 en 5B.4.
+
+Daarna is met `supabase db reset --local --no-seed --version 202607300001`
+een schone laatste pre-C-003A-database gebouwd. Met `docker exec ... psql -X
+-v ON_ERROR_STOP=1 -v avaryn_local_test=1 -f /dev/stdin` zijn alle bestaande
+functionele SQL-tests uitgevoerd: 4A, beide 4B-tests, 4C.2A0, 4C.2A, 4C.2B,
+4C.3, 4C.4, 4C.5, 4C.6, Phase 5 Alpha product recovery, 5B.1, 5B.2 en 5B.4.
+Alle 14 zijn **PASS**.
+
+De lokale fictieve Phase 5C-`basis`fixture (`3/3/6/1/1`) en verificatie zijn
+**PASS**. Aansluitend zijn 5D.1, 5D.2, de browserfixture met een disposable
+local-only credential en 5D.3 Realtime SQL uitgevoerd: alle **PASS**. Er is
+geen `.env` gelezen en geen credential gelogd.
+
+De zeven pure PostgreSQL-Ruby-concurrencytests zijn tegen dezelfde geïsoleerde
+database uitgevoerd met `ruby supabase/tests/<test>.rb
+supabase_db_avaryn-c003a-hardening-u7isrq`: alle **PASS**. Dit omvat 4B
+membership (8/8 races), 4C.2A (20/20), 4C.2B (9/9), 4C.3 (10/10), 4C.4 (6/6),
+4C.5 media (50/50) en 4C.6 realtime/offline sync (vier racegroepen elk
+50/50). De Ruby Auth/Mailpit/Edge-Functionbestanden zijn integratietests, geen
+databasetests, en zijn niet gestart.
+
+Een verkennende directory-aanroep van `supabase test db supabase/tests` is niet
+als gate gebruikt: die directory mengt pgTAP, gewone transactionele SQL,
+persistente fixtures en fasegebonden upgradeverificaties, waardoor de pgTAP-
+runner terecht `No plan found` meldt voor niet-pgTAP-bestanden. Een directe
+`psql`-aanroep van de C-003A-pgTAP-test mist om dezelfde harnessreden de door
+`supabase test db` geïnitialiseerde `extensions.plan`; de officiële enkel-
+bestandrunner hierboven is groen. Oudere functionele tests die nog het bewust
+vervangen Phase 4A-profilecontract gebruiken, zijn op de laatste pre-C-003A-
+baseline getest; de nieuwe C-003A-test is op de volledige fresh build getest.
+
+Alle migrations vóór `202608040001` bleven byte-for-byte ongewijzigd. Ook het
+technische contract, `AGENTS.md`, FlutterFlow- en applicatiecode bleven
+ongewijzigd.
 
 ## Securitygate en rollback
 

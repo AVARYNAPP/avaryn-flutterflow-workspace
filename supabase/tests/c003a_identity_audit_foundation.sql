@@ -16,10 +16,12 @@ create temporary table c003a_fixture (
   prepare_a uuid not null,
   finalize_a uuid not null,
   alternate_request_a uuid not null,
-  audit_count_before_unlink bigint
+  audit_count_before_unlink bigint,
+  audit_count_before_role_attack bigint
 );
 
-grant select, update on pg_temp.c003a_fixture to authenticated, anon;
+grant select, update on pg_temp.c003a_fixture
+  to authenticated, anon, service_role;
 
 insert into pg_temp.c003a_fixture (
   auth_a,
@@ -218,10 +220,142 @@ begin
 end;
 $$;
 
+-- The complete private-schema client allowlist is catalog-driven. PUBLIC,
+-- anon and service_role may execute no private routine. Authenticated may
+-- execute only the 19 pre-existing RLS/helper routines listed below. Every
+-- reachable SECURITY DEFINER routine must pin an empty search_path.
+do $$
+declare
+  authenticated_allowlist oid[] := array[
+    'private.c003a_is_valid_iana_time_zone(text)'::regprocedure::oid,
+    'private.can_join_realtime_topic(text)'::regprocedure::oid,
+    'private.can_manage_horse_grants(uuid,text)'::regprocedure::oid,
+    'private.can_select_feeding_execution_detail(uuid)'::regprocedure::oid,
+    'private.can_select_feeding_plan(uuid)'::regprocedure::oid,
+    'private.can_select_feeding_version(uuid)'::regprocedure::oid,
+    'private.can_select_schedule_assignment_base(uuid)'::regprocedure::oid,
+    'private.can_select_schedule_item_base(uuid)'::regprocedure::oid,
+    'private.can_select_schedule_series_base(uuid)'::regprocedure::oid,
+    'private.can_view_media_asset(uuid)'::regprocedure::oid,
+    'private.can_view_media_audit(uuid)'::regprocedure::oid,
+    'private.can_view_media_link(uuid)'::regprocedure::oid,
+    'private.current_membership_id(uuid)'::regprocedure::oid,
+    'private.current_profile_id()'::regprocedure::oid,
+    'private.current_role(uuid)'::regprocedure::oid,
+    'private.has_horse_capability(uuid,text,text)'::regprocedure::oid,
+    'private.is_active_member(uuid)'::regprocedure::oid,
+    'private.is_stable_manager(uuid)'::regprocedure::oid,
+    'private.schedule_item_access_level(uuid)'::regprocedure::oid
+  ];
+begin
+  if exists (
+    select 1
+    from pg_catalog.pg_proc procedure_record
+    join pg_catalog.pg_namespace namespace_record
+      on namespace_record.oid = procedure_record.pronamespace
+    where namespace_record.nspname = 'private'
+      and procedure_record.prokind in ('f', 'p')
+      and coalesce((
+        select pg_catalog.bool_or(privilege_record.privilege_type = 'EXECUTE')
+        from pg_catalog.aclexplode(coalesce(
+          procedure_record.proacl,
+          pg_catalog.acldefault('f', procedure_record.proowner)
+        )) privilege_record
+        where privilege_record.grantee = 0
+      ), false)
+  ) then
+    raise exception 'PUBLIC can execute a private routine';
+  end if;
+
+  if exists (
+    select 1
+    from pg_catalog.pg_proc procedure_record
+    join pg_catalog.pg_namespace namespace_record
+      on namespace_record.oid = procedure_record.pronamespace
+    where namespace_record.nspname = 'private'
+      and procedure_record.prokind in ('f', 'p')
+      and pg_catalog.has_function_privilege(
+        'anon', procedure_record.oid, 'EXECUTE'
+      )
+  ) then
+    raise exception 'anon can execute a private routine';
+  end if;
+
+  if exists (
+    select 1
+    from pg_catalog.pg_proc procedure_record
+    join pg_catalog.pg_namespace namespace_record
+      on namespace_record.oid = procedure_record.pronamespace
+    where namespace_record.nspname = 'private'
+      and procedure_record.prokind in ('f', 'p')
+      and pg_catalog.has_function_privilege(
+        'service_role', procedure_record.oid, 'EXECUTE'
+      )
+  ) then
+    raise exception 'service_role can execute a private routine';
+  end if;
+
+  if exists (
+    select 1
+    from pg_catalog.pg_proc procedure_record
+    join pg_catalog.pg_namespace namespace_record
+      on namespace_record.oid = procedure_record.pronamespace
+    where namespace_record.nspname = 'private'
+      and procedure_record.prokind in ('f', 'p')
+      and pg_catalog.has_function_privilege(
+        'authenticated', procedure_record.oid, 'EXECUTE'
+      ) <> (procedure_record.oid = any(authenticated_allowlist))
+  ) then
+    raise exception 'Authenticated private-routine allowlist drifted';
+  end if;
+
+  if exists (
+    select 1
+    from pg_catalog.pg_proc procedure_record
+    join pg_catalog.pg_namespace namespace_record
+      on namespace_record.oid = procedure_record.pronamespace
+    where namespace_record.nspname = 'private'
+      and procedure_record.prokind in ('f', 'p')
+      and procedure_record.prosecdef
+      and (
+        pg_catalog.has_function_privilege(
+          'anon', procedure_record.oid, 'EXECUTE'
+        )
+        or pg_catalog.has_function_privilege(
+          'authenticated', procedure_record.oid, 'EXECUTE'
+        )
+        or pg_catalog.has_function_privilege(
+          'service_role', procedure_record.oid, 'EXECUTE'
+        )
+      )
+      and not coalesce(
+        procedure_record.proconfig @> array['search_path=""'],
+        false
+      )
+  ) then
+    raise exception 'Reachable SECURITY DEFINER routine has unsafe search_path';
+  end if;
+
+  if pg_catalog.has_schema_privilege('anon', 'private', 'USAGE')
+    or not pg_catalog.has_schema_privilege(
+      'authenticated', 'private', 'USAGE'
+    )
+    or pg_catalog.has_schema_privilege('service_role', 'private', 'USAGE')
+  then
+    raise exception 'Private schema USAGE allowlist drifted';
+  end if;
+end;
+$$;
+
 -- Missing and anonymous actors fail closed. Anonymous cannot even execute the
 -- helper, while a trusted diagnostic call with no JWT obtains null.
 select pg_catalog.set_config('request.jwt.claim.sub', '', true);
 select pg_catalog.set_config('request.jwt.claim.role', 'anon', true);
+
+update pg_temp.c003a_fixture fixture
+set audit_count_before_role_attack = (
+  select pg_catalog.count(*) from public.audit_events
+);
 
 do $$
 begin
@@ -261,10 +395,112 @@ begin
     when insufficient_privilege then
       null;
   end;
+
+  begin
+    insert into public.audit_events (
+      actor_kind,
+      actor_profile_id,
+      event_type,
+      resource_kind,
+      resource_id,
+      scope_kind,
+      scope_id,
+      reason_code,
+      correlation_id,
+      channel
+    )
+    values (
+      'profile',
+      (select profile_a from pg_temp.c003a_fixture),
+      'profile.deletion_requested',
+      'profile',
+      (select profile_a from pg_temp.c003a_fixture),
+      'profile',
+      (select profile_a from pg_temp.c003a_fixture),
+      'USER_DELETION_REQUEST',
+      extensions.gen_random_uuid(),
+      'rpc'
+    );
+    raise exception 'Anonymous direct audit INSERT succeeded';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    update public.audit_events set metadata = metadata;
+    raise exception 'Anonymous direct audit UPDATE succeeded';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    delete from public.audit_events;
+    raise exception 'Anonymous direct audit DELETE succeeded';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    truncate table public.audit_events;
+    raise exception 'Anonymous direct audit TRUNCATE succeeded';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    perform private.c003a_write_profile_audit(
+      'profile.provisioned',
+      (select profile_a from pg_temp.c003a_fixture),
+      null,
+      'auth_provisioner',
+      extensions.gen_random_uuid(),
+      'system',
+      null,
+      'active',
+      null,
+      1,
+      null,
+      1,
+      '{}'::jsonb
+    );
+    raise exception 'Anonymous actor executed internal audit writer';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    perform private.prepare_profile_auth_removal(
+      (select profile_a from pg_temp.c003a_fixture),
+      1,
+      extensions.gen_random_uuid()
+    );
+    raise exception 'Anonymous actor executed internal lifecycle function';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
 end;
 $$;
 
 reset role;
+
+do $$
+declare
+  fixture pg_temp.c003a_fixture%rowtype;
+begin
+  select * into fixture from pg_temp.c003a_fixture;
+  if (
+    select pg_catalog.count(*) from public.audit_events
+  ) <> fixture.audit_count_before_role_attack then
+    raise exception 'Anonymous denied DML changed audit history';
+  end if;
+end;
+$$;
 
 -- Auth user A receives a hostile metadata payload that claims profile B and a
 -- privileged role. Only the JWT sub/Auth UID may influence actor derivation.
@@ -293,6 +529,11 @@ select pg_catalog.set_config(
     from pg_temp.c003a_fixture fixture
   ),
   true
+);
+
+update pg_temp.c003a_fixture fixture
+set audit_count_before_role_attack = (
+  select pg_catalog.count(*) from public.audit_events
 );
 
 set local role authenticated;
@@ -455,6 +696,48 @@ begin
       null;
   end;
 
+  begin
+    truncate table public.audit_events;
+    raise exception 'Authenticated direct audit TRUNCATE succeeded';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    perform private.c003a_write_profile_audit(
+      'profile.provisioned',
+      fixture.profile_a,
+      null,
+      'auth_provisioner',
+      extensions.gen_random_uuid(),
+      'system',
+      null,
+      'active',
+      null,
+      1,
+      null,
+      1,
+      '{}'::jsonb
+    );
+    raise exception 'Authenticated executed the internal audit writer';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    perform private.prepare_profile_auth_removal(
+      fixture.profile_a,
+      1,
+      extensions.gen_random_uuid()
+    );
+    raise exception 'Authenticated executed an internal lifecycle function';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
   if pg_catalog.has_function_privilege(
     'authenticated',
     'private.c003a_write_profile_audit(text,uuid,uuid,text,uuid,text,text,text,bigint,bigint,bigint,bigint,jsonb)',
@@ -498,6 +781,190 @@ end;
 $$;
 
 reset role;
+
+do $$
+declare
+  fixture pg_temp.c003a_fixture%rowtype;
+begin
+  select * into fixture from pg_temp.c003a_fixture;
+  if (
+    select pg_catalog.count(*) from public.audit_events
+  ) <> fixture.audit_count_before_role_attack + 1 then
+    raise exception 'Authenticated denied DML changed audit history';
+  end if;
+end;
+$$;
+
+-- service_role has BYPASSRLS, so actual DML proves that explicit table and
+-- function ACLs still deny every C-003A audit/lifecycle path.
+select pg_catalog.set_config('request.jwt.claim.sub', '', true);
+select pg_catalog.set_config('request.jwt.claim.role', 'service_role', true);
+
+update pg_temp.c003a_fixture fixture
+set audit_count_before_role_attack = (
+  select pg_catalog.count(*) from public.audit_events
+);
+
+set local role service_role;
+
+do $$
+declare
+  fixture pg_temp.c003a_fixture%rowtype;
+begin
+  select * into fixture from pg_temp.c003a_fixture;
+
+  begin
+    perform profile.id from public.profiles profile;
+    raise exception 'service_role read profiles';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    insert into public.audit_events (
+      actor_kind,
+      actor_profile_id,
+      event_type,
+      resource_kind,
+      resource_id,
+      scope_kind,
+      scope_id,
+      reason_code,
+      correlation_id,
+      channel
+    )
+    values (
+      'profile',
+      fixture.profile_a,
+      'profile.deletion_requested',
+      'profile',
+      fixture.profile_a,
+      'profile',
+      fixture.profile_a,
+      'USER_DELETION_REQUEST',
+      extensions.gen_random_uuid(),
+      'rpc'
+    );
+    raise exception 'service_role direct audit INSERT succeeded';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    update public.audit_events set metadata = metadata;
+    raise exception 'service_role direct audit UPDATE succeeded';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    delete from public.audit_events;
+    raise exception 'service_role direct audit DELETE succeeded';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    truncate table public.audit_events;
+    raise exception 'service_role direct audit TRUNCATE succeeded';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    perform private.c003a_write_profile_audit(
+      'profile.provisioned',
+      fixture.profile_a,
+      null,
+      'auth_provisioner',
+      extensions.gen_random_uuid(),
+      'system',
+      null,
+      'active',
+      null,
+      1,
+      null,
+      1,
+      '{}'::jsonb
+    );
+    raise exception 'service_role executed internal audit writer';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    perform private.prepare_profile_auth_removal(
+      fixture.profile_a,
+      1,
+      extensions.gen_random_uuid()
+    );
+    raise exception 'service_role executed internal lifecycle function';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+
+  begin
+    perform public.request_profile_deletion(
+      1,
+      extensions.gen_random_uuid()
+    );
+    raise exception 'service_role executed public deletion RPC';
+  exception
+    when insufficient_privilege then
+      null;
+  end;
+end;
+$$;
+
+reset role;
+
+do $$
+declare
+  fixture pg_temp.c003a_fixture%rowtype;
+begin
+  select * into fixture from pg_temp.c003a_fixture;
+  if (
+    select pg_catalog.count(*) from public.audit_events
+  ) <> fixture.audit_count_before_role_attack then
+    raise exception 'service_role denied DML changed audit history';
+  end if;
+end;
+$$;
+
+-- Restore the authenticated Auth-A JWT used by the remaining lifecycle tests.
+select pg_catalog.set_config(
+  'request.jwt.claim.sub',
+  (select fixture.auth_a::text from pg_temp.c003a_fixture fixture),
+  true
+);
+select pg_catalog.set_config('request.jwt.claim.role', 'authenticated', true);
+select pg_catalog.set_config(
+  'request.jwt.claims',
+  (
+    select pg_catalog.jsonb_build_object(
+      'sub',
+      fixture.auth_a,
+      'role',
+      'authenticated',
+      'user_metadata',
+      pg_catalog.jsonb_build_object(
+        'profile_id',
+        fixture.profile_b,
+        'role',
+        'platform_admin'
+      )
+    )::text
+    from pg_temp.c003a_fixture fixture
+  ),
+  true
+);
 
 do $$
 declare
@@ -568,6 +1035,7 @@ declare
   fixture pg_temp.c003a_fixture%rowtype;
   result record;
   visible_count bigint;
+  changed_count bigint;
 begin
   select * into fixture from pg_temp.c003a_fixture;
 
@@ -604,11 +1072,15 @@ begin
     raise exception 'Deletion request replay was not idempotent';
   end if;
 
-  select * into result
-  from public.request_profile_deletion(3, fixture.alternate_request_a);
-  if result.result_code <> 'already_pending' or result.applied then
-    raise exception 'Second correlation caused another deletion mutation';
-  end if;
+  begin
+    perform public.request_profile_deletion(3, fixture.alternate_request_a);
+    raise exception 'deletion_pending reused the deletion RPC as active actor';
+  exception
+    when insufficient_privilege then
+      if sqlerrm <> 'ACTIVE_PROFILE_REQUIRED' then
+        raise;
+      end if;
+  end;
 
   if private.current_profile_id() is not null then
     raise exception 'deletion_pending remained an active actor';
@@ -618,6 +1090,14 @@ begin
   from public.profiles profile;
   if visible_count <> 0 then
     raise exception 'deletion_pending profile remained RLS-readable';
+  end if;
+
+  update public.profiles profile
+  set display_name = 'Spoofed deletion-pending update'
+  where profile.id = fixture.profile_a;
+  get diagnostics changed_count = row_count;
+  if changed_count <> 0 then
+    raise exception 'deletion_pending profile remained client-updatable';
   end if;
 end;
 $$;
@@ -629,8 +1109,6 @@ declare
   fixture pg_temp.c003a_fixture%rowtype;
   profile_record public.profiles%rowtype;
   result record;
-  audit_before bigint;
-  audit_after bigint;
 begin
   select * into fixture from pg_temp.c003a_fixture;
   select * into profile_record
@@ -680,14 +1158,6 @@ begin
       and event.row_version_after = 2
       and event.access_version_before = 1
       and event.access_version_after = 1
-  ) or not exists (
-    select 1
-    from public.audit_events event
-    where event.event_type = 'profile.lifecycle_denied'
-      and event.resource_id = fixture.profile_a
-      and event.correlation_id = fixture.alternate_request_a
-      and event.actor_profile_id = fixture.profile_a
-      and event.metadata = '{"denial_code": "PROFILE_NOT_ACTIVE"}'::jsonb
   ) then
     raise exception 'Security-relevant lifecycle denial audit is incomplete';
   end if;
@@ -793,6 +1263,66 @@ begin
         raise;
       end if;
   end;
+
+end;
+$$;
+
+-- auth_removal_pending must already fail closed while the original Auth link
+-- still exists. Hostile JWT metadata cannot restore actor or RLS access.
+set local role authenticated;
+
+do $$
+declare
+  fixture pg_temp.c003a_fixture%rowtype;
+  visible_count bigint;
+  changed_count bigint;
+begin
+  select * into fixture from pg_temp.c003a_fixture;
+
+  if private.current_profile_id() is not null then
+    raise exception 'auth_removal_pending remained an active actor';
+  end if;
+
+  select pg_catalog.count(*) into visible_count
+  from public.profiles profile;
+  if visible_count <> 0 then
+    raise exception 'auth_removal_pending profile remained RLS-readable';
+  end if;
+
+  update public.profiles profile
+  set display_name = 'Spoofed auth-removal update'
+  where profile.id = fixture.profile_a;
+  get diagnostics changed_count = row_count;
+  if changed_count <> 0 then
+    raise exception 'auth_removal_pending profile remained client-updatable';
+  end if;
+
+  begin
+    perform public.request_profile_deletion(
+      4,
+      fixture.alternate_request_a
+    );
+    raise exception 'auth_removal_pending reused deletion RPC as active actor';
+  exception
+    when insufficient_privilege then
+      if sqlerrm <> 'ACTIVE_PROFILE_REQUIRED' then
+        raise;
+      end if;
+  end;
+end;
+$$;
+
+reset role;
+
+do $$
+declare
+  fixture pg_temp.c003a_fixture%rowtype;
+  profile_record public.profiles%rowtype;
+  result record;
+  audit_before bigint;
+  audit_after bigint;
+begin
+  select * into fixture from pg_temp.c003a_fixture;
 
   select pg_catalog.count(*) into audit_before
   from public.audit_events event
@@ -906,13 +1436,63 @@ begin
 end;
 $$;
 
+-- The stale original Auth subject and spoofed profile metadata must not regain
+-- actor, RLS, update or RPC access after unlink and finalization.
+set local role authenticated;
+
+do $$
+declare
+  fixture pg_temp.c003a_fixture%rowtype;
+  visible_count bigint;
+  changed_count bigint;
+begin
+  select * into fixture from pg_temp.c003a_fixture;
+
+  if private.current_profile_id() is not null then
+    raise exception 'anonymized profile remained an active actor';
+  end if;
+
+  select pg_catalog.count(*) into visible_count
+  from public.profiles profile;
+  if visible_count <> 0 then
+    raise exception 'anonymized profile remained RLS-readable';
+  end if;
+
+  update public.profiles profile
+  set display_name = 'Spoofed anonymized update'
+  where profile.id = fixture.profile_a;
+  get diagnostics changed_count = row_count;
+  if changed_count <> 0 then
+    raise exception 'anonymized profile remained client-updatable';
+  end if;
+
+  begin
+    perform public.request_profile_deletion(
+      6,
+      'c003a400-0000-4000-8000-000000000002'
+    );
+    raise exception 'anonymized profile reused deletion RPC as active actor';
+  exception
+    when insufficient_privilege then
+      if sqlerrm <> 'ACTIVE_PROFILE_REQUIRED' then
+        raise;
+      end if;
+  end;
+end;
+$$;
+
+reset role;
+
 -- Direct trusted database DML cannot alter append-only events, and version or
 -- lifecycle guards prevent monotonicity/reversal violations on profiles.
 do $$
 declare
   fixture pg_temp.c003a_fixture%rowtype;
+  audit_before bigint;
+  audit_after bigint;
 begin
   select * into fixture from pg_temp.c003a_fixture;
+  select pg_catalog.count(*) into audit_before from public.audit_events;
 
   begin
     update public.audit_events event
@@ -926,6 +1506,13 @@ begin
       end if;
   end;
 
+  select pg_catalog.count(*) into audit_after from public.audit_events;
+  if audit_after <> audit_before then
+    raise exception 'Trusted denied audit UPDATE changed audit history';
+  end if;
+
+  audit_before := audit_after;
+
   begin
     delete from public.audit_events event
     where event.resource_id = fixture.profile_a;
@@ -936,6 +1523,28 @@ begin
         raise;
       end if;
   end;
+
+  select pg_catalog.count(*) into audit_after from public.audit_events;
+  if audit_after <> audit_before then
+    raise exception 'Trusted denied audit DELETE changed audit history';
+  end if;
+
+  audit_before := audit_after;
+
+  begin
+    truncate table public.audit_events;
+    raise exception 'Trusted direct audit TRUNCATE succeeded';
+  exception
+    when object_not_in_prerequisite_state then
+      if sqlerrm <> 'AUDIT_EVENTS_APPEND_ONLY' then
+        raise;
+      end if;
+  end;
+
+  select pg_catalog.count(*) into audit_after from public.audit_events;
+  if audit_after <> audit_before then
+    raise exception 'Trusted denied audit TRUNCATE changed audit history';
+  end if;
 
   begin
     update public.profiles profile
@@ -993,6 +1602,19 @@ begin
       and constraint_record.contype = 'u'
   ) then
     raise exception 'One-to-one Auth/profile unique constraint is missing';
+  end if;
+
+  if not exists (
+    select 1
+    from pg_catalog.pg_trigger trigger_record
+    where trigger_record.tgrelid = 'public.audit_events'::regclass
+      and trigger_record.tgname = 'audit_events_append_only_truncate'
+      and not trigger_record.tgisinternal
+      and trigger_record.tgenabled = 'O'
+      and pg_catalog.pg_get_triggerdef(trigger_record.oid)
+        ilike '%BEFORE TRUNCATE%FOR EACH STATEMENT%'
+  ) then
+    raise exception 'Statement-level audit TRUNCATE protection is missing';
   end if;
 
   select pg_catalog.pg_get_functiondef(

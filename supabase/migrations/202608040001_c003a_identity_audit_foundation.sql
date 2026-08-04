@@ -22,7 +22,7 @@ as $$
 $$;
 
 revoke all on function private.c003a_is_valid_iana_time_zone(text)
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 
 drop trigger if exists phase_4a_auth_user_profile on auth.users;
 drop trigger if exists phase_4a_profile_before_write on public.profiles;
@@ -241,6 +241,10 @@ $$;
 create trigger audit_events_append_only
 before update or delete on public.audit_events
 for each row execute function private.c003a_prevent_audit_mutation();
+
+create trigger audit_events_append_only_truncate
+before truncate on public.audit_events
+for each statement execute function private.c003a_prevent_audit_mutation();
 
 create or replace function private.c003a_write_profile_audit(
   p_event_type text,
@@ -801,8 +805,7 @@ begin
   select pg_catalog.array_agg(profile.id)
   into actor_ids
   from public.profiles profile
-  where profile.auth_user_id = auth.uid()
-    and profile.status in ('active', 'deletion_pending');
+  where profile.auth_user_id = auth.uid();
 
   if coalesce(pg_catalog.cardinality(actor_ids), 0) <> 1 then
     raise exception using errcode = '42501', message = 'ACTIVE_PROFILE_REQUIRED';
@@ -834,38 +837,7 @@ begin
   end if;
 
   if profile_before.status <> 'active' then
-    if not exists (
-      select 1
-      from public.audit_events event
-      where event.event_type = 'profile.lifecycle_denied'
-        and event.resource_id = profile_before.id
-        and event.correlation_id = p_correlation_id
-    ) then
-      perform private.c003a_write_profile_audit(
-        'profile.lifecycle_denied',
-        profile_before.id,
-        profile_before.id,
-        null,
-        p_correlation_id,
-        'rpc',
-        profile_before.status,
-        profile_before.status,
-        profile_before.row_version,
-        profile_before.row_version,
-        profile_before.access_version,
-        profile_before.access_version,
-        '{"denial_code": "PROFILE_NOT_ACTIVE"}'::jsonb
-      );
-    end if;
-    return query select
-      'already_pending'::text,
-      profile_before.status,
-      profile_before.row_version,
-      profile_before.access_version,
-      p_correlation_id,
-      false,
-      false;
-    return;
+    raise exception using errcode = '42501', message = 'ACTIVE_PROFILE_REQUIRED';
   end if;
 
   if p_expected_row_version is null
@@ -1231,25 +1203,25 @@ using (private.current_profile_id() = id)
 with check (private.current_profile_id() = id);
 
 revoke all on function public.phase_4a_profile_before_write()
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 revoke all on function public.phase_4a_create_profile_for_auth_user()
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 revoke all on function private.c003a_audit_json_keys_allowed(jsonb, text[])
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 revoke all on function private.c003a_prevent_audit_mutation()
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 revoke all on function private.c003a_write_profile_audit(
   text, uuid, uuid, text, uuid, text, text, text,
   bigint, bigint, bigint, bigint, jsonb
 ) from public, anon, authenticated, service_role;
 revoke all on function private.c003a_audit_profile_insert()
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 revoke all on function private.c003a_audit_safe_profile_update()
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 revoke all on function private.current_profile_id()
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 revoke all on function private.require_current_profile_id()
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 revoke all on function private.prepare_profile_auth_removal(uuid, bigint, uuid)
   from public, anon, authenticated, service_role;
 revoke all on function private.finalize_profile_anonymization(uuid, bigint, uuid)
@@ -1261,7 +1233,7 @@ grant execute on function private.c003a_is_valid_iana_time_zone(text)
 grant execute on function private.current_profile_id() to authenticated;
 
 revoke all on function public.request_profile_deletion(bigint, uuid)
-  from public, anon, authenticated;
+  from public, anon, authenticated, service_role;
 grant execute on function public.request_profile_deletion(bigint, uuid)
   to authenticated;
 

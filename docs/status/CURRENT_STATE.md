@@ -28,12 +28,23 @@ Laatst bijgewerkt: 2026-08-04
   deletion-/anonimiseringsbasis.
 - De volledige migrationketen bouwt groen vanaf een lege geïsoleerde lokale
   database en de positieve/negatieve C-003A-securitytest is groen.
+- De C-003A-security-hardening na handmatige review is lokaal uitgevoerd:
+  `audit_events` is nu ook tegen owner-`TRUNCATE` beschermd, de volledige
+  private-routine-inventaris (96 functies) heeft een catalogusgestuurde exacte
+  allowlist en daadwerkelijke `anon`-/`authenticated`-/`service_role`-tests,
+  en alle drie niet-actieve profilestatussen zijn expliciet fail-closed getest.
+- De fresh build, bestaande fase-correcte SQL- en upgrade-regressies, zeven
+  databaseconcurrencytests, C-003A-pgTAP-test, lint en catalogus-securitygate
+  zijn groen. De hardening moet opnieuw handmatig door Silas worden
+  goedgekeurd; de status blijft daarom **Implemented locally – awaiting Silas
+  security approval**.
 - Volledige productieanonimisering is nog niet veilig vóór de later toe te
   voegen horse-/organization-/membership-/grant-/transferdependencychecks en
   de C-003F-securitygate.
 - Er is niets remote uitgevoerd, geen stagingreset gedaan en geen FlutterFlow-
   of applicatiecode gewijzigd voor C-003A.
-- Er is niets gepusht, gemerged of gedeployed als onderdeel van C-002B.
+- Er is niets gepusht, gemerged of gedeployed als onderdeel van deze lokale
+  C-003A-hardening.
 
 Het goedgekeurde contract staat in
 [Account Model v2 Technical Contract](../architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md).
