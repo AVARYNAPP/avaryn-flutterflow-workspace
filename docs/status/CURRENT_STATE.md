@@ -19,12 +19,20 @@ Laatst bijgewerkt: 2026-08-04
 - **Contractstatus:** **Approved**.
 - **Goedgekeurde inhoudscommit:**
   `4288944ae77cee9e1f0bf42f9369956b342e0097`.
-- **C-003A:** nog niet gestart en mag uitsluitend na een afzonderlijke exacte
-  opdracht beginnen.
-- Er is nog geen Account Model v2-functionaliteit geïmplementeerd.
-- Er zijn geen migrations geschreven of uitgevoerd en geen database-, Auth-,
-  RLS-, storage-, Edge-, FlutterFlow- of applicatiewijzigingen uitgevoerd als
-  onderdeel van C-002, C-002A of C-002B.
+- **C-003A:** lokaal geïmplementeerd op de afzonderlijke taskbranch.
+- **C-003A-status:** **Implemented locally – awaiting Silas security approval**.
+- Geïmplementeerd zijn uitsluitend duurzame personal profiles, de unieke
+  nullable koppeling met `auth.uid()`, veilige Auth-provisioning, profile-
+  lifecycle en versions, server-side actorafleiding, fail-closed profile-RLS,
+  kolomgrants, append-only allowlisted audit en de lokale herstelbare
+  deletion-/anonimiseringsbasis.
+- De volledige migrationketen bouwt groen vanaf een lege geïsoleerde lokale
+  database en de positieve/negatieve C-003A-securitytest is groen.
+- Volledige productieanonimisering is nog niet veilig vóór de later toe te
+  voegen horse-/organization-/membership-/grant-/transferdependencychecks en
+  de C-003F-securitygate.
+- Er is niets remote uitgevoerd, geen stagingreset gedaan en geen FlutterFlow-
+  of applicatiecode gewijzigd voor C-003A.
 - Er is niets gepusht, gemerged of gedeployed als onderdeel van C-002B.
 
 Het goedgekeurde contract staat in
@@ -39,6 +47,8 @@ Het goedgekeurde contract staat in
 | Actieve architectuurbranch | `architecture/account-model-v2-contract` |
 | C-002A-basiscommit | `dc93b1c574eab185a95f9aa5113e65415d784d2a` |
 | Goedgekeurde inhoudscommit | `4288944ae77cee9e1f0bf42f9369956b342e0097` |
+| C-003A-branch | `implementation/account-model-v2-c003a-identity-audit` |
+| C-003A-basiscommit | `5eb07f54ffa7464f8f7e325f8b112411936298e8` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
 | FlutterFlow-revisie | `LOTvjLR6TzQjoalLhZWh` |
 | Live Alpha | <https://alpha.avaryn.eu/> |
@@ -75,16 +85,16 @@ De snapshotbranch is het bewijs- en rollbackpunt en mag niet worden gewijzigd.
 - `flutterflow ai upgrade --check` meldde in C-002 op 2026-08-04 een nieuwere
   SDK-build (`2c299209` naar `b5c8a09d`, beide rapporteren versie `0.0.40`). De
   C-002A-check kon door een lokaal Dart-kernel-/netwerkprobleem niet afronden.
-  Er is niet geüpgraded.
+  De C-003A-check kon niet starten omdat `dart` niet op `PATH` stond. Er is niet
+  geüpgraded en FlutterFlow is niet uitgevoerd.
 - De live Alpha en rollback-URL zijn in C-001 read-only geobserveerd; C-002,
   C-002A en C-002B hebben geen live omgeving benaderd of gewijzigd.
 
 ## Eerstvolgende stappen en afzonderlijke gates
 
-De eerstvolgende mogelijke implementatiestap is C-003A, maar uitsluitend nadat
-de nieuwe lokale C-002B-commit-SHA als exacte basis is gecontroleerd én een
-afzonderlijke exacte opdracht voor C-003A is gegeven. C-003 blijft opgesplitst
-in:
+C-003A wacht op de handmatige securitygoedkeuring van Silas. C-003B is niet
+gestart en vereist zowel die goedkeuring als een afzonderlijke exacte opdracht.
+C-003 blijft opgesplitst in:
 
 1. C-003A — Identity and audit foundation;
 2. C-003B — Organizations and memberships;
@@ -98,7 +108,7 @@ eigen branch, begrensde scope, eigen tests, securitygate, handmatig
 goedkeuringsmoment en rollbackpunt. Een fase start of omvat nooit impliciet de
 volgende fase. Zie sectie L van het technische contract voor de exacte scopes.
 
-**Niet uitgevoerd in C-002B:** geen implementatie, C-003A, stagingreset,
-migration, database-/Supabase-/Auth-handeling, push, merge, deployment of
-FlutterFlow-/livewijziging. Deze handelingen blijven verboden zonder een
-afzonderlijke opdracht die de exacte scope autoriseert.
+**Niet uitgevoerd in C-003A:** geen C-003B of latere fase, stagingreset,
+Supabase-linking, remote migration, databasepush, FlutterFlow-/applicatiewijziging,
+push, merge, deployment of livewijziging. Deze handelingen blijven verboden
+zonder een afzonderlijke exacte opdracht en de vereiste voorafgaande gate.
