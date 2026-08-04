@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    Alternatively, build your application passing the --base-href parameter
+    specifying the new root path of your web app.
+
+    Fore more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="AVARYN Alpha">
+
+  <script data-avaryn-invite-bootstrap="phase5-v1">
+(function () {
+  var fragment = window.location.hash || '';
+  var fragmentQuery =
+      fragment.charAt(0) === '#' ? fragment.substring(1) : fragment;
+  var rawToken = new URLSearchParams(fragmentQuery).get('token');
+  if (!rawToken) return;
+
+  document.documentElement.style.visibility = 'hidden';
+  window.history.replaceState(
+    null,
+    '',
+    window.location.pathname + window.location.search
+  );
+
+  var unavailable = function () {
+    window.location.replace('/uitnodiging?invitation_status=unavailable');
+  };
+  if (rawToken.length < 40 || rawToken.length > 128) {
+    unavailable();
+    return;
+  }
+
+  fetch(
+    'https://ipdovjdtnfslrftvrdrl.supabase.co/functions/v1/stable-invitations',
+    {
+      method: 'POST',
+      credentials: 'omit',
+      cache: 'no-store',
+      referrerPolicy: 'no-referrer',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({action: 'preview', token: rawToken})
+    }
+  )
+    .then(function (response) {
+      if (!response.ok) throw new Error('preview unavailable');
+      return response.json();
+    })
+    .then(function (preview) {
+      var invitationId =
+          typeof preview.invitation_id === 'string'
+              ? preview.invitation_id
+              : '';
+      var validInvitationId =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+              .test(invitationId);
+      if (preview.status !== 'pending' || !validInvitationId) {
+        throw new Error('invitation unavailable');
+      }
+      window.location.replace(
+        '/uitnodiging?invitation_id=' + encodeURIComponent(invitationId)
+      );
+    })
+    .catch(unavailable);
+})();
+</script>
+
+  <meta name="robots" content="noindex" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <!-- Open Graph & SEO tags -->
+  <meta property="og:title" content="AVARYN Alpha — besloten testomgeving" />
+  <meta property="og:description" content="Besloten Alpha met uitsluitend fictieve testdata. Geen productie." />
+  <meta property="og:image" content="https://storage.googleapis.com/flutterflow-prod-hosting/og_splash_gradient.png" />
+  <meta name="twitter:title" content="AVARYN Alpha — besloten testomgeving" />
+  <meta name="twitter:description" content="Besloten Alpha met uitsluitend fictieve testdata. Geen productie." />
+  <meta name="twitter:image" content="https://storage.googleapis.com/flutterflow-prod-hosting/og_splash_gradient.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <title> AVARYN Alpha — besloten testomgeving </title>
+  <meta name="description" content="Besloten Alpha met uitsluitend fictieve testdata. Geen productie." />
+
+
+  <!-- Status Bar color in Safari browser (iOS) and PWA -->
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f1f4f8">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#1d2428">
+
+  <link rel="manifest" href="manifest.json">
+
+</head>
+<body>
+
+
+
+
+
+  <script>
+    {{flutter_bootstrap_js}}
+  </script>
+</body>
+</html>

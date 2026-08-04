@@ -7,6 +7,7 @@ void main() {
   late String stableRuntime;
   late String migration;
   late String interactionMigration;
+  late String horseIdentityMigration;
   late String editFlow;
 
   setUpAll(() {
@@ -23,6 +24,11 @@ void main() {
           'supabase/migrations/'
           '202607300001_phase_5_alpha_interaction_recovery.sql',
         ).readAsStringSync();
+    horseIdentityMigration =
+        File(
+          'supabase/migrations/'
+          '202607270002_phase_4c2b_horse_identity_relationships.sql',
+        ).readAsStringSync();
   });
 
   test('recovery migration is forward-only and preserves existing records', () {
@@ -32,18 +38,24 @@ void main() {
     expect(migration.toLowerCase(), isNot(contains('delete from')));
   });
 
-  test('calendar exposes day week month and all requested filters', () {
+  test('calendar exposes day week month without the removed main filters', () {
     for (final value in const [
       "value: 'day'",
       "value: 'week'",
       "value: 'month'",
-      "labelText: 'Paard'",
-      "labelText: 'Gebruiker'",
-      "labelText: 'Categorie'",
-      "labelText: 'Overzicht'",
     ]) {
       expect(runtime, contains(value));
     }
+    final calendarControls = runtime.substring(
+      runtime.indexOf('Widget _calendarControls('),
+      runtime.indexOf('Future<void> _createFeedingPlan('),
+    );
+    expect(calendarControls, isNot(contains("labelText: 'Paard'")));
+    expect(calendarControls, isNot(contains("labelText: 'Gebruiker'")));
+    expect(calendarControls, isNot(contains("labelText: 'Categorie'")));
+    expect(runtime, isNot(contains('Widget _planningListFilters(')));
+    expect(runtime, contains('childAspectRatio: compact ? 0.72 : 0.88'));
+    expect(runtime, isNot(contains('child: SizedBox(width: 720')));
     expect(
       runtime,
       contains("operation: 'create_schedule_task_with_assignment_v2'"),
@@ -51,6 +63,16 @@ void main() {
     expect(
       runtime,
       contains("operation: 'create_schedule_series_with_occurrences_v2'"),
+    );
+  });
+
+  test('visible dates use Dutch day-month-year notation', () {
+    expect(runtime, contains('String _operationalDisplayDate(dynamic value)'));
+    expect(runtime, contains('DD-MM-JJJJ'));
+    expect(runtime, contains('_stableDateTimeLabel('));
+    expect(
+      runtime,
+      contains("_operationalDisplayDate(item['source_local_date'])"),
     );
   });
 
@@ -224,10 +246,7 @@ void main() {
       interactionMigration,
       contains('private.media_actor_has_capability'),
     );
-    expect(
-      interactionMigration,
-      contains('target_asset.mime_type not in'),
-    );
+    expect(interactionMigration, contains('target_asset.mime_type not in'));
     expect(
       interactionMigration,
       contains("array['profile_media_asset_id']::text[]"),
@@ -245,6 +264,120 @@ void main() {
     expect(runtime, contains("_horseProfileTab == 'feeding'"));
   });
 
+  test('Horse selection is compact searchable and refreshes the profile', () {
+    expect(runtime, contains('Future<void> _showHorseSelector()'));
+    expect(runtime, contains("'Zoek op roepnaam of officiële naam'"));
+    expect(runtime, contains('displayName.contains(normalizedQuery)'));
+    expect(runtime, contains('officialName.contains(normalizedQuery)'));
+    expect(runtime, contains('_horseProfileTab = \'overview\';'));
+    expect(runtime, contains('await _load(quiet: true);'));
+    final horseOverview = runtime.substring(
+      runtime.indexOf('Widget _horsesContent('),
+      runtime.indexOf('Widget _selectedHorseManagement('),
+    );
+    expect(horseOverview, isNot(contains('..._horses.map(')));
+    expect(horseOverview, contains('Icons.keyboard_arrow_down'));
+  });
+
+  test('Horse profile is one photo hero with chips and edit actions', () {
+    expect(runtime, contains('String _horseAgeLabel('));
+    expect(runtime, contains("horse['birth_date']"));
+    expect(runtime, contains("horse['best_performance']"));
+    expect(runtime, contains('gradient: LinearGradient('));
+    expect(runtime, contains("'PAARDPROFIEL'"));
+    expect(runtime, contains("'Activiteit toevoegen'"));
+    expect(runtime, contains("'Bewerken'"));
+    expect(
+      runtime,
+      contains('Future<Map<String, dynamic>?> _showHorseProfilePage('),
+    );
+    expect(runtime, contains('fullscreenDialog: true'));
+    expect(runtime, contains("'Foto kiezen'"));
+    expect(runtime, contains("'Foto vervangen'"));
+    expect(runtime, contains("'Profielfoto verwijderen'"));
+  });
+
+  test('Horse create and edit use one simple three-step mobile page', () {
+    for (final marker in const [
+      "'Gegevens paard'",
+      "'Identificatie'",
+      "'Team en profielfoto'",
+      "'Roepnaam'",
+      "'Officiële naam'",
+      "'Geslacht'",
+      "'Ras'",
+      "'Discipline'",
+      "'Dressuur'",
+      "'Springen'",
+      "'Eventing'",
+      "'Hobby'",
+      "'Eigenaar toevoegen'",
+      "'Trainer toevoegen'",
+      "'Ruiter toevoegen'",
+    ]) {
+      expect(runtime, contains(marker));
+    }
+    expect(runtime, isNot(contains('_showHorseProfileDialog(')));
+    expect(runtime, contains('MaterialPageRoute('));
+    expect(runtime, contains('showDatePicker('));
+    expect(runtime, contains("'Kies vervaldatum'"));
+    expect(
+      runtime,
+      contains('horse == null ? null : (_selectedHorse ?? horse)'),
+    );
+    expect(runtime, contains('value: 0'));
+    expect(runtime, contains('value: 1'));
+    expect(runtime, contains('value: 2'));
+    expect(runtime, contains('_addHorseRelationshipsFromProfile('));
+  });
+
+  test('selected horse management is visible without an expansion menu', () {
+    expect(runtime, contains('_selectedHorseManagementTools(theme)'));
+    expect(runtime, isNot(contains("title: const Text('Beheer en toegang')")));
+  });
+
+  test('Horse identity is separately protected and warns before expiry', () {
+    expect(runtime, contains("operation: 'upsert_horse_identifier'"));
+    expect(runtime, contains("'passport_number'"));
+    expect(runtime, contains("'chip_number'"));
+    expect(runtime, contains("'passport_expires_on'"));
+    expect(runtime, contains("'Paspoort vernieuwen'"));
+    expect(
+      runtime,
+      contains('DateTime(today.year, today.month + 3, today.day)'),
+    );
+    expect(
+      horseIdentityMigration,
+      contains('create table public.horse_identifiers'),
+    );
+    expect(
+      horseIdentityMigration,
+      contains(
+        "private.has_horse_capability(horse_id, 'horse.identity', 'view')",
+      ),
+    );
+    expect(
+      horseIdentityMigration,
+      contains('create or replace function public.upsert_horse_identifier('),
+    );
+    expect(horseIdentityMigration.toLowerCase(), isNot(contains('drop table')));
+    expect(horseIdentityMigration.toLowerCase(), isNot(contains('truncate')));
+    expect(
+      horseIdentityMigration.toLowerCase(),
+      isNot(contains('delete from')),
+    );
+  });
+
+  test('Operational controls use the AVARYN rose-gold selection theme', () {
+    expect(runtime, contains('primary: theme.secondary'));
+    expect(runtime, contains('backgroundColor: theme.secondary'));
+    expect(runtime, contains('const roseGold = Color(0xFFC98980)'));
+    expect(
+      runtime,
+      contains('segmentedButtonTheme: SegmentedButtonThemeData('),
+    );
+  });
+
   test('planning restores list agenda grouping and five activity types', () {
     expect(runtime, contains("value: 'list'"));
     expect(runtime, contains("value: 'calendar'"));
@@ -252,6 +385,7 @@ void main() {
     expect(runtime, contains("'Activiteit toevoegen'"));
     expect(runtime, contains("'Mijn taken'"));
     expect(runtime, contains("'Alle stal'"));
+    expect(runtime, isNot(contains("label: const Text('Routine aanmaken')")));
     for (final type in const [
       "'Training'",
       "'Verzorging'",
@@ -264,4 +398,31 @@ void main() {
     expect(runtime, contains("'all_day': allDay.toString()"));
     expect(runtime, contains("labelText: 'Einduur'"));
   });
+
+  test(
+    'planning period controls drive both list and visual calendar modes',
+    () {
+      final scheduleContent = runtime.substring(
+        runtime.indexOf('Widget _scheduleContent('),
+        runtime.indexOf('Widget _feedingContent('),
+      );
+      expect(
+        scheduleContent.lastIndexOf('_calendarControls(theme)'),
+        lessThan(scheduleContent.lastIndexOf('_scheduleDateControls(theme)')),
+      );
+      expect(scheduleContent, isNot(contains('_planningListFilters()')));
+      expect(runtime, contains("'Vorige'"));
+      expect(runtime, contains("'Vandaag'"));
+      expect(runtime, contains("'Volgende'"));
+      expect(
+        runtime,
+        contains("'Activiteiten op \${_operationalDisplayDate(selected)}'"),
+      );
+      expect(runtime, contains('for (var hour = startHour;'));
+      expect(
+        runtime,
+        contains('_scheduleVisualCard(theme, item, planning: true'),
+      );
+    },
+  );
 }

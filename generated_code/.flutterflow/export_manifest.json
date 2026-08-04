@@ -1,0 +1,1884 @@
+{
+  "schema_version": 1,
+  "project": {
+    "id": "a-v-a-r-y-n-alpha-ynvyuq",
+    "name": "AVARYN Alpha",
+    "directory": "a_v_a_r_y_n_alpha"
+  },
+  "build": {
+    "mode": "export",
+    "format": true
+  },
+  "exported_at": "2026-08-04T10:59:38.360945Z",
+  "files": [
+    ".flutterflow/export_manifest.json",
+    ".gitignore",
+    ".metadata",
+    "README.md",
+    "analysis_options.yaml",
+    "android/.gitignore",
+    "android/app/build.gradle",
+    "android/app/proguard-rules.pro",
+    "android/app/src/debug/AndroidManifest.xml",
+    "android/app/src/main/AndroidManifest.xml",
+    "android/app/src/main/kotlin/com/example/my_project/MainActivity.kt",
+    "android/app/src/main/res/drawable/launch_background.xml",
+    "android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+    "android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+    "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+    "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+    "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+    "android/app/src/main/res/values-night-v31/styles.xml",
+    "android/app/src/main/res/values-night/styles.xml",
+    "android/app/src/main/res/values-v31/styles.xml",
+    "android/app/src/main/res/values/strings.xml",
+    "android/app/src/main/res/values/styles.xml",
+    "android/app/src/profile/AndroidManifest.xml",
+    "android/build.gradle",
+    "android/gradle.properties",
+    "android/gradle/wrapper/gradle-wrapper.properties",
+    "android/settings.gradle",
+    "assets/audios/favicon.png",
+    "assets/fonts/favicon.png",
+    "assets/images/favicon.png",
+    "assets/jsons/favicon.png",
+    "assets/pdfs/favicon.png",
+    "assets/rive_animations/favicon.png",
+    "assets/videos/favicon.png",
+    "ios/.gitignore",
+    "ios/Flutter/AppFrameworkInfo.plist",
+    "ios/Flutter/Debug.xcconfig",
+    "ios/Flutter/Release.xcconfig",
+    "ios/ImageNotification/Info.plist",
+    "ios/ImageNotification/NotificationService.swift",
+    "ios/Podfile",
+    "ios/Runner.xcodeproj/project.pbxproj",
+    "ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+    "ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+    "ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+    "ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme",
+    "ios/Runner.xcworkspace/contents.xcworkspacedata",
+    "ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+    "ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+    "ios/Runner/AppDelegate.swift",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+    "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+    "ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+    "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+    "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+    "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+    "ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+    "ios/Runner/Base.lproj/LaunchScreen.storyboard",
+    "ios/Runner/Base.lproj/Main.storyboard",
+    "ios/Runner/Info.plist",
+    "ios/Runner/PrivacyInfo.xcprivacy",
+    "ios/Runner/Runner-Bridging-Header.h",
+    "ios/Runner/Runner.entitlements",
+    "lib/activity_detail_page/activity_detail_page_model.dart",
+    "lib/activity_detail_page/activity_detail_page_widget.dart",
+    "lib/activity_form_page/activity_form_page_model.dart",
+    "lib/activity_form_page/activity_form_page_widget.dart",
+    "lib/app_state.dart",
+    "lib/auth/auth_manager.dart",
+    "lib/auth/base_auth_user_provider.dart",
+    "lib/auth/supabase_auth/auth_util.dart",
+    "lib/auth/supabase_auth/email_auth.dart",
+    "lib/auth/supabase_auth/supabase_auth_manager.dart",
+    "lib/auth/supabase_auth/supabase_user_provider.dart",
+    "lib/auth_callback_page/auth_callback_page_model.dart",
+    "lib/auth_callback_page/auth_callback_page_widget.dart",
+    "lib/auth_create_account_page/auth_create_account_page_model.dart",
+    "lib/auth_create_account_page/auth_create_account_page_widget.dart",
+    "lib/auth_email_page/auth_email_page_model.dart",
+    "lib/auth_email_page/auth_email_page_widget.dart",
+    "lib/auth_forgot_password_page/auth_forgot_password_page_model.dart",
+    "lib/auth_forgot_password_page/auth_forgot_password_page_widget.dart",
+    "lib/auth_gate_page/auth_gate_page_model.dart",
+    "lib/auth_gate_page/auth_gate_page_widget.dart",
+    "lib/auth_login_page/auth_login_page_model.dart",
+    "lib/auth_login_page/auth_login_page_widget.dart",
+    "lib/auth_reset_password_page/auth_reset_password_page_model.dart",
+    "lib/auth_reset_password_page/auth_reset_password_page_widget.dart",
+    "lib/auth_verify_email_page/auth_verify_email_page_model.dart",
+    "lib/auth_verify_email_page/auth_verify_email_page_widget.dart",
+    "lib/auth_welcome_page/auth_welcome_page_model.dart",
+    "lib/auth_welcome_page/auth_welcome_page_widget.dart",
+    "lib/backend/schema/structs/activity_data_struct.dart",
+    "lib/backend/schema/structs/auth_profile_data_struct.dart",
+    "lib/backend/schema/structs/effective_feeding_schedule_data_struct.dart",
+    "lib/backend/schema/structs/feeding_assignment_exception_data_struct.dart",
+    "lib/backend/schema/structs/feeding_execution_record_data_struct.dart",
+    "lib/backend/schema/structs/feeding_item_data_struct.dart",
+    "lib/backend/schema/structs/feeding_round_config_data_struct.dart",
+    "lib/backend/schema/structs/feeding_round_snapshot_data_struct.dart",
+    "lib/backend/schema/structs/horse_feeding_plan_data_struct.dart",
+    "lib/backend/schema/structs/horse_profile_data_struct.dart",
+    "lib/backend/schema/structs/index.dart",
+    "lib/backend/schema/structs/local_account_scope_data_struct.dart",
+    "lib/backend/schema/structs/local_stable_cloud_link_data_struct.dart",
+    "lib/backend/schema/structs/resolved_feeding_responsible_data_struct.dart",
+    "lib/backend/schema/structs/stable_membership_cache_data_struct.dart",
+    "lib/backend/schema/structs/temporary_feeding_schedule_data_struct.dart",
+    "lib/backend/schema/util/schema_util.dart",
+    "lib/backend/supabase/database/database.dart",
+    "lib/backend/supabase/database/row.dart",
+    "lib/backend/supabase/database/table.dart",
+    "lib/backend/supabase/supabase.dart",
+    "lib/components/activity_assignee_picker_sheet_model.dart",
+    "lib/components/activity_assignee_picker_sheet_widget.dart",
+    "lib/components/activity_confirmation_sheet_model.dart",
+    "lib/components/activity_confirmation_sheet_widget.dart",
+    "lib/components/activity_conflict_sheet_model.dart",
+    "lib/components/activity_conflict_sheet_widget.dart",
+    "lib/components/activity_delete_sheet_v2_model.dart",
+    "lib/components/activity_delete_sheet_v2_widget.dart",
+    "lib/components/activity_discard_sheet_v2_model.dart",
+    "lib/components/activity_discard_sheet_v2_widget.dart",
+    "lib/components/activity_horse_picker_sheet_model.dart",
+    "lib/components/activity_horse_picker_sheet_v2_model.dart",
+    "lib/components/activity_horse_picker_sheet_v2_widget.dart",
+    "lib/components/activity_horse_picker_sheet_widget.dart",
+    "lib/components/activity_type_change_sheet_model.dart",
+    "lib/components/activity_type_change_sheet_widget.dart",
+    "lib/components/avaryn_activity_card_model.dart",
+    "lib/components/avaryn_activity_card_v2_model.dart",
+    "lib/components/avaryn_activity_card_v2_widget.dart",
+    "lib/components/avaryn_activity_card_widget.dart",
+    "lib/components/avaryn_agenda_picker_sheet_model.dart",
+    "lib/components/avaryn_agenda_picker_sheet_widget.dart",
+    "lib/components/avaryn_desktop_navigation_model.dart",
+    "lib/components/avaryn_desktop_navigation_widget.dart",
+    "lib/components/avaryn_horse_selector_card_model.dart",
+    "lib/components/avaryn_horse_selector_card_widget.dart",
+    "lib/components/avaryn_loading_state_model.dart",
+    "lib/components/avaryn_loading_state_widget.dart",
+    "lib/components/avaryn_metric_card_model.dart",
+    "lib/components/avaryn_metric_card_widget.dart",
+    "lib/components/avaryn_mobile_navigation_model.dart",
+    "lib/components/avaryn_mobile_navigation_widget.dart",
+    "lib/components/avaryn_primary_button_model.dart",
+    "lib/components/avaryn_primary_button_widget.dart",
+    "lib/components/avaryn_profile_image_model.dart",
+    "lib/components/avaryn_profile_image_widget.dart",
+    "lib/components/avaryn_secondary_button_model.dart",
+    "lib/components/avaryn_secondary_button_widget.dart",
+    "lib/components/avaryn_status_chip_model.dart",
+    "lib/components/avaryn_status_chip_widget.dart",
+    "lib/components/avaryn_task_row_model.dart",
+    "lib/components/avaryn_task_row_widget.dart",
+    "lib/create_stable_page/create_stable_page_model.dart",
+    "lib/create_stable_page/create_stable_page_widget.dart",
+    "lib/custom_code/actions/index.dart",
+    "lib/custom_code/actions/pick_horse_prototype_photo.dart",
+    "lib/custom_code/functions/activities_for_agenda_date_v2.dart",
+    "lib/custom_code/functions/activity_all_day_from_draft_v2.dart",
+    "lib/custom_code/functions/activity_assignee_label_v2.dart",
+    "lib/custom_code/functions/activity_completion_status_from_bool_v2.dart",
+    "lib/custom_code/functions/activity_conflict_warning_v2.dart",
+    "lib/custom_code/functions/activity_custom_title_from_draft_v2.dart",
+    "lib/custom_code/functions/activity_date_range_label_v2.dart",
+    "lib/custom_code/functions/activity_delete_message.dart",
+    "lib/custom_code/functions/activity_display_title_v2.dart",
+    "lib/custom_code/functions/activity_draft_assignee_label_v2.dart",
+    "lib/custom_code/functions/activity_draft_display_title_v2.dart",
+    "lib/custom_code/functions/activity_duration_choice_for_minutes_v2.dart",
+    "lib/custom_code/functions/activity_duration_custom_text_v2.dart",
+    "lib/custom_code/functions/activity_duration_minutes_v2.dart",
+    "lib/custom_code/functions/activity_effective_assignee_ids_v2.dart",
+    "lib/custom_code/functions/activity_effective_custom_title_v2.dart",
+    "lib/custom_code/functions/activity_effective_end_date_v2.dart",
+    "lib/custom_code/functions/activity_effective_start_date_v2.dart",
+    "lib/custom_code/functions/activity_effective_start_time_v2.dart",
+    "lib/custom_code/functions/activity_end_date_from_draft_v2.dart",
+    "lib/custom_code/functions/activity_end_time_from_draft_v2.dart",
+    "lib/custom_code/functions/activity_form_is_valid.dart",
+    "lib/custom_code/functions/activity_form_is_valid_boolean_v2.dart",
+    "lib/custom_code/functions/activity_form_validation_v2.dart",
+    "lib/custom_code/functions/activity_has_conflict_boolean_v2.dart",
+    "lib/custom_code/functions/activity_horse_name.dart",
+    "lib/custom_code/functions/activity_horse_photo.dart",
+    "lib/custom_code/functions/activity_index_by_id.dart",
+    "lib/custom_code/functions/activity_is_completed_v2.dart",
+    "lib/custom_code/functions/activity_is_first_on_date.dart",
+    "lib/custom_code/functions/activity_is_first_on_start_date_v2.dart",
+    "lib/custom_code/functions/activity_list_is_empty.dart",
+    "lib/custom_code/functions/activity_location_name_from_draft_v2.dart",
+    "lib/custom_code/functions/activity_location_type_from_draft_v2.dart",
+    "lib/custom_code/functions/activity_meta_label_v2.dart",
+    "lib/custom_code/functions/activity_notes_from_draft_v2.dart",
+    "lib/custom_code/functions/activity_provider_from_draft_v2.dart",
+    "lib/custom_code/functions/activity_schedule_label_v2.dart",
+    "lib/custom_code/functions/activity_type_is_service_v2.dart",
+    "lib/custom_code/functions/activity_type_shows_notes_v2.dart",
+    "lib/custom_code/functions/activity_type_supports_all_day_v2.dart",
+    "lib/custom_code/functions/activity_type_uses_end_time_v2.dart",
+    "lib/custom_code/functions/agenda_adjust_time_v3.dart",
+    "lib/custom_code/functions/agenda_calendar_days_v3.dart",
+    "lib/custom_code/functions/agenda_candidate_time_is_valid_v3.dart",
+    "lib/custom_code/functions/agenda_date_is_before_v3.dart",
+    "lib/custom_code/functions/agenda_date_label_v3.dart",
+    "lib/custom_code/functions/agenda_day_number_v3.dart",
+    "lib/custom_code/functions/agenda_day_style_v3.dart",
+    "lib/custom_code/functions/agenda_initial_date_v3.dart",
+    "lib/custom_code/functions/agenda_initial_time_v3.dart",
+    "lib/custom_code/functions/agenda_is_calendar_mode_v3.dart",
+    "lib/custom_code/functions/agenda_is_time_mode_v3.dart",
+    "lib/custom_code/functions/agenda_marked_dates_label_v2.dart",
+    "lib/custom_code/functions/agenda_mode_title_v3.dart",
+    "lib/custom_code/functions/agenda_month_label_v3.dart",
+    "lib/custom_code/functions/agenda_month_shift_v3.dart",
+    "lib/custom_code/functions/agenda_planned_summary_v3.dart",
+    "lib/custom_code/functions/agenda_ready_v3.dart",
+    "lib/custom_code/functions/agenda_text_is_empty_v3.dart",
+    "lib/custom_code/functions/agenda_time_label_v3.dart",
+    "lib/custom_code/functions/compose_horse_date.dart",
+    "lib/custom_code/functions/default_assignee_ids_v2.dart",
+    "lib/custom_code/functions/feeding_execution_logical_key_v1.dart",
+    "lib/custom_code/functions/format_activity_date_dutch.dart",
+    "lib/custom_code/functions/format_activity_time_dutch.dart",
+    "lib/custom_code/functions/format_horse_birth_date.dart",
+    "lib/custom_code/functions/format_horse_date_dutch.dart",
+    "lib/custom_code/functions/horse_age_label.dart",
+    "lib/custom_code/functions/horse_date_day.dart",
+    "lib/custom_code/functions/horse_date_month.dart",
+    "lib/custom_code/functions/horse_date_selection_is_valid.dart",
+    "lib/custom_code/functions/horse_date_year.dart",
+    "lib/custom_code/functions/horse_list_is_empty.dart",
+    "lib/custom_code/functions/horse_passport_warning_message.dart",
+    "lib/custom_code/functions/horse_passport_warning_visible.dart",
+    "lib/custom_code/functions/parse_horse_prototype_date.dart",
+    "lib/custom_code/functions/resolve_effective_feeding_schedule_v1.dart",
+    "lib/custom_code/functions/resolve_feeding_responsible_user_v1.dart",
+    "lib/custom_code/functions/sorted_activities.dart",
+    "lib/custom_code/functions/sorted_activities_v2.dart",
+    "lib/custom_code/functions/today_activities.dart",
+    "lib/custom_code/functions/today_activities_v2.dart",
+    "lib/custom_code/widgets/avaryn_account_runtime.dart",
+    "lib/custom_code/widgets/avaryn_agenda_picker_runtime.dart",
+    "lib/custom_code/widgets/avaryn_daily_feeding_runtime.dart",
+    "lib/custom_code/widgets/avaryn_horse_avatar.dart",
+    "lib/custom_code/widgets/avaryn_horse_nutrition_runtime.dart",
+    "lib/custom_code/widgets/avaryn_horseshoe_icon.dart",
+    "lib/custom_code/widgets/avaryn_operational_runtime.dart",
+    "lib/custom_code/widgets/avaryn_orion_photo.dart",
+    "lib/custom_code/widgets/avaryn_planning_views_runtime.dart",
+    "lib/custom_code/widgets/avaryn_stable_runtime.dart",
+    "lib/custom_code/widgets/index.dart",
+    "lib/feeding_overview_page/feeding_overview_page_model.dart",
+    "lib/feeding_overview_page/feeding_overview_page_widget.dart",
+    "lib/feeding_round_execution_page/feeding_round_execution_page_model.dart",
+    "lib/feeding_round_execution_page/feeding_round_execution_page_widget.dart",
+    "lib/feeding_round_settings_page/feeding_round_settings_page_model.dart",
+    "lib/feeding_round_settings_page/feeding_round_settings_page_widget.dart",
+    "lib/flutter_flow/custom_functions.dart",
+    "lib/flutter_flow/flutter_flow_drop_down.dart",
+    "lib/flutter_flow/flutter_flow_icon_button.dart",
+    "lib/flutter_flow/flutter_flow_model.dart",
+    "lib/flutter_flow/flutter_flow_theme.dart",
+    "lib/flutter_flow/flutter_flow_util.dart",
+    "lib/flutter_flow/flutter_flow_widgets.dart",
+    "lib/flutter_flow/form_field_controller.dart",
+    "lib/flutter_flow/lat_lng.dart",
+    "lib/flutter_flow/nav/nav.dart",
+    "lib/flutter_flow/nav/serialization_util.dart",
+    "lib/flutter_flow/place.dart",
+    "lib/flutter_flow/uploaded_file.dart",
+    "lib/horse_edit_page/horse_edit_page_model.dart",
+    "lib/horse_edit_page/horse_edit_page_widget.dart",
+    "lib/horse_form_page/horse_form_page_model.dart",
+    "lib/horse_form_page/horse_form_page_widget.dart",
+    "lib/horse_nutrition_page/horse_nutrition_page_model.dart",
+    "lib/horse_nutrition_page/horse_nutrition_page_widget.dart",
+    "lib/horses_overview_page/horses_overview_page_model.dart",
+    "lib/horses_overview_page/horses_overview_page_widget.dart",
+    "lib/index.dart",
+    "lib/invalid_stable_invitation_page/invalid_stable_invitation_page_model.dart",
+    "lib/invalid_stable_invitation_page/invalid_stable_invitation_page_widget.dart",
+    "lib/invite_stable_member_page/invite_stable_member_page_model.dart",
+    "lib/invite_stable_member_page/invite_stable_member_page_widget.dart",
+    "lib/link_local_stable_page/link_local_stable_page_model.dart",
+    "lib/link_local_stable_page/link_local_stable_page_widget.dart",
+    "lib/main.dart",
+    "lib/manage_stable_roles_page/manage_stable_roles_page_model.dart",
+    "lib/manage_stable_roles_page/manage_stable_roles_page_widget.dart",
+    "lib/onboarding_page/onboarding_page_model.dart",
+    "lib/onboarding_page/onboarding_page_widget.dart",
+    "lib/orion_profile_page/orion_profile_page_model.dart",
+    "lib/orion_profile_page/orion_profile_page_widget.dart",
+    "lib/pages/today_dashboard_page/today_dashboard_page_model.dart",
+    "lib/pages/today_dashboard_page/today_dashboard_page_widget.dart",
+    "lib/pending_stable_invitations_page/pending_stable_invitations_page_model.dart",
+    "lib/pending_stable_invitations_page/pending_stable_invitations_page_widget.dart",
+    "lib/personal_profile_page/personal_profile_page_model.dart",
+    "lib/personal_profile_page/personal_profile_page_widget.dart",
+    "lib/personal_workspace_page/personal_workspace_page_model.dart",
+    "lib/personal_workspace_page/personal_workspace_page_widget.dart",
+    "lib/planning_page/planning_page_model.dart",
+    "lib/planning_page/planning_page_widget.dart",
+    "lib/stable_access_page/stable_access_page_model.dart",
+    "lib/stable_access_page/stable_access_page_widget.dart",
+    "lib/stable_details_page/stable_details_page_model.dart",
+    "lib/stable_details_page/stable_details_page_widget.dart",
+    "lib/stable_invitation_page/stable_invitation_page_model.dart",
+    "lib/stable_invitation_page/stable_invitation_page_widget.dart",
+    "lib/stable_member_details_page/stable_member_details_page_model.dart",
+    "lib/stable_member_details_page/stable_member_details_page_widget.dart",
+    "lib/stable_members_page/stable_members_page_model.dart",
+    "lib/stable_members_page/stable_members_page_widget.dart",
+    "lib/stable_onboarding_handoff_page/stable_onboarding_handoff_page_model.dart",
+    "lib/stable_onboarding_handoff_page/stable_onboarding_handoff_page_widget.dart",
+    "lib/stable_picker_page/stable_picker_page_model.dart",
+    "lib/stable_picker_page/stable_picker_page_widget.dart",
+    "pubspec.yaml",
+    "test/widget_test.dart",
+    "web/favicon.png",
+    "web/flutter_bootstrap.js",
+    "web/icons/Icon-192.png",
+    "web/icons/Icon-512.png",
+    "web/index.html"
+  ],
+  "entities": [
+    {
+      "type": "component",
+      "key": "Container_1dgta9kx",
+      "name": "AvarynProfileImage",
+      "primary_files": [
+        "lib/components/avaryn_profile_image_model.dart",
+        "lib/components/avaryn_profile_image_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_21pp70yp",
+      "name": "AvarynSecondaryButton",
+      "primary_files": [
+        "lib/components/avaryn_secondary_button_model.dart",
+        "lib/components/avaryn_secondary_button_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_3gqulgvb",
+      "name": "AvarynActivityCardV2",
+      "primary_files": [
+        "lib/components/avaryn_activity_card_v2_model.dart",
+        "lib/components/avaryn_activity_card_v2_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_4mxb0tlc",
+      "name": "AvarynHorseSelectorCard",
+      "primary_files": [
+        "lib/components/avaryn_horse_selector_card_model.dart",
+        "lib/components/avaryn_horse_selector_card_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_5acs1oeo",
+      "name": "ActivityHorsePickerSheetV2",
+      "primary_files": [
+        "lib/components/activity_horse_picker_sheet_v2_model.dart",
+        "lib/components/activity_horse_picker_sheet_v2_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_c66yu2q7",
+      "name": "ActivityDiscardSheetV2",
+      "primary_files": [
+        "lib/components/activity_discard_sheet_v2_model.dart",
+        "lib/components/activity_discard_sheet_v2_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_ef42km7w",
+      "name": "ActivityConfirmationSheet",
+      "primary_files": [
+        "lib/components/activity_confirmation_sheet_model.dart",
+        "lib/components/activity_confirmation_sheet_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_eujb7ae6",
+      "name": "AvarynMetricCard",
+      "primary_files": [
+        "lib/components/avaryn_metric_card_model.dart",
+        "lib/components/avaryn_metric_card_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_h0zs87kw",
+      "name": "AvarynPrimaryButton",
+      "primary_files": [
+        "lib/components/avaryn_primary_button_model.dart",
+        "lib/components/avaryn_primary_button_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_hkktizky",
+      "name": "AvarynAgendaPickerSheet",
+      "primary_files": [
+        "lib/components/avaryn_agenda_picker_sheet_model.dart",
+        "lib/components/avaryn_agenda_picker_sheet_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_l51ogmpc",
+      "name": "AvarynDesktopNavigation",
+      "primary_files": [
+        "lib/components/avaryn_desktop_navigation_model.dart",
+        "lib/components/avaryn_desktop_navigation_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_m0nrxrsy",
+      "name": "ActivityDeleteSheetV2",
+      "primary_files": [
+        "lib/components/activity_delete_sheet_v2_model.dart",
+        "lib/components/activity_delete_sheet_v2_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_mhupnl2w",
+      "name": "ActivityAssigneePickerSheet",
+      "primary_files": [
+        "lib/components/activity_assignee_picker_sheet_model.dart",
+        "lib/components/activity_assignee_picker_sheet_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_ng3zbs10",
+      "name": "AvarynTaskRow",
+      "primary_files": [
+        "lib/components/avaryn_task_row_model.dart",
+        "lib/components/avaryn_task_row_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_oukk75bm",
+      "name": "ActivityTypeChangeSheet",
+      "primary_files": [
+        "lib/components/activity_type_change_sheet_model.dart",
+        "lib/components/activity_type_change_sheet_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_qkwl1ck1",
+      "name": "AvarynMobileNavigation",
+      "primary_files": [
+        "lib/components/avaryn_mobile_navigation_model.dart",
+        "lib/components/avaryn_mobile_navigation_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_swazjnhp",
+      "name": "ActivityHorsePickerSheet",
+      "primary_files": [
+        "lib/components/activity_horse_picker_sheet_model.dart",
+        "lib/components/activity_horse_picker_sheet_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_to3lra4d",
+      "name": "AvarynLoadingState",
+      "primary_files": [
+        "lib/components/avaryn_loading_state_model.dart",
+        "lib/components/avaryn_loading_state_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_uyyeq0nj",
+      "name": "AvarynStatusChip",
+      "primary_files": [
+        "lib/components/avaryn_status_chip_model.dart",
+        "lib/components/avaryn_status_chip_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_vw4hu3u1",
+      "name": "AvarynActivityCard",
+      "primary_files": [
+        "lib/components/avaryn_activity_card_model.dart",
+        "lib/components/avaryn_activity_card_widget.dart"
+      ]
+    },
+    {
+      "type": "component",
+      "key": "Container_xg32slck",
+      "name": "ActivityConflictSheet",
+      "primary_files": [
+        "lib/components/activity_conflict_sheet_model.dart",
+        "lib/components/activity_conflict_sheet_widget.dart"
+      ]
+    },
+    {
+      "type": "custom_action",
+      "key": "qs11kryi",
+      "name": "pickHorsePrototypePhoto",
+      "primary_files": [
+        "lib/custom_code/actions/pick_horse_prototype_photo.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/actions/index.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "0eh30wzy",
+      "name": "sortedActivitiesV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "0oufywpk",
+      "name": "activityEffectiveStartTimeV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "0tbpxfdg",
+      "name": "activityScheduleLabelV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "0xvrhozb",
+      "name": "activityDurationCustomTextV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "15k3siy7",
+      "name": "agendaModeTitleV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "19hlrxip",
+      "name": "activityDurationChoiceForMinutesV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "25b9ymvg",
+      "name": "formatActivityTimeDutch",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "3kw2dtyz",
+      "name": "activityDraftDisplayTitleV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "3th57sl3",
+      "name": "activityEffectiveStartDateV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "4ok34jog",
+      "name": "activityEndTimeFromDraftV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "5cay4gfg",
+      "name": "agendaDateLabelV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "5kxa7fk0",
+      "name": "agendaCalendarDaysV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "5lhig0fr",
+      "name": "activityFormIsValidBooleanV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "5ycj4vu1",
+      "name": "resolveEffectiveFeedingScheduleV1",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "6jbd60zz",
+      "name": "activityLocationNameFromDraftV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "7i8bb5ie",
+      "name": "horseDateMonth",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "7wbir9uv",
+      "name": "agendaPlannedSummaryV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "7wtufdju",
+      "name": "parseHorsePrototypeDate",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "8mc0134s",
+      "name": "activityHorseName",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "8poiw3id",
+      "name": "agendaInitialTimeV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "8s6ckm4z",
+      "name": "agendaMonthLabelV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "9jmd1atb",
+      "name": "activityNotesFromDraftV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "bclsmnd8",
+      "name": "todayActivities",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "bieiiqvz",
+      "name": "activityListIsEmpty",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "btc5op9b",
+      "name": "activityEndDateFromDraftV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "d0deoz7x",
+      "name": "defaultAssigneeIdsV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "doqgegy8",
+      "name": "formatHorseBirthDate",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "doshabgy",
+      "name": "activityMetaLabelV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "dtwpnnnw",
+      "name": "composeHorseDate",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "eh8ta8qw",
+      "name": "activityHasConflictBooleanV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "enqb5ios",
+      "name": "activityFormValidationV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "f6qth8ga",
+      "name": "agendaInitialDateV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "grf9v6ee",
+      "name": "activityTypeIsServiceV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "h2vdc8it",
+      "name": "horseDateYear",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "h3884bji",
+      "name": "horsePassportWarningMessage",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "henkauix",
+      "name": "activityHorsePhoto",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "ib6saip3",
+      "name": "horseDateSelectionIsValid",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "if6uo4mt",
+      "name": "activityDisplayTitleV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "ind4his5",
+      "name": "activityFormIsValid",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "jz960iek",
+      "name": "activityIsFirstOnStartDateV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "kjnwsq2e",
+      "name": "agendaDayStyleV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "l5pg8xf0",
+      "name": "resolveFeedingResponsibleUserV1",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "lffr9bpw",
+      "name": "activityDurationMinutesV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "lsqbsccc",
+      "name": "activityDateRangeLabelV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "m6mhgczk",
+      "name": "activityLocationTypeFromDraftV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "ni70cb09",
+      "name": "activityDraftAssigneeLabelV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "o77vlyen",
+      "name": "agendaMonthShiftV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "oe1ol01t",
+      "name": "activityCompletionStatusFromBoolV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "oqrgovd1",
+      "name": "todayActivitiesV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "p073l6e3",
+      "name": "sortedActivities",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "p6pdry4d",
+      "name": "activityEffectiveCustomTitleV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "pwzfvd88",
+      "name": "agendaReadyV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "q3t69oym",
+      "name": "activityTypeSupportsAllDayV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "qm72znz3",
+      "name": "agendaMarkedDatesLabelV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "qp8hmc0s",
+      "name": "formatActivityDateDutch",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "rcmiw5p4",
+      "name": "agendaTimeLabelV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "rmk0gvht",
+      "name": "activityIsFirstOnDate",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "rocp3ov3",
+      "name": "activityAllDayFromDraftV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "rumqnbp0",
+      "name": "activityEffectiveEndDateV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "rx6y0ymy",
+      "name": "horseListIsEmpty",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "sgxv0jzh",
+      "name": "activityDeleteMessage",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "t4ankjej",
+      "name": "activityAssigneeLabelV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "t7rakeyz",
+      "name": "agendaTextIsEmptyV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "tgit8phh",
+      "name": "activityTypeUsesEndTimeV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "tqjzdm3c",
+      "name": "activityIsCompletedV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "ttyrx9je",
+      "name": "horseAgeLabel",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "tvmrx9oo",
+      "name": "horseDateDay",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "uiujd9eh",
+      "name": "activityProviderFromDraftV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "vhc1qep1",
+      "name": "activityConflictWarningV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "vot4m83k",
+      "name": "activityCustomTitleFromDraftV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "vpgu2hgg",
+      "name": "horsePassportWarningVisible",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "w4elwazr",
+      "name": "agendaCandidateTimeIsValidV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "wgj3wl3k",
+      "name": "agendaIsCalendarModeV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "x64cklaq",
+      "name": "activitiesForAgendaDateV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "xblxinau",
+      "name": "activityIndexById",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "y1mbbdvp",
+      "name": "activityTypeShowsNotesV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "yjbree6a",
+      "name": "activityEffectiveAssigneeIdsV2",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "yje5e4i1",
+      "name": "agendaDateIsBeforeV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "yl28f5sd",
+      "name": "formatHorseDateDutch",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "yojhvyq4",
+      "name": "agendaDayNumberV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "yrk2boqf",
+      "name": "feedingExecutionLogicalKeyV1",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "yxfcbugy",
+      "name": "agendaIsTimeModeV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_function",
+      "key": "zf6z6eib",
+      "name": "agendaAdjustTimeV3",
+      "primary_files": [
+        "lib/flutter_flow/custom_functions.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "1uiry62r",
+      "name": "AvarynOperationalRuntime",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_operational_runtime.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "3w7qrnd2",
+      "name": "AvarynStableRuntime",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_stable_runtime.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "b6rbxfo8",
+      "name": "AvarynAccountRuntime",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_account_runtime.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "bhkotoyu",
+      "name": "AvarynAgendaPickerRuntime",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_agenda_picker_runtime.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "ii6dfq8n",
+      "name": "AvarynOrionPhoto",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_orion_photo.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "ldta1vv4",
+      "name": "AvarynHorseAvatar",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_horse_avatar.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "lif3wmn8",
+      "name": "AvarynPlanningViewsRuntime",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_planning_views_runtime.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "mclzasfv",
+      "name": "AvarynHorseshoeIcon",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_horseshoe_icon.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "viigizty",
+      "name": "AvarynDailyFeedingRuntime",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_daily_feeding_runtime.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "whyvrfah",
+      "name": "AvarynHorseNutritionRuntime",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_horse_nutrition_runtime.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "00jtppkz",
+      "name": "ResolvedFeedingResponsibleData",
+      "primary_files": [
+        "lib/backend/schema/structs/resolved_feeding_responsible_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "013adphj",
+      "name": "AuthProfileData",
+      "primary_files": [
+        "lib/backend/schema/structs/auth_profile_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "3qnd4ap5",
+      "name": "FeedingRoundSnapshotData",
+      "primary_files": [
+        "lib/backend/schema/structs/feeding_round_snapshot_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "89jtfyrj",
+      "name": "StableMembershipCacheData",
+      "primary_files": [
+        "lib/backend/schema/structs/stable_membership_cache_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "a96jjt2c",
+      "name": "FeedingAssignmentExceptionData",
+      "primary_files": [
+        "lib/backend/schema/structs/feeding_assignment_exception_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "c01e822m",
+      "name": "LocalAccountScopeData",
+      "primary_files": [
+        "lib/backend/schema/structs/local_account_scope_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "j9k2haoz",
+      "name": "FeedingItemData",
+      "primary_files": [
+        "lib/backend/schema/structs/feeding_item_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "takcsrzc",
+      "name": "HorseFeedingPlanData",
+      "primary_files": [
+        "lib/backend/schema/structs/horse_feeding_plan_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "tq93s2ml",
+      "name": "HorseProfileData",
+      "primary_files": [
+        "lib/backend/schema/structs/horse_profile_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "wrebqv6m",
+      "name": "ActivityData",
+      "primary_files": [
+        "lib/backend/schema/structs/activity_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "wtj1srxb",
+      "name": "LocalStableCloudLinkData",
+      "primary_files": [
+        "lib/backend/schema/structs/local_stable_cloud_link_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "xdbdxfcz",
+      "name": "FeedingRoundConfigData",
+      "primary_files": [
+        "lib/backend/schema/structs/feeding_round_config_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "xi5zpi72",
+      "name": "FeedingExecutionRecordData",
+      "primary_files": [
+        "lib/backend/schema/structs/feeding_execution_record_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "yf1ak3b7",
+      "name": "TemporaryFeedingScheduleData",
+      "primary_files": [
+        "lib/backend/schema/structs/temporary_feeding_schedule_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "data_struct",
+      "key": "yy4k0bco",
+      "name": "EffectiveFeedingScheduleData",
+      "primary_files": [
+        "lib/backend/schema/structs/effective_feeding_schedule_data_struct.dart"
+      ],
+      "related_files": [
+        "lib/backend/schema/structs/index.dart",
+        "lib/backend/schema/util/schema_util.dart"
+      ]
+    },
+    {
+      "type": "global",
+      "key": "app_state",
+      "name": "app_state",
+      "primary_files": [
+        "lib/app_state.dart"
+      ]
+    },
+    {
+      "type": "global",
+      "key": "index",
+      "name": "index.dart",
+      "primary_files": [
+        "lib/index.dart"
+      ]
+    },
+    {
+      "type": "global",
+      "key": "main",
+      "name": "main.dart",
+      "primary_files": [
+        "lib/main.dart"
+      ]
+    },
+    {
+      "type": "global",
+      "key": "routing",
+      "name": "routing",
+      "primary_files": [
+        "lib/flutter_flow/nav/nav.dart",
+        "lib/flutter_flow/nav/serialization_util.dart"
+      ]
+    },
+    {
+      "type": "global",
+      "key": "theme",
+      "name": "theme",
+      "primary_files": [
+        "lib/flutter_flow/flutter_flow_theme.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_107vm2dt",
+      "name": "StableMemberDetailsPage",
+      "primary_files": [
+        "lib/stable_member_details_page/stable_member_details_page_model.dart",
+        "lib/stable_member_details_page/stable_member_details_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_10g66gk1",
+      "name": "AuthResetPasswordPage",
+      "primary_files": [
+        "lib/auth_reset_password_page/auth_reset_password_page_model.dart",
+        "lib/auth_reset_password_page/auth_reset_password_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_1dpfpzzt",
+      "name": "OnboardingPage",
+      "primary_files": [
+        "lib/onboarding_page/onboarding_page_model.dart",
+        "lib/onboarding_page/onboarding_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_37842yv2",
+      "name": "AuthCreateAccountPage",
+      "primary_files": [
+        "lib/auth_create_account_page/auth_create_account_page_model.dart",
+        "lib/auth_create_account_page/auth_create_account_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_4migd6ef",
+      "name": "ManageStableRolesPage",
+      "primary_files": [
+        "lib/manage_stable_roles_page/manage_stable_roles_page_model.dart",
+        "lib/manage_stable_roles_page/manage_stable_roles_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_6sir78dw",
+      "name": "CreateStablePage",
+      "primary_files": [
+        "lib/create_stable_page/create_stable_page_model.dart",
+        "lib/create_stable_page/create_stable_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_79011cr2",
+      "name": "StableAccessPage",
+      "primary_files": [
+        "lib/stable_access_page/stable_access_page_model.dart",
+        "lib/stable_access_page/stable_access_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_7pdai8gh",
+      "name": "OrionProfilePage",
+      "primary_files": [
+        "lib/orion_profile_page/orion_profile_page_model.dart",
+        "lib/orion_profile_page/orion_profile_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_87e8nraq",
+      "name": "AuthForgotPasswordPage",
+      "primary_files": [
+        "lib/auth_forgot_password_page/auth_forgot_password_page_model.dart",
+        "lib/auth_forgot_password_page/auth_forgot_password_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_aukt1zt2",
+      "name": "PlanningPage",
+      "primary_files": [
+        "lib/planning_page/planning_page_model.dart",
+        "lib/planning_page/planning_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_b0gkhy06",
+      "name": "PersonalProfilePage",
+      "primary_files": [
+        "lib/personal_profile_page/personal_profile_page_model.dart",
+        "lib/personal_profile_page/personal_profile_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_dblirbbd",
+      "name": "HorseEditPage",
+      "primary_files": [
+        "lib/horse_edit_page/horse_edit_page_model.dart",
+        "lib/horse_edit_page/horse_edit_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_dcjwss70",
+      "name": "FeedingRoundExecutionPage",
+      "primary_files": [
+        "lib/feeding_round_execution_page/feeding_round_execution_page_model.dart",
+        "lib/feeding_round_execution_page/feeding_round_execution_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_dica6lj3",
+      "name": "AuthWelcomePage",
+      "primary_files": [
+        "lib/auth_welcome_page/auth_welcome_page_model.dart",
+        "lib/auth_welcome_page/auth_welcome_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_dnl65jwl",
+      "name": "AuthVerifyEmailPage",
+      "primary_files": [
+        "lib/auth_verify_email_page/auth_verify_email_page_model.dart",
+        "lib/auth_verify_email_page/auth_verify_email_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_esj0aqo4",
+      "name": "LinkLocalStablePage",
+      "primary_files": [
+        "lib/link_local_stable_page/link_local_stable_page_model.dart",
+        "lib/link_local_stable_page/link_local_stable_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_ff9s075c",
+      "name": "StableMembersPage",
+      "primary_files": [
+        "lib/stable_members_page/stable_members_page_model.dart",
+        "lib/stable_members_page/stable_members_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_fqozpxje",
+      "name": "StableOnboardingHandoffPage",
+      "primary_files": [
+        "lib/stable_onboarding_handoff_page/stable_onboarding_handoff_page_model.dart",
+        "lib/stable_onboarding_handoff_page/stable_onboarding_handoff_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_ftur3dgc",
+      "name": "TodayDashboardPage",
+      "primary_files": [
+        "lib/pages/today_dashboard_page/today_dashboard_page_model.dart",
+        "lib/pages/today_dashboard_page/today_dashboard_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_fwk0e3e9",
+      "name": "ActivityDetailPage",
+      "primary_files": [
+        "lib/activity_detail_page/activity_detail_page_model.dart",
+        "lib/activity_detail_page/activity_detail_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_j010ddlx",
+      "name": "HorseNutritionPage",
+      "primary_files": [
+        "lib/horse_nutrition_page/horse_nutrition_page_model.dart",
+        "lib/horse_nutrition_page/horse_nutrition_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_jjo5uu05",
+      "name": "StableDetailsPage",
+      "primary_files": [
+        "lib/stable_details_page/stable_details_page_model.dart",
+        "lib/stable_details_page/stable_details_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_jqda0spy",
+      "name": "PersonalWorkspacePage",
+      "primary_files": [
+        "lib/personal_workspace_page/personal_workspace_page_model.dart",
+        "lib/personal_workspace_page/personal_workspace_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_lxuhuwad",
+      "name": "HorseFormPage",
+      "primary_files": [
+        "lib/horse_form_page/horse_form_page_model.dart",
+        "lib/horse_form_page/horse_form_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_nd0rvjum",
+      "name": "StablePickerPage",
+      "primary_files": [
+        "lib/stable_picker_page/stable_picker_page_model.dart",
+        "lib/stable_picker_page/stable_picker_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_oh0rk4vq",
+      "name": "FeedingRoundSettingsPage",
+      "primary_files": [
+        "lib/feeding_round_settings_page/feeding_round_settings_page_model.dart",
+        "lib/feeding_round_settings_page/feeding_round_settings_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_p6yhquo7",
+      "name": "AuthLoginPage",
+      "primary_files": [
+        "lib/auth_login_page/auth_login_page_model.dart",
+        "lib/auth_login_page/auth_login_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_qbppcchy",
+      "name": "AuthCallbackPage",
+      "primary_files": [
+        "lib/auth_callback_page/auth_callback_page_model.dart",
+        "lib/auth_callback_page/auth_callback_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_r0ofp20u",
+      "name": "PendingStableInvitationsPage",
+      "primary_files": [
+        "lib/pending_stable_invitations_page/pending_stable_invitations_page_model.dart",
+        "lib/pending_stable_invitations_page/pending_stable_invitations_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_t2ou950j",
+      "name": "InviteStableMemberPage",
+      "primary_files": [
+        "lib/invite_stable_member_page/invite_stable_member_page_model.dart",
+        "lib/invite_stable_member_page/invite_stable_member_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_v1b9a0wn",
+      "name": "StableInvitationPage",
+      "primary_files": [
+        "lib/stable_invitation_page/stable_invitation_page_model.dart",
+        "lib/stable_invitation_page/stable_invitation_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_vx6as0sf",
+      "name": "InvalidStableInvitationPage",
+      "primary_files": [
+        "lib/invalid_stable_invitation_page/invalid_stable_invitation_page_model.dart",
+        "lib/invalid_stable_invitation_page/invalid_stable_invitation_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_xef37z7d",
+      "name": "FeedingOverviewPage",
+      "primary_files": [
+        "lib/feeding_overview_page/feeding_overview_page_model.dart",
+        "lib/feeding_overview_page/feeding_overview_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_xlnpk36y",
+      "name": "ActivityFormPage",
+      "primary_files": [
+        "lib/activity_form_page/activity_form_page_model.dart",
+        "lib/activity_form_page/activity_form_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_xmnbzy77",
+      "name": "AuthGatePage",
+      "primary_files": [
+        "lib/auth_gate_page/auth_gate_page_model.dart",
+        "lib/auth_gate_page/auth_gate_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_z0m2k0lv",
+      "name": "HorsesOverviewPage",
+      "primary_files": [
+        "lib/horses_overview_page/horses_overview_page_model.dart",
+        "lib/horses_overview_page/horses_overview_page_widget.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_zdzom8q1",
+      "name": "AuthEmailPage",
+      "primary_files": [
+        "lib/auth_email_page/auth_email_page_model.dart",
+        "lib/auth_email_page/auth_email_page_widget.dart"
+      ]
+    }
+  ]
+}

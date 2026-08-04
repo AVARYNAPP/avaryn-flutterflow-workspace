@@ -13,11 +13,13 @@
 .flutterflow/plan.md
 .flutterflow/project_sdk_meta.json
 .flutterflow/generated_code_state.json
-generated_code/
 .ffai_staging/
 .dart_tool/
 .packages
 build/
+
+# Generated Flutter export: keep source transferable, exclude machine state
+generated_code/ios/Flutter/ephemeral/
 
 # AVARYN safe Git migration
 .env.*

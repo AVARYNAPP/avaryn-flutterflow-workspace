@@ -131,6 +131,35 @@ String _operationalDateKey(DateTime value) =>
     '${value.month.toString().padLeft(2, '0')}-'
     '${value.day.toString().padLeft(2, '0')}';
 
+DateTime? _operationalParseDisplayDate(dynamic value) {
+  if (value is DateTime) return value;
+  final text = _operationalString(value);
+  final parts = text.split('-');
+  if (parts.length == 3 &&
+      parts[0].length == 2 &&
+      parts[1].length == 2 &&
+      parts[2].length == 4) {
+    final day = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final year = int.tryParse(parts[2]);
+    if (day != null && month != null && year != null) {
+      final parsed = DateTime(year, month, day);
+      if (parsed.year == year && parsed.month == month && parsed.day == day) {
+        return parsed;
+      }
+    }
+  }
+  return DateTime.tryParse(text);
+}
+
+String _operationalDisplayDate(dynamic value) {
+  final parsed = _operationalParseDisplayDate(value);
+  if (parsed == null) return _operationalString(value);
+  return '${parsed.day.toString().padLeft(2, '0')}-'
+      '${parsed.month.toString().padLeft(2, '0')}-'
+      '${parsed.year.toString().padLeft(4, '0')}';
+}
+
 class AvarynOperationalRuntime extends StatefulWidget {
   const AvarynOperationalRuntime({
     super.key,
@@ -167,6 +196,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   List<Map<String, dynamic>> _horseRelationships = const [];
   List<Map<String, dynamic>> _horseMedia = const [];
   Map<String, String> _horseProfilePhotoUrls = const {};
+  Map<String, Map<String, Map<String, dynamic>>> _horseIdentifiers = const {};
   List<Map<String, dynamic>> _stableRoster = const [];
   List<Map<String, dynamic>> _planningRoster = const [];
   Map<String, dynamic> _actorMembership = const {};
@@ -540,6 +570,13 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         '${local.minute.toString().padLeft(2, '0')}';
   }
 
+  String _stableDateTimeLabel(dynamic value) {
+    final parsed = _operationalDate(value);
+    if (parsed == null) return _operationalString(value);
+    final local = timezone.TZDateTime.from(parsed, _stableLocation);
+    return '${_operationalDisplayDate(local)} · ${_stableClock(parsed)}';
+  }
+
   Future<void> _refreshAuthorityAndTopics() async {
     final cachedAuthority =
         int.tryParse(
@@ -709,6 +746,14 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
               .eq('status', 'active')
               .order('display_name')
           : Future<dynamic>.value(const <Map<String, dynamic>>[]),
+      _client
+          .from('horse_identifiers')
+          .select(
+            'id,horse_id,identifier_type,identifier_value,valid_until,'
+            'row_version,updated_at',
+          )
+          .eq('stable_id', _stableId)
+          .order('updated_at', ascending: false),
     ]);
     _horses = _operationalRows(results[0]);
     await _refreshHorseProfilePhotos();
@@ -719,6 +764,18 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     _conflicts = _operationalRows(results[3]);
     _actorMembership = _operationalMap(results[4]);
     _planningRoster = _operationalRows(results[5]);
+    final identifiers = <String, Map<String, Map<String, dynamic>>>{};
+    for (final identifier in _operationalRows(results[6])) {
+      final horseId = _operationalString(identifier['horse_id']);
+      final type = _operationalString(identifier['identifier_type']);
+      if (horseId.isEmpty || !const {'passport', 'chip'}.contains(type)) {
+        continue;
+      }
+      identifiers
+          .putIfAbsent(horseId, () => <String, Map<String, dynamic>>{})
+          .putIfAbsent(type, () => identifier);
+    }
+    _horseIdentifiers = identifiers;
     if (_actorMembership.isEmpty) {
       throw const PostgrestException(
         message: 'MEMBERSHIP_UNAVAILABLE',
@@ -857,24 +914,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   bool get _canEditSelectedHorseMedia =>
       _horseCapabilities['can_edit_media'] == true;
 
-  Future<void> _fetchHorseManagementData() async {
-    _horseCapabilities = _operationalMap(
-      await _client.rpc(
-        'get_horse_capabilities',
-        params: {'p_horse_id': _selectedHorseId},
-      ),
-    );
-    _horseMedia =
-        _canViewSelectedHorseMedia
-            ? await _fetchLinkedMedia(horseId: _selectedHorseId)
-            : const [];
-    if (!_canManageHorseAccess && !_canManageHorseRelationships) {
-      _horseAccessGrants = const [];
-      _horseRelationships = const [];
-      _stableRoster = const [];
-      return;
-    }
-
+  Future<void> _ensureStableRoster() async {
+    if (_stableRoster.isNotEmpty) return;
     final rosterRows = _operationalRows(
       await _client
           .from('stable_members')
@@ -908,6 +949,27 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           };
         })
         .toList(growable: false);
+  }
+
+  Future<void> _fetchHorseManagementData() async {
+    _horseCapabilities = _operationalMap(
+      await _client.rpc(
+        'get_horse_capabilities',
+        params: {'p_horse_id': _selectedHorseId},
+      ),
+    );
+    _horseMedia =
+        _canViewSelectedHorseMedia
+            ? await _fetchLinkedMedia(horseId: _selectedHorseId)
+            : const [];
+    if (!_canManageHorseAccess && !_canManageHorseRelationships) {
+      _horseAccessGrants = const [];
+      _horseRelationships = const [];
+      _stableRoster = const [];
+      return;
+    }
+
+    await _ensureStableRoster();
 
     if (_canManageHorseAccess) {
       _horseAccessGrants = _operationalRows(
@@ -929,7 +991,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         await _client
             .from('horse_relationships')
             .select(
-              'id,stable_member_id,relationship_type,label,status,'
+              'id,horse_id,stable_member_id,relationship_type,label,status,'
               'valid_from,valid_until,row_version',
             )
             .eq('horse_id', _selectedHorseId)
@@ -2498,7 +2560,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                   '${_operationalString(item['horse_name'])}',
                 ),
                 Text(
-                  '${_operationalString(item['source_local_date'])} · '
+                  '${_operationalDisplayDate(item['source_local_date'])} · '
                   '${_stableClock(item['scheduled_start_at'])}',
                 ),
                 Text('Status: ${_scheduleStateLabel(item)}'),
@@ -2519,12 +2581,12 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                 if (_operationalString(item['actual_started_at']).isNotEmpty)
                   Text(
                     'Gestart: '
-                    '${_operationalString(item['actual_started_at'])}',
+                    '${_stableDateTimeLabel(item['actual_started_at'])}',
                   ),
                 if (_operationalString(item['actual_completed_at']).isNotEmpty)
                   Text(
                     'Afgetekend: '
-                    '${_operationalString(item['actual_completed_at'])}',
+                    '${_stableDateTimeLabel(item['actual_completed_at'])}',
                   ),
                 if (!isFeeding &&
                     _operationalString(item['execution_note']).isNotEmpty)
@@ -2561,7 +2623,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                   ).isNotEmpty)
                     Text(
                       'Afgetekend: '
-                      '${_operationalString(item['actual_completed_at'])}',
+                      '${_stableDateTimeLabel(item['actual_completed_at'])}',
                     ),
                 ],
               ],
@@ -2880,7 +2942,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   }
 
   Future<void> _createHorse() async {
-    final profile = await _showHorseProfileDialog();
+    await _ensureStableRoster();
+    final profile = await _showHorseProfilePage();
     if (profile == null) return;
     await _guarded(() async {
       final result = _operationalMap(
@@ -2901,7 +2964,13 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
               },
         ),
       );
-      _selectedHorseId = _operationalString(result['horse_id']);
+      final horseId = _operationalString(result['horse_id']);
+      _selectedHorseId = horseId;
+      await _saveHorseIdentifiers(horseId: horseId, profile: profile);
+      await _addHorseRelationshipsFromProfile(
+        horseId: horseId,
+        profile: profile,
+      );
       _notice = 'Paard veilig toegevoegd.';
       await _load(quiet: true);
     });
@@ -2910,7 +2979,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   Future<void> _editSelectedHorse() async {
     final horse = _selectedHorse;
     if (horse == null) return;
-    final profile = await _showHorseProfileDialog(horse: horse);
+    await _ensureStableRoster();
+    final profile = await _showHorseProfilePage(horse: horse);
     if (profile == null) return;
     final horseId = _operationalString(horse['id']);
     final rowVersion = int.tryParse(_operationalString(horse['row_version']));
@@ -2937,9 +3007,121 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
               'p_level': profile['level'],
             },
       );
-      _notice = 'Kerngegevens veilig bijgewerkt.';
+      await _saveHorseIdentifiers(horseId: horseId, profile: profile);
+      await _addHorseRelationshipsFromProfile(
+        horseId: horseId,
+        profile: profile,
+      );
+      _notice = 'Paardgegevens veilig bijgewerkt.';
       await _load(quiet: true);
     });
+  }
+
+  Future<void> _saveHorseIdentifiers({
+    required String horseId,
+    required Map<String, dynamic> profile,
+  }) async {
+    final passportNumber = _operationalString(profile['passport_number']);
+    final chipNumber = _operationalString(profile['chip_number']);
+    final passportExpiresOn = _operationalString(
+      profile['passport_expires_on'],
+    );
+    await _saveHorseIdentifier(
+      horseId: horseId,
+      type: 'passport',
+      value: passportNumber,
+      validUntil: passportExpiresOn,
+    );
+    await _saveHorseIdentifier(
+      horseId: horseId,
+      type: 'chip',
+      value: chipNumber,
+    );
+  }
+
+  Future<void> _saveHorseIdentifier({
+    required String horseId,
+    required String type,
+    required String value,
+    String validUntil = '',
+  }) async {
+    final current = _horseIdentifiers[horseId]?[type] ?? const {};
+    if (value.isEmpty) {
+      return;
+    }
+    final unchanged =
+        _operationalString(current['identifier_value']) == value &&
+        _operationalString(current['valid_until']) == validUntil;
+    if (unchanged) return;
+    final identifierId = _operationalString(current['id']);
+    final expectedRowVersion = int.tryParse(
+      _operationalString(current['row_version']),
+    );
+    await _runDurableIdempotentRpc(
+      operation: 'upsert_horse_identifier',
+      intentKey: jsonEncode([
+        horseId,
+        type,
+        identifierId,
+        expectedRowVersion,
+        value,
+        validUntil,
+      ]),
+      buildParams:
+          (requestId, _) => {
+            'p_horse_id': horseId,
+            'p_identifier_id': identifierId.isEmpty ? null : identifierId,
+            'p_expected_row_version':
+                identifierId.isEmpty ? null : expectedRowVersion,
+            'p_request_id': requestId,
+            'p_identifier_type': type,
+            'p_identifier_value': value,
+            'p_issuer': null,
+            'p_country_code': null,
+            'p_valid_from': null,
+            'p_valid_until': validUntil.isEmpty ? null : validUntil,
+          },
+    );
+  }
+
+  Future<void> _addHorseRelationshipsFromProfile({
+    required String horseId,
+    required Map<String, dynamic> profile,
+  }) async {
+    final validFrom = _operationalDateKey(_stableNow());
+    for (final entry
+        in const {
+          'owner': 'owner_member_id',
+          'trainer': 'trainer_member_id',
+          'rider': 'rider_member_id',
+        }.entries) {
+      final stableMemberId = _operationalString(profile[entry.value]);
+      if (stableMemberId.isEmpty ||
+          _horseRelationships.any(
+            (relationship) =>
+                _operationalString(relationship['horse_id']) == horseId &&
+                _operationalString(relationship['stable_member_id']) ==
+                    stableMemberId &&
+                _operationalString(relationship['relationship_type']) ==
+                    entry.key,
+          )) {
+        continue;
+      }
+      await _runDurableIdempotentRpc(
+        operation: 'add_horse_relationship',
+        intentKey: '$horseId:$stableMemberId:${entry.key}',
+        initialReplayValues: {'valid_from': validFrom},
+        buildParams:
+            (requestId, replayValues) => {
+              'p_horse_id': horseId,
+              'p_stable_member_id': stableMemberId,
+              'p_relationship_type': entry.key,
+              'p_request_id': requestId,
+              'p_valid_from': replayValues['valid_from']!,
+              'p_label': null,
+            },
+      );
+    }
   }
 
   Future<void> _archiveSelectedHorse() async {
@@ -2992,11 +3174,20 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     profile['breed'],
     profile['discipline'],
     profile['level'],
+    profile['passport_number'],
+    profile['chip_number'],
+    profile['passport_expires_on'],
+    profile['owner_member_id'],
+    profile['trainer_member_id'],
+    profile['rider_member_id'],
   ]);
 
-  Future<Map<String, dynamic>?> _showHorseProfileDialog({
+  Future<Map<String, dynamic>?> _showHorseProfilePage({
     Map<String, dynamic>? horse,
   }) async {
+    final horseId = _operationalString(horse?['id']);
+    final passport = _horseIdentifiers[horseId]?['passport'] ?? const {};
+    final chip = _horseIdentifiers[horseId]?['chip'] ?? const {};
     final displayName = TextEditingController(
       text: _operationalString(horse?['display_name']),
     );
@@ -3004,7 +3195,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
       text: _operationalString(horse?['official_name']),
     );
     final birthDate = TextEditingController(
-      text: _operationalString(horse?['birth_date']),
+      text: _operationalDisplayDate(horse?['birth_date']),
     );
     final breed = TextEditingController(
       text: _operationalString(horse?['breed']),
@@ -3012,181 +3203,754 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     final discipline = TextEditingController(
       text: _operationalString(horse?['discipline']),
     );
-    final level = TextEditingController(
-      text: _operationalString(horse?['level']),
+    final passportNumber = TextEditingController(
+      text: _operationalString(passport['identifier_value']),
+    );
+    final chipNumber = TextEditingController(
+      text: _operationalString(chip['identifier_value']),
+    );
+    final passportExpiresOn = TextEditingController(
+      text: _operationalDisplayDate(passport['valid_until']),
     );
     var sex =
-        const {'mare', 'gelding', 'stallion', 'unknown'}.contains(horse?['sex'])
+        const {'mare', 'gelding', 'stallion'}.contains(horse?['sex'])
             ? _operationalString(horse?['sex'])
-            : 'unknown';
+            : '';
+    var selectedDiscipline = discipline.text.trim();
+    var ownerMemberId = '';
+    var trainerMemberId = '';
+    var riderMemberId = '';
+    final actorRole = _operationalString(_actorMembership['role']);
+    final canChooseRelationships =
+        horse == null
+            ? const {'owner', 'admin'}.contains(actorRole)
+            : _canManageHorseRelationships;
+    var step = 0;
     String? validationError;
-    final result = await showDialog<Map<String, dynamic>>(
-      context: context,
-      barrierDismissible: false,
-      builder:
-          (dialogContext) => StatefulBuilder(
-            builder:
-                (context, setDialogState) => AlertDialog(
-                  title: Text(
-                    horse == null ? 'Paard toevoegen' : 'Kerngegevens bewerken',
-                  ),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextField(
-                          controller: displayName,
-                          autofocus: true,
-                          maxLength: 120,
-                          decoration: const InputDecoration(
-                            labelText: 'Roepnaam *',
-                          ),
-                        ),
-                        TextField(
-                          controller: officialName,
-                          maxLength: 200,
-                          decoration: const InputDecoration(
-                            labelText: 'Officiële naam',
-                          ),
-                        ),
-                        TextField(
-                          controller: birthDate,
-                          decoration: const InputDecoration(
-                            labelText: 'Geboortedatum (JJJJ-MM-DD)',
-                          ),
-                        ),
-                        DropdownButtonFormField<String>(
-                          value: sex,
-                          decoration: const InputDecoration(
-                            labelText: 'Geslacht',
-                          ),
-                          items:
-                              const {
-                                    'unknown': 'Onbekend',
-                                    'mare': 'Merrie',
-                                    'gelding': 'Ruin',
-                                    'stallion': 'Hengst',
-                                  }.entries
-                                  .map(
-                                    (entry) => DropdownMenuItem(
-                                      value: entry.key,
-                                      child: Text(entry.value),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged:
-                              (value) => setDialogState(
-                                () => sex = value ?? 'unknown',
-                              ),
-                        ),
-                        TextField(
-                          controller: breed,
-                          maxLength: 120,
-                          decoration: const InputDecoration(labelText: 'Ras'),
-                        ),
-                        TextField(
-                          controller: discipline,
-                          maxLength: 120,
-                          decoration: const InputDecoration(
-                            labelText: 'Discipline',
-                          ),
-                        ),
-                        TextField(
-                          controller: level,
-                          maxLength: 120,
-                          decoration: const InputDecoration(
-                            labelText: 'Niveau',
-                          ),
-                        ),
-                        if (validationError != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8),
+    const roseGold = Color(0xFFC98980);
+    const canvas = Color(0xFF141215);
+    const panel = Color(0xFF211E22);
+    const border = Color(0xFF494047);
+    final result = await Navigator.of(context).push<Map<String, dynamic>>(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder:
+            (routeContext) => StatefulBuilder(
+              builder: (context, setPageState) {
+                final liveHorse =
+                    horse == null ? null : (_selectedHorse ?? horse);
+                Map<String, dynamic>? normalizedProfile() {
+                  final normalizedName = displayName.text.trim();
+                  final normalizedBirth = birthDate.text.trim();
+                  final normalizedExpiry = passportExpiresOn.text.trim();
+                  final parsedBirth =
+                      normalizedBirth.isEmpty
+                          ? null
+                          : _operationalParseDisplayDate(normalizedBirth);
+                  final parsedExpiry =
+                      normalizedExpiry.isEmpty
+                          ? null
+                          : _operationalParseDisplayDate(normalizedExpiry);
+                  final today = DateTime.now();
+                  final currentDay = DateTime(
+                    today.year,
+                    today.month,
+                    today.day,
+                  );
+                  if (normalizedName.isEmpty) {
+                    validationError = 'Vul een roepnaam in.';
+                    return null;
+                  }
+                  if (sex.isEmpty || sex == 'unknown') {
+                    validationError = 'Kies het geslacht.';
+                    return null;
+                  }
+                  if (selectedDiscipline.isEmpty) {
+                    validationError = 'Kies een discipline.';
+                    return null;
+                  }
+                  if (normalizedBirth.isNotEmpty &&
+                      (parsedBirth == null ||
+                          parsedBirth.isAfter(currentDay))) {
+                    validationError =
+                        'Gebruik voor de geboortedatum DD-MM-JJJJ.';
+                    return null;
+                  }
+                  if (normalizedExpiry.isNotEmpty && parsedExpiry == null) {
+                    validationError =
+                        'Gebruik voor de paspoortdatum DD-MM-JJJJ.';
+                    return null;
+                  }
+                  validationError = null;
+                  return {
+                    'display_name': normalizedName,
+                    'official_name':
+                        officialName.text.trim().isEmpty
+                            ? null
+                            : officialName.text.trim(),
+                    'birth_date':
+                        parsedBirth == null
+                            ? null
+                            : _operationalDateKey(parsedBirth),
+                    'sex': sex,
+                    'breed':
+                        breed.text.trim().isEmpty ? null : breed.text.trim(),
+                    'discipline': selectedDiscipline,
+                    'level':
+                        _operationalString(horse?['level']).isEmpty
+                            ? null
+                            : _operationalString(horse?['level']),
+                    'passport_number':
+                        passportNumber.text.trim().isEmpty
+                            ? null
+                            : passportNumber.text.trim(),
+                    'chip_number':
+                        chipNumber.text.trim().isEmpty
+                            ? null
+                            : chipNumber.text.trim(),
+                    'passport_expires_on':
+                        parsedExpiry == null
+                            ? null
+                            : _operationalDateKey(parsedExpiry),
+                    'owner_member_id':
+                        ownerMemberId.isEmpty ? null : ownerMemberId,
+                    'trainer_member_id':
+                        trainerMemberId.isEmpty ? null : trainerMemberId,
+                    'rider_member_id':
+                        riderMemberId.isEmpty ? null : riderMemberId,
+                  };
+                }
+
+                Widget fieldLabel(String label, {bool required = false}) =>
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 7),
+                      child: Row(
+                        children: [
+                          Expanded(
                             child: Text(
-                              validationError!,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
+                              label,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
-                      ],
+                          Text(
+                            required ? 'Verplicht' : 'Optioneel',
+                            style: TextStyle(
+                              color:
+                                  required
+                                      ? roseGold
+                                      : Colors.white.withValues(alpha: 0.66),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                Widget input(
+                  String label,
+                  TextEditingController controller, {
+                  bool required = false,
+                  String hint = '',
+                  TextInputType? keyboardType,
+                  VoidCallback? onTap,
+                }) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    fieldLabel(label, required: required),
+                    TextField(
+                      controller: controller,
+                      keyboardType: keyboardType,
+                      readOnly: onTap != null,
+                      onTap: onTap,
+                      maxLength: 200,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: hint,
+                        counterText: '',
+                        suffixIcon:
+                            onTap == null
+                                ? null
+                                : const Icon(Icons.calendar_today_outlined),
+                        filled: true,
+                        fillColor: panel,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: const BorderSide(color: border),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: const BorderSide(color: border),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: const BorderSide(
+                            color: roseGold,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                  ],
+                );
+
+                Future<void> pickDate(
+                  TextEditingController controller, {
+                  required DateTime firstDate,
+                  required DateTime lastDate,
+                }) async {
+                  final parsed = _operationalParseDisplayDate(
+                    controller.text.trim(),
+                  );
+                  final now = DateTime.now();
+                  final fallback = DateTime(now.year, now.month, now.day);
+                  final initial =
+                      parsed != null &&
+                              !parsed.isBefore(firstDate) &&
+                              !parsed.isAfter(lastDate)
+                          ? parsed
+                          : fallback.isBefore(firstDate)
+                          ? firstDate
+                          : fallback.isAfter(lastDate)
+                          ? lastDate
+                          : fallback;
+                  final selected = await showDatePicker(
+                    context: context,
+                    initialDate: initial,
+                    firstDate: firstDate,
+                    lastDate: lastDate,
+                    builder:
+                        (context, child) => Theme(
+                          data: ThemeData.dark().copyWith(
+                            colorScheme: const ColorScheme.dark(
+                              primary: roseGold,
+                              secondary: roseGold,
+                              surface: panel,
+                            ),
+                          ),
+                          child: child!,
+                        ),
+                  );
+                  if (selected == null) return;
+                  setPageState(
+                    () => controller.text = _operationalDisplayDate(selected),
+                  );
+                }
+
+                Widget relationshipPicker({
+                  required String label,
+                  required String value,
+                  required ValueChanged<String?> onChanged,
+                }) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    fieldLabel(label),
+                    DropdownButtonFormField<String>(
+                      value: value.isEmpty ? null : value,
+                      isExpanded: true,
+                      dropdownColor: panel,
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: panel,
+                        border: OutlineInputBorder(),
+                      ),
+                      hint: const Text('Kies een teamlid'),
+                      items: _stableRoster
+                          .map(
+                            (member) => DropdownMenuItem(
+                              value: _operationalString(member['id']),
+                              child: Text(
+                                [
+                                  _operationalString(member['display_name']),
+                                  _operationalString(member['function_title']),
+                                ].where((part) => part.isNotEmpty).join(' · '),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          )
+                          .toList(growable: false),
+                      onChanged: onChanged,
+                    ),
+                    const SizedBox(height: 18),
+                  ],
+                );
+
+                final disciplineOptions = <String>[
+                  'Dressuur',
+                  'Springen',
+                  'Eventing',
+                  'Hobby',
+                ];
+                if (selectedDiscipline.isNotEmpty &&
+                    !disciplineOptions.contains(selectedDiscipline)) {
+                  disciplineOptions.add(selectedDiscipline);
+                }
+                final routeTheme = ThemeData.dark().copyWith(
+                  scaffoldBackgroundColor: canvas,
+                  colorScheme: const ColorScheme.dark(
+                    primary: roseGold,
+                    secondary: roseGold,
+                    surface: panel,
+                  ),
+                  filledButtonTheme: FilledButtonThemeData(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: roseGold,
+                      foregroundColor: canvas,
+                      padding: const EdgeInsets.symmetric(vertical: 17),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
                   ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(dialogContext),
-                      child: const Text('Annuleren'),
+                  segmentedButtonTheme: SegmentedButtonThemeData(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.resolveWith(
+                        (states) =>
+                            states.contains(WidgetState.selected)
+                                ? roseGold.withValues(alpha: 0.18)
+                                : Colors.transparent,
+                      ),
+                      foregroundColor: WidgetStateProperty.resolveWith(
+                        (states) =>
+                            states.contains(WidgetState.selected)
+                                ? roseGold
+                                : Colors.white.withValues(alpha: 0.72),
+                      ),
+                      side: const WidgetStatePropertyAll(
+                        BorderSide(color: border),
+                      ),
                     ),
-                    FilledButton(
-                      onPressed: () {
-                        final normalizedName = displayName.text.trim();
-                        final normalizedBirth = birthDate.text.trim();
-                        final parsedBirth =
-                            normalizedBirth.isEmpty
-                                ? null
-                                : DateTime.tryParse(normalizedBirth);
-                        final today = DateTime.now();
-                        final currentDay = DateTime(
-                          today.year,
-                          today.month,
-                          today.day,
-                        );
-                        if (normalizedName.isEmpty) {
-                          setDialogState(
-                            () => validationError = 'Vul een roepnaam in.',
-                          );
-                          return;
-                        }
-                        if (normalizedBirth.isNotEmpty &&
-                            (parsedBirth == null ||
-                                parsedBirth.toIso8601String().substring(
-                                      0,
-                                      10,
-                                    ) !=
-                                    normalizedBirth ||
-                                parsedBirth.isAfter(currentDay))) {
-                          setDialogState(
-                            () =>
-                                validationError =
-                                    'Gebruik een geldige datum die niet in de toekomst ligt.',
-                          );
-                          return;
-                        }
-                        Navigator.pop(dialogContext, {
-                          'display_name': normalizedName,
-                          'official_name':
-                              officialName.text.trim().isEmpty
-                                  ? null
-                                  : officialName.text.trim(),
-                          'birth_date': parsedBirth
-                              ?.toIso8601String()
-                              .substring(0, 10),
-                          'sex': sex,
-                          'breed':
-                              breed.text.trim().isEmpty
-                                  ? null
-                                  : breed.text.trim(),
-                          'discipline':
-                              discipline.text.trim().isEmpty
-                                  ? null
-                                  : discipline.text.trim(),
-                          'level':
-                              level.text.trim().isEmpty
-                                  ? null
-                                  : level.text.trim(),
-                        });
-                      },
-                      child: Text(horse == null ? 'Toevoegen' : 'Opslaan'),
+                  ),
+                );
+                return Theme(
+                  data: routeTheme,
+                  child: Scaffold(
+                    body: SafeArea(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 12, 20, 8),
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  tooltip: 'Sluiten',
+                                  onPressed: () => Navigator.pop(routeContext),
+                                  icon: const Icon(Icons.close, size: 30),
+                                ),
+                                const Spacer(),
+                                const Text(
+                                  'A V A R Y N',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 3,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(22, 16, 22, 18),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  horse == null
+                                      ? 'Paard toevoegen'
+                                      : 'Paard bewerken',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                if (horse != null)
+                                  Text(
+                                    _operationalString(horse['display_name']),
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.58,
+                                      ),
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: SegmentedButton<int>(
+                              showSelectedIcon: false,
+                              segments: const [
+                                ButtonSegment(
+                                  value: 0,
+                                  label: Text('Gegevens'),
+                                ),
+                                ButtonSegment(
+                                  value: 1,
+                                  label: Text('Identificatie'),
+                                ),
+                                ButtonSegment(value: 2, label: Text('Team')),
+                              ],
+                              selected: {step},
+                              onSelectionChanged:
+                                  (values) =>
+                                      setPageState(() => step = values.single),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.fromLTRB(
+                                22,
+                                24,
+                                22,
+                                30,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    switch (step) {
+                                      0 => 'Gegevens paard',
+                                      1 => 'Identificatie',
+                                      _ => 'Team en profielfoto',
+                                    },
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 7),
+                                  Text(
+                                    switch (step) {
+                                      0 =>
+                                        'Alleen de gegevens die je dagelijks nodig hebt.',
+                                      1 =>
+                                        'Bewaar de officiële identificatie overzichtelijk.',
+                                      _ =>
+                                        'Koppel de vaste betrokkenen en kies een herkenbare foto.',
+                                    },
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.68,
+                                      ),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  if (step == 0) ...[
+                                    input(
+                                      'Roepnaam',
+                                      displayName,
+                                      required: true,
+                                    ),
+                                    input('Officiële naam', officialName),
+                                    input(
+                                      'Geboortedatum',
+                                      birthDate,
+                                      hint: 'Kies datum',
+                                      onTap:
+                                          () => pickDate(
+                                            birthDate,
+                                            firstDate: DateTime(1980),
+                                            lastDate: DateTime.now(),
+                                          ),
+                                    ),
+                                    fieldLabel('Geslacht', required: true),
+                                    DropdownButtonFormField<String>(
+                                      value: sex.isEmpty ? null : sex,
+                                      dropdownColor: panel,
+                                      decoration: const InputDecoration(
+                                        filled: true,
+                                        fillColor: panel,
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      hint: const Text('Kies geslacht'),
+                                      items: const [
+                                        DropdownMenuItem(
+                                          value: 'mare',
+                                          child: Text('Merrie'),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 'gelding',
+                                          child: Text('Ruin'),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 'stallion',
+                                          child: Text('Hengst'),
+                                        ),
+                                      ],
+                                      onChanged:
+                                          (value) => setPageState(
+                                            () => sex = value ?? '',
+                                          ),
+                                    ),
+                                    const SizedBox(height: 18),
+                                    input('Ras', breed),
+                                    fieldLabel('Discipline', required: true),
+                                    DropdownButtonFormField<String>(
+                                      value:
+                                          selectedDiscipline.isEmpty
+                                              ? null
+                                              : selectedDiscipline,
+                                      dropdownColor: panel,
+                                      decoration: const InputDecoration(
+                                        filled: true,
+                                        fillColor: panel,
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      hint: const Text('Kies discipline'),
+                                      items: disciplineOptions
+                                          .map(
+                                            (value) => DropdownMenuItem(
+                                              value: value,
+                                              child: Text(value),
+                                            ),
+                                          )
+                                          .toList(growable: false),
+                                      onChanged:
+                                          (value) => setPageState(
+                                            () =>
+                                                selectedDiscipline =
+                                                    value ?? '',
+                                          ),
+                                    ),
+                                  ],
+                                  if (step == 1) ...[
+                                    input('Paspoortnummer', passportNumber),
+                                    input('Chipnummer', chipNumber),
+                                    input(
+                                      'Paspoort geldig tot en met',
+                                      passportExpiresOn,
+                                      hint: 'Kies vervaldatum',
+                                      onTap:
+                                          () => pickDate(
+                                            passportExpiresOn,
+                                            firstDate: DateTime(2000),
+                                            lastDate: DateTime(
+                                              DateTime.now().year + 30,
+                                              12,
+                                              31,
+                                            ),
+                                          ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: roseGold.withValues(alpha: 0.10),
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(
+                                          color: roseGold.withValues(
+                                            alpha: 0.35,
+                                          ),
+                                        ),
+                                      ),
+                                      child: const Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.notifications_none,
+                                            color: roseGold,
+                                          ),
+                                          SizedBox(width: 12),
+                                          Expanded(
+                                            child: Text(
+                                              'Vanaf drie maanden voor de vervaldatum verschijnt een melding op Vandaag.',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                  if (step == 2) ...[
+                                    if (canChooseRelationships) ...[
+                                      relationshipPicker(
+                                        label: 'Eigenaar toevoegen',
+                                        value: ownerMemberId,
+                                        onChanged:
+                                            (value) => setPageState(
+                                              () => ownerMemberId = value ?? '',
+                                            ),
+                                      ),
+                                      relationshipPicker(
+                                        label: 'Trainer toevoegen',
+                                        value: trainerMemberId,
+                                        onChanged:
+                                            (value) => setPageState(
+                                              () =>
+                                                  trainerMemberId = value ?? '',
+                                            ),
+                                      ),
+                                      relationshipPicker(
+                                        label: 'Ruiter toevoegen',
+                                        value: riderMemberId,
+                                        onChanged:
+                                            (value) => setPageState(
+                                              () => riderMemberId = value ?? '',
+                                            ),
+                                      ),
+                                    ],
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: panel,
+                                        borderRadius: BorderRadius.circular(18),
+                                        border: Border.all(color: border),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            child:
+                                                liveHorse == null
+                                                    ? const AvarynOrionPhoto(
+                                                      width: 92,
+                                                      height: 92,
+                                                    )
+                                                    : _horsePhoto(
+                                                      liveHorse,
+                                                      width: 92,
+                                                      height: 92,
+                                                    ),
+                                          ),
+                                          const SizedBox(width: 15),
+                                          Expanded(
+                                            child: Text(
+                                              horse == null
+                                                  ? 'Na het aanmaken kun je direct via Bewerken een profielfoto kiezen.'
+                                                  : 'Deze foto staat alleen als profielfoto ingesteld; gewone private media blijven apart.',
+                                              style: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.76,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (liveHorse != null &&
+                                        _canEditSelectedHorseMedia) ...[
+                                      const SizedBox(height: 16),
+                                      OutlinedButton.icon(
+                                        onPressed: () async {
+                                          await _pickAndSetSelectedHorseProfilePhoto();
+                                          if (context.mounted) {
+                                            setPageState(() {});
+                                          }
+                                        },
+                                        icon: const Icon(
+                                          Icons.add_a_photo_outlined,
+                                        ),
+                                        label: Text(
+                                          _operationalString(
+                                                liveHorse['profile_media_asset_id'],
+                                              ).isEmpty
+                                              ? 'Foto kiezen'
+                                              : 'Foto vervangen',
+                                        ),
+                                      ),
+                                      if (_operationalString(
+                                        liveHorse['profile_media_asset_id'],
+                                      ).isNotEmpty)
+                                        TextButton.icon(
+                                          onPressed: () async {
+                                            await _removeSelectedHorseProfilePhoto();
+                                            if (context.mounted) {
+                                              setPageState(() {});
+                                            }
+                                          },
+                                          icon: const Icon(
+                                            Icons.delete_outline,
+                                          ),
+                                          label: const Text(
+                                            'Profielfoto verwijderen',
+                                          ),
+                                        ),
+                                    ],
+                                  ],
+                                  if (validationError != null) ...[
+                                    const SizedBox(height: 18),
+                                    Text(
+                                      validationError!,
+                                      style: const TextStyle(
+                                        color: Color(0xFFD87870),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(22, 14, 22, 18),
+                            decoration: const BoxDecoration(
+                              color: panel,
+                              border: Border(top: BorderSide(color: border)),
+                            ),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: FilledButton.icon(
+                                onPressed: () {
+                                  if (step < 2) {
+                                    if (step == 0 &&
+                                        normalizedProfile() == null) {
+                                      setPageState(() {});
+                                      return;
+                                    }
+                                    setPageState(() {
+                                      validationError = null;
+                                      step++;
+                                    });
+                                    return;
+                                  }
+                                  final profile = normalizedProfile();
+                                  if (profile == null) {
+                                    setPageState(() {});
+                                    return;
+                                  }
+                                  Navigator.pop(routeContext, profile);
+                                },
+                                icon: Icon(
+                                  step < 2 ? Icons.arrow_forward : Icons.check,
+                                ),
+                                label: Text(
+                                  step < 2
+                                      ? 'Volgende'
+                                      : horse == null
+                                      ? 'Paard toevoegen'
+                                      : 'Wijzigingen opslaan',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-          ),
+                  ),
+                );
+              },
+            ),
+      ),
     );
     displayName.dispose();
     officialName.dispose();
     birthDate.dispose();
     breed.dispose();
     discipline.dispose();
-    level.dispose();
+    passportNumber.dispose();
+    chipNumber.dispose();
+    passportExpiresOn.dispose();
     return result;
   }
 
@@ -3460,6 +4224,18 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     });
   }
 
+  String _horseRelationshipLabel(dynamic value) => switch (_operationalString(
+    value,
+  )) {
+    'owner' => 'Eigenaar',
+    'trainer' => 'Trainer',
+    'rider' => 'Ruiter',
+    'groom' => 'Groom',
+    'veterinarian' => 'Dierenarts',
+    'professional' => 'Professional',
+    _ => 'Anders',
+  };
+
   Future<Map<String, dynamic>?> _showHorseRelationshipDialog() async {
     if (_stableRoster.isEmpty) {
       setState(() => _error = 'Er zijn geen actieve stalteamleden.');
@@ -3579,7 +4355,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     final confirmed = await _confirmDialog(
       title: 'Relatie beëindigen',
       body:
-          'Beëindig de relatie ${relationship['relationship_type']} met '
+          'Beëindig de relatie ${_horseRelationshipLabel(relationship['relationship_type'])} met '
           '${_rosterNameFor(stableMemberId: _operationalString(relationship['stable_member_id']))}?',
       action: 'Beëindigen',
     );
@@ -4501,46 +5277,57 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
             ? 'Week ${_weekNumber(selectedDay)} · ${selectedDay.year}'
             : isToday
             ? 'Vandaag'
-            : _operationalDateKey(selectedDay);
-    return Row(
+            : _operationalDisplayDate(selectedDay);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        IconButton(
-          tooltip: 'Vorige periode',
-          onPressed:
-              _offline || _busy
-                  ? null
-                  : () => unawaited(_setScheduleDate(step)),
-          icon: const Icon(Icons.chevron_left),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: theme.titleMedium.copyWith(
+            color: theme.primaryText,
+            fontWeight: FontWeight.w700,
+          ),
         ),
-        Expanded(
-          child: Column(
-            children: [
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: theme.titleMedium.copyWith(
-                  color: theme.primaryText,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              if (!isToday)
-                TextButton(
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            Expanded(
+              child: Tooltip(
+                message: 'Vorige periode',
+                child: TextButton.icon(
                   onPressed:
                       _offline || _busy
                           ? null
-                          : () => unawaited(_setScheduleDate(today)),
-                  child: const Text('Terug naar vandaag'),
+                          : () => unawaited(_setScheduleDate(step)),
+                  icon: const Icon(Icons.chevron_left),
+                  label: const Text('Vorige'),
                 ),
-            ],
-          ),
-        ),
-        IconButton(
-          tooltip: 'Volgende periode',
-          onPressed:
-              _offline || _busy
-                  ? null
-                  : () => unawaited(_setScheduleDate(next)),
-          icon: const Icon(Icons.chevron_right),
+              ),
+            ),
+            Expanded(
+              child: TextButton(
+                onPressed:
+                    _offline || _busy || isToday
+                        ? null
+                        : () => unawaited(_setScheduleDate(today)),
+                child: const Text('Vandaag'),
+              ),
+            ),
+            Expanded(
+              child: Tooltip(
+                message: 'Volgende periode',
+                child: TextButton.icon(
+                  onPressed:
+                      _offline || _busy
+                          ? null
+                          : () => unawaited(_setScheduleDate(next)),
+                  icon: const Icon(Icons.chevron_right),
+                  label: const Text('Volgende'),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -4560,110 +5347,29 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
             7;
   }
 
-  Widget _calendarControls(FlutterFlowTheme theme) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      SegmentedButton<String>(
-        segments: const [
-          ButtonSegment(
-            value: 'day',
-            label: Text('Dag'),
-            icon: Icon(Icons.view_day_outlined),
-          ),
-          ButtonSegment(
-            value: 'week',
-            label: Text('Week'),
-            icon: Icon(Icons.view_week_outlined),
-          ),
-          ButtonSegment(
-            value: 'month',
-            label: Text('Maand'),
-            icon: Icon(Icons.calendar_month_outlined),
-          ),
-        ],
-        selected: {_calendarView},
-        onSelectionChanged:
-            _offline || _busy
-                ? null
-                : (values) => unawaited(_setCalendarView(values.single)),
+  Widget _calendarControls(FlutterFlowTheme theme) => SegmentedButton<String>(
+    segments: const [
+      ButtonSegment(
+        value: 'day',
+        label: Text('Dag'),
+        icon: Icon(Icons.view_day_outlined),
       ),
-      const SizedBox(height: 10),
-      Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: [
-          SizedBox(
-            width: 210,
-            child: DropdownButtonFormField<String>(
-              value: _calendarTeamFilter,
-              decoration: const InputDecoration(labelText: 'Overzicht'),
-              items: const [
-                DropdownMenuItem(value: 'team', child: Text('Hele team')),
-                DropdownMenuItem(value: 'mine', child: Text('Mijn planning')),
-              ],
-              onChanged:
-                  (value) =>
-                      setState(() => _calendarTeamFilter = value ?? 'team'),
-            ),
-          ),
-          SizedBox(
-            width: 210,
-            child: DropdownButtonFormField<String>(
-              value: _calendarHorseFilter,
-              decoration: const InputDecoration(labelText: 'Paard'),
-              items: [
-                const DropdownMenuItem(value: '', child: Text('Alle paarden')),
-                ..._horses.map(
-                  (horse) => DropdownMenuItem(
-                    value: _operationalString(horse['id']),
-                    child: Text(_operationalString(horse['display_name'])),
-                  ),
-                ),
-              ],
-              onChanged:
-                  (value) => setState(() => _calendarHorseFilter = value ?? ''),
-            ),
-          ),
-          SizedBox(
-            width: 210,
-            child: DropdownButtonFormField<String>(
-              value: _calendarMemberFilter,
-              decoration: const InputDecoration(labelText: 'Gebruiker'),
-              items: [
-                const DropdownMenuItem(value: '', child: Text('Alle leden')),
-                ..._planningRoster.map(
-                  (member) => DropdownMenuItem(
-                    value: _operationalString(member['id']),
-                    child: Text(_operationalString(member['display_name'])),
-                  ),
-                ),
-              ],
-              onChanged:
-                  (value) =>
-                      setState(() => _calendarMemberFilter = value ?? ''),
-            ),
-          ),
-          SizedBox(
-            width: 210,
-            child: DropdownButtonFormField<String>(
-              value: _calendarCategoryFilter,
-              decoration: const InputDecoration(labelText: 'Categorie'),
-              items: const [
-                DropdownMenuItem(value: '', child: Text('Alle categorieën')),
-                DropdownMenuItem(value: 'task', child: Text('Taak')),
-                DropdownMenuItem(value: 'care', child: Text('Verzorging')),
-                DropdownMenuItem(value: 'training', child: Text('Training')),
-                DropdownMenuItem(value: 'other', child: Text('Afspraak')),
-                DropdownMenuItem(value: 'feeding', child: Text('Voeding')),
-              ],
-              onChanged:
-                  (value) =>
-                      setState(() => _calendarCategoryFilter = value ?? ''),
-            ),
-          ),
-        ],
+      ButtonSegment(
+        value: 'week',
+        label: Text('Week'),
+        icon: Icon(Icons.view_week_outlined),
+      ),
+      ButtonSegment(
+        value: 'month',
+        label: Text('Maand'),
+        icon: Icon(Icons.calendar_month_outlined),
       ),
     ],
+    selected: {_calendarView},
+    onSelectionChanged:
+        _offline || _busy
+            ? null
+            : (values) => unawaited(_setCalendarView(values.single)),
   );
 
   Future<void> _createFeedingPlan() async {
@@ -5873,6 +6579,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     _horseRelationships = const [];
     _horseMedia = const [];
     _horseProfilePhotoUrls = const {};
+    _horseIdentifiers = const {};
     _stableRoster = const [];
     _planningRoster = const [];
     _actorMembership = const {};
@@ -5887,65 +6594,107 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   @override
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
-    return ColoredBox(
-      color: theme.primaryBackground,
-      child: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _load,
-          child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(20, 22, 20, 36),
-            children: [
-              Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 980),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _header(theme),
-                      const SizedBox(height: 18),
-                      if (_loading) _loadingCard(theme),
-                      if (!_loading && _error.isNotEmpty)
-                        _messageCard(
-                          theme,
-                          _error,
-                          error: !_offline,
-                          icon:
-                              _permissionDenied
-                                  ? Icons.lock_outline
-                                  : _offline
-                                  ? Icons.cloud_off_outlined
-                                  : Icons.error_outline,
-                        ),
-                      if (!_loading && _notice.isNotEmpty)
-                        _messageCard(
-                          theme,
-                          _notice,
-                          icon: Icons.verified_outlined,
-                        ),
-                      if (!_loading && _stableId.isEmpty)
-                        _emptyCard(
-                          theme,
-                          icon: Icons.home_work_outlined,
-                          title: 'Geen actieve stal',
-                          body:
-                              'Open Stallen om een beveiligde werkcontext te kiezen.',
-                          actionLabel: 'Stallen openen',
-                          onPressed:
-                              () => context.pushNamed('StablePickerPage'),
-                        ),
-                      if (!_loading && _stableId.isNotEmpty) ...[
-                        if (_offline || _conflicts.isNotEmpty) ...[
-                          _statusStrip(theme),
-                          const SizedBox(height: 18),
+    final materialTheme = Theme.of(context);
+    final avarynMaterialTheme = materialTheme.copyWith(
+      colorScheme: materialTheme.colorScheme.copyWith(
+        primary: theme.secondary,
+        secondary: theme.secondary,
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: theme.secondary,
+          foregroundColor: theme.primaryText,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith(
+            (states) =>
+                states.contains(WidgetState.selected)
+                    ? theme.secondary
+                    : Colors.transparent,
+          ),
+          foregroundColor: WidgetStateProperty.resolveWith(
+            (states) =>
+                states.contains(WidgetState.selected)
+                    ? theme.primaryText
+                    : theme.secondaryText,
+          ),
+          iconColor: WidgetStateProperty.resolveWith(
+            (states) =>
+                states.contains(WidgetState.selected)
+                    ? theme.primaryText
+                    : theme.secondaryText,
+          ),
+          side: WidgetStatePropertyAll(BorderSide(color: theme.alternate)),
+        ),
+      ),
+    );
+    return Theme(
+      data: avarynMaterialTheme,
+      child: ColoredBox(
+        color: theme.primaryBackground,
+        child: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: _load,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(20, 22, 20, 36),
+              children: [
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 980),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _header(theme),
+                        const SizedBox(height: 18),
+                        if (_loading) _loadingCard(theme),
+                        if (!_loading && _error.isNotEmpty)
+                          _messageCard(
+                            theme,
+                            _error,
+                            error: !_offline,
+                            icon:
+                                _permissionDenied
+                                    ? Icons.lock_outline
+                                    : _offline
+                                    ? Icons.cloud_off_outlined
+                                    : Icons.error_outline,
+                          ),
+                        if (!_loading && _notice.isNotEmpty)
+                          _messageCard(
+                            theme,
+                            _notice,
+                            icon: Icons.verified_outlined,
+                          ),
+                        if (!_loading && _stableId.isEmpty)
+                          _emptyCard(
+                            theme,
+                            icon: Icons.home_work_outlined,
+                            title: 'Geen actieve stal',
+                            body:
+                                'Open Stallen om een beveiligde werkcontext te kiezen.',
+                            actionLabel: 'Stallen openen',
+                            onPressed:
+                                () => context.pushNamed('StablePickerPage'),
+                          ),
+                        if (!_loading && _stableId.isNotEmpty) ...[
+                          if (_offline || _conflicts.isNotEmpty) ...[
+                            _statusStrip(theme),
+                            const SizedBox(height: 18),
+                          ],
+                          _modeContent(theme),
                         ],
-                        _modeContent(theme),
                       ],
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -6105,9 +6854,77 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
         .toList(growable: false);
     final progress = rows.isEmpty ? 0.0 : completed / rows.length;
     final heroHorse = _horses.isEmpty ? null : _horses.first;
+    final passportWarnings = <Map<String, dynamic>>[];
+    final today = DateTime(
+      _stableNow().year,
+      _stableNow().month,
+      _stableNow().day,
+    );
+    final warningThrough = DateTime(today.year, today.month + 3, today.day);
+    for (final horse in _horses) {
+      final horseId = _operationalString(horse['id']);
+      final passport = _horseIdentifiers[horseId]?['passport'];
+      final expiresOn = DateTime.tryParse(
+        _operationalString(passport?['valid_until']),
+      );
+      if (expiresOn == null || expiresOn.isAfter(warningThrough)) continue;
+      passportWarnings.add({'horse': horse, 'expires_on': expiresOn});
+    }
+    passportWarnings.sort(
+      (left, right) => (left['expires_on'] as DateTime).compareTo(
+        right['expires_on'] as DateTime,
+      ),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (passportWarnings.isNotEmpty) ...[
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: theme.secondary.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: theme.secondary.withValues(alpha: 0.40),
+              ),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.badge_outlined, color: theme.secondary, size: 24),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Paspoort vernieuwen',
+                        style: theme.titleMedium.copyWith(
+                          color: theme.primaryText,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        passportWarnings.length == 1
+                            ? '${_operationalString((passportWarnings.first['horse'] as Map)['display_name'])}: geldig tot ${_operationalDisplayDate(passportWarnings.first['expires_on'])}.'
+                            : '${passportWarnings.length} paarden hebben binnen drie maanden een nieuw paspoort nodig.',
+                        style: theme.bodyMedium.copyWith(
+                          color: theme.secondaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => context.pushNamed('HorsesOverviewPage'),
+                  child: const Text('Bekijken'),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
         LayoutBuilder(
           builder: (context, constraints) {
             final photo = ClipRRect(
@@ -6309,6 +7126,142 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     }
   }
 
+  String _horseAgeLabel(dynamic value) {
+    final birthDate = DateTime.tryParse(_operationalString(value));
+    if (birthDate == null) return '';
+    final now = _stableNow();
+    var years = now.year - birthDate.year;
+    if (now.month < birthDate.month ||
+        (now.month == birthDate.month && now.day < birthDate.day)) {
+      years--;
+    }
+    return years < 0 ? '' : '$years jaar';
+  }
+
+  String _horseSexLabel(dynamic value) => switch (_operationalString(value)) {
+    'mare' => 'Merrie',
+    'gelding' => 'Ruin',
+    'stallion' => 'Hengst',
+    _ => '',
+  };
+
+  Future<void> _showHorseSelector() async {
+    final search = TextEditingController();
+    var query = '';
+    final horseId = await showDialog<String>(
+      context: context,
+      builder:
+          (dialogContext) => StatefulBuilder(
+            builder: (context, setDialogState) {
+              final normalizedQuery = query.trim().toLowerCase();
+              final matches = _horses
+                  .where((horse) {
+                    if (normalizedQuery.isEmpty) return true;
+                    final displayName =
+                        _operationalString(horse['display_name']).toLowerCase();
+                    final officialName =
+                        _operationalString(
+                          horse['official_name'],
+                        ).toLowerCase();
+                    return displayName.contains(normalizedQuery) ||
+                        officialName.contains(normalizedQuery);
+                  })
+                  .toList(growable: false);
+              return AlertDialog(
+                title: const Text('Paard kiezen'),
+                content: SizedBox(
+                  width: 520,
+                  height: 430,
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: search,
+                        autofocus: true,
+                        onChanged:
+                            (value) => setDialogState(() => query = value),
+                        decoration: const InputDecoration(
+                          labelText: 'Zoek op roepnaam of officiële naam',
+                          prefixIcon: Icon(Icons.search),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child:
+                            matches.isEmpty
+                                ? const Center(
+                                  child: Text('Geen paarden gevonden.'),
+                                )
+                                : ListView.separated(
+                                  itemCount: matches.length,
+                                  separatorBuilder:
+                                      (context, index) =>
+                                          const Divider(height: 1),
+                                  itemBuilder: (context, index) {
+                                    final horse = matches[index];
+                                    final officialName = _operationalString(
+                                      horse['official_name'],
+                                    );
+                                    return ListTile(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 4,
+                                            vertical: 4,
+                                          ),
+                                      leading: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: _horsePhoto(
+                                          horse,
+                                          width: 48,
+                                          height: 48,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        _operationalString(
+                                          horse['display_name'],
+                                        ),
+                                      ),
+                                      subtitle:
+                                          officialName.isEmpty
+                                              ? null
+                                              : Text(officialName),
+                                      trailing:
+                                          _selectedHorseId ==
+                                                  _operationalString(
+                                                    horse['id'],
+                                                  )
+                                              ? const Icon(Icons.check)
+                                              : null,
+                                      onTap:
+                                          () => Navigator.pop(
+                                            dialogContext,
+                                            _operationalString(horse['id']),
+                                          ),
+                                    );
+                                  },
+                                ),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('Sluiten'),
+                  ),
+                ],
+              );
+            },
+          ),
+    );
+    search.dispose();
+    if (!mounted || horseId == null || horseId == _selectedHorseId) return;
+    setState(() {
+      _selectedHorseId = horseId;
+      _horseProfileTab = 'overview';
+    });
+    await _load(quiet: true);
+  }
+
   Widget _horsesContent(FlutterFlowTheme theme) {
     if (_horses.isEmpty) {
       return _emptyCard(
@@ -6324,61 +7277,77 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (_isStableManager)
-          Align(
-            alignment: Alignment.centerRight,
-            child: FilledButton.icon(
-              onPressed: _offline || _busy ? null : _createHorse,
-              icon: const Icon(Icons.add),
-              label: const Text('Paard toevoegen'),
-            ),
-          ),
-        const SizedBox(height: 12),
-        ..._horses.map(
-          (horse) => Card(
-            margin: const EdgeInsets.only(bottom: 10),
-            elevation: 0,
-            color:
-                _selectedHorseId == _operationalString(horse['id'])
-                    ? theme.primary.withValues(alpha: 0.08)
-                    : theme.secondaryBackground,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: theme.alternate),
-            ),
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(10),
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: _horsePhoto(horse, width: 62, height: 62),
-              ),
-              title: Text(
-                _operationalString(horse['display_name']),
-                style: theme.titleMedium.copyWith(
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Jouw paarden',
+                style: theme.titleLarge.copyWith(
                   color: theme.primaryText,
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              subtitle: Text(
-                [
-                  _operationalString(horse['discipline']),
-                  _operationalString(horse['level']),
-                  _operationalString(horse['breed']),
-                ].where((value) => value.isNotEmpty).join(' · '),
+            ),
+            if (_isStableManager)
+              FilledButton.icon(
+                onPressed: _offline || _busy ? null : _createHorse,
+                icon: const Icon(Icons.add),
+                label: const Text('Paard toevoegen'),
               ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap:
-                  _busy
-                      ? null
-                      : () {
-                        final horseId = _operationalString(horse['id']);
-                        if (_selectedHorseId == horseId) return;
-                        setState(() {
-                          _selectedHorseId = horseId;
-                          _horseProfileTab = 'overview';
-                        });
-                        unawaited(_load(quiet: true));
-                      },
+          ],
+        ),
+        const SizedBox(height: 12),
+        Material(
+          color: theme.secondaryBackground,
+          borderRadius: BorderRadius.circular(16),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: _busy ? null : _showHorseSelector,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: theme.alternate),
+              ),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: _horsePhoto(_selectedHorse!, width: 58, height: 58),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _operationalString(_selectedHorse!['display_name']),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.titleMedium.copyWith(
+                            color: theme.primaryText,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        if (_operationalString(
+                          _selectedHorse!['official_name'],
+                        ).isNotEmpty)
+                          Text(
+                            _operationalString(
+                              _selectedHorse!['official_name'],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.bodySmall.copyWith(
+                              color: theme.secondaryText,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.keyboard_arrow_down),
+                ],
+              ),
             ),
           ),
         ),
@@ -6407,127 +7376,156 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
               }.contains(_operationalString(item['state'])),
         )
         .toList(growable: false);
-    final metadata = [
-      _operationalString(horse['official_name']),
-      _operationalString(horse['breed']),
+    final officialName = _operationalString(horse['official_name']);
+    final profileChips = [
       _operationalString(horse['discipline']),
       _operationalString(horse['level']),
+      _horseAgeLabel(horse['birth_date']),
+      _horseSexLabel(horse['sex']),
+      _operationalString(horse['best_performance']),
     ].where((value) => value.isNotEmpty).toList(growable: false);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         LayoutBuilder(
           builder: (context, constraints) {
-            final photo = ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: _horsePhoto(horse, width: 500, height: 310),
-            );
-            final details = Container(
-              padding: const EdgeInsets.all(22),
-              decoration: BoxDecoration(
-                color: theme.primary,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'PAARDPROFIEL',
-                    style: theme.labelMedium.copyWith(
-                      color: theme.secondary,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
+            final heroHeight = constraints.maxWidth < 720 ? 470.0 : 410.0;
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(22),
+              child: SizedBox(
+                height: heroHeight,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _horsePhoto(
+                      horse,
+                      width: constraints.maxWidth,
+                      height: heroHeight,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _operationalString(horse['display_name']),
-                    style: theme.headlineMedium.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
+                    const DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color(0x1A000000),
+                            Color(0x59000000),
+                            Color(0xE6000000),
+                          ],
+                          stops: [0.0, 0.50, 1.0],
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 7,
-                    runSpacing: 7,
-                    children: metadata
-                        .map(
-                          (value) => Chip(
-                            label: Text(value),
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.18),
-                            ),
-                            backgroundColor: Colors.white.withValues(
-                              alpha: 0.08,
-                            ),
-                            labelStyle: theme.labelMedium.copyWith(
-                              color: Colors.white,
+                    Padding(
+                      padding: const EdgeInsets.all(22),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'PAARDPROFIEL',
+                            style: theme.labelMedium.copyWith(
+                              color: const Color(0xFFF0B9AF),
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.2,
                             ),
                           ),
-                        )
-                        .toList(growable: false),
-                  ),
-                  const SizedBox(height: 18),
-                  Text(
-                    attention.isEmpty
-                        ? 'Vandaag vraagt niets extra aandacht.'
-                        : '${attention.length} gepland moment${attention.length == 1 ? '' : 'en'} vragen vandaag aandacht.',
-                    style: theme.bodyMedium.copyWith(
-                      color: Colors.white.withValues(alpha: 0.82),
+                          const SizedBox(height: 6),
+                          Text(
+                            _operationalString(horse['display_name']),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.headlineMedium.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          if (officialName.isNotEmpty) ...[
+                            const SizedBox(height: 3),
+                            Text(
+                              officialName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.bodyLarge.copyWith(
+                                color: Colors.white.withValues(alpha: 0.86),
+                              ),
+                            ),
+                          ],
+                          if (profileChips.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            Wrap(
+                              spacing: 7,
+                              runSpacing: 7,
+                              children: profileChips
+                                  .map(
+                                    (value) => Chip(
+                                      label: Text(value),
+                                      visualDensity: VisualDensity.compact,
+                                      side: BorderSide(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.34,
+                                        ),
+                                      ),
+                                      backgroundColor: Colors.black.withValues(
+                                        alpha: 0.28,
+                                      ),
+                                      labelStyle: theme.labelMedium.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                  .toList(growable: false),
+                            ),
+                          ],
+                          const SizedBox(height: 12),
+                          Text(
+                            attention.isEmpty
+                                ? 'Vandaag vraagt niets extra aandacht.'
+                                : '${attention.length} gepland moment${attention.length == 1 ? '' : 'en'} vragen vandaag aandacht.',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.bodyMedium.copyWith(
+                              color: Colors.white.withValues(alpha: 0.86),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: [
+                              FilledButton.icon(
+                                onPressed:
+                                    _offline || _busy
+                                        ? null
+                                        : _createScheduleItem,
+                                icon: const Icon(Icons.add),
+                                label: const Text('Activiteit toevoegen'),
+                              ),
+                              OutlinedButton.icon(
+                                onPressed:
+                                    _offline || _busy || !_canEditSelectedHorse
+                                        ? null
+                                        : _editSelectedHorse,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: BorderSide(
+                                    color: Colors.white.withValues(alpha: 0.7),
+                                  ),
+                                ),
+                                icon: const Icon(Icons.edit_outlined),
+                                label: const Text('Bewerken'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            );
-            if (constraints.maxWidth < 720) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [photo, const SizedBox(height: 12), details],
-              );
-            }
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(flex: 5, child: photo),
-                const SizedBox(width: 16),
-                Expanded(flex: 4, child: details),
-              ],
             );
           },
         ),
-        if (_canEditSelectedHorseMedia) ...[
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              FilledButton.tonalIcon(
-                onPressed:
-                    _offline || _busy
-                        ? null
-                        : _pickAndSetSelectedHorseProfilePhoto,
-                icon: const Icon(Icons.add_a_photo_outlined),
-                label: Text(
-                  _operationalString(horse['profile_media_asset_id']).isEmpty
-                      ? 'Profielfoto uploaden'
-                      : 'Profielfoto vervangen',
-                ),
-              ),
-              if (_operationalString(
-                horse['profile_media_asset_id'],
-              ).isNotEmpty)
-                OutlinedButton.icon(
-                  onPressed:
-                      _offline || _busy
-                          ? null
-                          : _removeSelectedHorseProfilePhoto,
-                  icon: const Icon(Icons.delete_outline),
-                  label: const Text('Profielfoto verwijderen'),
-                ),
-            ],
-          ),
-        ],
         const SizedBox(height: 16),
         SegmentedButton<String>(
           segments: const [
@@ -6661,14 +7659,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
             ],
           ),
         const SizedBox(height: 16),
-        ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 8),
-          title: const Text('Beheer en toegang'),
-          subtitle: const Text(
-            'Kerngegevens, relaties, rechten en private media',
-          ),
-          children: [_selectedHorseManagementTools(theme)],
-        ),
+        _selectedHorseManagementTools(theme),
       ],
     );
   }
@@ -6677,7 +7668,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     final horse = _selectedHorse!;
     final metadata = [
       _operationalString(horse['official_name']),
-      _operationalString(horse['birth_date']),
+      _operationalDisplayDate(horse['birth_date']),
       _operationalString(horse['sex']),
       _operationalString(horse['breed']),
       _operationalString(horse['discipline']),
@@ -6816,7 +7807,9 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                   ),
                   subtitle: Text(
                     [
-                      _operationalString(relationship['relationship_type']),
+                      _horseRelationshipLabel(
+                        relationship['relationship_type'],
+                      ),
                       _operationalString(relationship['label']),
                     ].where((value) => value.isNotEmpty).join(' · '),
                   ),
@@ -7515,7 +8508,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                 Text('Paard: ${_operationalString(item['horse_name'])}'),
                 Text(
                   'Datum en tijd: '
-                  '${_operationalString(item['source_local_date'])} · '
+                  '${_operationalDisplayDate(item['source_local_date'])} · '
                   '${_stableClock(item['scheduled_start_at'])}',
                 ),
                 if (_operationalString(item['responsible_name']).isNotEmpty)
@@ -7537,7 +8530,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                   const SizedBox(height: 12),
                   Text(
                     'Uitgevoerd op: '
-                    '${_operationalString(item['actual_completed_at'])}',
+                    '${_stableDateTimeLabel(item['actual_completed_at'])}',
                   ),
                 ],
                 if (_operationalString(
@@ -7754,8 +8747,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     final ownMemberId = _operationalString(
       _actorMembership['stable_member_id'],
     );
-    return _schedule
-        .where((item) {
+    final rows =
+        _schedule.where((item) {
           if (feedingOnly && item['item_kind'] != 'feeding') return false;
           if (_calendarHorseFilter.isNotEmpty &&
               _operationalString(item['horse_id']) != _calendarHorseFilter) {
@@ -7778,8 +8771,21 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
             return false;
           }
           return true;
-        })
-        .toList(growable: false);
+        }).toList();
+    rows.sort((left, right) {
+      final leftTime =
+          _operationalDate(left['scheduled_start_at']) ??
+          DateTime.fromMillisecondsSinceEpoch(0);
+      final rightTime =
+          _operationalDate(right['scheduled_start_at']) ??
+          DateTime.fromMillisecondsSinceEpoch(0);
+      final timeOrder = leftTime.compareTo(rightTime);
+      if (timeOrder != 0) return timeOrder;
+      return _operationalString(
+        left['id'],
+      ).compareTo(_operationalString(right['id']));
+    });
+    return rows;
   }
 
   String _scheduleStateLabel(Map<String, dynamic> item) {
@@ -7802,7 +8808,10 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
   }) {
     final kind = _operationalString(item['item_kind']);
     final accent = _scheduleCategoryColor(kind, theme);
-    final responsible = _operationalString(item['responsible_name']);
+    final responsible =
+        _operationalString(item['responsible_name']).isEmpty
+            ? 'Niet toegewezen'
+            : _operationalString(item['responsible_name']);
     final horse = _operationalString(item['horse_name']);
     final horseRecord = _horses.firstWhere(
       (candidate) =>
@@ -7952,12 +8961,99 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     FlutterFlowTheme theme,
     List<Map<String, dynamic>> rows, {
     bool planning = false,
-  }) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: rows
-        .map((item) => _scheduleVisualCard(theme, item, planning: planning))
-        .toList(growable: false),
-  );
+  }) {
+    if (rows.isEmpty) return const SizedBox.shrink();
+    int localHour(Map<String, dynamic> item) {
+      final parsed = _operationalDate(item['scheduled_start_at']);
+      return parsed == null
+          ? 0
+          : timezone.TZDateTime.from(parsed, _stableLocation).hour;
+    }
+
+    final scheduledHours = rows.map(localHour).toList(growable: false);
+    final firstHour = scheduledHours.reduce((a, b) => a < b ? a : b);
+    final lastHour = scheduledHours.reduce((a, b) => a > b ? a : b);
+    final startHour = firstHour < 6 ? firstHour : 6;
+    final endHour = lastHour > 20 ? lastHour : 20;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var hour = startHour; hour <= endHour; hour++)
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  width: 52,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      '${hour.toString().padLeft(2, '0')}:00',
+                      style: theme.labelSmall.copyWith(
+                        color: theme.secondaryText,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 20,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 9,
+                        height: 9,
+                        decoration: BoxDecoration(
+                          color: theme.secondary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(width: 1, color: theme.alternate),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Builder(
+                    builder: (context) {
+                      final hourRows = rows
+                          .where((item) => localHour(item) == hour)
+                          .toList(growable: false);
+                      if (hourRows.isEmpty) {
+                        return Container(
+                          height: 58,
+                          margin: const EdgeInsets.only(bottom: 6),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: theme.alternate),
+                            ),
+                          ),
+                        );
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: hourRows
+                            .map(
+                              (item) => _scheduleVisualCard(
+                                theme,
+                                item,
+                                planning: planning,
+                                compact: true,
+                              ),
+                            )
+                            .toList(growable: false),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
 
   Widget _weekCalendar(
     FlutterFlowTheme theme,
@@ -8074,115 +9170,193 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     final first = DateTime(selected.year, selected.month);
     final days = DateTime(selected.year, selected.month + 1, 0).day;
     final leading = first.weekday - 1;
-    final cells = <Widget>[
-      for (final label in const ['MA', 'DI', 'WO', 'DO', 'VR', 'ZA', 'ZO'])
-        Center(
-          child: Text(
-            label,
-            style: theme.labelSmall.copyWith(
-              color: theme.secondaryText,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      for (var index = 0; index < leading; index++) const SizedBox.shrink(),
-      for (var day = 1; day <= days; day++)
-        Builder(
-          builder: (context) {
-            final date = DateTime(selected.year, selected.month, day);
-            final key = _operationalDateKey(date);
-            final dayRows = rows
-                .where(
-                  (item) =>
-                      _operationalString(item['source_local_date']) == key,
-                )
-                .toList(growable: false);
-            return InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap:
-                  _busy
-                      ? null
-                      : () {
-                        setState(() {
-                          _scheduleDate = date;
-                          _calendarView = 'day';
-                        });
-                        unawaited(_load());
-                      },
-              child: Container(
-                constraints: const BoxConstraints(minHeight: 78),
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: theme.secondaryBackground,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: theme.alternate),
+    final selectedKey = _operationalDateKey(selected);
+    final selectedRows = rows
+        .where(
+          (item) =>
+              _operationalString(item['source_local_date']) == selectedKey,
+        )
+        .toList(growable: false);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxWidth < 600;
+            final cells = <Widget>[
+              for (final label in const [
+                'MA',
+                'DI',
+                'WO',
+                'DO',
+                'VR',
+                'ZA',
+                'ZO',
+              ])
+                Center(
+                  child: Text(
+                    label,
+                    style: theme.labelSmall.copyWith(
+                      color: theme.secondaryText,
+                      fontWeight: FontWeight.w700,
+                      fontSize: compact ? 10 : null,
+                    ),
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('$day', style: theme.labelLarge),
-                    const SizedBox(height: 6),
-                    ...dayRows
-                        .take(2)
-                        .map(
-                          (item) => Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.only(bottom: 4),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 5,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: _scheduleCategoryColor(
-                                _operationalString(item['item_kind']),
-                                theme,
-                              ).withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              '${_stableClock(item['scheduled_start_at'])} '
-                              '${_operationalString(item['title'])}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.labelSmall.copyWith(
-                                color: theme.primaryText,
-                                fontSize: 9,
-                              ),
-                            ),
+              for (var index = 0; index < leading; index++)
+                const SizedBox.shrink(),
+              for (var day = 1; day <= days; day++)
+                Builder(
+                  builder: (context) {
+                    final date = DateTime(selected.year, selected.month, day);
+                    final key = _operationalDateKey(date);
+                    final dayRows = rows
+                        .where(
+                          (item) =>
+                              _operationalString(item['source_local_date']) ==
+                              key,
+                        )
+                        .toList(growable: false);
+                    final isSelected =
+                        date.year == selected.year &&
+                        date.month == selected.month &&
+                        date.day == selected.day;
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(compact ? 9 : 12),
+                      onTap:
+                          _busy
+                              ? null
+                              : () => setState(() => _scheduleDate = date),
+                      child: Container(
+                        padding: EdgeInsets.all(compact ? 4 : 8),
+                        decoration: BoxDecoration(
+                          color:
+                              isSelected
+                                  ? theme.secondary.withValues(alpha: 0.12)
+                                  : theme.secondaryBackground,
+                          borderRadius: BorderRadius.circular(compact ? 9 : 12),
+                          border: Border.all(
+                            color:
+                                isSelected ? theme.secondary : theme.alternate,
+                            width: isSelected ? 1.5 : 1,
                           ),
                         ),
-                    if (dayRows.length > 2)
-                      Text(
-                        '+${dayRows.length - 2}',
-                        style: theme.labelSmall.copyWith(
-                          color: theme.secondary,
-                          fontWeight: FontWeight.w700,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '$day',
+                              style: theme.labelLarge.copyWith(
+                                color:
+                                    isSelected
+                                        ? theme.secondary
+                                        : theme.primaryText,
+                                fontWeight: FontWeight.w700,
+                                fontSize: compact ? 11 : null,
+                              ),
+                            ),
+                            SizedBox(height: compact ? 4 : 6),
+                            if (compact && dayRows.isNotEmpty)
+                              Wrap(
+                                spacing: 3,
+                                runSpacing: 3,
+                                children: [
+                                  ...dayRows
+                                      .take(3)
+                                      .map(
+                                        (item) => Container(
+                                          width: 6,
+                                          height: 6,
+                                          decoration: BoxDecoration(
+                                            color: _scheduleCategoryColor(
+                                              _operationalString(
+                                                item['item_kind'],
+                                              ),
+                                              theme,
+                                            ),
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                  if (dayRows.length > 3)
+                                    Text(
+                                      '+${dayRows.length - 3}',
+                                      style: theme.labelSmall.copyWith(
+                                        color: theme.secondary,
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                ],
+                              )
+                            else if (!compact)
+                              ...dayRows
+                                  .take(2)
+                                  .map(
+                                    (item) => Container(
+                                      width: double.infinity,
+                                      margin: const EdgeInsets.only(bottom: 4),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 5,
+                                        vertical: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: _scheduleCategoryColor(
+                                          _operationalString(item['item_kind']),
+                                          theme,
+                                        ).withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        '${_stableClock(item['scheduled_start_at'])} '
+                                        '${_operationalString(item['title'])}',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: theme.labelSmall.copyWith(
+                                          color: theme.primaryText,
+                                          fontSize: 9,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                          ],
                         ),
                       ),
-                  ],
+                    );
+                  },
                 ),
-              ),
+            ];
+            return GridView.count(
+              crossAxisCount: 7,
+              crossAxisSpacing: compact ? 3 : 6,
+              mainAxisSpacing: compact ? 4 : 6,
+              childAspectRatio: compact ? 0.72 : 0.88,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: cells,
             );
           },
         ),
-    ];
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final calendar = GridView.count(
-          crossAxisCount: 7,
-          crossAxisSpacing: 6,
-          mainAxisSpacing: 6,
-          childAspectRatio: 0.88,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: cells,
-        );
-        if (constraints.maxWidth >= 720) return calendar;
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: SizedBox(width: 720, child: calendar),
-        );
-      },
+        const SizedBox(height: 16),
+        Text(
+          'Activiteiten op ${_operationalDisplayDate(selected)}',
+          style: theme.titleMedium.copyWith(
+            color: theme.primaryText,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (selectedRows.isEmpty)
+          Text(
+            'Geen activiteiten op deze dag.',
+            style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+          )
+        else
+          ...selectedRows.map(
+            (item) =>
+                _scheduleVisualCard(theme, item, planning: true, compact: true),
+          ),
+      ],
     );
   }
 
@@ -8225,66 +9399,6 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
     ],
   );
 
-  Widget _planningListFilters() => Wrap(
-    spacing: 10,
-    runSpacing: 10,
-    children: [
-      SizedBox(
-        width: 210,
-        child: DropdownButtonFormField<String>(
-          value: _calendarHorseFilter,
-          decoration: const InputDecoration(labelText: 'Paard'),
-          items: [
-            const DropdownMenuItem(value: '', child: Text('Alle paarden')),
-            ..._horses.map(
-              (horse) => DropdownMenuItem(
-                value: _operationalString(horse['id']),
-                child: Text(_operationalString(horse['display_name'])),
-              ),
-            ),
-          ],
-          onChanged:
-              (value) => setState(() => _calendarHorseFilter = value ?? ''),
-        ),
-      ),
-      SizedBox(
-        width: 210,
-        child: DropdownButtonFormField<String>(
-          value: _calendarMemberFilter,
-          decoration: const InputDecoration(labelText: 'Gebruiker'),
-          items: [
-            const DropdownMenuItem(value: '', child: Text('Alle leden')),
-            ..._planningRoster.map(
-              (member) => DropdownMenuItem(
-                value: _operationalString(member['id']),
-                child: Text(_operationalString(member['display_name'])),
-              ),
-            ),
-          ],
-          onChanged:
-              (value) => setState(() => _calendarMemberFilter = value ?? ''),
-        ),
-      ),
-      SizedBox(
-        width: 210,
-        child: DropdownButtonFormField<String>(
-          value: _calendarCategoryFilter,
-          decoration: const InputDecoration(labelText: 'Categorie'),
-          items: const [
-            DropdownMenuItem(value: '', child: Text('Alle categorieën')),
-            DropdownMenuItem(value: 'task', child: Text('Taak')),
-            DropdownMenuItem(value: 'care', child: Text('Verzorging')),
-            DropdownMenuItem(value: 'training', child: Text('Training')),
-            DropdownMenuItem(value: 'other', child: Text('Overige afspraak')),
-            DropdownMenuItem(value: 'feeding', child: Text('Voeding')),
-          ],
-          onChanged:
-              (value) => setState(() => _calendarCategoryFilter = value ?? ''),
-        ),
-      ),
-    ],
-  );
-
   Widget _planningGroupedList(
     FlutterFlowTheme theme,
     List<Map<String, dynamic>> rows,
@@ -8310,7 +9424,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: Text(
-              date,
+              _operationalDisplayDate(date),
               style: theme.titleMedium.copyWith(
                 color: theme.primaryText,
                 fontWeight: FontWeight.w700,
@@ -8342,22 +9456,13 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           ],
           if (planning && !_offline) ...[
             const SizedBox(height: 10),
-            Wrap(
-              alignment: WrapAlignment.end,
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: _busy ? null : _createScheduleSeries,
-                  icon: const Icon(Icons.repeat),
-                  label: const Text('Routine aanmaken'),
-                ),
-                FilledButton.icon(
-                  onPressed: _busy ? null : _createScheduleItem,
-                  icon: const Icon(Icons.add_task),
-                  label: const Text('Taak plannen'),
-                ),
-              ],
+            Align(
+              alignment: Alignment.centerRight,
+              child: FilledButton.icon(
+                onPressed: _busy ? null : _createScheduleItem,
+                icon: const Icon(Icons.add_task),
+                label: const Text('Taak plannen'),
+              ),
             ),
           ],
           const SizedBox(height: 12),
@@ -8417,31 +9522,11 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
           const SizedBox(height: 14),
           _planningModeControls(theme),
           const SizedBox(height: 12),
-          if (_planningDisplayMode == 'list') ...[
-            _planningListFilters(),
-            const SizedBox(height: 12),
-          ],
+          _calendarControls(theme),
+          const SizedBox(height: 10),
         ],
         _scheduleDateControls(theme),
-        if (planning && _planningDisplayMode == 'calendar') ...[
-          const SizedBox(height: 10),
-          _calendarControls(theme),
-        ],
         const SizedBox(height: 10),
-        if (planning)
-          Wrap(
-            alignment: WrapAlignment.end,
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              OutlinedButton.icon(
-                onPressed: _offline || _busy ? null : _createScheduleSeries,
-                icon: const Icon(Icons.repeat),
-                label: const Text('Routine aanmaken'),
-              ),
-            ],
-          ),
-        if (planning) const SizedBox(height: 12),
         if (planning && _planningDisplayMode == 'list')
           _planningGroupedList(theme, rows)
         else if (planning && _calendarView == 'month')
@@ -8588,8 +9673,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
             title: _operationalString(plan['name']),
             subtitle:
                 '${_operationalString(plan['plan_type']) == 'temporary' ? 'Tijdelijk afwijkend schema' : 'Vast dagschema'} · '
-                '${_operationalString(plan['effective_from'])}'
-                '${_operationalString(plan['effective_until']).isEmpty ? '' : ' t/m ${_operationalString(plan['effective_until'])}'}',
+                '${_operationalDisplayDate(plan['effective_from'])}'
+                '${_operationalString(plan['effective_until']).isEmpty ? '' : ' t/m ${_operationalDisplayDate(plan['effective_until'])}'}',
             trailing:
                 plan['active_version_id'] == null ? 'In opbouw' : 'Actief',
             selected: _operationalString(plan['id']) == _selectedFeedingPlanId,
@@ -8639,8 +9724,8 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                 const SizedBox(height: 6),
                 Text(
                   '${_operationalString(selectedPlan['plan_type'])} · '
-                  '${_operationalString(selectedPlan['effective_from'])}'
-                  '${_operationalString(selectedPlan['effective_until']).isEmpty ? '' : ' t/m ${_operationalString(selectedPlan['effective_until'])}'}',
+                  '${_operationalDisplayDate(selectedPlan['effective_from'])}'
+                  '${_operationalString(selectedPlan['effective_until']).isEmpty ? '' : ' t/m ${_operationalDisplayDate(selectedPlan['effective_until'])}'}',
                   style: theme.bodySmall.copyWith(color: theme.secondaryText),
                 ),
                 const SizedBox(height: 12),
@@ -8825,7 +9910,7 @@ class _AvarynOperationalRuntimeState extends State<AvarynOperationalRuntime> {
                             ? _operationalString(item['title'])
                             : _operationalString(item['product_name']),
                     subtitle:
-                        '${_operationalString(item['source_local_date'])} · '
+                        '${_operationalDisplayDate(item['source_local_date'])} · '
                         'gepland ${item['planned_quantity']} '
                         '${_operationalString(item['planned_unit_code'])} · '
                         'gegeven ${item['actual_quantity'] ?? '—'} '

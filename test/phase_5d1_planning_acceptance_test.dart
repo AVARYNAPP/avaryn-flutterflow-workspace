@@ -37,9 +37,9 @@ void main() {
       expect(runtime, contains('DateTime? _scheduleDate;'));
       expect(runtime, contains("'p_from_local_date':"));
       expect(runtime, contains("'p_through_local_date':"));
-      expect(runtime, contains("tooltip: 'Vorige periode'"));
-      expect(runtime, contains("tooltip: 'Volgende periode'"));
-      expect(runtime, contains("child: const Text('Terug naar vandaag')"));
+      expect(runtime, contains("message: 'Vorige periode'"));
+      expect(runtime, contains("message: 'Volgende periode'"));
+      expect(runtime, contains("child: const Text('Vandaag')"));
       expect(runtime, contains("value: 'day'"));
       expect(runtime, contains("value: 'week'"));
       expect(runtime, contains("value: 'month'"));
@@ -57,7 +57,7 @@ void main() {
     expect(runtime, contains("'p_status': 'active'"));
     expect(runtime, contains('add(const Duration(days: 12))'));
     expect(runtime, contains("'p_materialize_request_id':"));
-    expect(runtime, contains("child: const Text('Routine aanmaken')"));
+    expect(runtime, contains("label: const Text('Activiteit toevoegen')"));
     expect(
       migration,
       contains(
@@ -155,10 +155,7 @@ void main() {
       RegExp(r'_offline \|\| _busy').allMatches(runtime).length,
       greaterThanOrEqualTo(5),
     );
-    expect(
-      runtime,
-      contains('_offline || _busy ? null : _createScheduleSeries'),
-    );
+    expect(runtime, isNot(contains("label: const Text('Routine aanmaken')")));
     expect(runtime, contains('_offline || _busy ? null : _createScheduleItem'));
     expect(runtime, contains('bool get _selectedScheduleDateIsToday'));
     expect(

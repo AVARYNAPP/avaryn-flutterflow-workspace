@@ -1,0 +1,4003 @@
+// Automatic FlutterFlow imports
+import '/backend/schema/structs/index.dart';
+import '/backend/supabase/supabase.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import '/custom_code/widgets/index.dart'; // Imports other custom widgets
+import '/custom_code/actions/index.dart'; // Imports custom actions
+import '/flutter_flow/custom_functions.dart'; // Imports custom functions
+import 'package:flutter/material.dart';
+// Begin custom widget code
+// DO NOT REMOVE OR MODIFY THE CODE ABOVE!
+
+import 'dart:async';
+import 'dart:convert';
+import 'package:file_picker/file_picker.dart' as file_picker;
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '/app_state.dart';
+import '/backend/schema/structs/index.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import 'package:sign_in_button/sign_in_button.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
+
+enum StableRole { owner, admin, member, viewer }
+
+enum MembershipStatus { active, suspended, removed, left }
+
+final class MembershipSnapshot {
+  const MembershipSnapshot({
+    required this.authUserId,
+    required this.cloudStableId,
+    required this.role,
+    required this.status,
+  });
+
+  final String authUserId;
+  final String cloudStableId;
+  final StableRole role;
+  final MembershipStatus status;
+}
+
+final class LocalStableCloudLink {
+  const LocalStableCloudLink({
+    required this.authUserId,
+    required this.cloudStableId,
+    required this.localStableId,
+    this.selectedHorseId,
+    required this.confirmed,
+  });
+
+  final String authUserId;
+  final String cloudStableId;
+  final String localStableId;
+  final int? selectedHorseId;
+  final bool confirmed;
+}
+
+final class LocalOperationalRecord {
+  const LocalOperationalRecord({required this.id, required this.localStableId});
+
+  final String id;
+  final String localStableId;
+}
+
+final class StableContextResult {
+  const StableContextResult({
+    required this.cloudStableId,
+    required this.localStableId,
+    required this.records,
+    required this.selectedHorseId,
+    required this.readOnly,
+    required this.accessStatus,
+  });
+
+  factory StableContextResult.empty(String status) => StableContextResult(
+        cloudStableId: '',
+        localStableId: '',
+        records: const [],
+        selectedHorseId: null,
+        readOnly: true,
+        accessStatus: status,
+      );
+
+  final String cloudStableId;
+  final String localStableId;
+  final List<LocalOperationalRecord> records;
+  final int? selectedHorseId;
+  final bool readOnly;
+  final String accessStatus;
+}
+
+final class StableContextCoordinator {
+  const StableContextCoordinator();
+
+  StableContextResult switchContext({
+    required String authUserId,
+    required String cloudStableId,
+    required MembershipSnapshot? validatedMembership,
+    required List<LocalStableCloudLink> links,
+    required List<LocalOperationalRecord> accountRecords,
+    required bool online,
+  }) {
+    if (!online) return StableContextResult.empty('offline_read_only');
+    if (validatedMembership == null ||
+        validatedMembership.authUserId != authUserId ||
+        validatedMembership.cloudStableId != cloudStableId) {
+      return StableContextResult.empty('access_denied');
+    }
+    if (validatedMembership.status == MembershipStatus.suspended) {
+      return StableContextResult.empty('suspended');
+    }
+    if (validatedMembership.status != MembershipStatus.active) {
+      return StableContextResult.empty('removed');
+    }
+
+    LocalStableCloudLink? link;
+    for (final candidate in links) {
+      if (candidate.authUserId == authUserId &&
+          candidate.cloudStableId == cloudStableId &&
+          candidate.confirmed) {
+        link = candidate;
+        break;
+      }
+    }
+    if (link == null) return StableContextResult.empty('unlinked');
+
+    return StableContextResult(
+      cloudStableId: cloudStableId,
+      localStableId: link.localStableId,
+      records: accountRecords
+          .where((record) => record.localStableId == link!.localStableId)
+          .toList(growable: false),
+      selectedHorseId: link.selectedHorseId,
+      readOnly: false,
+      accessStatus: 'active',
+    );
+  }
+}
+
+bool canInviteRole(StableRole actor, StableRole offered) => switch (actor) {
+      StableRole.owner => offered != StableRole.owner,
+      StableRole.admin =>
+        offered == StableRole.member || offered == StableRole.viewer,
+      StableRole.member || StableRole.viewer => false,
+    };
+
+bool canManageRole(
+  StableRole actor,
+  StableRole target,
+  StableRole replacement,
+) =>
+    switch (actor) {
+      StableRole.owner =>
+        target != StableRole.owner && replacement != StableRole.owner,
+      StableRole.admin =>
+        (target == StableRole.member || target == StableRole.viewer) &&
+            (replacement == StableRole.member ||
+                replacement == StableRole.viewer),
+      StableRole.member || StableRole.viewer => false,
+    };
+
+final class AccountOperationalMaster {
+  const AccountOperationalMaster({
+    required this.authUserId,
+    required this.records,
+    required this.selectedHorseByLocalStable,
+    required this.legacyIds,
+    required this.legacyBackup,
+    this.currentLocalStableId = '',
+    this.selectedCloudStableId = '',
+    this.nextHorseId = 1,
+    this.nextHorseIndex = 0,
+    this.horseSeedVersion = 1,
+    this.passportPrototypeVersion = 1,
+    this.nextActivityId = 1,
+    this.nextFeedingItemId = 1,
+    this.nextTemporaryFeedingScheduleId = 1,
+    this.nextFeedingAssignmentExceptionId = 1,
+    this.nextFeedingExecutionRecordId = 1,
+    this.schemaVersion = 2,
+  });
+
+  final String authUserId;
+  final List<LocalOperationalRecord> records;
+  final Map<String, int?> selectedHorseByLocalStable;
+  final List<String> legacyIds;
+  final String legacyBackup;
+  final String currentLocalStableId;
+  final String selectedCloudStableId;
+  final int nextHorseId;
+  final int nextHorseIndex;
+  final int horseSeedVersion;
+  final int passportPrototypeVersion;
+  final int nextActivityId;
+  final int nextFeedingItemId;
+  final int nextTemporaryFeedingScheduleId;
+  final int nextFeedingAssignmentExceptionId;
+  final int nextFeedingExecutionRecordId;
+  final int schemaVersion;
+
+  Map<String, dynamic> toSerializableMap() => {
+        'authUserId': authUserId,
+        'horses': const <Map<String, dynamic>>[],
+        'selectedHorse': const <String, dynamic>{},
+        'selectedHorseIndex': 0,
+        'nextHorseId': nextHorseId,
+        'nextHorseIndex': nextHorseIndex,
+        'horseSeedVersion': horseSeedVersion,
+        'passportPrototypeVersion': passportPrototypeVersion,
+        'activities': records
+            .map(
+              (record) => {'id': record.id, 'stableId': record.localStableId},
+            )
+            .toList(),
+        'nextActivityId': nextActivityId,
+        'currentLocalUserId': 'local-current-user',
+        'currentLocalStableId': currentLocalStableId,
+        'horseFeedingPlans': const <Map<String, dynamic>>[],
+        'temporaryFeedingSchedules': const <Map<String, dynamic>>[],
+        'nextFeedingItemId': nextFeedingItemId,
+        'nextTemporaryFeedingScheduleId': nextTemporaryFeedingScheduleId,
+        'feedingRoundConfigs': const <Map<String, dynamic>>[],
+        'feedingAssignmentExceptions': const <Map<String, dynamic>>[],
+        'feedingExecutionRecords': const <Map<String, dynamic>>[],
+        'nextFeedingAssignmentExceptionId': nextFeedingAssignmentExceptionId,
+        'nextFeedingExecutionRecordId': nextFeedingExecutionRecordId,
+        'selectedCloudStableId': selectedCloudStableId,
+        'localStableCloudLinks': const <Map<String, dynamic>>[],
+        'stableMembershipCaches': const <Map<String, dynamic>>[],
+        'schemaVersion': schemaVersion,
+        'updatedAt': 'runtime-test-snapshot',
+        'selectedHorseByLocalStable': selectedHorseByLocalStable,
+        'legacyIds': legacyIds,
+        'legacyBackup': legacyBackup,
+      };
+
+  static AccountOperationalMaster fromSerializableMap(
+    Map<String, dynamic> data,
+  ) {
+    final records = _phase4BSerializableList(data['activities'])
+        .map(_phase4BSerializableMap)
+        .map(
+          (record) => LocalOperationalRecord(
+            id: _phase4BSerializableString(record['id']),
+            localStableId: _phase4BSerializableString(record['stableId']),
+          ),
+        )
+        .toList(growable: false);
+    final selectedHorseByLocalStable = _phase4BSerializableMap(
+      data['selectedHorseByLocalStable'],
+    ).map((key, value) => MapEntry(key, value is num ? value.toInt() : null));
+    int integer(String key, int fallback) =>
+        data[key] is num ? (data[key] as num).toInt() : fallback;
+    return AccountOperationalMaster(
+      authUserId: _phase4BSerializableString(data['authUserId']),
+      records: records,
+      selectedHorseByLocalStable: selectedHorseByLocalStable,
+      legacyIds: _phase4BSerializableList(
+        data['legacyIds'],
+      ).map((value) => value.toString()).toList(growable: false),
+      legacyBackup: _phase4BSerializableString(data['legacyBackup']),
+      currentLocalStableId: _phase4BSerializableString(
+        data['currentLocalStableId'],
+      ),
+      selectedCloudStableId: _phase4BSerializableString(
+        data['selectedCloudStableId'],
+      ),
+      nextHorseId: integer('nextHorseId', 1),
+      nextHorseIndex: integer('nextHorseIndex', 0),
+      horseSeedVersion: integer('horseSeedVersion', 1),
+      passportPrototypeVersion: integer('passportPrototypeVersion', 1),
+      nextActivityId: integer('nextActivityId', 1),
+      nextFeedingItemId: integer('nextFeedingItemId', 1),
+      nextTemporaryFeedingScheduleId: integer(
+        'nextTemporaryFeedingScheduleId',
+        1,
+      ),
+      nextFeedingAssignmentExceptionId: integer(
+        'nextFeedingAssignmentExceptionId',
+        1,
+      ),
+      nextFeedingExecutionRecordId: integer('nextFeedingExecutionRecordId', 1),
+      schemaVersion: integer('schemaVersion', 2),
+    );
+  }
+}
+
+enum Phase4BMasterSaveKind {
+  createLinked,
+  mergeLinked,
+  preserveUnlinked,
+  emptyUnlinked,
+}
+
+final class Phase4BMasterSavePlan<T> {
+  const Phase4BMasterSavePlan({
+    required this.kind,
+    required this.master,
+    required this.shouldPersist,
+  });
+
+  final Phase4BMasterSaveKind kind;
+  final T master;
+  final bool shouldPersist;
+}
+
+Phase4BMasterSavePlan<T> phase4BPlanOperationalMasterSave<T>({
+  required T current,
+  required T? existing,
+  required String currentLocalStableId,
+  required T Function(T existing, T current) mergeLinkedScope,
+}) {
+  if (currentLocalStableId.trim().isEmpty) {
+    return Phase4BMasterSavePlan(
+      kind: existing == null
+          ? Phase4BMasterSaveKind.emptyUnlinked
+          : Phase4BMasterSaveKind.preserveUnlinked,
+      master: existing ?? current,
+      shouldPersist: false,
+    );
+  }
+  return Phase4BMasterSavePlan(
+    kind: existing == null
+        ? Phase4BMasterSaveKind.createLinked
+        : Phase4BMasterSaveKind.mergeLinked,
+    master: existing == null ? current : mergeLinkedScope(existing, current),
+    shouldPersist: true,
+  );
+}
+
+const Set<String> phase4BOperationalScopedCollectionKeys = {
+  'horses',
+  'activities',
+  'horseFeedingPlans',
+  'temporaryFeedingSchedules',
+  'feedingRoundConfigs',
+  'feedingAssignmentExceptions',
+  'feedingExecutionRecords',
+};
+
+dynamic _phase4BCloneSerializableValue(dynamic value) {
+  if (value is Map) {
+    return value.map(
+      (key, nested) =>
+          MapEntry(key.toString(), _phase4BCloneSerializableValue(nested)),
+    );
+  }
+  if (value is Iterable) {
+    return value.map(_phase4BCloneSerializableValue).toList();
+  }
+  return value;
+}
+
+Map<String, dynamic> _phase4BSerializableMap(dynamic value) =>
+    value is Map ? value.cast<String, dynamic>() : const {};
+
+String _phase4BSerializableString(dynamic value) =>
+    value is String ? value.trim() : '';
+
+List<dynamic> _phase4BSerializableList(dynamic value) =>
+    value is Iterable ? value.toList(growable: false) : const [];
+
+String _phase4BScopedRecordStableId({
+  required String collectionKey,
+  required dynamic record,
+  required String horseFallbackStableId,
+}) {
+  final data = _phase4BSerializableMap(record);
+  final stableId = _phase4BSerializableString(data['stableId']);
+  if (collectionKey == 'horses' && stableId.isEmpty) {
+    return horseFallbackStableId;
+  }
+  return stableId;
+}
+
+Map<String, dynamic> phase4BMergeOperationalMasterMaps({
+  required Map<String, dynamic> master,
+  required Map<String, dynamic> current,
+}) {
+  final masterAuthUserId = _phase4BSerializableString(master['authUserId']);
+  final currentAuthUserId = _phase4BSerializableString(current['authUserId']);
+  if (masterAuthUserId.isNotEmpty &&
+      currentAuthUserId.isNotEmpty &&
+      masterAuthUserId != currentAuthUserId) {
+    throw StateError('Cross-account operational master merge refused.');
+  }
+
+  final localStableId = _phase4BSerializableString(
+    current['currentLocalStableId'],
+  );
+  if (localStableId.isEmpty) {
+    throw StateError('A linked operational merge requires a local stable ID.');
+  }
+  final selectedCloudStableId = _phase4BSerializableString(
+    current['selectedCloudStableId'],
+  );
+  if (selectedCloudStableId.isNotEmpty &&
+      selectedCloudStableId == localStableId) {
+    throw StateError('A cloud stable UUID cannot become a local stable ID.');
+  }
+
+  final merged = _phase4BCloneSerializableValue(master).cast<String, dynamic>();
+
+  // Every non-scoped field comes from the current working snapshot. This keeps
+  // counters, schema/seed versions and future scalar master fields in lockstep
+  // for logout, account switches and stable switches.
+  for (final entry in current.entries) {
+    if (!phase4BOperationalScopedCollectionKeys.contains(entry.key)) {
+      merged[entry.key] = _phase4BCloneSerializableValue(entry.value);
+    }
+  }
+
+  final masterHorseFallback = _phase4BSerializableString(
+    master['currentLocalStableId'],
+  );
+  for (final collectionKey in phase4BOperationalScopedCollectionKeys) {
+    final retained = _phase4BSerializableList(master[collectionKey])
+        .where(
+          (record) =>
+              _phase4BScopedRecordStableId(
+                collectionKey: collectionKey,
+                record: record,
+                horseFallbackStableId: masterHorseFallback,
+              ) !=
+              localStableId,
+        )
+        .map(_phase4BCloneSerializableValue);
+    final replacement = _phase4BSerializableList(
+      current[collectionKey],
+    ).map(_phase4BCloneSerializableValue);
+    merged[collectionKey] = [...retained, ...replacement];
+  }
+  return merged;
+}
+
+Phase4BMasterSavePlan<T> phase4BPlanSerializedOperationalMasterSave<T>({
+  required T current,
+  required T? existing,
+  required Map<String, dynamic> Function(T value) toSerializableMap,
+  required T Function(Map<String, dynamic> value) fromSerializableMap,
+}) {
+  final currentMap = toSerializableMap(current);
+  final currentLocalStableId = _phase4BSerializableString(
+    currentMap['currentLocalStableId'],
+  );
+  if (currentLocalStableId.isEmpty) {
+    return Phase4BMasterSavePlan(
+      kind: existing == null
+          ? Phase4BMasterSaveKind.emptyUnlinked
+          : Phase4BMasterSaveKind.preserveUnlinked,
+      master: existing ?? current,
+      shouldPersist: false,
+    );
+  }
+  if (existing == null) {
+    final selectedCloudStableId = _phase4BSerializableString(
+      currentMap['selectedCloudStableId'],
+    );
+    if (selectedCloudStableId.isNotEmpty &&
+        selectedCloudStableId == currentLocalStableId) {
+      throw StateError('A cloud stable UUID cannot become a local stable ID.');
+    }
+    return Phase4BMasterSavePlan(
+      kind: Phase4BMasterSaveKind.createLinked,
+      master: current,
+      shouldPersist: true,
+    );
+  }
+  return Phase4BMasterSavePlan(
+    kind: Phase4BMasterSaveKind.mergeLinked,
+    master: fromSerializableMap(
+      phase4BMergeOperationalMasterMaps(
+        master: toSerializableMap(existing),
+        current: currentMap,
+      ),
+    ),
+    shouldPersist: true,
+  );
+}
+
+final class Phase4BMemberCandidate {
+  const Phase4BMemberCandidate({
+    required this.stableId,
+    required this.stableMemberId,
+  });
+
+  final String stableId;
+  final String stableMemberId;
+}
+
+final class Phase4BMemberDetailRoute {
+  const Phase4BMemberDetailRoute({
+    required this.pageName,
+    required this.stableMemberId,
+  });
+
+  final String pageName;
+  final String stableMemberId;
+
+  Map<String, String> get parameters => {'stableMemberId': stableMemberId};
+}
+
+final class Phase4BMemberSelectionCoordinator {
+  Phase4BMemberSelectionCoordinator({
+    String initialStableMemberId = '',
+    required this.requireExplicitSelection,
+  }) : _intendedStableMemberId = initialStableMemberId.trim();
+
+  final bool requireExplicitSelection;
+  String _intendedStableMemberId;
+  String selectedStableMemberId = '';
+  String error = '';
+
+  String get intendedStableMemberId => _intendedStableMemberId;
+
+  Phase4BMemberDetailRoute detailRoute(String stableMemberId) {
+    final value = stableMemberId.trim();
+    if (value.isEmpty) {
+      throw ArgumentError.value(
+        stableMemberId,
+        'stableMemberId',
+        'A detail route requires an explicit stable member ID.',
+      );
+    }
+    return Phase4BMemberDetailRoute(
+      pageName: 'StableMemberDetailsPage',
+      stableMemberId: value,
+    );
+  }
+
+  void choose(String stableMemberId) {
+    _intendedStableMemberId = stableMemberId.trim();
+    selectedStableMemberId = '';
+    error = '';
+  }
+
+  void resolve({
+    required String selectedStableId,
+    required List<Phase4BMemberCandidate> candidates,
+  }) {
+    final inSelectedStable = candidates
+        .where((candidate) => candidate.stableId == selectedStableId)
+        .toList(growable: false);
+    if (_intendedStableMemberId.isEmpty) {
+      if (requireExplicitSelection) {
+        selectedStableMemberId = '';
+        error = 'member_not_selected';
+        return;
+      }
+      selectedStableMemberId =
+          inSelectedStable.isEmpty ? '' : inSelectedStable.first.stableMemberId;
+      error = inSelectedStable.isEmpty ? 'member_not_found' : '';
+      _intendedStableMemberId = selectedStableMemberId;
+      return;
+    }
+    final matches = inSelectedStable
+        .where(
+          (candidate) => candidate.stableMemberId == _intendedStableMemberId,
+        )
+        .toList(growable: false);
+    if (matches.length != 1) {
+      selectedStableMemberId = '';
+      error = 'member_not_found';
+      return;
+    }
+    selectedStableMemberId = matches.single.stableMemberId;
+    error = '';
+  }
+}
+
+abstract interface class AccountOperationalStore {
+  AccountOperationalMaster? read(String authUserId);
+
+  void write(AccountOperationalMaster master);
+}
+
+final class StableContextSession {
+  StableContextSession({required this.store});
+
+  final AccountOperationalStore store;
+  String authUserId = '';
+  String cloudStableId = '';
+  String currentLocalStableId = '';
+  List<LocalOperationalRecord> records = const [];
+  int? selectedHorseId;
+  int nextHorseId = 1;
+  int nextHorseIndex = 0;
+  int horseSeedVersion = 1;
+  int passportPrototypeVersion = 1;
+  int nextActivityId = 1;
+  int nextFeedingItemId = 1;
+  int nextTemporaryFeedingScheduleId = 1;
+  int nextFeedingAssignmentExceptionId = 1;
+  int nextFeedingExecutionRecordId = 1;
+  int schemaVersion = 2;
+  String accessStatus = 'empty';
+
+  void seed({
+    required String accountId,
+    required String cloudId,
+    required String localStableId,
+    required List<LocalOperationalRecord> operationalRecords,
+    required int? horseId,
+    int nextHorseId = 1,
+    int nextHorseIndex = 0,
+    int horseSeedVersion = 1,
+    int passportPrototypeVersion = 1,
+    int nextActivityId = 1,
+    int nextFeedingItemId = 1,
+    int nextTemporaryFeedingScheduleId = 1,
+    int nextFeedingAssignmentExceptionId = 1,
+    int nextFeedingExecutionRecordId = 1,
+    int schemaVersion = 2,
+  }) {
+    authUserId = accountId;
+    cloudStableId = cloudId;
+    currentLocalStableId = localStableId;
+    records = List.of(operationalRecords);
+    selectedHorseId = horseId;
+    this.nextHorseId = nextHorseId;
+    this.nextHorseIndex = nextHorseIndex;
+    this.horseSeedVersion = horseSeedVersion;
+    this.passportPrototypeVersion = passportPrototypeVersion;
+    this.nextActivityId = nextActivityId;
+    this.nextFeedingItemId = nextFeedingItemId;
+    this.nextTemporaryFeedingScheduleId = nextTemporaryFeedingScheduleId;
+    this.nextFeedingAssignmentExceptionId = nextFeedingAssignmentExceptionId;
+    this.nextFeedingExecutionRecordId = nextFeedingExecutionRecordId;
+    this.schemaVersion = schemaVersion;
+    accessStatus = 'active';
+  }
+
+  Future<bool> switchTo({
+    required String targetAuthUserId,
+    required String targetCloudStableId,
+    required MembershipSnapshot? membership,
+    required List<LocalStableCloudLink> links,
+  }) async {
+    try {
+      _saveCurrent();
+    } catch (_) {
+      accessStatus = 'storage_error';
+      return false;
+    }
+
+    _clear(status: 'validating');
+    if (membership == null ||
+        membership.authUserId != targetAuthUserId ||
+        membership.cloudStableId != targetCloudStableId) {
+      accessStatus = 'access_denied';
+      return false;
+    }
+    if (membership.status != MembershipStatus.active) {
+      accessStatus = membership.status == MembershipStatus.suspended
+          ? 'suspended'
+          : 'removed';
+      return false;
+    }
+    LocalStableCloudLink? link;
+    for (final candidate in links) {
+      if (candidate.authUserId == targetAuthUserId &&
+          candidate.cloudStableId == targetCloudStableId &&
+          candidate.confirmed) {
+        link = candidate;
+        break;
+      }
+    }
+    if (link == null || link.localStableId.isEmpty) {
+      authUserId = targetAuthUserId;
+      cloudStableId = targetCloudStableId;
+      accessStatus = 'unlinked';
+      return true;
+    }
+    final master = store.read(targetAuthUserId);
+    authUserId = targetAuthUserId;
+    cloudStableId = targetCloudStableId;
+    currentLocalStableId = link.localStableId;
+    records = master?.records
+            .where((record) => record.localStableId == link!.localStableId)
+            .toList(growable: false) ??
+        const [];
+    selectedHorseId = master?.selectedHorseByLocalStable[link.localStableId] ??
+        link.selectedHorseId;
+    if (master != null) _loadPersistentFields(master);
+    accessStatus = 'active';
+    return true;
+  }
+
+  void logout() {
+    _saveCurrent();
+    authUserId = '';
+    cloudStableId = '';
+    _clear(status: 'signed_out');
+  }
+
+  void _saveCurrent() {
+    if (authUserId.isEmpty) return;
+    final existing = store.read(authUserId);
+    final current = AccountOperationalMaster(
+      authUserId: authUserId,
+      records: List.of(records),
+      selectedHorseByLocalStable: currentLocalStableId.isEmpty
+          ? const {}
+          : {
+              ...?existing?.selectedHorseByLocalStable,
+              currentLocalStableId: selectedHorseId,
+            },
+      legacyIds: existing?.legacyIds ?? const [],
+      legacyBackup: existing?.legacyBackup ?? '',
+      currentLocalStableId: currentLocalStableId,
+      selectedCloudStableId: cloudStableId,
+      nextHorseId: nextHorseId,
+      nextHorseIndex: nextHorseIndex,
+      horseSeedVersion: horseSeedVersion,
+      passportPrototypeVersion: passportPrototypeVersion,
+      nextActivityId: nextActivityId,
+      nextFeedingItemId: nextFeedingItemId,
+      nextTemporaryFeedingScheduleId: nextTemporaryFeedingScheduleId,
+      nextFeedingAssignmentExceptionId: nextFeedingAssignmentExceptionId,
+      nextFeedingExecutionRecordId: nextFeedingExecutionRecordId,
+      schemaVersion: schemaVersion,
+    );
+    final plan = phase4BPlanSerializedOperationalMasterSave(
+      current: current,
+      existing: existing,
+      toSerializableMap: (master) => master.toSerializableMap(),
+      fromSerializableMap: AccountOperationalMaster.fromSerializableMap,
+    );
+    if (plan.shouldPersist) {
+      store.write(plan.master);
+    }
+  }
+
+  void _loadPersistentFields(AccountOperationalMaster master) {
+    nextHorseId = master.nextHorseId;
+    nextHorseIndex = master.nextHorseIndex;
+    horseSeedVersion = master.horseSeedVersion;
+    passportPrototypeVersion = master.passportPrototypeVersion;
+    nextActivityId = master.nextActivityId;
+    nextFeedingItemId = master.nextFeedingItemId;
+    nextTemporaryFeedingScheduleId = master.nextTemporaryFeedingScheduleId;
+    nextFeedingAssignmentExceptionId = master.nextFeedingAssignmentExceptionId;
+    nextFeedingExecutionRecordId = master.nextFeedingExecutionRecordId;
+    schemaVersion = master.schemaVersion;
+  }
+
+  void _clear({required String status}) {
+    currentLocalStableId = '';
+    records = const [];
+    selectedHorseId = null;
+    accessStatus = status;
+  }
+}
+
+List<Map<String, dynamic>> phase4C7MarkPendingItems(
+  List<Map<String, dynamic>> schedule,
+  List<Map<String, dynamic>> queued,
+) {
+  final pendingIds = queued
+      .map((mutation) => mutation['schedule_item_id']?.toString() ?? '')
+      .where((id) => id.isNotEmpty)
+      .toSet();
+  return schedule
+      .map(
+        (item) =>
+            pendingIds.contains(item['schedule_item_id']?.toString() ?? '')
+                ? {...item, 'state': 'pending_sync'}
+                : Map<String, dynamic>.from(item),
+      )
+      .toList(growable: false);
+}
+
+List<Map<String, dynamic>> phase4C7QueueOnce(
+  List<Map<String, dynamic>> queued,
+  Map<String, dynamic> mutation,
+) {
+  final itemId = mutation['schedule_item_id']?.toString() ?? '';
+  if (itemId.isEmpty) {
+    throw ArgumentError('schedule_item_id is required');
+  }
+  if (queued.any(
+    (candidate) => candidate['schedule_item_id']?.toString() == itemId,
+  )) {
+    return List<Map<String, dynamic>>.from(queued);
+  }
+  return [...queued, Map<String, dynamic>.from(mutation)];
+}
+
+List<Map<String, dynamic>> phase4C7RemoveProcessedMutation(
+  List<Map<String, dynamic>> queued,
+  Map<String, dynamic> processed,
+) {
+  final requestId = processed['request_id']?.toString() ?? '';
+  return queued
+      .where((candidate) => candidate['request_id']?.toString() != requestId)
+      .map(Map<String, dynamic>.from)
+      .toList(growable: true);
+}
+
+Set<String> phase4C7SecureKeysForAccount(
+  Iterable<String> keys,
+  String authUserId,
+) {
+  final normalized = authUserId.trim();
+  if (normalized.isEmpty) return const <String>{};
+  final prefix = 'avaryn.4c7.$normalized.';
+  return keys.where((key) => key.startsWith(prefix)).toSet();
+}
+
+typedef Phase5B2DurableRequestRecord = ({
+  String requestId,
+  Map<String, String> replayValues
+});
+
+bool phase5B2DurableStorageIsAbsent(String? persistedValue) =>
+    persistedValue == null;
+
+Phase5B2DurableRequestRecord phase5B2ResolveDurableRequestRecord(
+  Map<String, dynamic>? persisted,
+  String Function() create,
+  Map<String, String> initialReplayValues,
+) {
+  final uuidV4 = RegExp(
+    r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+    caseSensitive: false,
+  );
+  if (persisted != null) {
+    final existing = persisted['request_id']?.toString().trim() ?? '';
+    final rawValues = persisted['replay_values'];
+    if (!uuidV4.hasMatch(existing) || rawValues is! Map) {
+      throw StateError('Invalid durable request record');
+    }
+    final replayValues = <String, String>{};
+    for (final entry in rawValues.entries) {
+      if (entry.key is! String || entry.value is! String) {
+        throw StateError('Invalid durable request record');
+      }
+      replayValues[entry.key as String] = entry.value as String;
+    }
+    for (final requiredKey in initialReplayValues.keys) {
+      if ((replayValues[requiredKey] ?? '').isEmpty) {
+        throw StateError('Invalid durable request record');
+      }
+    }
+    return (requestId: existing, replayValues: replayValues);
+  }
+  final created = create().trim();
+  if (!uuidV4.hasMatch(created)) {
+    throw StateError('A valid UUID v4 request ID is required');
+  }
+  return (
+    requestId: created,
+    replayValues: Map<String, String>.from(initialReplayValues),
+  );
+}
+
+bool phase4C7DaysetMetadataMatches({
+  required Map<String, dynamic> envelope,
+  required Map<String, dynamic> plaintext,
+  required String stableId,
+  required String timezone,
+  required String localDate,
+  required int authorityVersion,
+  required DateTime nowUtc,
+}) {
+  DateTime? parsed(Object? value) => value is DateTime
+      ? value
+      : value is String
+          ? DateTime.tryParse(value)
+          : null;
+
+  final outerExpiry = parsed(envelope['expires_at']);
+  final innerExpiry = parsed(plaintext['expires_at']);
+  final outerAuthority = int.tryParse(
+    envelope['authority_version']?.toString() ?? '',
+  );
+  final innerAuthority = int.tryParse(
+    plaintext['authority_version']?.toString() ?? '',
+  );
+  return plaintext['stable_id']?.toString() == stableId &&
+      plaintext['timezone']?.toString() == timezone &&
+      plaintext['local_date']?.toString() == localDate &&
+      envelope['local_date']?.toString() == localDate &&
+      innerAuthority == authorityVersion &&
+      outerAuthority == authorityVersion &&
+      outerAuthority == innerAuthority &&
+      outerExpiry != null &&
+      innerExpiry != null &&
+      innerExpiry.isAfter(nowUtc) &&
+      innerExpiry.toUtc() == outerExpiry.toUtc();
+}
+
+final class Phase4C7RequestLedger {
+  final Map<String, Map<String, dynamic>> _pending = {};
+  String _scope = '';
+
+  void bindScope(String authUserId, String stableId) {
+    final nextScope = '${authUserId.trim()}:${stableId.trim()}';
+    if (authUserId.trim().isEmpty || stableId.trim().isEmpty) {
+      throw ArgumentError('An auth user and stable are required');
+    }
+    if (_scope == nextScope) return;
+    _pending.clear();
+    _scope = nextScope;
+  }
+
+  Map<String, dynamic> acquire(
+    String operation,
+    String intentKey,
+    Map<String, dynamic> Function() create,
+  ) {
+    if (_scope.isEmpty) {
+      throw StateError('Bind the request ledger to an auth/stable scope first');
+    }
+    final key = '$_scope:$operation:$intentKey';
+    return _pending.putIfAbsent(key, () => Map<String, dynamic>.from(create()));
+  }
+
+  void complete(String operation, String intentKey) {
+    _pending.remove('$_scope:$operation:$intentKey');
+  }
+
+  void clear() => _pending.clear();
+
+  void reset() {
+    _pending.clear();
+    _scope = '';
+  }
+
+  int get length => _pending.length;
+}
+
+enum Phase5AccountRoute {
+  welcome,
+  verifyEmail,
+  onboarding,
+  invitation,
+  stableHandoff,
+  today,
+}
+
+Phase5AccountRoute phase5ResolveAccountRoute({
+  required bool hasSession,
+  required bool emailProvider,
+  required bool emailConfirmed,
+  required bool onboardingCompleted,
+  required bool hasPendingInvitation,
+  required bool hasSelectedStable,
+}) {
+  if (!hasSession) return Phase5AccountRoute.welcome;
+  if (emailProvider && !emailConfirmed) {
+    return Phase5AccountRoute.verifyEmail;
+  }
+  if (!onboardingCompleted) return Phase5AccountRoute.onboarding;
+  if (hasPendingInvitation) return Phase5AccountRoute.invitation;
+  if (!hasSelectedStable) return Phase5AccountRoute.stableHandoff;
+  return Phase5AccountRoute.today;
+}
+
+String phase5AccountRouteName(Phase5AccountRoute route) {
+  return switch (route) {
+    Phase5AccountRoute.welcome => 'AuthWelcomePage',
+    Phase5AccountRoute.verifyEmail => 'AuthVerifyEmailPage',
+    Phase5AccountRoute.onboarding => 'OnboardingPage',
+    Phase5AccountRoute.invitation => 'StableInvitationPage',
+    Phase5AccountRoute.stableHandoff => 'StableOnboardingHandoffPage',
+    Phase5AccountRoute.today => 'TodayDashboardPage',
+  };
+}
+
+bool phase5ImageSignatureMatches(List<int> bytes, String contentType) {
+  bool startsWith(List<int> signature) {
+    if (bytes.length < signature.length) return false;
+    for (var index = 0; index < signature.length; index += 1) {
+      if (bytes[index] != signature[index]) return false;
+    }
+    return true;
+  }
+
+  return switch (contentType) {
+    'image/jpeg' => startsWith(const [0xFF, 0xD8, 0xFF]),
+    'image/png' => startsWith(const [
+        0x89,
+        0x50,
+        0x4E,
+        0x47,
+        0x0D,
+        0x0A,
+        0x1A,
+        0x0A,
+      ]),
+    'image/webp' => bytes.length >= 12 &&
+        startsWith(const [0x52, 0x49, 0x46, 0x46]) &&
+        bytes[8] == 0x57 &&
+        bytes[9] == 0x45 &&
+        bytes[10] == 0x42 &&
+        bytes[11] == 0x50,
+    _ => false,
+  };
+}
+
+const String _phase4APrivacyPolicyUrl = String.fromEnvironment(
+  'AVARYN_PRIVACY_POLICY_URL',
+);
+const String _phase4ATermsUrl = String.fromEnvironment('AVARYN_TERMS_URL');
+const String _phase4ALegacyBackupId = 'legacy-unscoped-backup';
+const String _phase4ALegacyLocalUserId = 'local-current-user';
+const String _phase4ALegacyStableId = 'local-stable';
+const int _phase4ALocalScopeSchemaVersion = 2;
+const Duration _phase5PasswordRecoveryLifetime = Duration(minutes: 15);
+
+String _phase5PasswordRecoveryUserId = '';
+DateTime? _phase5PasswordRecoveryAuthorizedAt;
+
+void _phase5ClearPasswordRecoveryAuthorization() {
+  _phase5PasswordRecoveryUserId = '';
+  _phase5PasswordRecoveryAuthorizedAt = null;
+}
+
+bool _phase5AuthorizePasswordRecovery(Session? session) {
+  if (session == null) {
+    _phase5ClearPasswordRecoveryAuthorization();
+    return false;
+  }
+  _phase5PasswordRecoveryUserId = session.user.id;
+  _phase5PasswordRecoveryAuthorizedAt = DateTime.now().toUtc();
+  return true;
+}
+
+bool _phase5HasPasswordRecoveryAuthorization(Session? session) {
+  final authorizedAt = _phase5PasswordRecoveryAuthorizedAt;
+  if (session == null ||
+      authorizedAt == null ||
+      session.user.id != _phase5PasswordRecoveryUserId) {
+    return false;
+  }
+  final age = DateTime.now().toUtc().difference(authorizedAt);
+  if (age.isNegative || age > _phase5PasswordRecoveryLifetime) {
+    _phase5ClearPasswordRecoveryAuthorization();
+    return false;
+  }
+  return true;
+}
+
+bool get _phase4ALegalConfigured =>
+    Uri.tryParse(_phase4APrivacyPolicyUrl)?.hasScheme == true &&
+    Uri.tryParse(_phase4ATermsUrl)?.hasScheme == true;
+
+Future<void> _phase4APurgeOperationalSecureState(String authUserId) async {
+  final normalized = authUserId.trim();
+  if (normalized.isEmpty) return;
+  const storage = FlutterSecureStorage();
+  Object? lastError;
+  for (var attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      final values = await storage.readAll();
+      final keys = phase4C7SecureKeysForAccount(values.keys, normalized);
+      for (final key in keys) {
+        await storage.delete(key: key);
+      }
+      final remaining = await storage.readAll();
+      if (phase4C7SecureKeysForAccount(remaining.keys, normalized).isEmpty) {
+        return;
+      }
+      lastError = StateError('Operational secure-state purge incomplete');
+    } catch (error) {
+      lastError = error;
+    }
+    if (attempt < 2) {
+      await Future<void>.delayed(Duration(milliseconds: 200 * (attempt + 1)));
+    }
+  }
+  throw StateError(
+    'Operational secure-state purge failed after retries: '
+    '${lastError.runtimeType}',
+  );
+}
+
+String _phase4ARedirectUrl(String path) {
+  if (kIsWeb) {
+    final base = Uri.base;
+    return base
+        .replace(
+          path: path,
+          queryParameters: const <String, String>{},
+          fragment: '',
+        )
+        .toString();
+  }
+  return 'avarynconsumerapp://avarynconsumerapp.com$path';
+}
+
+String _phase4ANullableString(dynamic value) =>
+    value is String ? value.trim() : '';
+
+DateTime? _phase4ADate(dynamic value) {
+  if (value is DateTime) return value;
+  if (value is String) return DateTime.tryParse(value);
+  return null;
+}
+
+String _phase4ADisplayName(AuthProfileDataStruct profile) {
+  final saved = profile.displayName.trim();
+  if (saved.isNotEmpty) return saved;
+  final composed = '${profile.firstName} ${profile.lastName}'.trim();
+  return composed.isEmpty ? 'AVARYN-gebruiker' : composed;
+}
+
+String _phase4AFirstName(AuthProfileDataStruct profile) {
+  final firstName = profile.firstName.trim();
+  if (firstName.isNotEmpty) return firstName;
+  final displayName = _phase4ADisplayName(profile);
+  final words = displayName
+      .split(RegExp(r'\s+'))
+      .where((word) => word.trim().isNotEmpty)
+      .toList();
+  return words.isEmpty ? 'daar' : words.first;
+}
+
+String _phase4AInitials(AuthProfileDataStruct profile) {
+  final words = _phase4ADisplayName(
+    profile,
+  ).split(RegExp(r'\s+')).where((word) => word.trim().isNotEmpty).toList();
+  if (words.isEmpty) return 'AV';
+  if (words.length == 1) {
+    final value = words.first;
+    return value.substring(0, value.length.clamp(1, 2)).toUpperCase();
+  }
+  return '${words.first[0]}${words.last[0]}'.toUpperCase();
+}
+
+String _phase4AProviderLabel(String provider) {
+  return switch (provider.toLowerCase()) {
+    'email' => 'E-mail',
+    'google' => 'Google',
+    'apple' => 'Apple',
+    _ => 'Andere aanmeldmethode',
+  };
+}
+
+String _phase4AIntentLabel(String intent) {
+  return switch (intent) {
+    'createStable' => 'Ik wil een nieuwe stal aanmaken',
+    'joinStable' => 'Ik heb een uitnodiging ontvangen',
+    'individualHorse' => 'Ik beheer voorlopig alleen mijn eigen paard',
+    _ => 'Nog niet gekozen',
+  };
+}
+
+String _phase4AAuthError(Object error) {
+  if (error is AuthException) {
+    final message = error.message.toLowerCase();
+    if (message.contains('invalid login credentials')) {
+      return 'E-mailadres of wachtwoord is onjuist.';
+    }
+    if (message.contains('email not confirmed')) {
+      return 'Bevestig eerst je e-mailadres.';
+    }
+    if (message.contains('password')) {
+      return 'Het wachtwoord voldoet niet aan de beveiligingseisen.';
+    }
+    if (message.contains('rate') || message.contains('too many')) {
+      return 'Te veel pogingen. Wacht even en probeer het opnieuw.';
+    }
+    if (message.contains('network') || message.contains('socket')) {
+      return 'Geen netwerkverbinding. Controleer je verbinding en probeer opnieuw.';
+    }
+  }
+  if (error is PostgrestException && error.code == '42P01') {
+    return 'Het persoonlijke profiel is nog niet ingericht. Voer de Phase 4A Supabase-migratie uit.';
+  }
+  return 'Er ging iets mis. Probeer het opnieuw.';
+}
+
+String _phase5AccountDeletionCode(Object error) {
+  if (error is! FunctionException) return '';
+  dynamic details = error.details;
+  if (details is String) {
+    try {
+      details = jsonDecode(details);
+    } catch (_) {
+      return '';
+    }
+  }
+  return details is Map ? _phase4ANullableString(details['code']) : '';
+}
+
+String _phase5AccountDeletionMessage(String code) {
+  return switch (code) {
+    'ACTIVE_STABLE_OWNER_REQUIRES_TRANSFER' =>
+      'Draag eerst het fictieve staleigenaarschap aantoonbaar over.',
+    'ACTIVE_MEMBERSHIPS_REQUIRE_RESOLUTION' =>
+      'Verlaat of laat eerst alle actieve fictieve stallen verwijderen.',
+    'ACCOUNT_HISTORY_REQUIRES_ADMIN_REVIEW' =>
+      'Dit account heeft bewaarde historie en vereist gecontroleerde '
+          'beheerdersverwerking.',
+    'APPLE_REVOCATION_NOT_CONFIGURED' =>
+      'Apple-intrekking is nog niet veilig ingericht; verwijderen blijft '
+          'geblokkeerd.',
+    'AVATAR_CLEANUP_REQUIRES_ADMIN_REVIEW' =>
+      'De profielfoto-opslag vereist gecontroleerde beheerdersverwerking.',
+    _ => 'Veilige accountverwijdering kon niet worden bevestigd. '
+        'Er is niets als verwijderd gemeld.',
+  };
+}
+
+void _phase5ClearDeletedAccountState(String authUserId) {
+  final state = FFAppState();
+  state.update(() {
+    state.authProfileCaches = state.authProfileCaches
+        .where((profile) => profile.id != authUserId)
+        .toList();
+    state.localAccountScopes = state.localAccountScopes
+        .where((scope) => scope.authUserId != authUserId)
+        .toList();
+    state.phase4BAccountOperationalBackups = state
+        .phase4BAccountOperationalBackups
+        .where((scope) => scope.authUserId != authUserId)
+        .toList();
+    state.stableMembershipCaches = state.stableMembershipCaches
+        .where((cache) => cache.authUserId != authUserId)
+        .toList();
+    state.localStableCloudLinks = state.localStableCloudLinks
+        .where((link) => link.authUserId != authUserId)
+        .toList();
+    state.activeAuthAccountId = '';
+    state.currentAuthProfile = AuthProfileDataStruct();
+    state.selectedCloudStableId = '';
+    state.pendingStableInvitationToken = '';
+    state.pendingStableInvitationId = '';
+    state.pendingStableCreateRequestId = '';
+    state.pendingStableCreatePayloadKey = '';
+    state.stableAccessStatus = 'signed_out';
+  });
+  _phase4AClearWorkingSet();
+}
+
+AuthProfileDataStruct _phase4AProfileFromMap(Map<String, dynamic> data) {
+  return AuthProfileDataStruct(
+    id: _phase4ANullableString(data['id']),
+    firstName: _phase4ANullableString(data['first_name']),
+    lastName: _phase4ANullableString(data['last_name']),
+    displayName: _phase4ANullableString(data['display_name']),
+    avatarObjectPath: _phase4ANullableString(data['avatar_object_path']),
+    phoneE164: _phase4ANullableString(data['phone_e164']),
+    locale: _phase4ANullableString(data['locale']).isEmpty
+        ? 'nl'
+        : _phase4ANullableString(data['locale']),
+    themeMode: _phase4ANullableString(data['theme_mode']).isEmpty
+        ? 'system'
+        : _phase4ANullableString(data['theme_mode']),
+    onboardingIntent: _phase4ANullableString(data['onboarding_intent']),
+    onboardingCompletedAt: _phase4ADate(data['onboarding_completed_at']),
+    createdAt: _phase4ADate(data['created_at']),
+    updatedAt: _phase4ADate(data['updated_at']),
+  );
+}
+
+List<HorseProfileDataStruct> _phase4ACopyHorses(
+  Iterable<HorseProfileDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => HorseProfileDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+List<ActivityDataStruct> _phase4ACopyActivities(
+  Iterable<ActivityDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => ActivityDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+List<HorseFeedingPlanDataStruct> _phase4ACopyFeedingPlans(
+  Iterable<HorseFeedingPlanDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => HorseFeedingPlanDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+List<TemporaryFeedingScheduleDataStruct> _phase4ACopyTemporarySchedules(
+  Iterable<TemporaryFeedingScheduleDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => TemporaryFeedingScheduleDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+List<FeedingRoundConfigDataStruct> _phase4ACopyRoundConfigs(
+  Iterable<FeedingRoundConfigDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => FeedingRoundConfigDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+List<FeedingAssignmentExceptionDataStruct> _phase4ACopyExceptions(
+  Iterable<FeedingAssignmentExceptionDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => FeedingAssignmentExceptionDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+List<FeedingExecutionRecordDataStruct> _phase4ACopyExecutions(
+  Iterable<FeedingExecutionRecordDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => FeedingExecutionRecordDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+List<LocalStableCloudLinkDataStruct> _phase4ACopyStableLinks(
+  Iterable<LocalStableCloudLinkDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => LocalStableCloudLinkDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+List<StableMembershipCacheDataStruct> _phase4ACopyMembershipCaches(
+  Iterable<StableMembershipCacheDataStruct> values,
+) =>
+    values
+        .map(
+          (value) => StableMembershipCacheDataStruct.fromSerializableMap(
+            jsonDecode(value.serialize()),
+          ),
+        )
+        .toList();
+
+HorseProfileDataStruct _phase4ACopyHorse(HorseProfileDataStruct value) =>
+    HorseProfileDataStruct.fromSerializableMap(jsonDecode(value.serialize()));
+
+LocalAccountScopeDataStruct _phase4ACaptureScope(String authUserId) {
+  final state = FFAppState();
+  return LocalAccountScopeDataStruct(
+    authUserId: authUserId,
+    horses: _phase4ACopyHorses(state.horses),
+    selectedHorse: _phase4ACopyHorse(state.selectedHorse),
+    selectedHorseIndex: state.selectedHorseIndex,
+    nextHorseId: state.nextHorseId,
+    nextHorseIndex: state.nextHorseIndex,
+    horseSeedVersion: state.horseSeedVersion,
+    passportPrototypeVersion: state.passportPrototypeVersion,
+    activities: _phase4ACopyActivities(state.activities),
+    nextActivityId: state.nextActivityId,
+    currentLocalUserId: state.currentLocalUserId,
+    currentLocalStableId: state.currentLocalStableId,
+    horseFeedingPlans: _phase4ACopyFeedingPlans(state.horseFeedingPlans),
+    temporaryFeedingSchedules: _phase4ACopyTemporarySchedules(
+      state.temporaryFeedingSchedules,
+    ),
+    nextFeedingItemId: state.nextFeedingItemId,
+    nextTemporaryFeedingScheduleId: state.nextTemporaryFeedingScheduleId,
+    feedingRoundConfigs: _phase4ACopyRoundConfigs(state.feedingRoundConfigs),
+    feedingAssignmentExceptions: _phase4ACopyExceptions(
+      state.feedingAssignmentExceptions,
+    ),
+    feedingExecutionRecords: _phase4ACopyExecutions(
+      state.feedingExecutionRecords,
+    ),
+    nextFeedingAssignmentExceptionId: state.nextFeedingAssignmentExceptionId,
+    nextFeedingExecutionRecordId: state.nextFeedingExecutionRecordId,
+    selectedCloudStableId: state.selectedCloudStableId,
+    localStableCloudLinks: _phase4ACopyStableLinks(state.localStableCloudLinks),
+    stableMembershipCaches: _phase4ACopyMembershipCaches(
+      state.stableMembershipCaches,
+    ),
+    schemaVersion: _phase4ALocalScopeSchemaVersion,
+    updatedAt: DateTime.now().toUtc(),
+  );
+}
+
+bool _phase4AHasOperationalData() {
+  final state = FFAppState();
+  return state.horses.isNotEmpty ||
+      state.activities.isNotEmpty ||
+      state.horseFeedingPlans.isNotEmpty ||
+      state.temporaryFeedingSchedules.isNotEmpty ||
+      state.feedingRoundConfigs.isNotEmpty ||
+      state.feedingAssignmentExceptions.isNotEmpty ||
+      state.feedingExecutionRecords.isNotEmpty;
+}
+
+LocalAccountScopeDataStruct? _phase4AScopeFor(String authUserId) {
+  for (final scope in FFAppState().localAccountScopes) {
+    if (scope.authUserId == authUserId) return scope;
+  }
+  return null;
+}
+
+void _phase5AccountInvalidateMembershipAuthority(String authUserId) {
+  final state = FFAppState();
+  final localAccountScopes = List<LocalAccountScopeDataStruct>.from(
+    state.localAccountScopes,
+  );
+  final operationalBackups = List<LocalAccountScopeDataStruct>.from(
+    state.phase4BAccountOperationalBackups,
+  );
+
+  void sanitizeScopes(List<LocalAccountScopeDataStruct> scopes) {
+    for (final scope in scopes) {
+      if (scope.authUserId != authUserId) continue;
+      scope.selectedCloudStableId = '';
+      scope.stableMembershipCaches = scope.stableMembershipCaches
+          .where((cache) => cache.authUserId != authUserId)
+          .toList();
+    }
+  }
+
+  sanitizeScopes(localAccountScopes);
+  sanitizeScopes(operationalBackups);
+  state.update(() {
+    state.selectedCloudStableId = '';
+    state.stableMembershipCaches = state.stableMembershipCaches
+        .where((cache) => cache.authUserId != authUserId)
+        .toList();
+    state.localAccountScopes = localAccountScopes;
+    state.phase4BAccountOperationalBackups = operationalBackups;
+    state.stableAccessStatus = 'access_denied';
+  });
+}
+
+void _phase4ASaveScope(String authUserId) {
+  if (authUserId.trim().isEmpty) return;
+  final state = FFAppState();
+  final scopes = List<LocalAccountScopeDataStruct>.from(
+    state.localAccountScopes,
+  )..removeWhere((scope) => scope.authUserId == authUserId);
+  scopes.add(_phase4ACaptureScope(authUserId));
+  state.localAccountScopes = scopes;
+}
+
+LocalAccountScopeDataStruct? _phase4BOperationalMasterFor(String authUserId) {
+  for (final scope in FFAppState().phase4BAccountOperationalBackups) {
+    if (scope.authUserId == authUserId) return scope;
+  }
+  return null;
+}
+
+void _phase4ASavePhase4BOperationalMaster(String authUserId) {
+  if (authUserId.trim().isEmpty) return;
+  final selectedCloudStableId = FFAppState().selectedCloudStableId;
+  if (selectedCloudStableId.isNotEmpty) {
+    final links = List<LocalStableCloudLinkDataStruct>.from(
+      FFAppState().localStableCloudLinks,
+    );
+    for (final link in links) {
+      if (link.authUserId == authUserId &&
+          link.cloudStableId == selectedCloudStableId &&
+          link.confirmed) {
+        link.selectedHorseId = FFAppState().selectedHorse.id;
+      }
+    }
+    FFAppState().localStableCloudLinks = links;
+  }
+  final current = _phase4ACaptureScope(authUserId);
+  final existing = _phase4BOperationalMasterFor(authUserId);
+  final plan = phase4BPlanSerializedOperationalMasterSave(
+    current: current,
+    existing: existing,
+    toSerializableMap: (scope) =>
+        jsonDecode(scope.serialize()) as Map<String, dynamic>,
+    fromSerializableMap: LocalAccountScopeDataStruct.fromSerializableMap,
+  );
+  if (!plan.shouldPersist) return;
+  final masters = List<LocalAccountScopeDataStruct>.from(
+    FFAppState().phase4BAccountOperationalBackups,
+  )..removeWhere((scope) => scope.authUserId == authUserId);
+  masters.add(plan.master);
+  FFAppState().phase4BAccountOperationalBackups = masters;
+}
+
+void _phase4AClearWorkingSet() {
+  final state = FFAppState();
+  state.update(() {
+    state.horses = <HorseProfileDataStruct>[];
+    state.selectedHorse = HorseProfileDataStruct();
+    state.selectedHorseIndex = 0;
+    state.nextHorseId = 1;
+    state.nextHorseIndex = 0;
+    // Prevent the legacy prototype seed from crossing into a new auth scope.
+    state.horseSeedVersion = 1;
+    state.passportPrototypeVersion = 1;
+    state.activities = <ActivityDataStruct>[];
+    state.nextActivityId = 1;
+    state.selectedActivity = ActivityDataStruct();
+    state.selectedActivityIndex = 0;
+    state.currentLocalUserId = _phase4ALegacyLocalUserId;
+    state.currentLocalStableId = '';
+    state.horseFeedingPlans = <HorseFeedingPlanDataStruct>[];
+    state.temporaryFeedingSchedules = <TemporaryFeedingScheduleDataStruct>[];
+    state.nextFeedingItemId = 1;
+    state.nextTemporaryFeedingScheduleId = 1;
+    state.feedingRoundConfigs = <FeedingRoundConfigDataStruct>[];
+    state.feedingAssignmentExceptions =
+        <FeedingAssignmentExceptionDataStruct>[];
+    state.feedingExecutionRecords = <FeedingExecutionRecordDataStruct>[];
+    state.nextFeedingAssignmentExceptionId = 1;
+    state.nextFeedingExecutionRecordId = 1;
+    state.selectedFeedingDateKey = '';
+    state.selectedFeedingRoundId = 'morning';
+    state.selectedCloudStableId = '';
+    state.stableAccessStatus = '';
+    state.activityDraftHorseId = 0;
+    state.activityDraftAssigneeUserIds = <String>[];
+    state.activityDraftStartDate = null;
+    state.activityDraftEndDate = null;
+    state.activityDraftStartTime = null;
+    state.activityDraftEndTime = null;
+    state.activityDraftAllDay = false;
+    state.activityDraftDurationMinutes = 0;
+    state.activityDraftLocationType = '';
+    state.activityDraftPendingType = '';
+    state.activitySaveInProgress = false;
+  });
+}
+
+void _phase4ALoadScope(LocalAccountScopeDataStruct scope) {
+  final state = FFAppState();
+  state.update(() {
+    state.horses = _phase4ACopyHorses(scope.horses);
+    state.selectedHorse = _phase4ACopyHorse(scope.selectedHorse);
+    state.selectedHorseIndex = scope.selectedHorseIndex;
+    state.nextHorseId = scope.nextHorseId <= 0 ? 1 : scope.nextHorseId;
+    state.nextHorseIndex = scope.nextHorseIndex < 0 ? 0 : scope.nextHorseIndex;
+    state.horseSeedVersion =
+        scope.horseSeedVersion <= 0 ? 1 : scope.horseSeedVersion;
+    state.passportPrototypeVersion = scope.passportPrototypeVersion <= 0
+        ? 1
+        : scope.passportPrototypeVersion;
+    state.activities = _phase4ACopyActivities(scope.activities);
+    state.nextActivityId = scope.nextActivityId <= 0 ? 1 : scope.nextActivityId;
+    state.selectedActivity = ActivityDataStruct();
+    state.selectedActivityIndex = 0;
+    state.currentLocalUserId = scope.currentLocalUserId.trim().isEmpty
+        ? _phase4ALegacyLocalUserId
+        : scope.currentLocalUserId;
+    state.currentLocalStableId = scope.currentLocalStableId.trim().isEmpty
+        ? _phase4ALegacyStableId
+        : scope.currentLocalStableId;
+    state.horseFeedingPlans = _phase4ACopyFeedingPlans(scope.horseFeedingPlans);
+    state.temporaryFeedingSchedules = _phase4ACopyTemporarySchedules(
+      scope.temporaryFeedingSchedules,
+    );
+    state.nextFeedingItemId =
+        scope.nextFeedingItemId <= 0 ? 1 : scope.nextFeedingItemId;
+    state.nextTemporaryFeedingScheduleId =
+        scope.nextTemporaryFeedingScheduleId <= 0
+            ? 1
+            : scope.nextTemporaryFeedingScheduleId;
+    state.feedingRoundConfigs = _phase4ACopyRoundConfigs(
+      scope.feedingRoundConfigs,
+    );
+    state.feedingAssignmentExceptions = _phase4ACopyExceptions(
+      scope.feedingAssignmentExceptions,
+    );
+    state.feedingExecutionRecords = _phase4ACopyExecutions(
+      scope.feedingExecutionRecords,
+    );
+    state.nextFeedingAssignmentExceptionId =
+        scope.nextFeedingAssignmentExceptionId <= 0
+            ? 1
+            : scope.nextFeedingAssignmentExceptionId;
+    state.nextFeedingExecutionRecordId = scope.nextFeedingExecutionRecordId <= 0
+        ? 1
+        : scope.nextFeedingExecutionRecordId;
+    state.selectedFeedingDateKey = '';
+    state.selectedFeedingRoundId = 'morning';
+    state.selectedCloudStableId = scope.selectedCloudStableId;
+    state.localStableCloudLinks = _phase4ACopyStableLinks(
+      scope.localStableCloudLinks,
+    );
+    state.stableMembershipCaches = _phase4ACopyMembershipCaches(
+      scope.stableMembershipCaches,
+    );
+    state.stableAccessStatus = '';
+  });
+}
+
+bool _phase4AActivateScope(String authUserId) {
+  final state = FFAppState();
+  final current = state.activeAuthAccountId.trim();
+  if (current == authUserId) {
+    return state.hasLegacyLocalDataBackup &&
+        !state.legacyDataPromptedAuthIds.contains(authUserId) &&
+        _phase4AScopeFor(authUserId)?.horses.isEmpty != false;
+  }
+
+  if (current.isNotEmpty) {
+    _phase4ASavePhase4BOperationalMaster(current);
+    _phase4ASaveScope(current);
+  } else if (!state.hasLegacyLocalDataBackup && _phase4AHasOperationalData()) {
+    state.legacyLocalDataBackup = _phase4ACaptureScope(_phase4ALegacyBackupId);
+    state.hasLegacyLocalDataBackup = true;
+  }
+
+  final saved =
+      _phase4BOperationalMasterFor(authUserId) ?? _phase4AScopeFor(authUserId);
+  if (saved == null) {
+    _phase4AClearWorkingSet();
+    _phase4ASaveScope(authUserId);
+  } else {
+    _phase4ALoadScope(saved);
+  }
+  state.activeAuthAccountId = authUserId;
+
+  return state.hasLegacyLocalDataBackup &&
+      !state.legacyDataPromptedAuthIds.contains(authUserId) &&
+      saved == null;
+}
+
+void _phase4AMarkLegacyPrompted(String authUserId) {
+  final state = FFAppState();
+  final prompted = List<String>.from(state.legacyDataPromptedAuthIds);
+  if (!prompted.contains(authUserId)) prompted.add(authUserId);
+  state.legacyDataPromptedAuthIds = prompted;
+}
+
+void _phase4AAttachLegacyBackup(String authUserId) {
+  final state = FFAppState();
+  if (!state.hasLegacyLocalDataBackup) return;
+  _phase4ALoadScope(state.legacyLocalDataBackup);
+  state.activeAuthAccountId = authUserId;
+  _phase4ASaveScope(authUserId);
+  _phase4AMarkLegacyPrompted(authUserId);
+}
+
+void _phase4ACacheProfile(AuthProfileDataStruct profile) {
+  final state = FFAppState();
+  final profiles = List<AuthProfileDataStruct>.from(state.authProfileCaches)
+    ..removeWhere((item) => item.id == profile.id)
+    ..add(profile);
+  state.authProfileCaches = profiles;
+  state.currentAuthProfile = profile;
+}
+
+AuthProfileDataStruct? _phase4ACachedProfile(String authUserId) {
+  for (final profile in FFAppState().authProfileCaches) {
+    if (profile.id == authUserId) return profile;
+  }
+  return null;
+}
+
+class AvarynAccountRuntime extends StatefulWidget {
+  const AvarynAccountRuntime({
+    super.key,
+    this.width,
+    this.height,
+    this.mode = 'welcome',
+  });
+
+  final double? width;
+  final double? height;
+  final String mode;
+
+  @override
+  State<AvarynAccountRuntime> createState() => _AvarynAccountRuntimeState();
+}
+
+class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _phoneController = TextEditingController();
+
+  StreamSubscription<AuthState>? _authSubscription;
+  Timer? _cooldownTimer;
+  bool _busy = false;
+  bool _booting = false;
+  bool _passwordHidden = true;
+  bool _confirmPasswordHidden = true;
+  bool _legalAccepted = false;
+  bool _legacyPrompt = false;
+  bool _offlineProfile = false;
+  int _cooldownSeconds = 0;
+  int _onboardingStep = 0;
+  String _locale = 'nl';
+  String _themeMode = 'system';
+  String _intent = '';
+  String _avatarUrl = '';
+  String? _error;
+  String? _notice;
+  AuthProfileDataStruct? _profile;
+
+  SupabaseClient get _client => Supabase.instance.client;
+
+  User? get _user => _client.auth.currentUser;
+
+  bool _phase5IsTerminalSessionError(AuthException error) {
+    final status = error.statusCode ?? '';
+    if (status == '401' || status == '403' || status == '404') return true;
+    final code = (error.code ?? '').toLowerCase();
+    final message = error.message.toLowerCase();
+    return code == 'user_not_found' ||
+        code == 'bad_jwt' ||
+        message.contains('user from sub claim') ||
+        message.contains('user does not exist') ||
+        message.contains('invalid jwt');
+  }
+
+  Future<User?> _phase5ValidatedCurrentUser() async {
+    final session = _client.auth.currentSession;
+    if (session == null) return null;
+    try {
+      final response = await _client.auth.getUser(session.accessToken);
+      return response.user;
+    } on AuthException catch (error) {
+      if (!_phase5IsTerminalSessionError(error)) {
+        // A retryable transport or server outage may use the authenticated
+        // offline cache; an explicit 401/403/404 never may.
+        return session.user;
+      }
+      await _phase4APurgeOperationalSecureState(session.user.id);
+      _phase5ClearDeletedAccountState(session.user.id);
+      // The server has already rejected or removed this identity. Clear the
+      // persisted client session without depending on a second server call.
+      await _client.auth.signOut(scope: SignOutScope.local);
+      return null;
+    } catch (_) {
+      // Preserve the documented offline profile path only when the server
+      // could not make an authoritative statement about the session.
+      return session.user;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = FFAppState().authPendingEmail;
+    _authSubscription = _client.auth.onAuthStateChange.listen((state) {
+      if (!mounted) return;
+      if (state.event == AuthChangeEvent.passwordRecovery) {
+        if (_phase5AuthorizePasswordRecovery(state.session)) {
+          context.goNamed('AuthResetPasswordPage');
+        }
+        return;
+      }
+      if (state.session == null ||
+          (_phase5PasswordRecoveryUserId.isNotEmpty &&
+              state.session!.user.id != _phase5PasswordRecoveryUserId)) {
+        _phase5ClearPasswordRecoveryAuthorization();
+      }
+      if ((widget.mode == 'verify' || widget.mode == 'callback') &&
+          state.session != null &&
+          state.session!.user.emailConfirmedAt != null) {
+        context.goNamed('AuthGatePage');
+      }
+    });
+    if ({
+      'gate',
+      'callback',
+      'verify',
+      'onboarding',
+      'profile',
+    }.contains(widget.mode)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(_bootstrap());
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    _cooldownTimer?.cancel();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  void _setBusy(bool value) {
+    if (mounted) setState(() => _busy = value);
+  }
+
+  void _setError(String? value) {
+    if (mounted) {
+      setState(() {
+        _error = value;
+        if (value != null) _notice = null;
+      });
+    }
+  }
+
+  void _setNotice(String? value) {
+    if (mounted) {
+      setState(() {
+        _notice = value;
+        if (value != null) _error = null;
+      });
+    }
+  }
+
+  Future<void> _bootstrap() async {
+    if (_booting) return;
+    _booting = true;
+    try {
+      if (widget.mode == 'callback') {
+        await _bootstrapCallback();
+      } else if (widget.mode == 'verify') {
+        await _bootstrapVerification();
+      } else if (widget.mode == 'gate') {
+        await _bootstrapGate();
+      } else if (widget.mode == 'onboarding' || widget.mode == 'profile') {
+        await _bootstrapProfileScreen();
+      }
+    } finally {
+      _booting = false;
+    }
+  }
+
+  Future<AuthProfileDataStruct> _loadOrCreateProfile(User user) async {
+    try {
+      final selected = await _client
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+      if (selected != null) {
+        final profile = _phase4AProfileFromMap(selected);
+        _phase4ACacheProfile(profile);
+        return profile;
+      }
+
+      final metadata = user.userMetadata ?? const <String, dynamic>{};
+      final firstName = _phase4ANullableString(
+        metadata['given_name'] ?? metadata['first_name'],
+      );
+      final lastName = _phase4ANullableString(
+        metadata['family_name'] ?? metadata['last_name'],
+      );
+      final displayName = _phase4ANullableString(
+        metadata['full_name'] ?? metadata['name'],
+      );
+      final deviceLocale =
+          WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+      final payload = <String, dynamic>{
+        'id': user.id,
+        'display_name': displayName.isEmpty
+            ? '${firstName} ${lastName}'.trim().isEmpty
+                ? 'AVARYN-gebruiker'
+                : '${firstName} ${lastName}'.trim()
+            : displayName,
+        'locale': deviceLocale.isEmpty ? 'nl' : deviceLocale,
+        'theme_mode': 'system',
+      };
+      if (firstName.isNotEmpty) payload['first_name'] = firstName;
+      if (lastName.isNotEmpty) payload['last_name'] = lastName;
+      await _client.from('profiles').upsert(payload, onConflict: 'id');
+      final created =
+          await _client.from('profiles').select().eq('id', user.id).single();
+      final profile = _phase4AProfileFromMap(created);
+      _phase4ACacheProfile(profile);
+      return profile;
+    } catch (error) {
+      final cached = _phase4ACachedProfile(user.id);
+      if (cached != null) {
+        _offlineProfile = true;
+        FFAppState().currentAuthProfile = cached;
+        return cached;
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> _bootstrapCallback() async {
+    _setBusy(true);
+    try {
+      final session = _client.auth.currentSession;
+      if (session == null) {
+        _setError('De aanmeldlink is ongeldig, verlopen of nog niet verwerkt.');
+        return;
+      }
+      await _loadOrCreateProfile(session.user);
+      if (!mounted) return;
+      context.goNamed('AuthGatePage');
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _bootstrapVerification() async {
+    final user = _user;
+    if (user?.email != null && _emailController.text.trim().isEmpty) {
+      _emailController.text = user!.email!;
+    }
+    if (user?.emailConfirmedAt != null && mounted) {
+      context.goNamed('AuthGatePage');
+    }
+  }
+
+  Future<void> _bootstrapGate() async {
+    _setBusy(true);
+    try {
+      final session = _client.auth.currentSession;
+      if (session == null) {
+        final previousAuthId = FFAppState().activeAuthAccountId.trim();
+        await _phase4APurgeOperationalSecureState(previousAuthId);
+        FFAppState().activeAuthAccountId = '';
+        FFAppState().selectedCloudStableId = '';
+        FFAppState().pendingStableInvitationToken = '';
+        if (!mounted) return;
+        context.goNamed('AuthWelcomePage');
+        return;
+      }
+      final user = await _phase5ValidatedCurrentUser();
+      if (user == null) {
+        if (!mounted) return;
+        context.goNamed('AuthWelcomePage');
+        return;
+      }
+      final emailProvider = (user.appMetadata['provider'] ?? '') == 'email';
+      if (user.emailConfirmedAt == null && emailProvider) {
+        FFAppState().authPendingEmail = user.email ?? '';
+        if (!mounted) return;
+        context.goNamed('AuthVerifyEmailPage');
+        return;
+      }
+      final profile = await _loadOrCreateProfile(user);
+      final previousAuthId = FFAppState().activeAuthAccountId.trim();
+      if (previousAuthId.isNotEmpty && previousAuthId != user.id) {
+        await _phase4APurgeOperationalSecureState(previousAuthId);
+      }
+      _phase4AActivateScope(user.id);
+      await _hydrateSelectedStableFromServer(user);
+      _applyTheme(profile.themeMode);
+      if (!mounted) return;
+      setState(() {
+        _profile = profile;
+        // Phase 5 keeps legacy backups intact but never exposes them as an
+        // Alpha data source or onboarding decision.
+        _legacyPrompt = false;
+      });
+      _continueAfterProfile(profile, user);
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  bool _hasFreshCachedMembership(String authUserId, String stableId) {
+    final now = DateTime.now().toUtc();
+    for (final cache in FFAppState().stableMembershipCaches) {
+      final age = cache.lastValidatedAt == null
+          ? null
+          : now.difference(cache.lastValidatedAt!);
+      if (cache.authUserId == authUserId &&
+          cache.stableId == stableId &&
+          cache.status == 'active' &&
+          age != null &&
+          !age.isNegative &&
+          age <= const Duration(hours: 24)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<void> _hydrateSelectedStableFromServer(User user) async {
+    final cachedStableId = FFAppState().selectedCloudStableId.trim();
+    try {
+      final preference = await _client
+          .from('account_workspace_preferences')
+          .select('last_selected_stable_id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+      final preferredStableId = _phase4ANullableString(
+        preference?['last_selected_stable_id'],
+      );
+      if (preferredStableId.isEmpty) {
+        FFAppState().selectedCloudStableId = '';
+        return;
+      }
+      final membership = await _client
+          .from('stable_memberships')
+          .select('stable_id,status')
+          .eq('stable_id', preferredStableId)
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+          .maybeSingle();
+      FFAppState().selectedCloudStableId =
+          membership == null ? '' : preferredStableId;
+    } on PostgrestException catch (error) {
+      final denied =
+          error.code == '401' || error.code == '403' || error.code == '42501';
+      if (denied) {
+        _phase5AccountInvalidateMembershipAuthority(user.id);
+        return;
+      }
+      FFAppState().selectedCloudStableId =
+          _hasFreshCachedMembership(user.id, cachedStableId)
+              ? cachedStableId
+              : '';
+    } catch (_) {
+      FFAppState().selectedCloudStableId =
+          _hasFreshCachedMembership(user.id, cachedStableId)
+              ? cachedStableId
+              : '';
+    }
+  }
+
+  Future<void> _bootstrapProfileScreen() async {
+    _setBusy(true);
+    try {
+      final user = await _phase5ValidatedCurrentUser();
+      if (user == null) {
+        if (!mounted) return;
+        context.goNamed('AuthWelcomePage');
+        return;
+      }
+      final profile = await _loadOrCreateProfile(user);
+      final previousAuthId = FFAppState().activeAuthAccountId.trim();
+      if (previousAuthId.isNotEmpty && previousAuthId != user.id) {
+        await _phase4APurgeOperationalSecureState(previousAuthId);
+      }
+      _phase4AActivateScope(user.id);
+      _firstNameController.text = profile.firstName;
+      _lastNameController.text = profile.lastName;
+      _phoneController.text = profile.phoneE164;
+      _locale = profile.locale.trim().isEmpty ? 'nl' : profile.locale;
+      _themeMode =
+          profile.themeMode.trim().isEmpty ? 'system' : profile.themeMode;
+      _intent = profile.onboardingIntent;
+      _onboardingStep = profile.firstName.trim().isEmpty
+          ? 0
+          : profile.onboardingIntent.trim().isEmpty
+              ? 1
+              : 2;
+      _avatarUrl = await _signedAvatarUrl(profile.avatarObjectPath);
+      if (!mounted) return;
+      setState(() => _profile = profile);
+      _applyTheme(_themeMode);
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<String> _signedAvatarUrl(String path) async {
+    if (path.trim().isEmpty) return '';
+    try {
+      return await _client.storage
+          .from('avatars')
+          .createSignedUrl(path, 60 * 60);
+    } catch (_) {
+      return '';
+    }
+  }
+
+  void _applyTheme(String mode) {
+    if (!mounted) return;
+    final target = switch (mode) {
+      'dark' => ThemeMode.dark,
+      'light' => ThemeMode.light,
+      _ => ThemeMode.system,
+    };
+    setDarkModeSetting(context, target);
+  }
+
+  bool _validEmail(String value) =>
+      RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value.trim());
+
+  String? _passwordValidation(String password) {
+    if (password.length < 8) {
+      return 'Gebruik minimaal 8 tekens.';
+    }
+    if (!RegExp(r'[A-Z]').hasMatch(password) ||
+        !RegExp(r'[a-z]').hasMatch(password) ||
+        !RegExp(r'[0-9]').hasMatch(password)) {
+      return 'Gebruik een hoofdletter, kleine letter en cijfer.';
+    }
+    return null;
+  }
+
+  Future<void> _signInWithProvider(OAuthProvider provider) async {
+    if (_busy) return;
+    _setBusy(true);
+    _setError(null);
+    try {
+      final started = await _client.auth.signInWithOAuth(
+        provider,
+        redirectTo: _phase4ARedirectUrl('/auth/callback'),
+      );
+      if (!started) {
+        _setNotice('Aanmelden is geannuleerd.');
+      }
+    } on AuthException catch (error) {
+      _setError(_phase4AAuthError(error));
+    } catch (_) {
+      _setError(
+        'De provider is niet geconfigureerd of de aanmelding is geannuleerd.',
+      );
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _login() async {
+    if (_busy) return;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    if (!_validEmail(email)) {
+      _setError('Vul een geldig e-mailadres in.');
+      return;
+    }
+    if (password.isEmpty) {
+      _setError('Vul je wachtwoord in.');
+      return;
+    }
+    _setBusy(true);
+    _setError(null);
+    try {
+      final response = await _client.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      if (response.session == null) {
+        _setError('Aanmelden is niet voltooid. Probeer het opnieuw.');
+        return;
+      }
+      await _loadOrCreateProfile(response.user!);
+      if (!mounted) return;
+      context.goNamed('AuthGatePage');
+    } on AuthException catch (error) {
+      if (error.message.toLowerCase().contains('email not confirmed')) {
+        FFAppState().authPendingEmail = email;
+        if (mounted) context.goNamed('AuthVerifyEmailPage');
+      } else {
+        _setError(_phase4AAuthError(error));
+      }
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _signUp() async {
+    if (_busy) return;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    if (!_validEmail(email)) {
+      _setError('Vul een geldig e-mailadres in.');
+      return;
+    }
+    final passwordError = _passwordValidation(password);
+    if (passwordError != null) {
+      _setError(passwordError);
+      return;
+    }
+    if (password != _confirmPasswordController.text) {
+      _setError('De wachtwoorden zijn niet gelijk.');
+      return;
+    }
+    if (_phase4ALegalConfigured && !_legalAccepted) {
+      _setError('Accepteer eerst het privacybeleid en de voorwaarden.');
+      return;
+    }
+
+    _setBusy(true);
+    _setError(null);
+    try {
+      await _client.auth.signUp(
+        email: email,
+        password: password,
+        emailRedirectTo: _phase4ARedirectUrl('/auth/callback'),
+      );
+      FFAppState().authPendingEmail = email;
+      if (!mounted) return;
+      context.goNamed('AuthVerifyEmailPage');
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _requestPasswordReset() async {
+    if (_busy) return;
+    final email = _emailController.text.trim();
+    if (!_validEmail(email)) {
+      _setError('Vul een geldig e-mailadres in.');
+      return;
+    }
+    _setBusy(true);
+    _setError(null);
+    try {
+      await _client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: _phase4ARedirectUrl('/auth/reset-password'),
+      );
+      _setNotice(
+        'Als dit e-mailadres bij AVARYN bekend is, ontvang je een herstelbericht.',
+      );
+    } catch (_) {
+      _setNotice(
+        'Als dit e-mailadres bij AVARYN bekend is, ontvang je een herstelbericht.',
+      );
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _resendVerification() async {
+    if (_busy || _cooldownSeconds > 0) return;
+    final email = _emailController.text.trim();
+    if (!_validEmail(email)) {
+      _setError('Het e-mailadres ontbreekt. Kies een ander account.');
+      return;
+    }
+    _setBusy(true);
+    _setError(null);
+    try {
+      await _client.auth.resend(
+        type: OtpType.signup,
+        email: email,
+        emailRedirectTo: _phase4ARedirectUrl('/auth/callback'),
+      );
+      _startCooldown();
+      _setNotice('Een nieuwe bevestigingsmail is aangevraagd.');
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  void _startCooldown() {
+    _cooldownTimer?.cancel();
+    setState(() => _cooldownSeconds = 60);
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_cooldownSeconds <= 1) {
+        timer.cancel();
+        setState(() => _cooldownSeconds = 0);
+      } else {
+        setState(() => _cooldownSeconds -= 1);
+      }
+    });
+  }
+
+  Future<void> _updatePassword() async {
+    if (_busy) return;
+    if (!_phase5HasPasswordRecoveryAuthorization(_client.auth.currentSession)) {
+      _setError('De herstellink is ongeldig of verlopen.');
+      return;
+    }
+    final password = _passwordController.text;
+    final validation = _passwordValidation(password);
+    if (validation != null) {
+      _setError(validation);
+      return;
+    }
+    if (password != _confirmPasswordController.text) {
+      _setError('De wachtwoorden zijn niet gelijk.');
+      return;
+    }
+    _setBusy(true);
+    _setError(null);
+    try {
+      await _client.auth.updateUser(UserAttributes(password: password));
+      _phase5ClearPasswordRecoveryAuthorization();
+      _setNotice('Je wachtwoord is bijgewerkt.');
+      if (!mounted) return;
+      context.goNamed('AuthGatePage');
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _savePersonalProfile({bool complete = false}) async {
+    if (_busy) return;
+    final user = _user;
+    if (user == null) {
+      if (mounted) context.goNamed('AuthWelcomePage');
+      return;
+    }
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+    final phone = _phoneController.text.trim();
+    if (firstName.isEmpty) {
+      _setError('Voornaam is verplicht.');
+      return;
+    }
+    if (phone.isNotEmpty && !RegExp(r'^\+[1-9][0-9]{7,14}$').hasMatch(phone)) {
+      _setError(
+        'Gebruik een telefoonnummer in internationaal formaat, bijvoorbeeld +31612345678.',
+      );
+      return;
+    }
+    if ((_onboardingStep >= 1 || complete) && _intent.isEmpty) {
+      _setError('Kies hoe je AVARYN wilt gebruiken.');
+      return;
+    }
+
+    _setBusy(true);
+    _setError(null);
+    try {
+      final payload = <String, dynamic>{
+        'id': user.id,
+        'first_name': firstName,
+        'last_name': lastName.isEmpty ? null : lastName,
+        'display_name': '$firstName $lastName'.trim(),
+        'phone_e164': phone.isEmpty ? null : phone,
+        'locale': _locale,
+        'theme_mode': _themeMode,
+      };
+      if (_intent.isNotEmpty) payload['onboarding_intent'] = _intent;
+      if (complete) {
+        payload['onboarding_completed_at'] =
+            DateTime.now().toUtc().toIso8601String();
+      }
+      final updated = await _client
+          .from('profiles')
+          .upsert(payload, onConflict: 'id')
+          .select()
+          .single();
+      final profile = _phase4AProfileFromMap(updated);
+      _phase4ACacheProfile(profile);
+      _applyTheme(profile.themeMode);
+      if (!mounted) return;
+      setState(() => _profile = profile);
+      if (complete) {
+        _continueAfterProfile(profile, user);
+      } else {
+        _setNotice('Je profiel is opgeslagen.');
+      }
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _uploadAvatar() async {
+    if (_busy) return;
+    final user = _user;
+    if (user == null) return;
+    _setBusy(true);
+    _setError(null);
+    try {
+      final picked = await file_picker.FilePicker.pickFiles(
+        type: file_picker.FileType.image,
+        allowMultiple: false,
+        withData: true,
+      );
+      if (picked == null || picked.files.isEmpty) return;
+      final file = picked.files.single;
+      final bytes = file.bytes;
+      if (bytes == null || bytes.isEmpty) {
+        _setError('De afbeelding kon niet worden gelezen.');
+        return;
+      }
+      if (bytes.length > 5 * 1024 * 1024) {
+        _setError('Kies een afbeelding kleiner dan 5 MB.');
+        return;
+      }
+      final extension = (file.extension ?? '').toLowerCase();
+      final contentType = switch (extension) {
+        'png' => 'image/png',
+        'webp' => 'image/webp',
+        'jpg' || 'jpeg' => 'image/jpeg',
+        _ => '',
+      };
+      if (contentType.isEmpty) {
+        _setError('Gebruik een JPG-, PNG- of WebP-afbeelding.');
+        return;
+      }
+      if (!phase5ImageSignatureMatches(bytes, contentType)) {
+        _setError(
+          'Het bestandstype komt niet overeen met de inhoud van de afbeelding.',
+        );
+        return;
+      }
+      final oldPath = _profile?.avatarObjectPath ?? '';
+      final path = '${user.id}/avatar-${const Uuid().v4()}.$extension';
+      await _client.storage.from('avatars').uploadBinary(
+            path,
+            bytes,
+            fileOptions: FileOptions(contentType: contentType, upsert: true),
+          );
+      try {
+        await _client
+            .from('profiles')
+            .update({'avatar_object_path': path}).eq('id', user.id);
+      } catch (_) {
+        if (oldPath != path) {
+          try {
+            await _client.storage.from('avatars').remove([path]);
+          } catch (_) {
+            // Best-effort compensating cleanup; the original error remains.
+          }
+        }
+        rethrow;
+      }
+      if (oldPath.isNotEmpty && oldPath != path) {
+        await _client.storage.from('avatars').remove([oldPath]);
+      }
+      final profile = _profile ?? await _loadOrCreateProfile(user);
+      profile.avatarObjectPath = path;
+      profile.updatedAt = DateTime.now().toUtc();
+      _phase4ACacheProfile(profile);
+      final signed = await _signedAvatarUrl(path);
+      if (!mounted) return;
+      setState(() {
+        _profile = profile;
+        _avatarUrl = signed;
+      });
+      _setNotice('Profielfoto bijgewerkt.');
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _removeAvatar() async {
+    if (_busy) return;
+    final user = _user;
+    final path = _profile?.avatarObjectPath ?? '';
+    if (user == null || path.isEmpty) return;
+    _setBusy(true);
+    try {
+      await _client.storage.from('avatars').remove([path]);
+      await _client
+          .from('profiles')
+          .update({'avatar_object_path': null}).eq('id', user.id);
+      final profile = _profile!;
+      profile.avatarObjectPath = '';
+      profile.updatedAt = DateTime.now().toUtc();
+      _phase4ACacheProfile(profile);
+      if (mounted) {
+        setState(() {
+          _profile = profile;
+          _avatarUrl = '';
+        });
+      }
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _logout() async {
+    if (_busy) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Uitloggen'),
+        content: const Text(
+          'Ontsleutelde sessiegegevens worden gewist. Je cloudgegevens blijven behouden.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Annuleren'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Uitloggen'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || _busy) return;
+    _setBusy(true);
+    try {
+      final authId = FFAppState().activeAuthAccountId.trim();
+      if (authId.isNotEmpty) {
+        _phase4ASavePhase4BOperationalMaster(authId);
+        _phase4ASaveScope(authId);
+        await _phase4APurgeOperationalSecureState(authId);
+      }
+      FFAppState().activeAuthAccountId = '';
+      FFAppState().currentAuthProfile = AuthProfileDataStruct();
+      FFAppState().selectedCloudStableId = '';
+      FFAppState().pendingStableInvitationToken = '';
+      FFAppState().pendingStableInvitationId = '';
+      FFAppState().stableAccessStatus = 'signed_out';
+      _phase4AClearWorkingSet();
+      await _client.auth.signOut();
+      if (!mounted) return;
+      context.goNamed('AuthWelcomePage');
+    } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    if (_busy) return;
+    final user = _user;
+    if (user == null) {
+      _setError('Meld je opnieuw aan voordat je het account verwijdert.');
+      return;
+    }
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Account permanent verwijderen?'),
+        content: const Text(
+          'Dit verwijdert uitsluitend een account zonder stal-, team- of '
+          'bewaarde historie. Actieve rollen, historie en Apple-accounts '
+          'blijven fail-closed geblokkeerd. Deze actie kan niet ongedaan '
+          'worden gemaakt.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Annuleren'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Permanent verwijderen'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || _busy) return;
+    _setBusy(true);
+    try {
+      final authUserId = user.id;
+      final response = await _client.functions.invoke(
+        'delete-account',
+        headers: const <String, String>{'Content-Type': 'application/json'},
+        // functions_client 2.4.2 encodes non-string bodies through a web
+        // isolate. Sending the already-valid empty JSON object avoids that
+        // transport-only failure without changing server authorization.
+        body: '{}',
+      );
+      final data = response.data is Map
+          ? Map<String, dynamic>.from(response.data as Map)
+          : const <String, dynamic>{};
+      final code = _phase4ANullableString(data['code']);
+      if (response.status != 200 || code != 'ACCOUNT_DELETED') {
+        throw FunctionException(status: response.status, details: data);
+      }
+      await _phase4APurgeOperationalSecureState(authUserId);
+      _phase5ClearDeletedAccountState(authUserId);
+      // Admin deletion revokes the server identity and refresh tokens. The
+      // client only needs to remove its now-invalid persisted session.
+      await _client.auth.signOut(scope: SignOutScope.local);
+      if (!mounted) return;
+      context.goNamed('AuthWelcomePage');
+    } on FunctionException catch (error) {
+      _setError(
+        _phase5AccountDeletionMessage(_phase5AccountDeletionCode(error)),
+      );
+    } catch (_) {
+      _setError(_phase5AccountDeletionMessage(''));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _sendSecurityReset() async {
+    final email = _user?.email ?? '';
+    if (email.isEmpty || _busy) return;
+    _setBusy(true);
+    try {
+      await _client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: _phase4ARedirectUrl('/auth/reset-password'),
+      );
+      _setNotice(
+        'Als dit account e-mailaanmelding gebruikt, ontvang je een herstelbericht.',
+      );
+    } catch (_) {
+      _setNotice(
+        'Als dit account e-mailaanmelding gebruikt, ontvang je een herstelbericht.',
+      );
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  void _attachLegacy() {
+    final user = _user;
+    if (user == null || _busy) return;
+    _phase4AAttachLegacyBackup(user.id);
+    setState(() => _legacyPrompt = false);
+    _continueAfterLegacyChoice();
+  }
+
+  void _deferLegacy() {
+    final user = _user;
+    if (user == null || _busy) return;
+    _phase4AMarkLegacyPrompted(user.id);
+    _phase4AClearWorkingSet();
+    _phase4ASaveScope(user.id);
+    setState(() => _legacyPrompt = false);
+    _continueAfterLegacyChoice();
+  }
+
+  void _continueAfterLegacyChoice() {
+    final profile = _profile ?? FFAppState().currentAuthProfile;
+    final user = _user;
+    if (user == null) {
+      if (mounted) context.goNamed('AuthWelcomePage');
+      return;
+    }
+    _continueAfterProfile(profile, user);
+  }
+
+  void _continueAfterProfile(AuthProfileDataStruct profile, User user) {
+    if (!mounted) return;
+    final route = phase5ResolveAccountRoute(
+      hasSession: true,
+      emailProvider: (user.appMetadata['provider'] ?? '') == 'email',
+      emailConfirmed: user.emailConfirmedAt != null,
+      onboardingCompleted: profile.onboardingCompletedAt != null,
+      hasPendingInvitation:
+          FFAppState().pendingStableInvitationToken.trim().isNotEmpty ||
+              FFAppState().pendingStableInvitationId.trim().isNotEmpty,
+      hasSelectedStable: FFAppState().selectedCloudStableId.trim().isNotEmpty,
+    );
+    context.goNamed(phase5AccountRouteName(route));
+  }
+
+  Future<void> _openLegal(String url, String label) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null || !uri.hasScheme) {
+      _setError('$label is nog niet geconfigureerd.');
+      return;
+    }
+    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened) _setError('$label kon niet worden geopend.');
+  }
+
+  InputDecoration _fieldDecoration(
+    FlutterFlowTheme theme,
+    String label, {
+    String? hint,
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      suffixIcon: suffixIcon,
+      filled: true,
+      fillColor: theme.secondaryBackground,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: theme.alternate),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: theme.alternate),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: theme.secondary, width: 1.4),
+      ),
+    );
+  }
+
+  Widget _feedback(FlutterFlowTheme theme) {
+    if (_error == null && _notice == null) return const SizedBox.shrink();
+    final isError = _error != null;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: isError
+            ? theme.error.withValues(alpha: 0.12)
+            : theme.success.withValues(alpha: 0.13),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isError ? theme.error : theme.success,
+          width: 0.7,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            isError ? Icons.error_outline : Icons.check_circle_outline,
+            color: isError ? theme.error : theme.success,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              _error ?? _notice ?? '',
+              style: theme.bodyMedium.copyWith(color: theme.primaryText),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _brand(FlutterFlowTheme theme, {String? eyebrow}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (eyebrow != null) ...[
+          Text(
+            eyebrow.toUpperCase(),
+            style: theme.labelSmall.copyWith(
+              color: theme.secondary,
+              letterSpacing: 1.3,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        Text(
+          'AVARYN',
+          style: theme.headlineLarge.copyWith(
+            color: theme.primaryText,
+            letterSpacing: 2.2,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'One Team. Two Athletes.',
+          style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+        ),
+      ],
+    );
+  }
+
+  Widget _primaryButton(
+    FlutterFlowTheme theme,
+    String label,
+    VoidCallback onPressed, {
+    IconData? icon,
+  }) {
+    return Semantics(
+      button: true,
+      label: label,
+      child: FilledButton.icon(
+        onPressed: _busy ? null : onPressed,
+        icon: _busy
+            ? SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: theme.primary,
+                ),
+              )
+            : Icon(icon ?? Icons.arrow_forward, size: 19),
+        label: Text(label),
+        style: FilledButton.styleFrom(
+          minimumSize: const Size.fromHeight(50),
+          backgroundColor: theme.secondary,
+          foregroundColor: theme.primary,
+          disabledBackgroundColor: theme.secondary.withValues(alpha: 0.45),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _secondaryButton(
+    FlutterFlowTheme theme,
+    String label,
+    VoidCallback? onPressed, {
+    IconData? icon,
+  }) {
+    return OutlinedButton.icon(
+      onPressed: _busy ? null : onPressed,
+      icon: Icon(icon ?? Icons.arrow_back, size: 19),
+      label: Text(label),
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(48),
+        foregroundColor: theme.primaryText,
+        side: BorderSide(color: theme.alternate),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  Widget _pageFrame(Widget child, {bool narrow = true, Color? background}) {
+    final theme = FlutterFlowTheme.of(context);
+    return Container(
+      width: widget.width ?? double.infinity,
+      height: widget.height ?? double.infinity,
+      color: background ?? theme.primaryBackground,
+      child: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: narrow ? 560 : 920),
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.fromLTRB(
+                20,
+                24,
+                20,
+                28 + MediaQuery.viewInsetsOf(context).bottom,
+              ),
+              child: child,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _authCard(FlutterFlowTheme theme, List<Widget> children) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: theme.secondaryBackground,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: theme.alternate, width: 0.7),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
+    );
+  }
+
+  Widget _welcome() {
+    final theme = FlutterFlowTheme.of(context);
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme),
+          const SizedBox(height: 30),
+          _authCard(theme, [
+            Text(
+              'Welkom bij AVARYN',
+              style: theme.headlineSmall.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Persoonlijke toegang tot de prestaties, planning en dagelijkse zorg van jouw team.',
+              style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+            ),
+            const SizedBox(height: 22),
+            IgnorePointer(
+              ignoring: _busy,
+              child: Semantics(
+                button: true,
+                label: 'Doorgaan met Apple',
+                child: SizedBox(
+                  width: double.infinity,
+                  child: SignInButton(
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Buttons.appleDark
+                        : Buttons.apple,
+                    text: 'Doorgaan met Apple',
+                    onPressed: () => _signInWithProvider(OAuthProvider.apple),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            IgnorePointer(
+              ignoring: _busy,
+              child: Semantics(
+                button: true,
+                label: 'Doorgaan met Google',
+                child: SizedBox(
+                  width: double.infinity,
+                  child: SignInButton(
+                    Buttons.google,
+                    text: 'Doorgaan met Google',
+                    onPressed: () => _signInWithProvider(OAuthProvider.google),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _secondaryButton(
+              theme,
+              'Doorgaan met e-mail',
+              () => context.goNamed('AuthEmailPage'),
+              icon: Icons.mail_outline,
+            ),
+            const SizedBox(height: 18),
+            _feedback(theme),
+            if (_phase4ALegalConfigured)
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  TextButton(
+                    onPressed: () => _openLegal(
+                      _phase4APrivacyPolicyUrl,
+                      'Privacybeleid',
+                    ),
+                    child: const Text('Privacybeleid'),
+                  ),
+                  TextButton(
+                    onPressed: () =>
+                        _openLegal(_phase4ATermsUrl, 'Voorwaarden'),
+                    child: const Text('Voorwaarden'),
+                  ),
+                ],
+              )
+            else
+              Text(
+                'Privacybeleid en voorwaarden moeten vóór release met echte HTTPS-links worden geconfigureerd.',
+                textAlign: TextAlign.center,
+                style: theme.bodySmall.copyWith(color: theme.secondaryText),
+              ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _emailChoice() {
+    final theme = FlutterFlowTheme.of(context);
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'Account'),
+          const SizedBox(height: 26),
+          _authCard(theme, [
+            Text(
+              'Doorgaan met e-mail',
+              style: theme.headlineSmall.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Kies of je al een account hebt.',
+              style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+            ),
+            const SizedBox(height: 22),
+            _primaryButton(
+              theme,
+              'Inloggen',
+              () => context.goNamed('AuthLoginPage'),
+              icon: Icons.login,
+            ),
+            const SizedBox(height: 10),
+            _secondaryButton(
+              theme,
+              'Account aanmaken',
+              () => context.goNamed('AuthCreateAccountPage'),
+              icon: Icons.person_add_alt_1,
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () => context.goNamed('AuthWelcomePage'),
+              child: const Text('Terug'),
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _loginForm() {
+    final theme = FlutterFlowTheme.of(context);
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'Inloggen'),
+          const SizedBox(height: 26),
+          _authCard(theme, [
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.email],
+              decoration: _fieldDecoration(
+                theme,
+                'E-mailadres',
+                hint: 'naam@voorbeeld.nl',
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _passwordController,
+              obscureText: _passwordHidden,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.password],
+              onSubmitted: (_) => _login(),
+              decoration: _fieldDecoration(
+                theme,
+                'Wachtwoord',
+                suffixIcon: IconButton(
+                  tooltip: _passwordHidden
+                      ? 'Wachtwoord tonen'
+                      : 'Wachtwoord verbergen',
+                  onPressed: () =>
+                      setState(() => _passwordHidden = !_passwordHidden),
+                  icon: Icon(
+                    _passwordHidden
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => context.goNamed('AuthForgotPasswordPage'),
+                child: const Text('Wachtwoord vergeten?'),
+              ),
+            ),
+            _feedback(theme),
+            _primaryButton(theme, 'Inloggen', _login, icon: Icons.login),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () => context.goNamed('AuthCreateAccountPage'),
+              child: const Text('Nog geen account? Account aanmaken'),
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _signupForm() {
+    final theme = FlutterFlowTheme.of(context);
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'Nieuw account'),
+          const SizedBox(height: 26),
+          _authCard(theme, [
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.newUsername],
+              decoration: _fieldDecoration(
+                theme,
+                'E-mailadres',
+                hint: 'naam@voorbeeld.nl',
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _passwordController,
+              obscureText: _passwordHidden,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.newPassword],
+              decoration: _fieldDecoration(
+                theme,
+                'Wachtwoord',
+                hint: 'Minimaal 8 tekens',
+                suffixIcon: IconButton(
+                  tooltip: _passwordHidden
+                      ? 'Wachtwoord tonen'
+                      : 'Wachtwoord verbergen',
+                  onPressed: () =>
+                      setState(() => _passwordHidden = !_passwordHidden),
+                  icon: Icon(
+                    _passwordHidden
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: _confirmPasswordHidden,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.newPassword],
+              onSubmitted: (_) => _signUp(),
+              decoration: _fieldDecoration(
+                theme,
+                'Bevestig wachtwoord',
+                suffixIcon: IconButton(
+                  tooltip: _confirmPasswordHidden
+                      ? 'Wachtwoord tonen'
+                      : 'Wachtwoord verbergen',
+                  onPressed: () => setState(
+                    () => _confirmPasswordHidden = !_confirmPasswordHidden,
+                  ),
+                  icon: Icon(
+                    _confirmPasswordHidden
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            if (_phase4ALegalConfigured)
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                value: _legalAccepted,
+                onChanged: (value) =>
+                    setState(() => _legalAccepted = value ?? false),
+                title: Text(
+                  'Ik accepteer het privacybeleid en de voorwaarden.',
+                  style: theme.bodySmall.copyWith(color: theme.primaryText),
+                ),
+              )
+            else
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.warning,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  'Lokale ontwikkelmodus: juridische links ontbreken. Dit blokkeert een release, maar niet het testen van e-mailauthenticatie.',
+                  style: theme.bodySmall.copyWith(color: theme.primaryText),
+                ),
+              ),
+            const SizedBox(height: 12),
+            _feedback(theme),
+            _primaryButton(
+              theme,
+              'Account aanmaken',
+              _signUp,
+              icon: Icons.person_add_alt_1,
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () => context.goNamed('AuthLoginPage'),
+              child: const Text('Al een account? Inloggen'),
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _verification() {
+    final theme = FlutterFlowTheme.of(context);
+    final email = _emailController.text.trim();
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'E-mail bevestigen'),
+          const SizedBox(height: 26),
+          _authCard(theme, [
+            Icon(
+              Icons.mark_email_read_outlined,
+              size: 44,
+              color: theme.secondary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Controleer je inbox',
+              textAlign: TextAlign.center,
+              style: theme.headlineSmall.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              email.isEmpty
+                  ? 'Open de bevestigingslink in het bericht van AVARYN.'
+                  : 'Open de bevestigingslink die naar $email is gestuurd.',
+              textAlign: TextAlign.center,
+              style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+            ),
+            if (FFAppState().pendingStableInvitationToken.trim().isNotEmpty ||
+                FFAppState().pendingStableInvitationId.trim().isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Text(
+                'Na bevestiging hervat AVARYN de uitnodiging met een '
+                'niet-geheime referentie. De uitnodigingscode zelf wordt '
+                'bewust niet duurzaam opgeslagen.',
+                textAlign: TextAlign.center,
+                style: theme.bodySmall.copyWith(color: theme.secondaryText),
+              ),
+            ],
+            const SizedBox(height: 20),
+            _feedback(theme),
+            _primaryButton(
+              theme,
+              _cooldownSeconds > 0
+                  ? 'Opnieuw sturen over ${_cooldownSeconds}s'
+                  : 'Bevestigingsmail opnieuw sturen',
+              _resendVerification,
+              icon: Icons.refresh,
+            ),
+            const SizedBox(height: 10),
+            _secondaryButton(
+              theme,
+              'Ander e-mailadres gebruiken',
+              () => context.goNamed('AuthCreateAccountPage'),
+              icon: Icons.edit_outlined,
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: _busy
+                  ? null
+                  : () async {
+                      await _phase4APurgeOperationalSecureState(
+                        FFAppState().activeAuthAccountId,
+                      );
+                      await _client.auth.signOut();
+                      if (mounted) context.goNamed('AuthWelcomePage');
+                    },
+              child: const Text('Uitloggen of ander account kiezen'),
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _forgotPassword() {
+    final theme = FlutterFlowTheme.of(context);
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'Wachtwoord herstellen'),
+          const SizedBox(height: 26),
+          _authCard(theme, [
+            Text(
+              'Herstelbericht aanvragen',
+              style: theme.headlineSmall.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'We sturen instructies wanneer het adres bij een AVARYN-account hoort.',
+              style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+            ),
+            const SizedBox(height: 18),
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _requestPasswordReset(),
+              decoration: _fieldDecoration(theme, 'E-mailadres'),
+            ),
+            const SizedBox(height: 16),
+            _feedback(theme),
+            _primaryButton(
+              theme,
+              'Herstelbericht aanvragen',
+              _requestPasswordReset,
+              icon: Icons.lock_reset,
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () => context.goNamed('AuthLoginPage'),
+              child: const Text('Terug naar inloggen'),
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _resetPassword() {
+    final theme = FlutterFlowTheme.of(context);
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'Nieuw wachtwoord'),
+          const SizedBox(height: 26),
+          _authCard(theme, [
+            TextField(
+              controller: _passwordController,
+              obscureText: _passwordHidden,
+              textInputAction: TextInputAction.next,
+              decoration: _fieldDecoration(
+                theme,
+                'Nieuw wachtwoord',
+                suffixIcon: IconButton(
+                  tooltip: 'Wachtwoord tonen of verbergen',
+                  onPressed: () =>
+                      setState(() => _passwordHidden = !_passwordHidden),
+                  icon: Icon(
+                    _passwordHidden
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: _confirmPasswordHidden,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _updatePassword(),
+              decoration: _fieldDecoration(
+                theme,
+                'Bevestig nieuw wachtwoord',
+                suffixIcon: IconButton(
+                  tooltip: 'Wachtwoord tonen of verbergen',
+                  onPressed: () => setState(
+                    () => _confirmPasswordHidden = !_confirmPasswordHidden,
+                  ),
+                  icon: Icon(
+                    _confirmPasswordHidden
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            _feedback(theme),
+            _primaryButton(
+              theme,
+              'Wachtwoord opslaan',
+              _updatePassword,
+              icon: Icons.verified_user_outlined,
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _loadingOrCallback() {
+    final theme = FlutterFlowTheme.of(context);
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'Beveiligde toegang'),
+          const SizedBox(height: 32),
+          _authCard(theme, [
+            Center(
+              child: SizedBox(
+                width: 34,
+                height: 34,
+                child: CircularProgressIndicator(color: theme.secondary),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              widget.mode == 'gate'
+                  ? 'Je AVARYN-account wordt veilig geladen.'
+                  : 'De aanmeldlink wordt gecontroleerd.',
+              textAlign: TextAlign.center,
+              style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+            ),
+            const SizedBox(height: 16),
+            _feedback(theme),
+            if (_error != null)
+              _secondaryButton(
+                theme,
+                'Opnieuw proberen',
+                _bootstrap,
+                icon: Icons.refresh,
+              ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _legacyOwnershipPrompt() {
+    final theme = FlutterFlowTheme.of(context);
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'Lokale testgegevens'),
+          const SizedBox(height: 26),
+          _authCard(theme, [
+            Icon(Icons.inventory_2_outlined, size: 42, color: theme.secondary),
+            const SizedBox(height: 14),
+            Text(
+              'Bestaande AVARYN-testgegevens gevonden',
+              style: theme.headlineSmall.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Op dit apparaat staan lokale paarden-, planning- en voedingsgegevens uit het prototype. Koppel een rollbackveilige kopie uitsluitend aan dit account, of ga verder met een lege accountomgeving.',
+              style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+            ),
+            const SizedBox(height: 20),
+            _primaryButton(
+              theme,
+              'Kopie aan dit account koppelen',
+              _attachLegacy,
+              icon: Icons.link,
+            ),
+            const SizedBox(height: 10),
+            _secondaryButton(
+              theme,
+              'Niet nu',
+              _deferLegacy,
+              icon: Icons.schedule,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'De oorspronkelijke legacyback-up blijft in beide gevallen bewaard tot Phase 4C is beoordeeld.',
+              style: theme.bodySmall.copyWith(color: theme.secondaryText),
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _avatar(FlutterFlowTheme theme, {double size = 84}) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: theme.accent2,
+        borderRadius: BorderRadius.circular(size * 0.28),
+        border: Border.all(color: theme.alternate, width: 0.8),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: _avatarUrl.isNotEmpty
+          ? Image.network(
+              _avatarUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Icon(
+                Icons.person_outline,
+                size: size * 0.48,
+                color: theme.primaryText,
+              ),
+            )
+          : Icon(
+              Icons.person_outline,
+              size: size * 0.48,
+              color: theme.primaryText,
+            ),
+    );
+  }
+
+  Widget _onboarding() {
+    final theme = FlutterFlowTheme.of(context);
+    if (_profile == null && _error == null) return _loadingOrCallback();
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'Eerste inrichting'),
+          const SizedBox(height: 22),
+          Row(
+            children: List.generate(3, (index) {
+              final active = index <= _onboardingStep;
+              return Expanded(
+                child: Container(
+                  height: 4,
+                  margin: EdgeInsets.only(right: index == 2 ? 0 : 7),
+                  decoration: BoxDecoration(
+                    color: active ? theme.secondary : theme.alternate,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 18),
+          _authCard(
+            theme,
+            _onboardingStep == 0
+                ? _onboardingProfileStep(theme)
+                : _onboardingStep == 1
+                    ? _onboardingIntentStep(theme)
+                    : _onboardingCompletionStep(theme),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _onboardingProfileStep(FlutterFlowTheme theme) {
+    return [
+      Text(
+        'Jouw persoonlijke profiel',
+        style: theme.headlineSmall.copyWith(color: theme.primaryText),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        'Alleen gegevens die nodig zijn om AVARYN persoonlijk te maken.',
+        style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+      ),
+      const SizedBox(height: 18),
+      Row(
+        children: [
+          _avatar(theme),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: _busy ? null : _uploadAvatar,
+                  icon: const Icon(Icons.add_a_photo_outlined),
+                  label: const Text('Foto kiezen'),
+                ),
+                if ((_profile?.avatarObjectPath ?? '').isNotEmpty)
+                  TextButton(
+                    onPressed: _busy ? null : _removeAvatar,
+                    child: const Text('Foto verwijderen'),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      TextField(
+        controller: _firstNameController,
+        textInputAction: TextInputAction.next,
+        autofillHints: const [AutofillHints.givenName],
+        decoration: _fieldDecoration(theme, 'Voornaam'),
+      ),
+      const SizedBox(height: 12),
+      TextField(
+        controller: _lastNameController,
+        textInputAction: TextInputAction.next,
+        autofillHints: const [AutofillHints.familyName],
+        decoration: _fieldDecoration(theme, 'Achternaam (optioneel)'),
+      ),
+      const SizedBox(height: 12),
+      DropdownButtonFormField<String>(
+        value: {'nl', 'en'}.contains(_locale) ? _locale : 'nl',
+        decoration: _fieldDecoration(theme, 'Taal'),
+        items: const [
+          DropdownMenuItem(value: 'nl', child: Text('Nederlands')),
+          DropdownMenuItem(value: 'en', child: Text('English (preference)')),
+        ],
+        onChanged: (value) => setState(() => _locale = value ?? 'nl'),
+      ),
+      const SizedBox(height: 12),
+      TextField(
+        controller: _phoneController,
+        keyboardType: TextInputType.phone,
+        textInputAction: TextInputAction.done,
+        autofillHints: const [AutofillHints.telephoneNumber],
+        decoration: _fieldDecoration(
+          theme,
+          'Telefoonnummer (optioneel)',
+          hint: '+31612345678',
+        ),
+      ),
+      const SizedBox(height: 16),
+      _feedback(theme),
+      _primaryButton(theme, 'Verder', () {
+        if (_firstNameController.text.trim().isEmpty) {
+          _setError('Voornaam is verplicht.');
+          return;
+        }
+        setState(() {
+          _error = null;
+          _onboardingStep = 1;
+        });
+      }),
+    ];
+  }
+
+  List<Widget> _onboardingIntentStep(FlutterFlowTheme theme) {
+    final options = const [
+      (
+        'createStable',
+        'Ik wil een nieuwe stal aanmaken',
+        Icons.home_work_outlined,
+      ),
+      ('joinStable', 'Ik heb een uitnodiging ontvangen', Icons.mail_outline),
+      (
+        'individualHorse',
+        'Ik beheer voorlopig alleen mijn eigen paard',
+        Icons.pets_outlined,
+      ),
+    ];
+    return [
+      Text(
+        'Hoe wil je AVARYN gebruiken?',
+        style: theme.headlineSmall.copyWith(color: theme.primaryText),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        'Dit is alleen jouw voorkeur. Er wordt nog geen stal, rol of lidmaatschap aangemaakt.',
+        style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+      ),
+      const SizedBox(height: 16),
+      ...options.map(
+        (option) => Padding(
+          padding: const EdgeInsets.only(bottom: 9),
+          child: RadioListTile<String>(
+            value: option.$1,
+            groupValue: _intent,
+            onChanged: (value) => setState(() => _intent = value ?? ''),
+            title: Text(option.$2),
+            secondary: Icon(option.$3, color: theme.secondary),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(
+                color: _intent == option.$1 ? theme.secondary : theme.alternate,
+              ),
+            ),
+          ),
+        ),
+      ),
+      _feedback(theme),
+      Row(
+        children: [
+          Expanded(
+            child: _secondaryButton(
+              theme,
+              'Terug',
+              () => setState(() => _onboardingStep = 0),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: _primaryButton(theme, 'Verder', () {
+              if (_intent.isEmpty) {
+                _setError('Kies hoe je AVARYN wilt gebruiken.');
+                return;
+              }
+              setState(() {
+                _error = null;
+                _onboardingStep = 2;
+              });
+            }),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  List<Widget> _onboardingCompletionStep(FlutterFlowTheme theme) {
+    return [
+      Icon(Icons.check_circle_outline, size: 52, color: theme.success),
+      const SizedBox(height: 14),
+      Text(
+        'Je persoonlijke account is klaar',
+        textAlign: TextAlign.center,
+        style: theme.headlineSmall.copyWith(color: theme.primaryText),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        _phase4AIntentLabel(_intent),
+        textAlign: TextAlign.center,
+        style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        'Hierna bevestig je expliciet een stal, uitnodiging of persoonlijke workspace.',
+        textAlign: TextAlign.center,
+        style: theme.bodySmall.copyWith(color: theme.secondaryText),
+      ),
+      const SizedBox(height: 18),
+      _feedback(theme),
+      _primaryButton(
+        theme,
+        'AVARYN openen',
+        () => _savePersonalProfile(complete: true),
+        icon: Icons.arrow_forward,
+      ),
+      const SizedBox(height: 10),
+      TextButton(
+        onPressed: _busy ? null : () => setState(() => _onboardingStep = 1),
+        child: const Text('Keuze aanpassen'),
+      ),
+    ];
+  }
+
+  Widget _profilePage() {
+    final theme = FlutterFlowTheme.of(context);
+    final profile = _profile;
+    final user = _user;
+    if (profile == null && _error == null) return _loadingOrCallback();
+    final providers = (user?.identities ?? const <UserIdentity>[])
+        .map((identity) => identity.provider)
+        .toSet()
+        .toList()
+      ..sort();
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _avatar(theme, size: 86),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _phase4ADisplayName(profile ?? AuthProfileDataStruct()),
+                      style: theme.headlineSmall.copyWith(
+                        color: theme.primaryText,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      user?.email ?? 'Geen e-mailadres beschikbaar',
+                      style: theme.bodyMedium.copyWith(
+                        color: theme.secondaryText,
+                      ),
+                    ),
+                    if (user?.emailConfirmedAt != null)
+                      Text(
+                        'Geverifieerd e-mailadres',
+                        style: theme.bodySmall.copyWith(color: theme.success),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          if (_offlineProfile)
+            Container(
+              margin: const EdgeInsets.only(bottom: 14),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.warning,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Text(
+                'Offline profielweergave. Wijzigingen vereisen een netwerkverbinding.',
+              ),
+            ),
+          _feedback(theme),
+          _authCard(theme, [
+            Text(
+              'Persoonlijk profiel',
+              style: theme.titleLarge.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 14),
+            TextField(
+              controller: _firstNameController,
+              decoration: _fieldDecoration(theme, 'Voornaam'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _lastNameController,
+              decoration: _fieldDecoration(theme, 'Achternaam'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+              decoration: _fieldDecoration(theme, 'Telefoonnummer (optioneel)'),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              value: {'nl', 'en'}.contains(_locale) ? _locale : 'nl',
+              decoration: _fieldDecoration(theme, 'Taalvoorkeur'),
+              items: const [
+                DropdownMenuItem(value: 'nl', child: Text('Nederlands')),
+                DropdownMenuItem(
+                  value: 'en',
+                  child: Text('English (preference)'),
+                ),
+              ],
+              onChanged: (value) => setState(() => _locale = value ?? 'nl'),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              value: {'system', 'light', 'dark'}.contains(_themeMode)
+                  ? _themeMode
+                  : 'system',
+              decoration: _fieldDecoration(theme, 'Thema'),
+              items: const [
+                DropdownMenuItem(value: 'system', child: Text('Systeem')),
+                DropdownMenuItem(value: 'light', child: Text('Licht')),
+                DropdownMenuItem(value: 'dark', child: Text('Donker')),
+              ],
+              onChanged: (value) {
+                final mode = value ?? 'system';
+                setState(() => _themeMode = mode);
+                _applyTheme(mode);
+              },
+            ),
+            const SizedBox(height: 12),
+            _primaryButton(
+              theme,
+              'Profiel opslaan',
+              () => _savePersonalProfile(),
+              icon: Icons.save_outlined,
+            ),
+            const SizedBox(height: 10),
+            _secondaryButton(
+              theme,
+              'Profielfoto vervangen',
+              _uploadAvatar,
+              icon: Icons.add_a_photo_outlined,
+            ),
+            if ((profile?.avatarObjectPath ?? '').isNotEmpty)
+              TextButton(
+                onPressed: _busy ? null : _removeAvatar,
+                child: const Text('Profielfoto verwijderen'),
+              ),
+          ]),
+          const SizedBox(height: 14),
+          _authCard(theme, [
+            Text(
+              'Account en beveiliging',
+              style: theme.titleLarge.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              providers.isEmpty
+                  ? 'Aanmeldmethode niet beschikbaar'
+                  : providers.map(_phase4AProviderLabel).join(' · '),
+              style: theme.bodyMedium.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Aanmeldmethoden worden nooit stil samengevoegd of ontkoppeld. Veilig koppelen volgt pas na afzonderlijke provider-validatie.',
+              style: theme.bodySmall.copyWith(color: theme.secondaryText),
+            ),
+            const SizedBox(height: 12),
+            _secondaryButton(
+              theme,
+              'Wachtwoord herstellen via e-mail',
+              _sendSecurityReset,
+              icon: Icons.lock_reset,
+            ),
+          ]),
+          const SizedBox(height: 14),
+          _authCard(theme, [
+            Text(
+              'Gebruik van AVARYN',
+              style: theme.titleLarge.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _phase4AIntentLabel(profile?.onboardingIntent ?? _intent),
+              style: theme.bodyMedium.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              FFAppState().selectedCloudStableId.trim().isEmpty
+                  ? 'Kies een stal of persoonlijke workspace om je veilige werkcontext te activeren.'
+                  : 'Je actieve stalcontext is server-side gevalideerd. Rollen komen nooit uit dit profiel.',
+              style: theme.bodySmall.copyWith(color: theme.secondaryText),
+            ),
+            const SizedBox(height: 12),
+            _secondaryButton(
+              theme,
+              FFAppState().selectedCloudStableId.trim().isEmpty
+                  ? 'Stal of workspace kiezen'
+                  : 'Stal en team beheren',
+              () => context.pushNamed(
+                FFAppState().selectedCloudStableId.trim().isEmpty
+                    ? 'StableOnboardingHandoffPage'
+                    : 'StableDetailsPage',
+              ),
+              icon: Icons.groups_outlined,
+            ),
+          ]),
+          const SizedBox(height: 14),
+          _authCard(theme, [
+            Text(
+              'Privacy en account',
+              style: theme.titleLarge.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 10),
+            if (_phase4ALegalConfigured) ...[
+              _secondaryButton(
+                theme,
+                'Privacybeleid',
+                () => _openLegal(_phase4APrivacyPolicyUrl, 'Privacybeleid'),
+                icon: Icons.privacy_tip_outlined,
+              ),
+              const SizedBox(height: 8),
+              _secondaryButton(
+                theme,
+                'Voorwaarden',
+                () => _openLegal(_phase4ATermsUrl, 'Voorwaarden'),
+                icon: Icons.description_outlined,
+              ),
+            ] else
+              Text(
+                'Juridische links ontbreken en blokkeren een release.',
+                style: theme.bodySmall.copyWith(color: theme.error),
+              ),
+            const SizedBox(height: 12),
+            _secondaryButton(theme, 'Uitloggen', _logout, icon: Icons.logout),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: _busy ? null : _deleteAccount,
+              icon: const Icon(Icons.delete_forever_outlined),
+              label: const Text('Account permanent verwijderen'),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Zelfbediening is uitsluitend beschikbaar voor een account '
+              'zonder stal-, team- of bewaarde historie. Actieve rollen, '
+              'historie en Apple-intrekking blijven veilig geblokkeerd.',
+              style: theme.bodySmall.copyWith(color: theme.secondaryText),
+            ),
+          ]),
+          const SizedBox(height: 34),
+        ],
+      ),
+      narrow: false,
+    );
+  }
+
+  Widget _accountInitials() {
+    final profile = FFAppState().currentAuthProfile;
+    return Center(
+      child: Text(
+        _phase4AInitials(profile),
+        style: FlutterFlowTheme.of(
+          context,
+        ).labelSmall.copyWith(color: FlutterFlowTheme.of(context).accent1),
+      ),
+    );
+  }
+
+  Widget _accountGreeting({required bool compact}) {
+    final profile = FFAppState().currentAuthProfile;
+    final firstName = _phase4AFirstName(profile);
+    return Text(
+      compact
+          ? 'Goedemorgen, $firstName. Dit vraagt vandaag je aandacht.'
+          : 'Goedemorgen, $firstName. Dit vraagt vandaag je aandacht.',
+      style: FlutterFlowTheme.of(
+        context,
+      ).bodyLarge.copyWith(color: FlutterFlowTheme.of(context).secondaryText),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.mode == 'gate' && _legacyPrompt) {
+      return _legacyOwnershipPrompt();
+    }
+    return switch (widget.mode) {
+      'welcome' => _welcome(),
+      'email' => _emailChoice(),
+      'login' => _loginForm(),
+      'signup' => _signupForm(),
+      'verify' => _verification(),
+      'forgot' => _forgotPassword(),
+      'reset' => _resetPassword(),
+      'callback' => _loadingOrCallback(),
+      'gate' => _loadingOrCallback(),
+      'onboarding' => _onboarding(),
+      'profile' => _profilePage(),
+      'initials' => _accountInitials(),
+      'greeting' => _accountGreeting(compact: false),
+      'greetingCompact' => _accountGreeting(compact: true),
+      _ => _welcome(),
+    };
+  }
+}
