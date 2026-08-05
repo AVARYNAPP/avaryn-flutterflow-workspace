@@ -2,14 +2,17 @@
 
 ## Status en begrenzing
 
-- Status: **Implemented locally – awaiting Silas security approval**.
+- Status: **C-003A — Approved within the agreed scope**.
+- Datum securitygoedkeuring: `2026-08-05`.
 - Branch: `implementation/account-model-v2-c003a-identity-audit`.
 - Basis- en rollbackcommit:
   `5eb07f54ffa7464f8f7e325f8b112411936298e8`.
 - Normatieve inhoudscommit:
   `4288944ae77cee9e1f0bf42f9369956b342e0097`.
-- Startcommit van de security-hardening:
+- Goedgekeurde implementatiecommit:
   `7ecddccb6cf7dabea2a6597d8245b707f6110ff4`.
+- Goedgekeurde hardeningcommit:
+  `09e3d1ef1f2efe30a94afd1ea23df4c7da6f724c`.
 - Scope: uitsluitend personal profiles, Auth-koppeling/provisioning,
   server-side actorafleiding, profile-RLS/grants, profile versions,
   append-only audit en de lokale deletion-/anonimiseringsbasis.
@@ -372,10 +375,24 @@ ongewijzigd.
 
 ## Securitygate en rollback
 
-Lokale C-003A-securitygate: **geslaagd; awaiting Silas security approval**.
-Er zijn geen open C-003A P0/P1/P2-bevindingen. De enige echte open technische
-punten zijn de bewust uitgestelde dependencychecks/orchestrator en de latere
-C-003F-brede securityaudit.
+Formele status: **C-003A — Approved within the agreed scope**. De securitygate
+is op `2026-08-05` handmatig beoordeeld en goedgekeurd. Alle C-003A
+P0/P1/P2-securitybevindingen zijn binnen de afgesproken scope gesloten. RLS,
+ACL's, server-side actorafleiding, audit-immutability inclusief `TRUNCATE`, de
+private-routineallowlist, lifecycleversioning en de fail-closed
+profilestatussen zijn onderdeel van die goedkeuring.
+
+C-003A is gereed en vormt na deze statuscommit de goedgekeurde basis voor een
+afzonderlijk op te dragen C-003B. De volgende beperkingen blijven expliciet
+van kracht:
+
+- productiebrede dependencycleanup is nog niet afgerond;
+- de trusted deletion-orchestrator is nog niet geïmplementeerd;
+- productieanonimisering mag daarom nog niet worden geactiveerd;
+- de overkoepelende C-003F-securityaudit blijft verplicht.
+
+Deze beperkingen vallen buiten de afgebakende C-003A-goedkeuring en maken haar
+niet opnieuw pending.
 
 Rollback is terugkeren naar de onveranderde basiscommit
 `5eb07f54ffa7464f8f7e325f8b112411936298e8`. Snapshot, remote database,

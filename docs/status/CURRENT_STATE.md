@@ -1,6 +1,6 @@
 # AVARYN — Current State
 
-Laatst bijgewerkt: 2026-08-04
+Laatst bijgewerkt: 2026-08-05
 
 ## Huidige status
 
@@ -19,8 +19,14 @@ Laatst bijgewerkt: 2026-08-04
 - **Contractstatus:** **Approved**.
 - **Goedgekeurde inhoudscommit:**
   `4288944ae77cee9e1f0bf42f9369956b342e0097`.
-- **C-003A:** lokaal geïmplementeerd op de afzonderlijke taskbranch.
-- **C-003A-status:** **Implemented locally – awaiting Silas security approval**.
+- **C-003A:** lokaal geïmplementeerd en formeel goedgekeurd op de afzonderlijke
+  taskbranch.
+- **C-003A-status:** **Approved within the agreed scope**.
+- **Datum securitygoedkeuring:** `2026-08-05`.
+- **Goedgekeurde C-003A-implementatiecommit:**
+  `7ecddccb6cf7dabea2a6597d8245b707f6110ff4`.
+- **Goedgekeurde C-003A-hardeningcommit:**
+  `09e3d1ef1f2efe30a94afd1ea23df4c7da6f724c`.
 - Geïmplementeerd zijn uitsluitend duurzame personal profiles, de unieke
   nullable koppeling met `auth.uid()`, veilige Auth-provisioning, profile-
   lifecycle en versions, server-side actorafleiding, fail-closed profile-RLS,
@@ -35,12 +41,18 @@ Laatst bijgewerkt: 2026-08-04
   en alle drie niet-actieve profilestatussen zijn expliciet fail-closed getest.
 - De fresh build, bestaande fase-correcte SQL- en upgrade-regressies, zeven
   databaseconcurrencytests, C-003A-pgTAP-test, lint en catalogus-securitygate
-  zijn groen. De hardening moet opnieuw handmatig door Silas worden
-  goedgekeurd; de status blijft daarom **Implemented locally – awaiting Silas
-  security approval**.
-- Volledige productieanonimisering is nog niet veilig vóór de later toe te
-  voegen horse-/organization-/membership-/grant-/transferdependencychecks en
-  de C-003F-securitygate.
+  zijn groen. Alle C-003A P0/P1/P2-securitybevindingen zijn binnen de
+  afgesproken scope gesloten.
+- RLS, ACL's, server-side actorafleiding, audit-immutability inclusief
+  `TRUNCATE`, de private-routineallowlist, lifecycleversioning en fail-closed
+  profilestatussen zijn handmatig beoordeeld en goedgekeurd.
+- Productiebrede dependencycleanup is nog niet afgerond en de trusted
+  deletion-orchestrator is nog niet geïmplementeerd. Productieanonimisering mag
+  daarom nog niet worden geactiveerd. De overkoepelende C-003F-securityaudit
+  blijft verplicht. Deze beperkingen maken de afgebakende C-003A-goedkeuring
+  niet opnieuw pending.
+- C-003A is gereed en vormt na deze statuscommit de goedgekeurde basis voor een
+  afzonderlijk op te dragen C-003B.
 - Er is niets remote uitgevoerd, geen stagingreset gedaan en geen FlutterFlow-
   of applicatiecode gewijzigd voor C-003A.
 - Er is niets gepusht, gemerged of gedeployed als onderdeel van deze lokale
@@ -60,6 +72,8 @@ Het goedgekeurde contract staat in
 | Goedgekeurde inhoudscommit | `4288944ae77cee9e1f0bf42f9369956b342e0097` |
 | C-003A-branch | `implementation/account-model-v2-c003a-identity-audit` |
 | C-003A-basiscommit | `5eb07f54ffa7464f8f7e325f8b112411936298e8` |
+| Goedgekeurde C-003A-implementatiecommit | `7ecddccb6cf7dabea2a6597d8245b707f6110ff4` |
+| Goedgekeurde C-003A-hardeningcommit | `09e3d1ef1f2efe30a94afd1ea23df4c7da6f724c` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
 | FlutterFlow-revisie | `LOTvjLR6TzQjoalLhZWh` |
 | Live Alpha | <https://alpha.avaryn.eu/> |
@@ -103,8 +117,8 @@ De snapshotbranch is het bewijs- en rollbackpunt en mag niet worden gewijzigd.
 
 ## Eerstvolgende stappen en afzonderlijke gates
 
-C-003A wacht op de handmatige securitygoedkeuring van Silas. C-003B is niet
-gestart en vereist zowel die goedkeuring als een afzonderlijke exacte opdracht.
+C-003A is binnen de afgesproken scope goedgekeurd. C-003B is niet gestart en
+vereist nog steeds een afzonderlijke exacte opdracht.
 C-003 blijft opgesplitst in:
 
 1. C-003A — Identity and audit foundation;
