@@ -48,9 +48,9 @@ Laatst bijgewerkt: 2026-08-05
   profilestatussen zijn handmatig beoordeeld en goedgekeurd.
 - Productiebrede dependencycleanup is nog niet afgerond en de trusted
   deletion-orchestrator is nog niet geïmplementeerd. Productieanonimisering mag
-  daarom nog niet worden geactiveerd. De overkoepelende C-003F-securityaudit
-  blijft verplicht. Deze beperkingen maken de afgebakende C-003A-goedkeuring
-  niet opnieuw pending.
+  daarom nog niet worden geactiveerd. De overkoepelende C-003F-securityaudit is
+  op 2026-08-05 geslaagd. Deze productie-activatiebeperkingen maken de
+  afgebakende C-003-goedkeuring niet opnieuw pending.
 - C-003A is gereed en vormt na deze statuscommit de goedgekeurde basis voor een
   afzonderlijk uitgevoerde C-003B.
 - **C-003B-status:** **C-003B — Approved within the agreed scope**.
@@ -83,7 +83,9 @@ Laatst bijgewerkt: 2026-08-05
   open P0/P1/P2-bevindingen binnen de lokale afgebakende C-003C-scope.
 - C-003C is op basis van de uitgevoerde implementatie- en securitychecks
   goedgekeurd binnen de afgesproken scope en vormt de basis voor C-003D.
-- **C-003D-status:** **C-003D — Implemented locally – awaiting next gate**.
+- **C-003D-status:** **C-003D — Approved within the agreed scope**.
+- **Goedgekeurde C-003D-implementatiecommit:**
+  `e940e956144cfa666be12f6d5c6d7ea383b44d20`.
 - C-003D voegt expliciete tijdgeldige horse grants voor profiles en actieve
   organizationrollen toe, plus fail-closed organization- en horse-invitations
   met server-side actorafleiding, verified-Auth-e-mailbinding, HMAC-opslag,
@@ -96,12 +98,28 @@ Laatst bijgewerkt: 2026-08-05
   geraakte C-003A/B/C-regressies en catalogus-/RLS-/ACL-/EXECUTE-controles zijn
   groen. Er zijn geen bekende open P0/P1/P2-bevindingen binnen de afgebakende
   lokale C-003D-scope.
-- C-003E-transfers en de brede C-003F-gate zijn niet gestart en blijven
-  afzonderlijke latere opdrachten.
+- **C-003E-status:** **C-003E — Approved within the agreed scope**.
+- C-003E implementeert RPC-only, zeven dagen geldige horse-authority- en
+  organization-headtransfers met server-side actorafleiding, HMAC-tokens,
+  resource- en transferlocks, stale-versiondeny, idempotency, terminale
+  immutable historie, versionrotatie en append-only audit. Organization-
+  acceptatie wisselt membership, reserved head-adminrol en scalar primary admin
+  atomair onder de deferred invariant.
+- De C-003E-pgTAP-matrix en simultane acceptatieraces zijn groen: per transfer
+  bestaat exact één winnaar, één terminale replaydeny en één scalar/version-
+  overgang. Er zijn geen bekende C-003E P0/P1/P2-bevindingen.
+- **C-003F-status:** **C-003F — PASS; Approved within the agreed scope**.
+- De brede C-003F-eindgate over A–E is groen voor fresh build, volledige
+  positieve/negatieve securitymatrices, concurrency, idempotency, expiry,
+  spoofing, cross-tenantdeny, revocation/access-versioncache, service-role-
+  misbruik, RLS/ACL/EXECUTE, `SECURITY DEFINER`, audit, gesloten directe
+  realtimepaden, typed RPC-projecties en queryplannen.
+- **C-003-status:** **C-003 — Fully completed; Approved within the agreed
+  scope**. Er zijn geen bekende open C-003 P0/P1/P2-problemen.
 - Er is niets remote uitgevoerd, geen stagingreset gedaan en geen FlutterFlow-
-  of applicatiecode gewijzigd voor C-003A, C-003B, C-003C of C-003D.
+  of applicatiecode gewijzigd voor C-003A tot en met C-003F.
 - Er is niets gepusht, gemerged of gedeployed als onderdeel van deze lokale
-  C-003A-/C-003B-/C-003C-/C-003D-uitvoering.
+  C-003-uitvoering. C-004 is niet gestart.
 
 Het goedgekeurde contract staat in
 [Account Model v2 Technical Contract](../architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md).
@@ -127,7 +145,12 @@ Het goedgekeurde contract staat in
 | Goedgekeurde C-003C-implementatiecommit | `1321da6366018d9d8a0a203a2fefde188ce7be69` |
 | C-003C-status | `Approved within the agreed scope` |
 | C-003D-branch | `implementation/account-model-v2-c003d-permissions-invitations` |
-| C-003D-status | `Implemented locally – awaiting next gate` |
+| Goedgekeurde C-003D-implementatiecommit | `e940e956144cfa666be12f6d5c6d7ea383b44d20` |
+| C-003D-status | `Approved within the agreed scope` |
+| C-003E/F-branch | `implementation/account-model-v2-c003e-f-transfers-security` |
+| C-003E-status | `Approved within the agreed scope` |
+| C-003F-status | `PASS; Approved within the agreed scope` |
+| C-003-status | `Fully completed; Approved within the agreed scope` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
 | FlutterFlow-revisie | `LOTvjLR6TzQjoalLhZWh` |
 | Live Alpha | <https://alpha.avaryn.eu/> |
@@ -169,12 +192,11 @@ De snapshotbranch is het bewijs- en rollbackpunt en mag niet worden gewijzigd.
 - De live Alpha en rollback-URL zijn in C-001 read-only geobserveerd; C-002,
   C-002A en C-002B hebben geen live omgeving benaderd of gewijzigd.
 
-## Eerstvolgende stappen en afzonderlijke gates
+## Afgeronde C-003-gates
 
-C-003A, C-003B en C-003C zijn binnen de afgesproken scope goedgekeurd. C-003D
-is lokaal geïmplementeerd en wacht op de volgende afzonderlijke gate. C-003E
-is niet gestart en vereist een afzonderlijke exacte opdracht.
-C-003 blijft opgesplitst in:
+C-003A tot en met C-003E zijn binnen de afgesproken scope goedgekeurd en de
+C-003F-eindgate is volledig geslaagd. C-003 is daarmee volledig afgerond en
+goedgekeurd binnen de afgesproken lokale scope:
 
 1. C-003A — Identity and audit foundation;
 2. C-003B — Organizations and memberships;
@@ -183,12 +205,7 @@ C-003 blijft opgesplitst in:
 5. C-003E — Atomic transfers;
 6. C-003F — Security hardening gate.
 
-Iedere C-003-fase vereist vooraf een afzonderlijke expliciete goedkeuring, een
-eigen branch, begrensde scope, eigen tests, securitygate, handmatig
-goedkeuringsmoment en rollbackpunt. Een fase start of omvat nooit impliciet de
-volgende fase. Zie sectie L van het technische contract voor de exacte scopes.
-
-**Niet uitgevoerd in C-003D:** geen C-003E of latere fase, stagingreset,
-Supabase-linking, remote migration, databasepush, FlutterFlow-/applicatiewijziging,
-push, merge, deployment of livewijziging. Deze handelingen blijven verboden
-zonder een afzonderlijke exacte opdracht en de vereiste voorafgaande gate.
+De afzonderlijke implementatie- en testbewijzen staan in `docs/implementation`.
+C-004 is niet gestart. Stagingreset, Supabase-linking, remote migration,
+databasepush, FlutterFlow-/applicatiewijziging, push, merge, deployment en
+livewijziging zijn niet uitgevoerd en blijven buiten deze opdracht.
