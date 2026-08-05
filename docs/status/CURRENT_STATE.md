@@ -52,11 +52,26 @@ Laatst bijgewerkt: 2026-08-05
   blijft verplicht. Deze beperkingen maken de afgebakende C-003A-goedkeuring
   niet opnieuw pending.
 - C-003A is gereed en vormt na deze statuscommit de goedgekeurde basis voor een
-  afzonderlijk op te dragen C-003B.
+  afzonderlijk uitgevoerde C-003B.
+- **C-003B-status:** **C-003B — Implemented locally – awaiting Silas security
+  approval**.
+- C-003B implementeert lokaal de geïsoleerde organizationlaag met exact vijf
+  organization types, organizations, verplichte scalar primary admin,
+  memberships, organizationrollen en -permissions, role assignments,
+  atomaire idempotente creatie, deferred primary-admininvariant, RLS/ACL,
+  access-/row-versioning en PII-arme organization-audit.
+- De C-003B-fresh build, C-003A- en C-003B-securitytests, fase-correcte
+  functionele/upgrade-/concurrencyregressies, lint en catalogusgate zijn groen.
+  Er zijn geen bekende open P0/P1/P2-bevindingen binnen de lokale afgebakende
+  C-003B-scope; handmatige securitygoedkeuring is nog vereist.
+- Legacy `stable_id` en stable memberships verlenen geen C-003B-authority en
+  de bestaande stable-/horse-/applicatieobjecten bleven ongewijzigd.
+- C-003C is niet gestart. Invitations, transfers en de brede C-003F-gate
+  blijven afzonderlijke latere opdrachten.
 - Er is niets remote uitgevoerd, geen stagingreset gedaan en geen FlutterFlow-
-  of applicatiecode gewijzigd voor C-003A.
+  of applicatiecode gewijzigd voor C-003A of C-003B.
 - Er is niets gepusht, gemerged of gedeployed als onderdeel van deze lokale
-  C-003A-hardening.
+  C-003A-/C-003B-uitvoering.
 
 Het goedgekeurde contract staat in
 [Account Model v2 Technical Contract](../architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md).
@@ -74,6 +89,9 @@ Het goedgekeurde contract staat in
 | C-003A-basiscommit | `5eb07f54ffa7464f8f7e325f8b112411936298e8` |
 | Goedgekeurde C-003A-implementatiecommit | `7ecddccb6cf7dabea2a6597d8245b707f6110ff4` |
 | Goedgekeurde C-003A-hardeningcommit | `09e3d1ef1f2efe30a94afd1ea23df4c7da6f724c` |
+| C-003A-approvalstatuscommit / C-003B-basis | `cabf649ce34099b5aee7537652cbb667113f93fc` |
+| C-003B-branch | `implementation/account-model-v2-c003b-organizations-memberships` |
+| C-003B-status | `Implemented locally – awaiting Silas security approval` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
 | FlutterFlow-revisie | `LOTvjLR6TzQjoalLhZWh` |
 | Live Alpha | <https://alpha.avaryn.eu/> |
@@ -117,8 +135,9 @@ De snapshotbranch is het bewijs- en rollbackpunt en mag niet worden gewijzigd.
 
 ## Eerstvolgende stappen en afzonderlijke gates
 
-C-003A is binnen de afgesproken scope goedgekeurd. C-003B is niet gestart en
-vereist nog steeds een afzonderlijke exacte opdracht.
+C-003A is binnen de afgesproken scope goedgekeurd. C-003B is lokaal
+geïmplementeerd en wacht op Silas' securitygoedkeuring. C-003C is niet gestart
+en vereist een afzonderlijke exacte opdracht.
 C-003 blijft opgesplitst in:
 
 1. C-003A — Identity and audit foundation;
@@ -133,7 +152,7 @@ eigen branch, begrensde scope, eigen tests, securitygate, handmatig
 goedkeuringsmoment en rollbackpunt. Een fase start of omvat nooit impliciet de
 volgende fase. Zie sectie L van het technische contract voor de exacte scopes.
 
-**Niet uitgevoerd in C-003A:** geen C-003B of latere fase, stagingreset,
+**Niet uitgevoerd in C-003B:** geen C-003C of latere fase, stagingreset,
 Supabase-linking, remote migration, databasepush, FlutterFlow-/applicatiewijziging,
 push, merge, deployment of livewijziging. Deze handelingen blijven verboden
 zonder een afzonderlijke exacte opdracht en de vereiste voorafgaande gate.
