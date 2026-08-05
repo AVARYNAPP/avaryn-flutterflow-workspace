@@ -1,0 +1,10 @@
+# Kopieer dit bestand naar een beveiligde locatie buiten Git.
+# Vul iedere PLACEHOLDER in. Plaats geen password, token, key of URL-secret.
+environment=staging
+project_ref=ipdovjdtnfslrftvrdrl
+action=PLACEHOLDER-staging-backup-or-staging-reset
+release_commit=PLACEHOLDER-full-git-sha
+pre_reset_migration=PLACEHOLDER-current-remote-migration
+approved_by=PLACEHOLDER-named-approver
+approval_id=PLACEHOLDER-ticket-or-change-id
+approved_at_utc=PLACEHOLDER-iso8601

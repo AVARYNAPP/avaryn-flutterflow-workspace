@@ -116,10 +116,26 @@ Laatst bijgewerkt: 2026-08-05
   realtimepaden, typed RPC-projecties en queryplannen.
 - **C-003-status:** **C-003 — Fully completed; Approved within the agreed
   scope**. Er zijn geen bekende open C-003 P0/P1/P2-problemen.
+- **Goedgekeurde C-003-eindcommit:**
+  `4fee78c8b24099cf4eac254fd083f062827f1ee3`.
+- **C-004-status:** **C-004 — Implemented locally – awaiting next gate**.
+  Account Foundation v2 is inhoudelijk volledig afgedekt door de goedgekeurde
+  C-003A–F-basis. C-004 voegt daarom geen parallel datamodel of migration toe,
+  maar een zelfstandige acceptatiegate voor de bestaande identity-, tenant-,
+  authority-, permission-, RLS/ACL-, audit- en versioninggrenzen.
+- **C-005-status:** **C-005 — Implemented locally – awaiting next gate**.
+  Het fail-closed stagingrunbook, targetguards, approvaltemplate, encrypted
+  backup- en restoretooling, geordende resetprocedure, uitsluitend fictieve
+  v2-seed en post-reset security-smoke zijn lokaal gereed.
+- De C-004/C-005-verificatie is groen voor fresh migration build,
+  C-004-acceptatie, direct relevante C-003F-regressie, v2-seed/smoke,
+  productie- en targetdeny, seed-replaydeny, script-/secretcontroles en een
+  daadwerkelijk lokaal herstel van de versleutelde full dump. Er zijn geen
+  bekende open C-004/C-005 P0/P1/P2-problemen.
 - Er is niets remote uitgevoerd, geen stagingreset gedaan en geen FlutterFlow-
-  of applicatiecode gewijzigd voor C-003A tot en met C-003F.
+  of applicatiecode gewijzigd voor C-003A tot en met C-005.
 - Er is niets gepusht, gemerged of gedeployed als onderdeel van deze lokale
-  C-003-uitvoering. C-004 is niet gestart.
+  uitvoering. C-006 is niet gestart.
 
 Het goedgekeurde contract staat in
 [Account Model v2 Technical Contract](../architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md).
@@ -151,6 +167,10 @@ Het goedgekeurde contract staat in
 | C-003E-status | `Approved within the agreed scope` |
 | C-003F-status | `PASS; Approved within the agreed scope` |
 | C-003-status | `Fully completed; Approved within the agreed scope` |
+| Goedgekeurde C-003-eindcommit | `4fee78c8b24099cf4eac254fd083f062827f1ee3` |
+| C-004/C-005-branch | `implementation/account-foundation-v2-c004-c005` |
+| C-004-status | `Implemented locally – awaiting next gate` |
+| C-005-status | `Implemented locally – awaiting next gate` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
 | FlutterFlow-revisie | `LOTvjLR6TzQjoalLhZWh` |
 | Live Alpha | <https://alpha.avaryn.eu/> |
@@ -206,6 +226,7 @@ goedgekeurd binnen de afgesproken lokale scope:
 6. C-003F — Security hardening gate.
 
 De afzonderlijke implementatie- en testbewijzen staan in `docs/implementation`.
-C-004 is niet gestart. Stagingreset, Supabase-linking, remote migration,
-databasepush, FlutterFlow-/applicatiewijziging, push, merge, deployment en
-livewijziging zijn niet uitgevoerd en blijven buiten deze opdracht.
+C-004 en C-005 zijn lokaal geïmplementeerd en wachten op de volgende gate.
+Stagingreset, Supabase-linking, remote migration, databasepush, FlutterFlow-/
+applicatiewijziging, push, merge, deployment en livewijziging zijn niet
+uitgevoerd. C-006 is niet gestart.
