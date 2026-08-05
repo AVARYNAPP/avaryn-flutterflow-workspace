@@ -71,8 +71,9 @@ begin
   if (select pg_catalog.array_agg(code order by code) from public.organization_types)
     <> array['farrier_business','other_professional','stable','trainer_practice','veterinary_practice']
   then raise exception 'Organization type seed set is not exact'; end if;
-  if (select count(*) from public.permission_definitions) <> 7
-    or exists (select 1 from public.permission_definitions where scope_kind <> 'organization')
+  if (select count(*) from public.permission_definitions where scope_kind = 'organization') <> 7
+    or exists (select 1 from public.permission_definitions
+      where scope_kind = 'organization' and code not like 'organization.%')
   then raise exception 'Organization permission taxonomy is invalid'; end if;
 end;
 $$;
