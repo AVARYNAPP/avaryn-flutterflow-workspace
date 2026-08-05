@@ -53,8 +53,9 @@ Laatst bijgewerkt: 2026-08-05
   niet opnieuw pending.
 - C-003A is gereed en vormt na deze statuscommit de goedgekeurde basis voor een
   afzonderlijk uitgevoerde C-003B.
-- **C-003B-status:** **C-003B — Implemented locally – awaiting Silas security
-  approval**.
+- **C-003B-status:** **C-003B — Approved within the agreed scope**.
+- **Goedgekeurde C-003B-implementatiebasis:**
+  `dfcc8db085785b7de4bf38ce5457019f4dc1b887`.
 - C-003B implementeert lokaal de geïsoleerde organizationlaag met exact vijf
   organization types, organizations, verplichte scalar primary admin,
   memberships, organizationrollen en -permissions, role assignments,
@@ -63,15 +64,27 @@ Laatst bijgewerkt: 2026-08-05
 - De C-003B-fresh build, C-003A- en C-003B-securitytests, fase-correcte
   functionele/upgrade-/concurrencyregressies, lint en catalogusgate zijn groen.
   Er zijn geen bekende open P0/P1/P2-bevindingen binnen de lokale afgebakende
-  C-003B-scope; handmatige securitygoedkeuring is nog vereist.
+  C-003B-scope; de implementatie is binnen die scope goedgekeurd.
 - Legacy `stable_id` en stable memberships verlenen geen C-003B-authority en
   de bestaande stable-/horse-/applicatieobjecten bleven ongewijzigd.
-- C-003C is niet gestart. Invitations, transfers en de brede C-003F-gate
-  blijven afzonderlijke latere opdrachten.
+- **C-003C-status:** **C-003C — Implemented locally – awaiting next gate**.
+- C-003C implementeert naast de ongewijzigde legacy `public.horses`-aggregate
+  de geïsoleerde `canonical_horses`, exact één scalar primary authority,
+  expliciete gedelegeerde horse-administratie, juridische ownerships,
+  semantische horse-person relationships, residencyhistorie en wederzijds
+  bevestigde organization-horse links. Alleen primary authority en expliciete,
+  actuele delegated permissions verlenen C-003C-horse-access.
+- Ownership, relationships, organization links, residency, legacy `stable_id`,
+  clientstate en JWT-metadata verlenen geen impliciete horse-toegang.
+- De C-003C-fresh build, securitytest, concurrency-race, gerichte C-003A/C-003B-
+  regressies en legacy stable-/horse-regressies zijn groen. Er zijn geen bekende
+  open P0/P1/P2-bevindingen binnen de lokale afgebakende C-003C-scope.
+- C-003D-permission grants/invitations, C-003E-transfers en de brede C-003F-gate
+  zijn niet gestart en blijven afzonderlijke latere opdrachten.
 - Er is niets remote uitgevoerd, geen stagingreset gedaan en geen FlutterFlow-
-  of applicatiecode gewijzigd voor C-003A of C-003B.
+  of applicatiecode gewijzigd voor C-003A, C-003B of C-003C.
 - Er is niets gepusht, gemerged of gedeployed als onderdeel van deze lokale
-  C-003A-/C-003B-uitvoering.
+  C-003A-/C-003B-/C-003C-uitvoering.
 
 Het goedgekeurde contract staat in
 [Account Model v2 Technical Contract](../architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md).
@@ -91,7 +104,10 @@ Het goedgekeurde contract staat in
 | Goedgekeurde C-003A-hardeningcommit | `09e3d1ef1f2efe30a94afd1ea23df4c7da6f724c` |
 | C-003A-approvalstatuscommit / C-003B-basis | `cabf649ce34099b5aee7537652cbb667113f93fc` |
 | C-003B-branch | `implementation/account-model-v2-c003b-organizations-memberships` |
-| C-003B-status | `Implemented locally – awaiting Silas security approval` |
+| Goedgekeurde C-003B-implementatiebasis | `dfcc8db085785b7de4bf38ce5457019f4dc1b887` |
+| C-003B-status | `Approved within the agreed scope` |
+| C-003C-branch | `implementation/account-model-v2-c003c-canonical-horses` |
+| C-003C-status | `Implemented locally – awaiting next gate` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
 | FlutterFlow-revisie | `LOTvjLR6TzQjoalLhZWh` |
 | Live Alpha | <https://alpha.avaryn.eu/> |
@@ -128,16 +144,16 @@ De snapshotbranch is het bewijs- en rollbackpunt en mag niet worden gewijzigd.
 - `flutterflow ai upgrade --check` meldde in C-002 op 2026-08-04 een nieuwere
   SDK-build (`2c299209` naar `b5c8a09d`, beide rapporteren versie `0.0.40`). De
   C-002A-check kon door een lokaal Dart-kernel-/netwerkprobleem niet afronden.
-  De C-003A-check kon niet starten omdat `dart` niet op `PATH` stond. Er is niet
-  geüpgraded en FlutterFlow is niet uitgevoerd.
+  De C-003A- en C-003C-check konden niet starten omdat `dart` niet op `PATH`
+  stond. Er is niet geüpgraded en FlutterFlow is niet uitgevoerd.
 - De live Alpha en rollback-URL zijn in C-001 read-only geobserveerd; C-002,
   C-002A en C-002B hebben geen live omgeving benaderd of gewijzigd.
 
 ## Eerstvolgende stappen en afzonderlijke gates
 
-C-003A is binnen de afgesproken scope goedgekeurd. C-003B is lokaal
-geïmplementeerd en wacht op Silas' securitygoedkeuring. C-003C is niet gestart
-en vereist een afzonderlijke exacte opdracht.
+C-003A en C-003B zijn binnen de afgesproken scope goedgekeurd. C-003C is lokaal
+geïmplementeerd en wacht op de volgende afzonderlijke gate. C-003D is niet
+gestart en vereist een afzonderlijke exacte opdracht.
 C-003 blijft opgesplitst in:
 
 1. C-003A — Identity and audit foundation;
@@ -152,7 +168,7 @@ eigen branch, begrensde scope, eigen tests, securitygate, handmatig
 goedkeuringsmoment en rollbackpunt. Een fase start of omvat nooit impliciet de
 volgende fase. Zie sectie L van het technische contract voor de exacte scopes.
 
-**Niet uitgevoerd in C-003B:** geen C-003C of latere fase, stagingreset,
+**Niet uitgevoerd in C-003C:** geen C-003D of latere fase, stagingreset,
 Supabase-linking, remote migration, databasepush, FlutterFlow-/applicatiewijziging,
 push, merge, deployment of livewijziging. Deze handelingen blijven verboden
 zonder een afzonderlijke exacte opdracht en de vereiste voorafgaande gate.
