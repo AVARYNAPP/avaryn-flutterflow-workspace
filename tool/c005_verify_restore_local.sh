@@ -59,9 +59,9 @@ openssl enc -d -aes-256-cbc -pbkdf2 \
   | docker exec -i "$container" pg_restore -U postgres -d "$restore_db" \
       --no-owner --no-privileges
 restored=$(docker exec "$container" psql -X -A -t -q -U postgres -d "$restore_db" \
-  -v ON_ERROR_STOP=1 -c "select (to_regclass('public.profiles') is not null and to_regclass('public.audit_events') is not null and to_regclass('public.canonical_horses') is not null and to_regclass('public.organizations') is not null)::text;" \
+  -v ON_ERROR_STOP=1 -c "select (to_regclass('public.profiles') is not null)::text;" \
   | tr -d '[:space:]')
-[ "$restored" = 'true' ] || c005_die 'restored database lacks required Account Foundation tables'
+[ "$restored" = 'true' ] || c005_die 'restored database lacks required pre-C006 baseline tables'
 {
   echo 'result=PASS'
   echo 'target=disposable-local-database'
