@@ -4,10 +4,7 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final authForgotPasswordPageHandle = ffai.ProjectPageHandle<
-  AuthForgotPasswordPageParams,
-  AuthForgotPasswordPageState
->(
+final authForgotPasswordPageHandle = ffai.ProjectPageHandle<AuthForgotPasswordPageParams, AuthForgotPasswordPageState>(
   name: "AuthForgotPasswordPage",
   key: "Scaffold_87e8nraq",
   route: "auth/forgot-password",
@@ -34,22 +31,21 @@ abstract final class AuthForgotPasswordPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_0bp9z8vi",
+            key: "Container_aok5emug",
             type: "Container",
             path: "AuthForgotPasswordPage.body[0]",
             name: "Phase4AforgotPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_uioaie7h",
+                key: "Column_kj4m8w2k",
                 type: "Column",
                 path: "AuthForgotPasswordPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_bt534gn1",
+                    key: "Container_7varjwum",
                     type: "Container",
-                    path:
-                        "AuthForgotPasswordPage.body[0].children[0].children[0]",
+                    path: "AuthForgotPasswordPage.body[0].children[0].children[0]",
                     name: "Phase4AforgotRuntime",
                   ),
                 ],

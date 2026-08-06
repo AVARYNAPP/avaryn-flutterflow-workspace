@@ -93,7 +93,7 @@ abstract final class AppState {
     name: "authProfileCaches",
     key: "hlrt35lx",
     typeName: "List<DataStruct<AuthProfileData>>",
-    persisted: true,
+    persisted: false,
   );
   static const currentAuthProfile = ffai.ProjectAppStateFieldHandle(
     name: "currentAuthProfile",

@@ -1012,6 +1012,18 @@ const String _phase4ALegacyLocalUserId = 'local-current-user';
 const String _phase4ALegacyStableId = 'local-stable';
 const int _phase4ALocalScopeSchemaVersion = 2;
 const Duration _phase5PasswordRecoveryLifetime = Duration(minutes: 15);
+const List<String> _c007TimeZones = [
+  'UTC',
+  'Europe/Amsterdam',
+  'Europe/Brussels',
+  'Europe/Berlin',
+  'Europe/London',
+  'Europe/Paris',
+  'America/New_York',
+  'America/Los_Angeles',
+  'Asia/Dubai',
+  'Australia/Sydney',
+];
 
 String _phase5PasswordRecoveryUserId = '';
 DateTime? _phase5PasswordRecoveryAuthorizedAt;
@@ -1170,8 +1182,24 @@ String _phase4AAuthError(Object error) {
       return 'Geen netwerkverbinding. Controleer je verbinding en probeer opnieuw.';
     }
   }
-  if (error is PostgrestException && error.code == '42P01') {
-    return 'Het persoonlijke profiel is nog niet ingericht. Voer de Phase 4A Supabase-migratie uit.';
+  if (error is PostgrestException) {
+    if (error.code == '42P01' || error.code == 'PGRST202') {
+      return 'Het Account Foundation-profielcontract is nog niet beschikbaar.';
+    }
+    if (error.code == '40001' ||
+        error.message.contains('PROFILE_VERSION_STALE')) {
+      return 'Je profiel is intussen gewijzigd. Vernieuw de pagina en probeer opnieuw.';
+    }
+    if (error.message.contains('AVATAR_PATH_NOT_OWNED')) {
+      return 'Het gekozen avatarpad hoort niet bij dit account.';
+    }
+    if (error.code == '42501' ||
+        error.message.contains('ACTIVE_PROFILE_REQUIRED')) {
+      return 'Dit account heeft geen actief persoonlijk profiel.';
+    }
+  }
+  if (error.toString().contains('ACTIVE_PROFILE_REQUIRED')) {
+    return 'Dit account heeft geen actief persoonlijk profiel.';
   }
   return 'Er ging iets mis. Probeer het opnieuw.';
 }
@@ -1239,9 +1267,21 @@ void _phase5ClearDeletedAccountState(String authUserId) {
   _phase4AClearWorkingSet();
 }
 
-AuthProfileDataStruct _phase4AProfileFromMap(Map<String, dynamic> data) {
+Map<String, dynamic> _c007SingleRpcRow(dynamic response) {
+  if (response is Map) return Map<String, dynamic>.from(response);
+  if (response is List && response.length == 1 && response.single is Map) {
+    return Map<String, dynamic>.from(response.single as Map);
+  }
+  throw StateError('ACCOUNT_PROFILE_PROJECTION_INVALID');
+}
+
+AuthProfileDataStruct _phase4AProfileFromMap(
+  Map<String, dynamic> data, {
+  required String authUserId,
+}) {
   return AuthProfileDataStruct(
-    id: _phase4ANullableString(data['id']),
+    id: authUserId,
+    profileId: _phase4ANullableString(data['profile_id']),
     firstName: _phase4ANullableString(data['first_name']),
     lastName: _phase4ANullableString(data['last_name']),
     displayName: _phase4ANullableString(data['display_name']),
@@ -1250,11 +1290,20 @@ AuthProfileDataStruct _phase4AProfileFromMap(Map<String, dynamic> data) {
     locale: _phase4ANullableString(data['locale']).isEmpty
         ? 'nl'
         : _phase4ANullableString(data['locale']),
+    timeZone: _phase4ANullableString(data['time_zone']).isEmpty
+        ? 'UTC'
+        : _phase4ANullableString(data['time_zone']),
     themeMode: _phase4ANullableString(data['theme_mode']).isEmpty
         ? 'system'
         : _phase4ANullableString(data['theme_mode']),
     onboardingIntent: _phase4ANullableString(data['onboarding_intent']),
     onboardingCompletedAt: _phase4ADate(data['onboarding_completed_at']),
+    profileStatus: _phase4ANullableString(data['profile_status']),
+    accessVersion: data['access_version'] is num
+        ? (data['access_version'] as num).toInt()
+        : 0,
+    rowVersion:
+        data['row_version'] is num ? (data['row_version'] as num).toInt() : 0,
     createdAt: _phase4ADate(data['created_at']),
     updatedAt: _phase4ADate(data['updated_at']),
   );
@@ -1666,13 +1715,6 @@ void _phase4ACacheProfile(AuthProfileDataStruct profile) {
   state.currentAuthProfile = profile;
 }
 
-AuthProfileDataStruct? _phase4ACachedProfile(String authUserId) {
-  for (final profile in FFAppState().authProfileCaches) {
-    if (profile.id == authUserId) return profile;
-  }
-  return null;
-}
-
 class AvarynAccountRuntime extends StatefulWidget {
   const AvarynAccountRuntime({
     super.key,
@@ -1705,10 +1747,11 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
   bool _confirmPasswordHidden = true;
   bool _legalAccepted = false;
   bool _legacyPrompt = false;
-  bool _offlineProfile = false;
   int _cooldownSeconds = 0;
   int _onboardingStep = 0;
+  int _profileRowVersion = 0;
   String _locale = 'nl';
+  String _timeZone = 'UTC';
   String _themeMode = 'system';
   String _intent = '';
   String _avatarUrl = '';
@@ -1847,57 +1890,17 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
   }
 
   Future<AuthProfileDataStruct> _loadOrCreateProfile(User user) async {
-    try {
-      final selected = await _client
-          .from('profiles')
-          .select()
-          .eq('id', user.id)
-          .maybeSingle();
-      if (selected != null) {
-        final profile = _phase4AProfileFromMap(selected);
-        _phase4ACacheProfile(profile);
-        return profile;
-      }
-
-      final metadata = user.userMetadata ?? const <String, dynamic>{};
-      final firstName = _phase4ANullableString(
-        metadata['given_name'] ?? metadata['first_name'],
-      );
-      final lastName = _phase4ANullableString(
-        metadata['family_name'] ?? metadata['last_name'],
-      );
-      final displayName = _phase4ANullableString(
-        metadata['full_name'] ?? metadata['name'],
-      );
-      final deviceLocale =
-          WidgetsBinding.instance.platformDispatcher.locale.languageCode;
-      final payload = <String, dynamic>{
-        'id': user.id,
-        'display_name': displayName.isEmpty
-            ? '${firstName} ${lastName}'.trim().isEmpty
-                ? 'AVARYN-gebruiker'
-                : '${firstName} ${lastName}'.trim()
-            : displayName,
-        'locale': deviceLocale.isEmpty ? 'nl' : deviceLocale,
-        'theme_mode': 'system',
-      };
-      if (firstName.isNotEmpty) payload['first_name'] = firstName;
-      if (lastName.isNotEmpty) payload['last_name'] = lastName;
-      await _client.from('profiles').upsert(payload, onConflict: 'id');
-      final created =
-          await _client.from('profiles').select().eq('id', user.id).single();
-      final profile = _phase4AProfileFromMap(created);
-      _phase4ACacheProfile(profile);
-      return profile;
-    } catch (error) {
-      final cached = _phase4ACachedProfile(user.id);
-      if (cached != null) {
-        _offlineProfile = true;
-        FFAppState().currentAuthProfile = cached;
-        return cached;
-      }
-      rethrow;
+    final response = await _client.rpc('get_current_account_profile');
+    final row = _c007SingleRpcRow(response);
+    final profile = _phase4AProfileFromMap(row, authUserId: user.id);
+    if (profile.profileId.isEmpty ||
+        profile.profileStatus != 'active' ||
+        profile.rowVersion < 1) {
+      throw StateError('ACTIVE_PROFILE_REQUIRED');
     }
+    _profileRowVersion = profile.rowVersion;
+    _phase4ACacheProfile(profile);
+    return profile;
   }
 
   Future<void> _bootstrapCallback() async {
@@ -2058,6 +2061,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       _lastNameController.text = profile.lastName;
       _phoneController.text = profile.phoneE164;
       _locale = profile.locale.trim().isEmpty ? 'nl' : profile.locale;
+      _timeZone = profile.timeZone.trim().isEmpty ? 'UTC' : profile.timeZone;
       _themeMode =
           profile.themeMode.trim().isEmpty ? 'system' : profile.themeMode;
       _intent = profile.onboardingIntent;
@@ -2097,6 +2101,14 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     };
     setDarkModeSetting(context, target);
   }
+
+  List<DropdownMenuItem<String>> _c007TimeZoneItems() => {
+        ..._c007TimeZones,
+        if (_timeZone.trim().isNotEmpty) _timeZone,
+      }
+          .map((zone) =>
+              DropdownMenuItem<String>(value: zone, child: Text(zone)))
+          .toList(growable: false);
 
   bool _validEmail(String value) =>
       RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value.trim());
@@ -2322,7 +2334,6 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       return;
     }
     final firstName = _firstNameController.text.trim();
-    final lastName = _lastNameController.text.trim();
     final phone = _phoneController.text.trim();
     if (firstName.isEmpty) {
       _setError('Voornaam is verplicht.');
@@ -2342,27 +2353,11 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     _setBusy(true);
     _setError(null);
     try {
-      final payload = <String, dynamic>{
-        'id': user.id,
-        'first_name': firstName,
-        'last_name': lastName.isEmpty ? null : lastName,
-        'display_name': '$firstName $lastName'.trim(),
-        'phone_e164': phone.isEmpty ? null : phone,
-        'locale': _locale,
-        'theme_mode': _themeMode,
-      };
-      if (_intent.isNotEmpty) payload['onboarding_intent'] = _intent;
-      if (complete) {
-        payload['onboarding_completed_at'] =
-            DateTime.now().toUtc().toIso8601String();
-      }
-      final updated = await _client
-          .from('profiles')
-          .upsert(payload, onConflict: 'id')
-          .select()
-          .single();
-      final profile = _phase4AProfileFromMap(updated);
-      _phase4ACacheProfile(profile);
+      final profile = await _c007PersistProfile(
+        user,
+        completeOnboarding: complete,
+        avatarObjectPath: _profile?.avatarObjectPath ?? '',
+      );
       _applyTheme(profile.themeMode);
       if (!mounted) return;
       setState(() => _profile = profile);
@@ -2376,6 +2371,44 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     } finally {
       _setBusy(false);
     }
+  }
+
+  Future<AuthProfileDataStruct> _c007PersistProfile(
+    User user, {
+    required bool completeOnboarding,
+    required String avatarObjectPath,
+  }) async {
+    if (_profileRowVersion < 1) {
+      await _loadOrCreateProfile(user);
+    }
+    final response = await _client.rpc(
+      'update_current_account_profile',
+      params: {
+        'p_expected_row_version': _profileRowVersion,
+        'p_first_name': _firstNameController.text.trim(),
+        'p_last_name': _lastNameController.text.trim(),
+        'p_phone_e164': _phoneController.text.trim(),
+        'p_locale': _locale,
+        'p_time_zone': _timeZone,
+        'p_theme_mode': _themeMode,
+        'p_onboarding_intent': _intent.trim(),
+        'p_complete_onboarding': completeOnboarding,
+        'p_avatar_object_path':
+            avatarObjectPath.trim().isEmpty ? null : avatarObjectPath.trim(),
+        'p_correlation_id': const Uuid().v4(),
+      },
+    );
+    final profile = _phase4AProfileFromMap(
+      _c007SingleRpcRow(response),
+      authUserId: user.id,
+    );
+    if (profile.profileId.isEmpty || profile.rowVersion < 1) {
+      throw StateError('ACCOUNT_PROFILE_PROJECTION_INVALID');
+    }
+    _profileRowVersion = profile.rowVersion;
+    _phase4ACacheProfile(profile);
+    if (mounted) setState(() => _profile = profile);
+    return profile;
   }
 
   Future<void> _uploadAvatar() async {
@@ -2426,9 +2459,11 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
             fileOptions: FileOptions(contentType: contentType, upsert: true),
           );
       try {
-        await _client
-            .from('profiles')
-            .update({'avatar_object_path': path}).eq('id', user.id);
+        await _c007PersistProfile(
+          user,
+          completeOnboarding: false,
+          avatarObjectPath: path,
+        );
       } catch (_) {
         if (oldPath != path) {
           try {
@@ -2442,14 +2477,9 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       if (oldPath.isNotEmpty && oldPath != path) {
         await _client.storage.from('avatars').remove([oldPath]);
       }
-      final profile = _profile ?? await _loadOrCreateProfile(user);
-      profile.avatarObjectPath = path;
-      profile.updatedAt = DateTime.now().toUtc();
-      _phase4ACacheProfile(profile);
       final signed = await _signedAvatarUrl(path);
       if (!mounted) return;
       setState(() {
-        _profile = profile;
         _avatarUrl = signed;
       });
       _setNotice('Profielfoto bijgewerkt.');
@@ -2467,17 +2497,19 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     if (user == null || path.isEmpty) return;
     _setBusy(true);
     try {
-      await _client.storage.from('avatars').remove([path]);
-      await _client
-          .from('profiles')
-          .update({'avatar_object_path': null}).eq('id', user.id);
-      final profile = _profile!;
-      profile.avatarObjectPath = '';
-      profile.updatedAt = DateTime.now().toUtc();
-      _phase4ACacheProfile(profile);
+      await _c007PersistProfile(
+        user,
+        completeOnboarding: false,
+        avatarObjectPath: '',
+      );
+      try {
+        await _client.storage.from('avatars').remove([path]);
+      } catch (_) {
+        // The database reference is already removed. A failed object cleanup
+        // remains a non-authorizing orphan for controlled later cleanup.
+      }
       if (mounted) {
         setState(() {
-          _profile = profile;
           _avatarUrl = '';
         });
       }
@@ -3578,6 +3610,13 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
         onChanged: (value) => setState(() => _locale = value ?? 'nl'),
       ),
       const SizedBox(height: 12),
+      DropdownButtonFormField<String>(
+        value: _timeZone,
+        decoration: _fieldDecoration(theme, 'Tijdzone'),
+        items: _c007TimeZoneItems(),
+        onChanged: (value) => setState(() => _timeZone = value ?? 'UTC'),
+      ),
+      const SizedBox(height: 12),
       TextField(
         controller: _phoneController,
         keyboardType: TextInputType.phone,
@@ -3759,18 +3798,6 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
             ],
           ),
           const SizedBox(height: 18),
-          if (_offlineProfile)
-            Container(
-              margin: const EdgeInsets.only(bottom: 14),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: theme.warning,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Text(
-                'Offline profielweergave. Wijzigingen vereisen een netwerkverbinding.',
-              ),
-            ),
           _feedback(theme),
           _authCard(theme, [
             Text(
@@ -3805,6 +3832,13 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
                 ),
               ],
               onChanged: (value) => setState(() => _locale = value ?? 'nl'),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              value: _timeZone,
+              decoration: _fieldDecoration(theme, 'Tijdzone'),
+              items: _c007TimeZoneItems(),
+              onChanged: (value) => setState(() => _timeZone = value ?? 'UTC'),
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(

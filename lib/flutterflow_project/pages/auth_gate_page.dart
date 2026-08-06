@@ -4,15 +4,14 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final authGatePageHandle =
-    ffai.ProjectPageHandle<AuthGatePageParams, AuthGatePageState>(
-      name: "AuthGatePage",
-      key: "Scaffold_xmnbzy77",
-      route: "auth/gate",
-      params: const AuthGatePageParams(),
-      state: const AuthGatePageState(),
-      widgets: AuthGatePageWidgets.tree,
-    );
+final authGatePageHandle = ffai.ProjectPageHandle<AuthGatePageParams, AuthGatePageState>(
+  name: "AuthGatePage",
+  key: "Scaffold_xmnbzy77",
+  route: "auth/gate",
+  params: const AuthGatePageParams(),
+  state: const AuthGatePageState(),
+  widgets: AuthGatePageWidgets.tree,
+);
 
 final class AuthGatePageParams {
   const AuthGatePageParams();
@@ -32,19 +31,19 @@ abstract final class AuthGatePageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_jf0lc4tm",
+            key: "Container_vvm92vhg",
             type: "Container",
             path: "AuthGatePage.body[0]",
             name: "Phase4AgatePageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_anmphn7h",
+                key: "Column_y1ieqgp4",
                 type: "Column",
                 path: "AuthGatePage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_1am29389",
+                    key: "Container_23sb63cz",
                     type: "Container",
                     path: "AuthGatePage.body[0].children[0].children[0]",
                     name: "Phase4AgateRuntime",

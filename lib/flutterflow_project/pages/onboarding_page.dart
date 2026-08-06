@@ -4,15 +4,14 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final onboardingPageHandle =
-    ffai.ProjectPageHandle<OnboardingPageParams, OnboardingPageState>(
-      name: "OnboardingPage",
-      key: "Scaffold_1dpfpzzt",
-      route: "onboarding",
-      params: const OnboardingPageParams(),
-      state: const OnboardingPageState(),
-      widgets: OnboardingPageWidgets.tree,
-    );
+final onboardingPageHandle = ffai.ProjectPageHandle<OnboardingPageParams, OnboardingPageState>(
+  name: "OnboardingPage",
+  key: "Scaffold_1dpfpzzt",
+  route: "onboarding",
+  params: const OnboardingPageParams(),
+  state: const OnboardingPageState(),
+  widgets: OnboardingPageWidgets.tree,
+);
 
 final class OnboardingPageParams {
   const OnboardingPageParams();
@@ -32,19 +31,19 @@ abstract final class OnboardingPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_7csq26ni",
+            key: "Container_gdy1q098",
             type: "Container",
             path: "OnboardingPage.body[0]",
             name: "Phase4AonboardingPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_vuks18dl",
+                key: "Column_wv06wtbt",
                 type: "Column",
                 path: "OnboardingPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_0ymjiwg5",
+                    key: "Container_7gsv9n3b",
                     type: "Container",
                     path: "OnboardingPage.body[0].children[0].children[0]",
                     name: "Phase4AonboardingRuntime",

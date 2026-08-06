@@ -207,22 +207,6 @@ class FFAppState extends ChangeNotifier {
               _activeAuthAccountId;
     });
     await _safeInitAsync(() async {
-      _authProfileCaches =
-          (await secureStorage.getStringList('ff_authProfileCaches'))
-                  ?.map((x) {
-                    try {
-                      return AuthProfileDataStruct.fromSerializableMap(
-                          jsonDecode(x));
-                    } catch (e) {
-                      print("Can't decode persisted data type. Error: $e.");
-                      return null;
-                    }
-                  })
-                  .withoutNulls
-                  .toList() ??
-              _authProfileCaches;
-    });
-    await _safeInitAsync(() async {
       _localAccountScopes =
           (await secureStorage.getStringList('ff_localAccountScopes'))
                   ?.map((x) {
@@ -1005,35 +989,24 @@ class FFAppState extends ChangeNotifier {
     secureStorage.delete(key: 'ff_activeAuthAccountId');
   }
 
-  /// Offline-safe profile cache scoped by immutable auth UUID.
+  /// Ephemeral profile cache scoped by auth UUID; no sensitive profile
+  /// projection persists locally.
   List<AuthProfileDataStruct> _authProfileCaches = [];
   List<AuthProfileDataStruct> get authProfileCaches => _authProfileCaches;
   set authProfileCaches(List<AuthProfileDataStruct> value) {
     _authProfileCaches = value;
-    secureStorage.setStringList(
-        'ff_authProfileCaches', value.map((x) => x.serialize()).toList());
-  }
-
-  void deleteAuthProfileCaches() {
-    secureStorage.delete(key: 'ff_authProfileCaches');
   }
 
   void addToAuthProfileCaches(AuthProfileDataStruct value) {
     authProfileCaches.add(value);
-    secureStorage.setStringList('ff_authProfileCaches',
-        _authProfileCaches.map((x) => x.serialize()).toList());
   }
 
   void removeFromAuthProfileCaches(AuthProfileDataStruct value) {
     authProfileCaches.remove(value);
-    secureStorage.setStringList('ff_authProfileCaches',
-        _authProfileCaches.map((x) => x.serialize()).toList());
   }
 
   void removeAtIndexFromAuthProfileCaches(int index) {
     authProfileCaches.removeAt(index);
-    secureStorage.setStringList('ff_authProfileCaches',
-        _authProfileCaches.map((x) => x.serialize()).toList());
   }
 
   void updateAuthProfileCachesAtIndex(
@@ -1041,15 +1014,11 @@ class FFAppState extends ChangeNotifier {
     AuthProfileDataStruct Function(AuthProfileDataStruct) updateFn,
   ) {
     authProfileCaches[index] = updateFn(_authProfileCaches[index]);
-    secureStorage.setStringList('ff_authProfileCaches',
-        _authProfileCaches.map((x) => x.serialize()).toList());
   }
 
   void insertAtIndexInAuthProfileCaches(
       int index, AuthProfileDataStruct value) {
     authProfileCaches.insert(index, value);
-    secureStorage.setStringList('ff_authProfileCaches',
-        _authProfileCaches.map((x) => x.serialize()).toList());
   }
 
   /// Current in-memory personal profile; not an operational stable member.

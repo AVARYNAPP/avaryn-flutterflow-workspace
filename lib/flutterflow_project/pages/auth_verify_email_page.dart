@@ -4,15 +4,14 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final authVerifyEmailPageHandle =
-    ffai.ProjectPageHandle<AuthVerifyEmailPageParams, AuthVerifyEmailPageState>(
-      name: "AuthVerifyEmailPage",
-      key: "Scaffold_dnl65jwl",
-      route: "auth/verify-email",
-      params: const AuthVerifyEmailPageParams(),
-      state: const AuthVerifyEmailPageState(),
-      widgets: AuthVerifyEmailPageWidgets.tree,
-    );
+final authVerifyEmailPageHandle = ffai.ProjectPageHandle<AuthVerifyEmailPageParams, AuthVerifyEmailPageState>(
+  name: "AuthVerifyEmailPage",
+  key: "Scaffold_dnl65jwl",
+  route: "auth/verify-email",
+  params: const AuthVerifyEmailPageParams(),
+  state: const AuthVerifyEmailPageState(),
+  widgets: AuthVerifyEmailPageWidgets.tree,
+);
 
 final class AuthVerifyEmailPageParams {
   const AuthVerifyEmailPageParams();
@@ -32,19 +31,19 @@ abstract final class AuthVerifyEmailPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_vjes47ki",
+            key: "Container_frdyghg1",
             type: "Container",
             path: "AuthVerifyEmailPage.body[0]",
             name: "Phase4AverifyPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_h30xwbrp",
+                key: "Column_iik34iqj",
                 type: "Column",
                 path: "AuthVerifyEmailPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_ks1tv312",
+                    key: "Container_hydv7dpn",
                     type: "Container",
                     path: "AuthVerifyEmailPage.body[0].children[0].children[0]",
                     name: "Phase4AverifyRuntime",

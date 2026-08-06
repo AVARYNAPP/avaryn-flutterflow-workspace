@@ -11,81 +11,82 @@ abstract final class Enums {
 }
 
 abstract final class Structs {
-  static final ffai.StructHandle activityData = ffai.StructHandle(
-    "ActivityData",
-    <String, ffai.DslType>{
-      "activityType": ffai.string,
-      "allDay": ffai.bool_,
-      "assigneeUserIds": ffai.listOf(ffai.string),
-      "completionStatus": ffai.string,
-      "createdAt": ffai.dateTime,
-      "customTitle": ffai.string,
-      "date": ffai.dateTime,
-      "durationMinutes": ffai.int_,
-      "endDate": ffai.dateTime,
-      "endTime": ffai.dateTime,
-      "horseId": ffai.int_,
-      "id": ffai.int_,
-      "isCompleted": ffai.bool_,
-      "locationName": ffai.string,
-      "locationType": ffai.string,
-      "notes": ffai.string,
-      "serviceProviderName": ffai.string,
-      "stableId": ffai.string,
-      "startDate": ffai.dateTime,
-      "startTime": ffai.dateTime,
-      "time": ffai.dateTime,
-      "title": ffai.string,
-      "updatedAt": ffai.dateTime,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
-  static final ffai.StructHandle authProfileData = ffai.StructHandle(
-    "AuthProfileData",
-    <String, ffai.DslType>{
-      "avatarObjectPath": ffai.string,
-      "createdAt": ffai.dateTime,
-      "displayName": ffai.string,
-      "firstName": ffai.string,
-      "id": ffai.string,
-      "lastName": ffai.string,
-      "locale": ffai.string,
-      "onboardingCompletedAt": ffai.dateTime,
-      "onboardingIntent": ffai.string,
-      "phoneE164": ffai.string,
-      "themeMode": ffai.string,
-      "updatedAt": ffai.dateTime,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
-  static final ffai.StructHandle effectiveFeedingScheduleData = ffai.StructHandle(
-    "EffectiveFeedingScheduleData",
-    <String, ffai.DslType>{
-      "date": ffai.dateTime,
-      "horseId": ffai.int_,
-      "items": ffai.listOf(Structs.feedingItemData),
-      "roundId": ffai.string,
-      "sourceType": ffai.string,
-      "stableId": ffai.string,
-      "temporaryScheduleId": ffai.string,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
-  static final ffai.StructHandle feedingAssignmentExceptionData = ffai.StructHandle(
-    "FeedingAssignmentExceptionData",
-    <String, ffai.DslType>{
-      "createdAt": ffai.dateTime,
-      "date": ffai.dateTime,
-      "explicitlyUnassigned": ffai.bool_,
-      "id": ffai.string,
-      "note": ffai.string,
-      "replacementResponsibleUserId": ffai.string,
-      "roundId": ffai.string,
-      "stableId": ffai.string,
-      "updatedAt": ffai.dateTime,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
+  static final ffai.StructHandle activityData =
+      ffai.StructHandle("ActivityData", <String, ffai.DslType>{
+        "activityType": ffai.string,
+        "allDay": ffai.bool_,
+        "assigneeUserIds": ffai.listOf(ffai.string),
+        "completionStatus": ffai.string,
+        "createdAt": ffai.dateTime,
+        "customTitle": ffai.string,
+        "date": ffai.dateTime,
+        "durationMinutes": ffai.int_,
+        "endDate": ffai.dateTime,
+        "endTime": ffai.dateTime,
+        "horseId": ffai.int_,
+        "id": ffai.int_,
+        "isCompleted": ffai.bool_,
+        "locationName": ffai.string,
+        "locationType": ffai.string,
+        "notes": ffai.string,
+        "serviceProviderName": ffai.string,
+        "stableId": ffai.string,
+        "startDate": ffai.dateTime,
+        "startTime": ffai.dateTime,
+        "time": ffai.dateTime,
+        "title": ffai.string,
+        "updatedAt": ffai.dateTime,
+      }, description: ffai.generatedProjectStructDescription);
+  static final ffai.StructHandle authProfileData =
+      ffai.StructHandle("AuthProfileData", <String, ffai.DslType>{
+        "accessVersion": ffai.int_,
+        "avatarObjectPath": ffai.string,
+        "createdAt": ffai.dateTime,
+        "displayName": ffai.string,
+        "firstName": ffai.string,
+        "id": ffai.string,
+        "lastName": ffai.string,
+        "locale": ffai.string,
+        "onboardingCompletedAt": ffai.dateTime,
+        "onboardingIntent": ffai.string,
+        "phoneE164": ffai.string,
+        "profileId": ffai.string,
+        "profileStatus": ffai.string,
+        "rowVersion": ffai.int_,
+        "themeMode": ffai.string,
+        "timeZone": ffai.string,
+        "updatedAt": ffai.dateTime,
+      }, description: ffai.generatedProjectStructDescription);
+  static final ffai.StructHandle effectiveFeedingScheduleData =
+      ffai.StructHandle(
+        "EffectiveFeedingScheduleData",
+        <String, ffai.DslType>{
+          "date": ffai.dateTime,
+          "horseId": ffai.int_,
+          "items": ffai.listOf(Structs.feedingItemData),
+          "roundId": ffai.string,
+          "sourceType": ffai.string,
+          "stableId": ffai.string,
+          "temporaryScheduleId": ffai.string,
+        },
+        description: ffai.generatedProjectStructDescription,
+      );
+  static final ffai.StructHandle feedingAssignmentExceptionData =
+      ffai.StructHandle(
+        "FeedingAssignmentExceptionData",
+        <String, ffai.DslType>{
+          "createdAt": ffai.dateTime,
+          "date": ffai.dateTime,
+          "explicitlyUnassigned": ffai.bool_,
+          "id": ffai.string,
+          "note": ffai.string,
+          "replacementResponsibleUserId": ffai.string,
+          "roundId": ffai.string,
+          "stableId": ffai.string,
+          "updatedAt": ffai.dateTime,
+        },
+        description: ffai.generatedProjectStructDescription,
+      );
   static final ffai.StructHandle feedingExecutionRecordData = ffai.StructHandle(
     "FeedingExecutionRecordData",
     <String, ffai.DslType>{
@@ -112,37 +113,31 @@ abstract final class Structs {
     },
     description: ffai.generatedProjectStructDescription,
   );
-  static final ffai.StructHandle feedingItemData = ffai.StructHandle(
-    "FeedingItemData",
-    <String, ffai.DslType>{
-      "categoryId": ffai.string,
-      "customUnitLabel": ffai.string,
-      "id": ffai.string,
-      "instruction": ffai.string,
-      "linkedProductId": ffai.string,
-      "name": ffai.string,
-      "quantity": ffai.double_,
-      "quantityMode": ffai.string,
-      "sortOrder": ffai.int_,
-      "unitId": ffai.string,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
-  static final ffai.StructHandle feedingRoundConfigData = ffai.StructHandle(
-    "FeedingRoundConfigData",
-    <String, ffai.DslType>{
-      "defaultResponsibleUserId": ffai.string,
-      "displayLabel": ffai.string,
-      "enabled": ffai.bool_,
-      "plannedTime": ffai.dateTime,
-      "roundId": ffai.string,
-      "schemaVersion": ffai.int_,
-      "sortOrder": ffai.int_,
-      "stableId": ffai.string,
-      "updatedAt": ffai.dateTime,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
+  static final ffai.StructHandle feedingItemData =
+      ffai.StructHandle("FeedingItemData", <String, ffai.DslType>{
+        "categoryId": ffai.string,
+        "customUnitLabel": ffai.string,
+        "id": ffai.string,
+        "instruction": ffai.string,
+        "linkedProductId": ffai.string,
+        "name": ffai.string,
+        "quantity": ffai.double_,
+        "quantityMode": ffai.string,
+        "sortOrder": ffai.int_,
+        "unitId": ffai.string,
+      }, description: ffai.generatedProjectStructDescription);
+  static final ffai.StructHandle feedingRoundConfigData =
+      ffai.StructHandle("FeedingRoundConfigData", <String, ffai.DslType>{
+        "defaultResponsibleUserId": ffai.string,
+        "displayLabel": ffai.string,
+        "enabled": ffai.bool_,
+        "plannedTime": ffai.dateTime,
+        "roundId": ffai.string,
+        "schemaVersion": ffai.int_,
+        "sortOrder": ffai.int_,
+        "stableId": ffai.string,
+        "updatedAt": ffai.dateTime,
+      }, description: ffai.generatedProjectStructDescription);
   static final ffai.StructHandle feedingRoundSnapshotData = ffai.StructHandle(
     "FeedingRoundSnapshotData",
     <String, ffai.DslType>{
@@ -151,45 +146,39 @@ abstract final class Structs {
     },
     description: ffai.generatedProjectStructDescription,
   );
-  static final ffai.StructHandle horseFeedingPlanData = ffai.StructHandle(
-    "HorseFeedingPlanData",
-    <String, ffai.DslType>{
-      "horseId": ffai.int_,
-      "id": ffai.string,
-      "rounds": ffai.listOf(Structs.feedingRoundSnapshotData),
-      "schemaVersion": ffai.int_,
-      "stableId": ffai.string,
-      "updatedAt": ffai.dateTime,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
-  static final ffai.StructHandle horseProfileData = ffai.StructHandle(
-    "HorseProfileData",
-    <String, ffai.DslType>{
-      "attention": ffai.string,
-      "birthDate": ffai.dateTime,
-      "breed": ffai.string,
-      "callName": ffai.string,
-      "chipNumber": ffai.string,
-      "color": ffai.string,
-      "competitionClass": ffai.string,
-      "dayForm": ffai.string,
-      "discipline": ffai.string,
-      "id": ffai.int_,
-      "nextActivity": ffai.string,
-      "notes": ffai.string,
-      "officialName": ffai.string,
-      "owner": ffai.string,
-      "passportExpiryDate": ffai.dateTime,
-      "passportNumber": ffai.string,
-      "photoData": ffai.string,
-      "rider": ffai.string,
-      "sex": ffai.string,
-      "stableId": ffai.string,
-      "stableLocation": ffai.string,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
+  static final ffai.StructHandle horseFeedingPlanData =
+      ffai.StructHandle("HorseFeedingPlanData", <String, ffai.DslType>{
+        "horseId": ffai.int_,
+        "id": ffai.string,
+        "rounds": ffai.listOf(Structs.feedingRoundSnapshotData),
+        "schemaVersion": ffai.int_,
+        "stableId": ffai.string,
+        "updatedAt": ffai.dateTime,
+      }, description: ffai.generatedProjectStructDescription);
+  static final ffai.StructHandle horseProfileData =
+      ffai.StructHandle("HorseProfileData", <String, ffai.DslType>{
+        "attention": ffai.string,
+        "birthDate": ffai.dateTime,
+        "breed": ffai.string,
+        "callName": ffai.string,
+        "chipNumber": ffai.string,
+        "color": ffai.string,
+        "competitionClass": ffai.string,
+        "dayForm": ffai.string,
+        "discipline": ffai.string,
+        "id": ffai.int_,
+        "nextActivity": ffai.string,
+        "notes": ffai.string,
+        "officialName": ffai.string,
+        "owner": ffai.string,
+        "passportExpiryDate": ffai.dateTime,
+        "passportNumber": ffai.string,
+        "photoData": ffai.string,
+        "rider": ffai.string,
+        "sex": ffai.string,
+        "stableId": ffai.string,
+        "stableLocation": ffai.string,
+      }, description: ffai.generatedProjectStructDescription);
   static final ffai.StructHandle localAccountScopeData = ffai.StructHandle(
     "LocalAccountScopeData",
     <String, ffai.DslType>{
@@ -197,8 +186,12 @@ abstract final class Structs {
       "authUserId": ffai.string,
       "currentLocalStableId": ffai.string,
       "currentLocalUserId": ffai.string,
-      "feedingAssignmentExceptions": ffai.listOf(Structs.feedingAssignmentExceptionData),
-      "feedingExecutionRecords": ffai.listOf(Structs.feedingExecutionRecordData),
+      "feedingAssignmentExceptions": ffai.listOf(
+        Structs.feedingAssignmentExceptionData,
+      ),
+      "feedingExecutionRecords": ffai.listOf(
+        Structs.feedingExecutionRecordData,
+      ),
       "feedingRoundConfigs": ffai.listOf(Structs.feedingRoundConfigData),
       "horseFeedingPlans": ffai.listOf(Structs.horseFeedingPlanData),
       "horseSeedVersion": ffai.int_,
@@ -217,7 +210,9 @@ abstract final class Structs {
       "selectedHorse": Structs.horseProfileData,
       "selectedHorseIndex": ffai.int_,
       "stableMembershipCaches": ffai.listOf(Structs.stableMembershipCacheData),
-      "temporaryFeedingSchedules": ffai.listOf(Structs.temporaryFeedingScheduleData),
+      "temporaryFeedingSchedules": ffai.listOf(
+        Structs.temporaryFeedingScheduleData,
+      ),
       "updatedAt": ffai.dateTime,
     },
     description: ffai.generatedProjectStructDescription,
@@ -234,18 +229,19 @@ abstract final class Structs {
     },
     description: ffai.generatedProjectStructDescription,
   );
-  static final ffai.StructHandle resolvedFeedingResponsibleData = ffai.StructHandle(
-    "ResolvedFeedingResponsibleData",
-    <String, ffai.DslType>{
-      "date": ffai.dateTime,
-      "exceptionId": ffai.string,
-      "resolvedUserId": ffai.string,
-      "roundId": ffai.string,
-      "source": ffai.string,
-      "stableId": ffai.string,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
+  static final ffai.StructHandle resolvedFeedingResponsibleData =
+      ffai.StructHandle(
+        "ResolvedFeedingResponsibleData",
+        <String, ffai.DslType>{
+          "date": ffai.dateTime,
+          "exceptionId": ffai.string,
+          "resolvedUserId": ffai.string,
+          "roundId": ffai.string,
+          "source": ffai.string,
+          "stableId": ffai.string,
+        },
+        description: ffai.generatedProjectStructDescription,
+      );
   static final ffai.StructHandle stableMembershipCacheData = ffai.StructHandle(
     "StableMembershipCacheData",
     <String, ffai.DslType>{
@@ -261,24 +257,25 @@ abstract final class Structs {
     },
     description: ffai.generatedProjectStructDescription,
   );
-  static final ffai.StructHandle temporaryFeedingScheduleData = ffai.StructHandle(
-    "TemporaryFeedingScheduleData",
-    <String, ffai.DslType>{
-      "affectedRoundIds": ffai.listOf(ffai.string),
-      "createdAt": ffai.dateTime,
-      "endDate": ffai.dateTime,
-      "horseId": ffai.int_,
-      "id": ffai.string,
-      "note": ffai.string,
-      "reason": ffai.string,
-      "roundSnapshots": ffai.listOf(Structs.feedingRoundSnapshotData),
-      "schemaVersion": ffai.int_,
-      "stableId": ffai.string,
-      "startDate": ffai.dateTime,
-      "updatedAt": ffai.dateTime,
-    },
-    description: ffai.generatedProjectStructDescription,
-  );
+  static final ffai.StructHandle temporaryFeedingScheduleData =
+      ffai.StructHandle(
+        "TemporaryFeedingScheduleData",
+        <String, ffai.DslType>{
+          "affectedRoundIds": ffai.listOf(ffai.string),
+          "createdAt": ffai.dateTime,
+          "endDate": ffai.dateTime,
+          "horseId": ffai.int_,
+          "id": ffai.string,
+          "note": ffai.string,
+          "reason": ffai.string,
+          "roundSnapshots": ffai.listOf(Structs.feedingRoundSnapshotData),
+          "schemaVersion": ffai.int_,
+          "stableId": ffai.string,
+          "startDate": ffai.dateTime,
+          "updatedAt": ffai.dateTime,
+        },
+        description: ffai.generatedProjectStructDescription,
+      );
   static final all = <ffai.StructHandle>[
     activityData,
     authProfileData,
@@ -392,9 +389,7 @@ abstract final class CustomCode {
     "todayActivities",
     "todayActivitiesV2",
   ];
-  static const actions = <String>[
-    "pickHorsePrototypePhoto",
-  ];
+  static const actions = <String>["pickHorsePrototypePhoto"];
   static const widgets = <String>[
     "AvarynAccountRuntime",
     "AvarynAgendaPickerRuntime",
@@ -408,4 +403,3 @@ abstract final class CustomCode {
     "AvarynStableRuntime",
   ];
 }
-

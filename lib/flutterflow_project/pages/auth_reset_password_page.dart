@@ -4,10 +4,7 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final authResetPasswordPageHandle = ffai.ProjectPageHandle<
-  AuthResetPasswordPageParams,
-  AuthResetPasswordPageState
->(
+final authResetPasswordPageHandle = ffai.ProjectPageHandle<AuthResetPasswordPageParams, AuthResetPasswordPageState>(
   name: "AuthResetPasswordPage",
   key: "Scaffold_10g66gk1",
   route: "auth/reset-password",
@@ -34,22 +31,21 @@ abstract final class AuthResetPasswordPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_e603uk1i",
+            key: "Container_e0vvgz6g",
             type: "Container",
             path: "AuthResetPasswordPage.body[0]",
             name: "Phase4AresetPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_tq6u0i6z",
+                key: "Column_oxs9o68q",
                 type: "Column",
                 path: "AuthResetPasswordPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_l07a4mwc",
+                    key: "Container_miyafgup",
                     type: "Container",
-                    path:
-                        "AuthResetPasswordPage.body[0].children[0].children[0]",
+                    path: "AuthResetPasswordPage.body[0].children[0].children[0]",
                     name: "Phase4AresetRuntime",
                   ),
                 ],

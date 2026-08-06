@@ -12,6 +12,7 @@ import 'package:flutterflow_ai/src/helpers/data_schema_helpers.dart'
         addDataStructField,
         findAppStateField,
         removeAppStateField,
+        updateAppStateField,
         findDataStruct,
         setSecurePersistedValues,
         structField,
@@ -5221,6 +5222,147 @@ Future<void> main(List<String> args) async {
   }
 }
 
+/// Applies only the C-007 personal Auth/onboarding vertical slice to the
+/// current Account Foundation v2 project. Organization, horse and operational
+/// page trees remain untouched.
+void buildAvarynC007(App app) {
+  _configureAvarynTheme(app, existingProject: true);
+
+  app.raw((project) {
+    if (!isSupabaseActive(project)) {
+      throw StateError(
+        'C-007 requires the FlutterFlow project Supabase connection to be active.',
+      );
+    }
+
+    void ensureProfileField(
+      String fieldName,
+      FFDataTypeV2 type,
+      String description,
+    ) {
+      if (findDataStructField(
+            project,
+            structName: 'AuthProfileData',
+            fieldName: fieldName,
+          ) !=
+          null) {
+        return;
+      }
+      addDataStructField(
+        project,
+        structName: 'AuthProfileData',
+        fieldName: fieldName,
+        type: type,
+        description: description,
+      );
+    }
+
+    if (findDataStruct(project, name: 'AuthProfileData') == null) {
+      throw StateError('C-007 requires the existing AuthProfileData struct.');
+    }
+    ensureProfileField(
+      'profileId',
+      stringType,
+      'Durable Account Foundation v2 personal-profile UUID.',
+    );
+    ensureProfileField(
+      'timeZone',
+      stringType,
+      'Personal IANA time-zone identifier.',
+    );
+    ensureProfileField(
+      'profileStatus',
+      stringType,
+      'Server profile lifecycle status; only active profiles enter the app.',
+    );
+    ensureProfileField(
+      'accessVersion',
+      intType,
+      'Server-owned access-revocation version.',
+    );
+    ensureProfileField(
+      'rowVersion',
+      intType,
+      'Server-owned optimistic-concurrency version.',
+    );
+    updateAppStateField(
+      project,
+      name: 'authProfileCaches',
+      description:
+          'Ephemeral profile cache scoped by auth UUID; no sensitive profile projection persists locally.',
+      persisted: false,
+    );
+    updateCustomWidget(
+      project,
+      name: 'AvarynAccountRuntime',
+      code: _loadPhase4AAccountRuntimeWidgetCode(),
+      description:
+          'Account Foundation v2 auth gate, server-projected onboarding/profile settings and UUID-scoped local prototype ownership.',
+    );
+
+    configureSupabaseAuth(
+      project,
+      providers: const [
+        FFAuthProvider.EMAIL,
+        FFAuthProvider.GOOGLE,
+        FFAuthProvider.APPLE,
+      ],
+      homePageName: 'AuthGatePage',
+      signInPageName: 'AuthWelcomePage',
+    );
+    const protectedPages = <String>[
+      'AuthGatePage',
+      'OnboardingPage',
+      'PersonalProfilePage',
+    ];
+    const publicPages = <String>[
+      'AuthWelcomePage',
+      'AuthEmailPage',
+      'AuthCreateAccountPage',
+      'AuthLoginPage',
+      'AuthVerifyEmailPage',
+      'AuthForgotPasswordPage',
+      'AuthResetPasswordPage',
+      'AuthCallbackPage',
+    ];
+    for (final pageName in protectedPages) {
+      setPageRequiresAuth(project, pageName: pageName, requiresAuth: true);
+    }
+    for (final pageName in publicPages) {
+      setPageRequiresAuth(project, pageName: pageName, requiresAuth: false);
+    }
+  });
+
+  final authPages = <({ProjectPageHandle page, String mode})>[
+    (page: ff.Pages.authGatePage, mode: 'gate'),
+    (page: ff.Pages.authWelcomePage, mode: 'welcome'),
+    (page: ff.Pages.authEmailPage, mode: 'email'),
+    (page: ff.Pages.authCreateAccountPage, mode: 'signup'),
+    (page: ff.Pages.authLoginPage, mode: 'login'),
+    (page: ff.Pages.authVerifyEmailPage, mode: 'verify'),
+    (page: ff.Pages.authForgotPasswordPage, mode: 'forgot'),
+    (page: ff.Pages.authResetPasswordPage, mode: 'reset'),
+    (page: ff.Pages.authCallbackPage, mode: 'callback'),
+    (page: ff.Pages.onboardingPage, mode: 'onboarding'),
+  ];
+  for (final spec in authPages) {
+    app.editPage(spec.page, (page) {
+      page.ensureReplaced(
+        spec.page.widgets.byPath('${spec.page.name}.body[0]').single,
+        _phase4AAuthPageBody(spec.mode),
+      );
+    });
+  }
+  app.editPage(ff.Pages.personalProfilePage, (page) {
+    page.ensureReplaced(
+      ff.Pages.personalProfilePage.widgets
+          .byPath('PersonalProfilePage.body[0]')
+          .single,
+      _phase4APersonalProfilePageBody(),
+    );
+  });
+}
+
 const bool _agendaFunctionCheckpointOnly = false;
 const bool _nutritionCustomCodeCheckpointOnly = false;
 const bool _phase4ASchemaCheckpointOnly = false;
@@ -5731,6 +5873,7 @@ void buildAvarynPhase5D2(App app) {
     );
   });
   _applyAvarynAlphaUxRecovery(app);
+  buildAvarynC007(app);
 }
 
 /// Restores the proven AVARYN product presentation around the existing
@@ -6994,7 +7137,13 @@ void buildAvarynPhase4A(App app) {
         structField(
           'id',
           stringType,
-          description: 'Immutable Supabase Auth user UUID.',
+          description:
+              'Immutable Supabase Auth user UUID used only as the local cache namespace.',
+        ),
+        structField(
+          'profileId',
+          stringType,
+          description: 'Durable Account Foundation v2 personal-profile UUID.',
         ),
         structField(
           'firstName',
@@ -7023,6 +7172,11 @@ void buildAvarynPhase4A(App app) {
           description: 'Personal interface locale.',
         ),
         structField(
+          'timeZone',
+          stringType,
+          description: 'Personal IANA time-zone identifier.',
+        ),
+        structField(
           'themeMode',
           stringType,
           description: 'Personal system, light or dark preference.',
@@ -7038,6 +7192,22 @@ void buildAvarynPhase4A(App app) {
           description: 'Server timestamp for idempotent onboarding completion.',
         ),
         structField(
+          'profileStatus',
+          stringType,
+          description:
+              'Server profile lifecycle status; only active profiles enter the app.',
+        ),
+        structField(
+          'accessVersion',
+          intType,
+          description: 'Server-owned access-revocation version.',
+        ),
+        structField(
+          'rowVersion',
+          intType,
+          description: 'Server-owned optimistic-concurrency version.',
+        ),
+        structField(
           'createdAt',
           dateTimeType,
           description: 'Profile creation timestamp.',
@@ -7048,7 +7218,55 @@ void buildAvarynPhase4A(App app) {
           description: 'Most recent profile update timestamp.',
         ),
       ],
-      'Cached personal profile owned by one immutable Supabase Auth UUID; it contains no stable role or permission.',
+      'In-memory Account Foundation v2 profile projection; auth UUID is only a cache namespace and no role or permission is cached.',
+    );
+
+    void ensureProfileField(
+      String fieldName,
+      FFDataTypeV2 type,
+      String description,
+    ) {
+      if (findDataStructField(
+            project,
+            structName: 'AuthProfileData',
+            fieldName: fieldName,
+          ) !=
+          null) {
+        return;
+      }
+      addDataStructField(
+        project,
+        structName: 'AuthProfileData',
+        fieldName: fieldName,
+        type: type,
+        description: description,
+      );
+    }
+
+    ensureProfileField(
+      'profileId',
+      stringType,
+      'Durable Account Foundation v2 personal-profile UUID.',
+    );
+    ensureProfileField(
+      'timeZone',
+      stringType,
+      'Personal IANA time-zone identifier.',
+    );
+    ensureProfileField(
+      'profileStatus',
+      stringType,
+      'Server profile lifecycle status; only active profiles enter the app.',
+    );
+    ensureProfileField(
+      'accessVersion',
+      intType,
+      'Server-owned access-revocation version.',
+    );
+    ensureProfileField(
+      'rowVersion',
+      intType,
+      'Server-owned optimistic-concurrency version.',
     );
 
     final localScopeId = ensureStruct(
@@ -7206,7 +7424,15 @@ void buildAvarynPhase4A(App app) {
     ensureState(
       'authProfileCaches',
       raw_types.listOf(raw_types.dataStructType(profileId)),
-      'Offline-safe profile cache scoped by immutable auth UUID.',
+      'Ephemeral profile cache scoped by auth UUID; no sensitive profile projection persists locally.',
+      persisted: false,
+    );
+    updateAppStateField(
+      project,
+      name: 'authProfileCaches',
+      description:
+          'Ephemeral profile cache scoped by auth UUID; no sensitive profile projection persists locally.',
+      persisted: false,
     );
     ensureState(
       'currentAuthProfile',
@@ -7257,7 +7483,7 @@ void buildAvarynPhase4A(App app) {
       name: 'AvarynAccountRuntime',
       code: accountRuntimeCode,
       description:
-          'Supabase auth gate, account onboarding, profile settings and UUID-scoped local prototype ownership.',
+          'Account Foundation v2 auth gate, server-projected onboarding/profile settings and UUID-scoped local prototype ownership.',
     );
   });
 

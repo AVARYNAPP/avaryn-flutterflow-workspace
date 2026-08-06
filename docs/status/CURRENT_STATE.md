@@ -1,6 +1,6 @@
 # AVARYN — Current State
 
-Laatst bijgewerkt: 2026-08-05
+Laatst bijgewerkt: 2026-08-06
 
 ## Huidige status
 
@@ -136,6 +136,29 @@ Laatst bijgewerkt: 2026-08-05
   of applicatiecode gewijzigd voor C-003A tot en met C-005.
 - Er is niets gepusht, gemerged of gedeployed als onderdeel van deze lokale
   uitvoering. C-006 is niet gestart.
+- **C-007-status:** **Implemented locally and committed to the FlutterFlow
+  project — staging gate blocked**.
+- C-007 sluit het persoonlijke Auth-/profiel-/onboardingpad aan op Account
+  Foundation v2 met typed profielprojectie, server-side actorafleiding,
+  row-version-CAS, fail-closed profielstatus, IANA-tijdzone, auth-UUID-gebonden
+  avatarpaden, niet-persistente profielcache en PII-vrije append-only audit.
+- De fresh migration build, C-007 RLS/ACL/actor/CAS/audit/lifecyclematrix,
+  parallelle stale-writerrace, direct geraakte C-003F/C-004-gates en alle 172
+  FlutterFlow/Dart-tests zijn lokaal groen. Er zijn geen bekende open C-007
+  P0/P1/P2-code- of securitybevindingen.
+- De gevalideerde FlutterFlow-projectcommits zijn implementatie
+  `TnNAmpLnN4O6OCfgTdSa` en gerichte foutafhandelingsfix
+  `cpxFJHeuc2uVQxGBt80f`; de finale cleanuprevisie is
+  `EO6gySfL4pU70Ext2Eaf` op project `a-v-a-r-y-n-alpha-ynvyuq`. Er is niet
+  gepubliceerd of gedeployed.
+- De C-007-staginggate is niet uitgevoerd: de voorafgaande C-006-reset/v2-seed
+  is niet aantoonbaar afgerond en de vereiste stagingconfiguratie, credentials,
+  twee approvals, encryptiepassphrase en Auth-/Storage-/platformbewijs zijn
+  niet aanwezig. Er is geen stagingdatabaseverbinding, remote migration, seed,
+  Auth-/Storagemutatie of remote smoke uitgevoerd.
+- Apple/Google-, redirect- en juridische URL-configuratie vereisen nog redacted
+  stagingbewijs. De trusted deletion-orchestrator blijft ontbreken;
+  accountverwijdering en productieanonimisering blijven fail-closed.
 
 Het goedgekeurde contract staat in
 [Account Model v2 Technical Contract](../architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md).
@@ -171,8 +194,10 @@ Het goedgekeurde contract staat in
 | C-004/C-005-branch | `implementation/account-foundation-v2-c004-c005` |
 | C-004-status | `Implemented locally – awaiting next gate` |
 | C-005-status | `Implemented locally – awaiting next gate` |
+| C-007-branch | `implementation/account-foundation-v2-c007-personal-auth-onboarding` |
+| C-007-status | `Implemented locally and committed to FlutterFlow – staging gate blocked` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
-| FlutterFlow-revisie | `LOTvjLR6TzQjoalLhZWh` |
+| FlutterFlow-revisie | `EO6gySfL4pU70Ext2Eaf` |
 | Live Alpha | <https://alpha.avaryn.eu/> |
 | Rollback-/fallback-URL | <https://avaryn-alpha.flutterflow.app/> |
 

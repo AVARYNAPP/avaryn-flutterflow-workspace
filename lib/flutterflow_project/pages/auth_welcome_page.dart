@@ -4,15 +4,14 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final authWelcomePageHandle =
-    ffai.ProjectPageHandle<AuthWelcomePageParams, AuthWelcomePageState>(
-      name: "AuthWelcomePage",
-      key: "Scaffold_dica6lj3",
-      route: "auth/welcome",
-      params: const AuthWelcomePageParams(),
-      state: const AuthWelcomePageState(),
-      widgets: AuthWelcomePageWidgets.tree,
-    );
+final authWelcomePageHandle = ffai.ProjectPageHandle<AuthWelcomePageParams, AuthWelcomePageState>(
+  name: "AuthWelcomePage",
+  key: "Scaffold_dica6lj3",
+  route: "auth/welcome",
+  params: const AuthWelcomePageParams(),
+  state: const AuthWelcomePageState(),
+  widgets: AuthWelcomePageWidgets.tree,
+);
 
 final class AuthWelcomePageParams {
   const AuthWelcomePageParams();
@@ -32,19 +31,19 @@ abstract final class AuthWelcomePageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_kczh76mf",
+            key: "Container_ifmbi8s7",
             type: "Container",
             path: "AuthWelcomePage.body[0]",
             name: "Phase4AwelcomePageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_2h6brpfb",
+                key: "Column_y9w5p5vu",
                 type: "Column",
                 path: "AuthWelcomePage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_eq9zjt1k",
+                    key: "Container_xfhfawu9",
                     type: "Container",
                     path: "AuthWelcomePage.body[0].children[0].children[0]",
                     name: "Phase4AwelcomeRuntime",

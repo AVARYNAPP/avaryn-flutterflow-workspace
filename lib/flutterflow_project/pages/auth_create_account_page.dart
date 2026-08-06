@@ -4,10 +4,7 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final authCreateAccountPageHandle = ffai.ProjectPageHandle<
-  AuthCreateAccountPageParams,
-  AuthCreateAccountPageState
->(
+final authCreateAccountPageHandle = ffai.ProjectPageHandle<AuthCreateAccountPageParams, AuthCreateAccountPageState>(
   name: "AuthCreateAccountPage",
   key: "Scaffold_37842yv2",
   route: "auth/create-account",
@@ -34,22 +31,21 @@ abstract final class AuthCreateAccountPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_nrgfahj4",
+            key: "Container_hgfnnt5o",
             type: "Container",
             path: "AuthCreateAccountPage.body[0]",
             name: "Phase4AsignupPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_aagbgw5u",
+                key: "Column_gm7dm17y",
                 type: "Column",
                 path: "AuthCreateAccountPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_hfn3ygte",
+                    key: "Container_p2i1gazl",
                     type: "Container",
-                    path:
-                        "AuthCreateAccountPage.body[0].children[0].children[0]",
+                    path: "AuthCreateAccountPage.body[0].children[0].children[0]",
                     name: "Phase4AsignupRuntime",
                   ),
                 ],

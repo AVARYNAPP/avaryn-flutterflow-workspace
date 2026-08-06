@@ -1222,8 +1222,9 @@ void main() {
       'AuthChangeEvent.passwordRecovery',
       'auth.updateUser',
       'auth.signOut',
-      "from('profiles')",
-      "onConflict: 'id'",
+      "rpc('get_current_account_profile')",
+      "'update_current_account_profile'",
+      "'p_expected_row_version': _profileRowVersion",
       'activeAuthAccountId',
       'localAccountScopes',
       'Doorgaan met Apple',
@@ -1249,6 +1250,8 @@ void main() {
       contains("'TodayDashboardPage'"),
     );
     expect(runtime, isNot(contains('SupabaseClient(')));
+    expect(runtime, isNot(contains(".from('profiles')")));
+    expect(runtime, isNot(contains("onConflict: 'id'")));
     expect(source, contains("'AuthenticatedDesktopAccountGreeting'"));
     expect(source, contains("'AuthenticatedMobileAccountGreeting'"));
     expect(source, contains("profileTarget: 'PersonalProfilePage'"));

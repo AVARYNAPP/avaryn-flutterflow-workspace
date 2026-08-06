@@ -4,15 +4,14 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final authEmailPageHandle =
-    ffai.ProjectPageHandle<AuthEmailPageParams, AuthEmailPageState>(
-      name: "AuthEmailPage",
-      key: "Scaffold_zdzom8q1",
-      route: "auth/email",
-      params: const AuthEmailPageParams(),
-      state: const AuthEmailPageState(),
-      widgets: AuthEmailPageWidgets.tree,
-    );
+final authEmailPageHandle = ffai.ProjectPageHandle<AuthEmailPageParams, AuthEmailPageState>(
+  name: "AuthEmailPage",
+  key: "Scaffold_zdzom8q1",
+  route: "auth/email",
+  params: const AuthEmailPageParams(),
+  state: const AuthEmailPageState(),
+  widgets: AuthEmailPageWidgets.tree,
+);
 
 final class AuthEmailPageParams {
   const AuthEmailPageParams();
@@ -32,19 +31,19 @@ abstract final class AuthEmailPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_t02yc4oi",
+            key: "Container_zlqt1ivo",
             type: "Container",
             path: "AuthEmailPage.body[0]",
             name: "Phase4AemailPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_sj4ktzg1",
+                key: "Column_mlr9nbf6",
                 type: "Column",
                 path: "AuthEmailPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_q54gc33u",
+                    key: "Container_dyur6hzh",
                     type: "Container",
                     path: "AuthEmailPage.body[0].children[0].children[0]",
                     name: "Phase4AemailRuntime",

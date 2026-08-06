@@ -4,15 +4,14 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final authCallbackPageHandle =
-    ffai.ProjectPageHandle<AuthCallbackPageParams, AuthCallbackPageState>(
-      name: "AuthCallbackPage",
-      key: "Scaffold_qbppcchy",
-      route: "auth/callback",
-      params: const AuthCallbackPageParams(),
-      state: const AuthCallbackPageState(),
-      widgets: AuthCallbackPageWidgets.tree,
-    );
+final authCallbackPageHandle = ffai.ProjectPageHandle<AuthCallbackPageParams, AuthCallbackPageState>(
+  name: "AuthCallbackPage",
+  key: "Scaffold_qbppcchy",
+  route: "auth/callback",
+  params: const AuthCallbackPageParams(),
+  state: const AuthCallbackPageState(),
+  widgets: AuthCallbackPageWidgets.tree,
+);
 
 final class AuthCallbackPageParams {
   const AuthCallbackPageParams();
@@ -32,19 +31,19 @@ abstract final class AuthCallbackPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_ctux7qsv",
+            key: "Container_zgayv8d9",
             type: "Container",
             path: "AuthCallbackPage.body[0]",
             name: "Phase4AcallbackPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_yavcviyb",
+                key: "Column_k6rcp3g4",
                 type: "Column",
                 path: "AuthCallbackPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_vf7s9utt",
+                    key: "Container_6aek6low",
                     type: "Container",
                     path: "AuthCallbackPage.body[0].children[0].children[0]",
                     name: "Phase4AcallbackRuntime",

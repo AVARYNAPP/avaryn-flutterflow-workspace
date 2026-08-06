@@ -4,15 +4,14 @@ library;
 
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 
-final authLoginPageHandle =
-    ffai.ProjectPageHandle<AuthLoginPageParams, AuthLoginPageState>(
-      name: "AuthLoginPage",
-      key: "Scaffold_p6yhquo7",
-      route: "auth/login",
-      params: const AuthLoginPageParams(),
-      state: const AuthLoginPageState(),
-      widgets: AuthLoginPageWidgets.tree,
-    );
+final authLoginPageHandle = ffai.ProjectPageHandle<AuthLoginPageParams, AuthLoginPageState>(
+  name: "AuthLoginPage",
+  key: "Scaffold_p6yhquo7",
+  route: "auth/login",
+  params: const AuthLoginPageParams(),
+  state: const AuthLoginPageState(),
+  widgets: AuthLoginPageWidgets.tree,
+);
 
 final class AuthLoginPageParams {
   const AuthLoginPageParams();
@@ -32,19 +31,19 @@ abstract final class AuthLoginPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_cfnpgffe",
+            key: "Container_su1o06v8",
             type: "Container",
             path: "AuthLoginPage.body[0]",
             name: "Phase4AloginPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_6goqyhh1",
+                key: "Column_in89ctrb",
                 type: "Column",
                 path: "AuthLoginPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_v2ra7wly",
+                    key: "Container_2ge167uh",
                     type: "Container",
                     path: "AuthLoginPage.body[0].children[0].children[0]",
                     name: "Phase4AloginRuntime",

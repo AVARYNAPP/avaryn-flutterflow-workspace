@@ -44,6 +44,21 @@ class AuthProfileDataStruct extends BaseStruct {
 
     /// Most recent profile update timestamp.
     DateTime? updatedAt,
+
+    /// Durable Account Foundation v2 personal-profile UUID.
+    String? profileId,
+
+    /// Personal IANA time-zone identifier.
+    String? timeZone,
+
+    /// Server profile lifecycle status; only active profiles enter the app.
+    String? profileStatus,
+
+    /// Server-owned access-revocation version.
+    int? accessVersion,
+
+    /// Server-owned optimistic-concurrency version.
+    int? rowVersion,
   })  : _id = id,
         _firstName = firstName,
         _lastName = lastName,
@@ -55,7 +70,12 @@ class AuthProfileDataStruct extends BaseStruct {
         _onboardingIntent = onboardingIntent,
         _onboardingCompletedAt = onboardingCompletedAt,
         _createdAt = createdAt,
-        _updatedAt = updatedAt;
+        _updatedAt = updatedAt,
+        _profileId = profileId,
+        _timeZone = timeZone,
+        _profileStatus = profileStatus,
+        _accessVersion = accessVersion,
+        _rowVersion = rowVersion;
 
   // "id" field.
   String? _id;
@@ -141,6 +161,46 @@ class AuthProfileDataStruct extends BaseStruct {
 
   bool hasUpdatedAt() => _updatedAt != null;
 
+  // "profileId" field.
+  String? _profileId;
+  String get profileId => _profileId ?? '';
+  set profileId(String? val) => _profileId = val;
+
+  bool hasProfileId() => _profileId != null;
+
+  // "timeZone" field.
+  String? _timeZone;
+  String get timeZone => _timeZone ?? '';
+  set timeZone(String? val) => _timeZone = val;
+
+  bool hasTimeZone() => _timeZone != null;
+
+  // "profileStatus" field.
+  String? _profileStatus;
+  String get profileStatus => _profileStatus ?? '';
+  set profileStatus(String? val) => _profileStatus = val;
+
+  bool hasProfileStatus() => _profileStatus != null;
+
+  // "accessVersion" field.
+  int? _accessVersion;
+  int get accessVersion => _accessVersion ?? 0;
+  set accessVersion(int? val) => _accessVersion = val;
+
+  void incrementAccessVersion(int amount) =>
+      accessVersion = accessVersion + amount;
+
+  bool hasAccessVersion() => _accessVersion != null;
+
+  // "rowVersion" field.
+  int? _rowVersion;
+  int get rowVersion => _rowVersion ?? 0;
+  set rowVersion(int? val) => _rowVersion = val;
+
+  void incrementRowVersion(int amount) => rowVersion = rowVersion + amount;
+
+  bool hasRowVersion() => _rowVersion != null;
+
   static AuthProfileDataStruct fromMap(Map<String, dynamic> data) =>
       AuthProfileDataStruct(
         id: data['id'] as String?,
@@ -155,6 +215,11 @@ class AuthProfileDataStruct extends BaseStruct {
         onboardingCompletedAt: data['onboardingCompletedAt'] as DateTime?,
         createdAt: data['createdAt'] as DateTime?,
         updatedAt: data['updatedAt'] as DateTime?,
+        profileId: data['profileId'] as String?,
+        timeZone: data['timeZone'] as String?,
+        profileStatus: data['profileStatus'] as String?,
+        accessVersion: castToType<int>(data['accessVersion']),
+        rowVersion: castToType<int>(data['rowVersion']),
       );
 
   static AuthProfileDataStruct? maybeFromMap(dynamic data) => data is Map
@@ -174,6 +239,11 @@ class AuthProfileDataStruct extends BaseStruct {
         'onboardingCompletedAt': _onboardingCompletedAt,
         'createdAt': _createdAt,
         'updatedAt': _updatedAt,
+        'profileId': _profileId,
+        'timeZone': _timeZone,
+        'profileStatus': _profileStatus,
+        'accessVersion': _accessVersion,
+        'rowVersion': _rowVersion,
       }.withoutNulls;
 
   @override
@@ -225,6 +295,26 @@ class AuthProfileDataStruct extends BaseStruct {
         'updatedAt': serializeParam(
           _updatedAt,
           ParamType.DateTime,
+        ),
+        'profileId': serializeParam(
+          _profileId,
+          ParamType.String,
+        ),
+        'timeZone': serializeParam(
+          _timeZone,
+          ParamType.String,
+        ),
+        'profileStatus': serializeParam(
+          _profileStatus,
+          ParamType.String,
+        ),
+        'accessVersion': serializeParam(
+          _accessVersion,
+          ParamType.int,
+        ),
+        'rowVersion': serializeParam(
+          _rowVersion,
+          ParamType.int,
         ),
       }.withoutNulls;
 
@@ -290,6 +380,31 @@ class AuthProfileDataStruct extends BaseStruct {
           ParamType.DateTime,
           false,
         ),
+        profileId: deserializeParam(
+          data['profileId'],
+          ParamType.String,
+          false,
+        ),
+        timeZone: deserializeParam(
+          data['timeZone'],
+          ParamType.String,
+          false,
+        ),
+        profileStatus: deserializeParam(
+          data['profileStatus'],
+          ParamType.String,
+          false,
+        ),
+        accessVersion: deserializeParam(
+          data['accessVersion'],
+          ParamType.int,
+          false,
+        ),
+        rowVersion: deserializeParam(
+          data['rowVersion'],
+          ParamType.int,
+          false,
+        ),
       );
 
   @override
@@ -309,7 +424,12 @@ class AuthProfileDataStruct extends BaseStruct {
         onboardingIntent == other.onboardingIntent &&
         onboardingCompletedAt == other.onboardingCompletedAt &&
         createdAt == other.createdAt &&
-        updatedAt == other.updatedAt;
+        updatedAt == other.updatedAt &&
+        profileId == other.profileId &&
+        timeZone == other.timeZone &&
+        profileStatus == other.profileStatus &&
+        accessVersion == other.accessVersion &&
+        rowVersion == other.rowVersion;
   }
 
   @override
@@ -325,7 +445,12 @@ class AuthProfileDataStruct extends BaseStruct {
         onboardingIntent,
         onboardingCompletedAt,
         createdAt,
-        updatedAt
+        updatedAt,
+        profileId,
+        timeZone,
+        profileStatus,
+        accessVersion,
+        rowVersion
       ]);
 }
 
@@ -342,6 +467,11 @@ AuthProfileDataStruct createAuthProfileDataStruct({
   DateTime? onboardingCompletedAt,
   DateTime? createdAt,
   DateTime? updatedAt,
+  String? profileId,
+  String? timeZone,
+  String? profileStatus,
+  int? accessVersion,
+  int? rowVersion,
 }) =>
     AuthProfileDataStruct(
       id: id,
@@ -356,4 +486,9 @@ AuthProfileDataStruct createAuthProfileDataStruct({
       onboardingCompletedAt: onboardingCompletedAt,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      profileId: profileId,
+      timeZone: timeZone,
+      profileStatus: profileStatus,
+      accessVersion: accessVersion,
+      rowVersion: rowVersion,
     );
