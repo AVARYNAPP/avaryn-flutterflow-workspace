@@ -29,14 +29,17 @@ c005_require_target_identity() {
     || c005_die 'AVARYN_C005_ENVIRONMENT must be exactly staging'
   [ "${AVARYN_C005_PROJECT_REF:-}" = "$C005_STAGING_PROJECT_REF" ] \
     || c005_die 'project ref is not the allowlisted AVARYN staging project'
-  [ "${AVARYN_C005_DB_HOST:-}" = "db.${C005_STAGING_PROJECT_REF}.supabase.co" ] \
-    || c005_die 'database host does not prove the allowlisted staging project'
+  (
+    [ "${AVARYN_C005_DB_HOST:-}" = "db.${C005_STAGING_PROJECT_REF}.supabase.co" ] &&
+    [ "${AVARYN_C005_DB_USER:-}" = 'postgres' ]
+  ) || (
+    [ "${AVARYN_C005_DB_HOST:-}" = 'aws-0-eu-central-1.pooler.supabase.com' ] &&
+    [ "${AVARYN_C005_DB_USER:-}" = "postgres.${C005_STAGING_PROJECT_REF}" ]
+  ) || c005_die 'database host/user combination is not the allowlisted AVARYN staging project'
   [ "${AVARYN_C005_DB_PORT:-5432}" = '5432' ] \
     || c005_die 'database port must be 5432'
   [ "${AVARYN_C005_DB_NAME:-postgres}" = 'postgres' ] \
     || c005_die 'database name must be postgres'
-  [ "${AVARYN_C005_DB_USER:-postgres}" = 'postgres' ] \
-    || c005_die 'database user must be postgres'
   [ "${PGSSLMODE:-}" = 'verify-full' ] \
     || c005_die 'PGSSLMODE must be verify-full'
 }
