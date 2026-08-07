@@ -1220,6 +1220,7 @@ void main() {
       'auth.resend',
       'resetPasswordForEmail',
       'AuthChangeEvent.passwordRecovery',
+      'verifyOTP',
       'auth.updateUser',
       'auth.signOut',
       "rpc('get_current_account_profile')",
@@ -1227,9 +1228,9 @@ void main() {
       "'p_expected_row_version': _profileRowVersion",
       'activeAuthAccountId',
       'localAccountScopes',
-      'Doorgaan met Apple',
-      'Doorgaan met Google',
       'Doorgaan met e-mail',
+      'Alpha-privacyverklaring',
+      "'privacy' => _alphaPrivacy()",
       '_cooldownSeconds = 60',
       "'initials' => _accountInitials()",
       "'greeting' => _accountGreeting(compact: false)",
@@ -1250,6 +1251,9 @@ void main() {
       contains("'TodayDashboardPage'"),
     );
     expect(runtime, isNot(contains('SupabaseClient(')));
+    expect(runtime, isNot(contains('Doorgaan met Apple')));
+    expect(runtime, isNot(contains('Doorgaan met Google')));
+    expect(runtime, isNot(contains('signInWithOAuth')));
     expect(runtime, isNot(contains(".from('profiles')")));
     expect(runtime, isNot(contains("onConflict: 'id'")));
     expect(source, contains("'AuthenticatedDesktopAccountGreeting'"));

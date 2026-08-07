@@ -5228,6 +5228,14 @@ Future<void> main(List<String> args) async {
 void buildAvarynC007(App app) {
   _configureAvarynTheme(app, existingProject: true);
 
+  final alphaPrivacy = app.ensurePage(
+    'AlphaPrivacyPage',
+    route: '/privacy',
+    description:
+        'Public minimal privacy notice for the first closed AVARYN Alpha tester phase.',
+    body: _phase4AAuthPageBody('privacy'),
+  );
+
   app.raw((project) {
     if (!isSupabaseActive(project)) {
       throw StateError(
@@ -5302,11 +5310,7 @@ void buildAvarynC007(App app) {
 
     configureSupabaseAuth(
       project,
-      providers: const [
-        FFAuthProvider.EMAIL,
-        FFAuthProvider.GOOGLE,
-        FFAuthProvider.APPLE,
-      ],
+      providers: const [FFAuthProvider.EMAIL],
       homePageName: 'AuthGatePage',
       signInPageName: 'AuthWelcomePage',
     );
@@ -5324,6 +5328,7 @@ void buildAvarynC007(App app) {
       'AuthForgotPasswordPage',
       'AuthResetPasswordPage',
       'AuthCallbackPage',
+      'AlphaPrivacyPage',
     ];
     for (final pageName in protectedPages) {
       setPageRequiresAuth(project, pageName: pageName, requiresAuth: true);
@@ -5361,6 +5366,7 @@ void buildAvarynC007(App app) {
       _phase4APersonalProfilePageBody(),
     );
   });
+  assert(alphaPrivacy.name == 'AlphaPrivacyPage');
 }
 
 const bool _agendaFunctionCheckpointOnly = false;
@@ -7497,8 +7503,16 @@ void buildAvarynPhase4A(App app) {
   final welcome = app.ensurePage(
     'AuthWelcomePage',
     route: '/auth/welcome',
-    description: 'AVARYN welcome with Apple, Google and email access.',
+    description:
+        'AVARYN welcome with email access for the first closed Alpha tester phase.',
     body: _phase4AAuthPageBody('welcome'),
+  );
+  final alphaPrivacy = app.ensurePage(
+    'AlphaPrivacyPage',
+    route: '/privacy',
+    description:
+        'Public minimal privacy notice for the first closed AVARYN Alpha tester phase.',
+    body: _phase4AAuthPageBody('privacy'),
   );
   app.ensurePage(
     'AuthEmailPage',
@@ -7711,11 +7725,7 @@ void buildAvarynPhase4A(App app) {
   app.raw((project) {
     configureSupabaseAuth(
       project,
-      providers: const [
-        FFAuthProvider.EMAIL,
-        FFAuthProvider.GOOGLE,
-        FFAuthProvider.APPLE,
-      ],
+      providers: const [FFAuthProvider.EMAIL],
       homePageName: 'AuthGatePage',
       signInPageName: 'AuthWelcomePage',
     );
@@ -7746,6 +7756,7 @@ void buildAvarynPhase4A(App app) {
       'AuthForgotPasswordPage',
       'AuthResetPasswordPage',
       'AuthCallbackPage',
+      'AlphaPrivacyPage',
     ];
     for (final pageName in protectedPages) {
       setPageRequiresAuth(project, pageName: pageName, requiresAuth: true);
@@ -7789,6 +7800,7 @@ void buildAvarynPhase4A(App app) {
 
   assert(authGate.name == 'AuthGatePage');
   assert(welcome.name == 'AuthWelcomePage');
+  assert(alphaPrivacy.name == 'AlphaPrivacyPage');
   assert(personalProfile.name == 'PersonalProfilePage');
 }
 

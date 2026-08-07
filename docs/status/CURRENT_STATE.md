@@ -1,6 +1,6 @@
 # AVARYN — Current State
 
-Laatst bijgewerkt: 2026-08-06
+Laatst bijgewerkt: 2026-08-08
 
 ## Huidige status
 
@@ -132,12 +132,14 @@ Laatst bijgewerkt: 2026-08-06
   productie- en targetdeny, seed-replaydeny, script-/secretcontroles en een
   daadwerkelijk lokaal herstel van de versleutelde full dump. Er zijn geen
   bekende open C-004/C-005 P0/P1/P2-problemen.
-- Er is niets remote uitgevoerd, geen stagingreset gedaan en geen FlutterFlow-
-  of applicatiecode gewijzigd voor C-003A tot en met C-005.
-- Er is niets gepusht, gemerged of gedeployed als onderdeel van deze lokale
-  uitvoering. C-006 is niet gestart.
-- **C-007-status:** **Implemented locally and committed to the FlutterFlow
-  project — staging gate blocked**.
+- **C-006-status:** **PASS — explicitly authorized staging reset, v2 seed and
+  security smoke completed** op C-007-startcommit
+  `b33d299065fb2d4f37dca7e42a5d52810c126a3e`. Back-up, checksums, restoretest,
+  approvals en Auth-/Storage-/platformbewijs zijn extern en hashgebonden
+  gecontroleerd; C-006 is geen C-007-blokkade meer.
+- **C-007-status:** **C-007 — Approved within the current Alpha/Staging
+  scope**. Silas heeft de contractuele scherm- en cutoverreview op `2026-08-08`
+  expliciet goedgekeurd.
 - C-007 sluit het persoonlijke Auth-/profiel-/onboardingpad aan op Account
   Foundation v2 met typed profielprojectie, server-side actorafleiding,
   row-version-CAS, fail-closed profielstatus, IANA-tijdzone, auth-UUID-gebonden
@@ -145,20 +147,60 @@ Laatst bijgewerkt: 2026-08-06
 - De fresh migration build, C-007 RLS/ACL/actor/CAS/audit/lifecyclematrix,
   parallelle stale-writerrace, direct geraakte C-003F/C-004-gates en alle 172
   FlutterFlow/Dart-tests zijn lokaal groen. Er zijn geen bekende open C-007
-  P0/P1/P2-code- of securitybevindingen.
+  P0/P1/P2-code- of securitybevindingen. Na de scopewijziging zijn alle 173
+  FlutterFlow/Dart-tests groen. Na de first-party e-maillinkhardening zijn alle
+  `175` tests groen.
 - De gevalideerde FlutterFlow-projectcommits zijn implementatie
   `TnNAmpLnN4O6OCfgTdSa` en gerichte foutafhandelingsfix
   `cpxFJHeuc2uVQxGBt80f`; de finale cleanuprevisie is
-  `EO6gySfL4pU70Ext2Eaf` op project `a-v-a-r-y-n-alpha-ynvyuq`. Er is niet
-  gepubliceerd of gedeployed.
-- De C-007-staginggate is niet uitgevoerd: de voorafgaande C-006-reset/v2-seed
-  is niet aantoonbaar afgerond en de vereiste stagingconfiguratie, credentials,
-  twee approvals, encryptiepassphrase en Auth-/Storage-/platformbewijs zijn
-  niet aanwezig. Er is geen stagingdatabaseverbinding, remote migration, seed,
-  Auth-/Storagemutatie of remote smoke uitgevoerd.
-- Apple/Google-, redirect- en juridische URL-configuratie vereisen nog redacted
-  stagingbewijs. De trusted deletion-orchestrator blijft ontbreken;
-  accountverwijdering en productieanonimisering blijven fail-closed.
+  `EO6gySfL4pU70Ext2Eaf`. De e-mail-only/privacyrevisie
+  `uBZ2pyFPeB5nXYvFNzWC` is uitsluitend naar de bestaande Alpha-hosts
+  gepubliceerd. De gevalideerde first-party e-maillinkrevisie
+  `tIuGom3jTogDhabdK25X` is op `2026-08-08` naar beide bestaande Alpha-hosts
+  gepubliceerd; beide hosts leverden cachevrij exact dezelfde nieuwe bundle.
+- Stagingmigration `202608060001` en de teruggerolde inhoudelijke C-007
+  RLS-/ACL-/actor-/CAS-/audit-/lifecycle-/avatarmatrix zijn **PASS**. Auth staat
+  fail-closed op e-mailbevestiging, wachtwoordbeleid 8 + hoofdletter/kleine
+  letter/cijfer, exacte redirects en uitgeschakelde anonymous/manual
+  linking/Google/Apple. Storageconfiguratie en hosted callback-/resetsmokes zijn
+  **PASS**; er bleef geen testuser achter.
+- De publieke Alpha bevat versie `Alpha 2026-08-07` van de minimale
+  privacyverklaring. Google, Apple en definitieve gebruiksvoorwaarden zijn
+  expliciet uitgesteld tot na de eerste externe testerfase.
+- De positieve signup-confirm-login-reset-onboarding-smoke is op `2026-08-08`
+  volledig uitgevoerd. De bestaande Resend-SMTP-configuratie en de juiste
+  Alpha-redirects zijn actief; Confirm Signup en Reset Password zijn
+  geverifieerd als korte Nederlandstalige transactionele templates met
+  `TokenHash`-links op `alpha.avaryn.eu` en zonder directe `ConfirmationURL`.
+  De runtime verifieert exact getypeerde signup- en recoverylinks pas na een
+  expliciete gebruikersklik, zodat mailprefetch geen eenmalige token verbruikt.
+  Supabase registreert de eerdere signup- en recoveryrequests met status 200.
+  DKIM en
+  bounce-SPF zijn publiek aantoonbaar en de monitoringpolicy
+  `TXT _dmarc.auth.avaryn.eu = v=DMARC1; p=none;` is toegevoegd en publiek
+  geverifieerd; een nieuw Resend-rapport markeert DMARC als groen.
+  Resend-tracking staat uit. Een Auth-mail naar `silas@de-steur.com` kwam in de
+  inbox. Auth-mails naar `verkoop@vangilstbv.nl` en `info@vangilstbv.nl` zijn
+  door Exchange Online met SMTP `250 2.6.0` geaccepteerd en staan niet op de
+  Resend-suppressionlijst. Microsoft Message Trace bewees dat het tenantbeleid
+  ze als high-confidence phishing (`SCL 8`) in `QuarantinedEmailSecured`
+  plaatste. Eén specifiek testbericht is zonder brede mailflow-bypass
+  vrijgegeven, kwam in Outlook aan en heeft het Staging-account succesvol
+  bevestigd; callback, server-side profielbootstrap en `/onboarding` zijn
+  **PASS**. Na verbruik van de token is het false positive als schoon bij
+  Microsoft ingediend met een tijdelijk allow-verzoek voor uitsluitend de
+  gedetecteerde berichtentiteiten; externe analyse is pending. De opdrachtgever
+  bevestigt inmiddels ontvangst bij `vangilstbv.nl`; andere Microsoft 365-
+  tenants zijn nog niet aantoonbaar groen en blijven een operationeel
+  monitoringpunt. De first-party revisie is gepubliceerd. Een bestaande,
+  aanvankelijk onbevestigde Staginggebruiker doorliep daarna bevestigingsmail,
+  expliciete tokenverificatie, login, onboarding, resetmail, expliciete
+  recoveryverificatie, nieuw wachtwoord en herlogin: **PASS**. Resend
+  registreerde beide actuele transactionele mails als `delivered`; Supabase
+  registreerde bevestiging en login. Silas heeft daarna de contractuele scherm-
+  en cutoverreview expliciet goedgekeurd: **PASS**.
+- De trusted deletion-orchestrator blijft ontbreken; accountverwijdering en
+  productieanonimisering blijven fail-closed.
 
 Het goedgekeurde contract staat in
 [Account Model v2 Technical Contract](../architecture/ACCOUNT_MODEL_V2_TECHNICAL_CONTRACT.md).
@@ -194,10 +236,11 @@ Het goedgekeurde contract staat in
 | C-004/C-005-branch | `implementation/account-foundation-v2-c004-c005` |
 | C-004-status | `Implemented locally – awaiting next gate` |
 | C-005-status | `Implemented locally – awaiting next gate` |
+| C-006-status | `PASS — staging reset, v2 seed and security smoke completed` |
 | C-007-branch | `implementation/account-foundation-v2-c007-personal-auth-onboarding` |
-| C-007-status | `Implemented locally and committed to FlutterFlow – staging gate blocked` |
+| C-007-status | `Approved within the current Alpha/Staging scope` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
-| FlutterFlow-revisie | `EO6gySfL4pU70Ext2Eaf` |
+| FlutterFlow-revisie | `tIuGom3jTogDhabdK25X` (published to both Alpha hosts) |
 | Live Alpha | <https://alpha.avaryn.eu/> |
 | Rollback-/fallback-URL | <https://avaryn-alpha.flutterflow.app/> |
 
@@ -251,7 +294,10 @@ goedgekeurd binnen de afgesproken lokale scope:
 6. C-003F — Security hardening gate.
 
 De afzonderlijke implementatie- en testbewijzen staan in `docs/implementation`.
-C-004 en C-005 zijn lokaal geïmplementeerd en wachten op de volgende gate.
-Stagingreset, Supabase-linking, remote migration, databasepush, FlutterFlow-/
-applicatiewijziging, push, merge, deployment en livewijziging zijn niet
-uitgevoerd. C-006 is niet gestart.
+C-004 en C-005 zijn lokaal geïmplementeerd. De afzonderlijk geautoriseerde
+C-006 Staging-run is geslaagd. C-007 heeft daarna uitsluitend het allowlisted
+Staging-/Alpha-target gemigreerd, geconfigureerd, beveiligingstechnisch getest
+en met de e-mail-only/privacy- en first-party e-maillinkrevisies gepubliceerd.
+De echte e-maillevenscyclus en expliciete scherm-/cutoverapproval zijn groen;
+C-007 is binnen de huidige Alpha/Staging-scope volledig afgerond. Productie,
+Git-push en merge zijn niet uitgevoerd.

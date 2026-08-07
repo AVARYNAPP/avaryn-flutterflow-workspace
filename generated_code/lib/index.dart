@@ -66,3 +66,5 @@ export '/stable_access_page/stable_access_page_widget.dart'
     show StableAccessPageWidget;
 export '/link_local_stable_page/link_local_stable_page_widget.dart'
     show LinkLocalStablePageWidget;
+export '/alpha_privacy_page/alpha_privacy_page_widget.dart'
+    show AlphaPrivacyPageWidget;

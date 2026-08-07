@@ -31,19 +31,19 @@ abstract final class AuthLoginPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_su1o06v8",
+            key: "Container_gobrhxp9",
             type: "Container",
             path: "AuthLoginPage.body[0]",
             name: "Phase4AloginPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_in89ctrb",
+                key: "Column_l7k0gaov",
                 type: "Column",
                 path: "AuthLoginPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_2ge167uh",
+                    key: "Container_q4uowg7h",
                     type: "Container",
                     path: "AuthLoginPage.body[0].children[0].children[0]",
                     name: "Phase4AloginRuntime",

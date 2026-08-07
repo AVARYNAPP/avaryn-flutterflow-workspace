@@ -5,6 +5,7 @@ library;
 import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 import 'pages/activity_detail_page.dart' show activityDetailPageHandle;
 import 'pages/activity_form_page.dart' show activityFormPageHandle;
+import 'pages/alpha_privacy_page.dart' show alphaPrivacyPageHandle;
 import 'pages/auth_callback_page.dart' show authCallbackPageHandle;
 import 'pages/auth_create_account_page.dart' show authCreateAccountPageHandle;
 import 'pages/auth_email_page.dart' show authEmailPageHandle;
@@ -44,6 +45,7 @@ import 'pages/today_dashboard_page.dart' show todayDashboardPageHandle;
 abstract final class Pages {
   static final activityDetailPage = activityDetailPageHandle;
   static final activityFormPage = activityFormPageHandle;
+  static final alphaPrivacyPage = alphaPrivacyPageHandle;
   static final authCallbackPage = authCallbackPageHandle;
   static final authCreateAccountPage = authCreateAccountPageHandle;
   static final authEmailPage = authEmailPageHandle;
@@ -82,6 +84,7 @@ abstract final class Pages {
   static final all = <ffai.ProjectPageHandle>[
     activityDetailPage,
     activityFormPage,
+    alphaPrivacyPage,
     authCallbackPage,
     authCreateAccountPage,
     authEmailPage,

@@ -9,7 +9,7 @@
     "mode": "export",
     "format": true
   },
-  "exported_at": "2026-08-06T22:09:06.381044Z",
+  "exported_at": "2026-08-07T21:30:57.962069Z",
   "files": [
     ".flutterflow/export_manifest.json",
     ".gitignore",
@@ -92,6 +92,8 @@
     "lib/activity_detail_page/activity_detail_page_widget.dart",
     "lib/activity_form_page/activity_form_page_model.dart",
     "lib/activity_form_page/activity_form_page_widget.dart",
+    "lib/alpha_privacy_page/alpha_privacy_page_model.dart",
+    "lib/alpha_privacy_page/alpha_privacy_page_widget.dart",
     "lib/app_state.dart",
     "lib/auth/auth_manager.dart",
     "lib/auth/base_auth_user_provider.dart",
@@ -1545,6 +1547,15 @@
       "name": "theme",
       "primary_files": [
         "lib/flutter_flow/flutter_flow_theme.dart"
+      ]
+    },
+    {
+      "type": "page",
+      "key": "Scaffold_0xulgprx",
+      "name": "AlphaPrivacyPage",
+      "primary_files": [
+        "lib/alpha_privacy_page/alpha_privacy_page_model.dart",
+        "lib/alpha_privacy_page/alpha_privacy_page_widget.dart"
       ]
     },
     {

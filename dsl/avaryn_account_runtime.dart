@@ -12,15 +12,10 @@ import 'package:flutterflow_generated/app_state.dart';
 import 'package:flutterflow_generated/backend/schema/structs/index.dart';
 import 'package:flutterflow_generated/flutter_flow/flutter_flow_theme.dart';
 import 'package:flutterflow_generated/flutter_flow/flutter_flow_util.dart';
-import 'package:sign_in_button/sign_in_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
-const String _phase4APrivacyPolicyUrl = String.fromEnvironment(
-  'AVARYN_PRIVACY_POLICY_URL',
-);
-const String _phase4ATermsUrl = String.fromEnvironment('AVARYN_TERMS_URL');
+const String _c007AlphaPrivacyVersion = 'Alpha 2026-08-07';
 const String _phase4ALegacyBackupId = 'legacy-unscoped-backup';
 const String _phase4ALegacyLocalUserId = 'local-current-user';
 const String _phase4ALegacyStableId = 'local-stable';
@@ -41,6 +36,21 @@ const List<String> _c007TimeZones = [
 
 String _phase5PasswordRecoveryUserId = '';
 DateTime? _phase5PasswordRecoveryAuthorizedAt;
+
+String _c007EmailLinkTokenHash(String mode, Uri uri) {
+  final expectedType = switch (mode) {
+    'callback' => 'email',
+    'reset' => 'recovery',
+    _ => '',
+  };
+  if (expectedType.isEmpty || uri.queryParameters['type'] != expectedType) {
+    return '';
+  }
+  final tokenHash = (uri.queryParameters['token_hash'] ?? '').trim();
+  if (tokenHash.length < 16 || tokenHash.length > 2048) return '';
+  if (tokenHash.runes.any((value) => value < 0x21 || value == 0x7f)) return '';
+  return tokenHash;
+}
 
 void _phase5ClearPasswordRecoveryAuthorization() {
   _phase5PasswordRecoveryUserId = '';
@@ -71,10 +81,6 @@ bool _phase5HasPasswordRecoveryAuthorization(Session? session) {
   }
   return true;
 }
-
-bool get _phase4ALegalConfigured =>
-    Uri.tryParse(_phase4APrivacyPolicyUrl)?.hasScheme == true &&
-    Uri.tryParse(_phase4ATermsUrl)?.hasScheme == true;
 
 Future<void> _phase4APurgeOperationalSecureState(String authUserId) async {
   final normalized = authUserId.trim();
@@ -777,7 +783,6 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
   bool _booting = false;
   bool _passwordHidden = true;
   bool _confirmPasswordHidden = true;
-  bool _legalAccepted = false;
   bool _legacyPrompt = false;
   int _cooldownSeconds = 0;
   int _onboardingStep = 0;
@@ -787,6 +792,8 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
   String _themeMode = 'system';
   String _intent = '';
   String _avatarUrl = '';
+  String _emailLinkTokenHash = '';
+  bool _recoveryLinkVerified = false;
   String? _error;
   String? _notice;
   AuthProfileDataStruct? _profile;
@@ -836,11 +843,24 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
   void initState() {
     super.initState();
     _emailController.text = FFAppState().authPendingEmail;
+    if (kIsWeb && (widget.mode == 'callback' || widget.mode == 'reset')) {
+      _emailLinkTokenHash = _c007EmailLinkTokenHash(widget.mode, Uri.base);
+      _recoveryLinkVerified = _phase5HasPasswordRecoveryAuthorization(
+        _client.auth.currentSession,
+      );
+      if (_emailLinkTokenHash.isEmpty && !_recoveryLinkVerified) {
+        _error = 'De beveiligde link is ongeldig of verlopen.';
+      }
+    }
     _authSubscription = _client.auth.onAuthStateChange.listen((state) {
       if (!mounted) return;
       if (state.event == AuthChangeEvent.passwordRecovery) {
         if (_phase5AuthorizePasswordRecovery(state.session)) {
-          context.goNamed('AuthResetPasswordPage');
+          if (widget.mode == 'reset') {
+            setState(() => _recoveryLinkVerified = true);
+          } else {
+            context.goNamed('AuthResetPasswordPage');
+          }
         }
         return;
       }
@@ -849,19 +869,13 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
               state.session!.user.id != _phase5PasswordRecoveryUserId)) {
         _phase5ClearPasswordRecoveryAuthorization();
       }
-      if ((widget.mode == 'verify' || widget.mode == 'callback') &&
+      if (widget.mode == 'verify' &&
           state.session != null &&
           state.session!.user.emailConfirmedAt != null) {
         context.goNamed('AuthGatePage');
       }
     });
-    if ({
-      'gate',
-      'callback',
-      'verify',
-      'onboarding',
-      'profile',
-    }.contains(widget.mode)) {
+    if ({'gate', 'verify', 'onboarding', 'profile'}.contains(widget.mode)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) unawaited(_bootstrap());
       });
@@ -936,10 +950,16 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
   }
 
   Future<void> _bootstrapCallback() async {
+    if (_busy || _emailLinkTokenHash.isEmpty) return;
     _setBusy(true);
+    _setError(null);
     try {
-      final session = _client.auth.currentSession;
-      if (session == null) {
+      final response = await _client.auth.verifyOTP(
+        tokenHash: _emailLinkTokenHash,
+        type: OtpType.email,
+      );
+      final session = response.session;
+      if (session == null || session.user.emailConfirmedAt == null) {
         _setError('De aanmeldlink is ongeldig, verlopen of nog niet verwerkt.');
         return;
       }
@@ -947,6 +967,28 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       if (!mounted) return;
       context.goNamed('AuthGatePage');
     } catch (error) {
+      _setError(_phase4AAuthError(error));
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> _verifyRecoveryLink() async {
+    if (_busy || _emailLinkTokenHash.isEmpty) return;
+    _setBusy(true);
+    _setError(null);
+    try {
+      final response = await _client.auth.verifyOTP(
+        tokenHash: _emailLinkTokenHash,
+        type: OtpType.recovery,
+      );
+      if (!_phase5AuthorizePasswordRecovery(response.session)) {
+        _setError('De herstellink is ongeldig of verlopen.');
+        return;
+      }
+      if (mounted) setState(() => _recoveryLinkVerified = true);
+    } catch (error) {
+      _phase5ClearPasswordRecoveryAuthorization();
       _setError(_phase4AAuthError(error));
     } finally {
       _setBusy(false);
@@ -1160,29 +1202,6 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     return null;
   }
 
-  Future<void> _signInWithProvider(OAuthProvider provider) async {
-    if (_busy) return;
-    _setBusy(true);
-    _setError(null);
-    try {
-      final started = await _client.auth.signInWithOAuth(
-        provider,
-        redirectTo: _phase4ARedirectUrl('/auth/callback'),
-      );
-      if (!started) {
-        _setNotice('Aanmelden is geannuleerd.');
-      }
-    } on AuthException catch (error) {
-      _setError(_phase4AAuthError(error));
-    } catch (_) {
-      _setError(
-        'De provider is niet geconfigureerd of de aanmelding is geannuleerd.',
-      );
-    } finally {
-      _setBusy(false);
-    }
-  }
-
   Future<void> _login() async {
     if (_busy) return;
     final email = _emailController.text.trim();
@@ -1240,11 +1259,6 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
       _setError('De wachtwoorden zijn niet gelijk.');
       return;
     }
-    if (_phase4ALegalConfigured && !_legalAccepted) {
-      _setError('Accepteer eerst het privacybeleid en de voorwaarden.');
-      return;
-    }
-
     _setBusy(true);
     _setError(null);
     try {
@@ -1737,16 +1751,6 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     context.goNamed(phase5AccountRouteName(route));
   }
 
-  Future<void> _openLegal(String url, String label) async {
-    final uri = Uri.tryParse(url);
-    if (uri == null || !uri.hasScheme) {
-      _setError('$label is nog niet geconfigureerd.');
-      return;
-    }
-    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!opened) _setError('$label kon niet worden geopend.');
-  }
-
   InputDecoration _fieldDecoration(
     FlutterFlowTheme theme,
     String label, {
@@ -1945,6 +1949,141 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     );
   }
 
+  Widget _privacySection(FlutterFlowTheme theme, String title, String body) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: theme.titleMedium.copyWith(color: theme.primaryText),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            body,
+            style: theme.bodyMedium.copyWith(
+              color: theme.secondaryText,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _alphaPrivacy() {
+    final theme = FlutterFlowTheme.of(context);
+    return _pageFrame(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _brand(theme, eyebrow: 'Privacy'),
+          const SizedBox(height: 26),
+          _authCard(theme, [
+            Text(
+              'Alpha-privacyverklaring',
+              style: theme.headlineSmall.copyWith(color: theme.primaryText),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Versie $_c007AlphaPrivacyVersion · uitsluitend voor de besloten externe testerfase',
+              style: theme.bodySmall.copyWith(color: theme.secondaryText),
+            ),
+            const SizedBox(height: 22),
+            _privacySection(
+              theme,
+              'Wie is verantwoordelijk?',
+              'SDS Group B.V., handelend onder de handelsnaam AVARYN, is de '
+                  'verwerkingsverantwoordelijke voor deze Alpha. KvK 91614112. '
+                  'Postadres en contact voor privacyverzoeken: Nieuwe Rijksweg '
+                  '2a, 4472 AB ’s-Heer Hendrikskinderen, Nederland.',
+            ),
+            _privacySection(
+              theme,
+              'Welke gegevens verwerken wij?',
+              'We verwerken je e-mailadres, interne Auth- en account-ID’s, '
+                  'accountstatus, de profielgegevens en avatar die je zelf '
+                  'invult, technische login-, beveiligings-, fout- en '
+                  'toegangsgegevens en vrijwillige feedback. Supabase, '
+                  'FlutterFlow en hun infrastructuur kunnen daarnaast '
+                  'IP-adres, browser- en beveiligingsmetadata verwerken. In '
+                  'deze Alpha gebruiken we geen marketinganalytics, '
+                  'advertentietracking of uitsluitend geautomatiseerde '
+                  'besluitvorming over testers.',
+            ),
+            _privacySection(
+              theme,
+              'Waarom en op welke grond?',
+              'We gebruiken deze gegevens om je de vrijwillige Alpha-test te '
+                  'laten uitvoeren, authenticatie en gegevensscheiding te '
+                  'beveiligen, fouten te onderzoeken, toegang in te trekken '
+                  'en accounts gecontroleerd af te handelen. Noodzakelijke '
+                  'account- en testverwerking berust op de Alpha-testafspraak; '
+                  'minimale security- en auditlogging op ons gerechtvaardigde '
+                  'beveiligingsbelang; vrijwillige feedback waar nodig op je '
+                  'toestemming. Je kunt vrijwillige toestemming altijd '
+                  'intrekken.',
+            ),
+            _privacySection(
+              theme,
+              'Met wie en waar?',
+              'Alleen geautoriseerde AVARYN-beheerders en onze technische '
+                  'verwerkers verwerken deze gegevens: Supabase voor Auth, '
+                  'database en Storage en FlutterFlow voor de besloten webapp '
+                  'en hosting. De stagingdatabase staat in Central EU '
+                  '(Frankfurt). Leveranciers kunnen eigen subverwerkers '
+                  'gebruiken; eventuele doorgiften buiten de EER volgen hun '
+                  'geldige doorgiftemechanismen en verwerkersvoorwaarden.',
+            ),
+            _privacySection(
+              theme,
+              'Hoe lang bewaren wij gegevens?',
+              'Testercontact, account en gewone testinhoud bewaren we tot het '
+                  'einde van je deelname en daarna maximaal 30 dagen. '
+                  'Pseudonimiseerbare feedback en security- of auditgegevens '
+                  'bewaren we maximaal 90 dagen na intrekking of einde Alpha. '
+                  'Noodzakelijk incidentbewijs maximaal 180 dagen na sluiting '
+                  'van het incident. Langere bewaring gebeurt alleen bij een '
+                  'aantoonbare wettelijke noodzaak of rechtsvordering. '
+                  'Leveranciersback-ups en logs volgen hun vastgelegde '
+                  'retentiecycli.',
+            ),
+            _privacySection(
+              theme,
+              'Je rechten',
+              'Je kunt vragen om inzage, correctie, verwijdering, beperking of '
+                  'overdracht en bezwaar maken of toestemming intrekken. Stuur '
+                  'je verzoek naar het postadres hierboven. We reageren '
+                  'binnen de wettelijke termijn. Je kunt ook een klacht '
+                  'indienen bij de Autoriteit Persoonsgegevens via '
+                  'autoriteitpersoonsgegevens.nl. Historische operationele '
+                  'gegevens kunnen alleen worden verwijderd na een veilige '
+                  'beheerdersreview wanneer integriteit, securityaudit of een '
+                  'wettelijke bewaarplicht directe verwijdering verhindert.',
+            ),
+            _privacySection(
+              theme,
+              'Grenzen van de Alpha',
+              'Gebruik uitsluitend toegestane fictieve paard-, stal-, '
+                  'behandel-, voer- en zorggegevens. AVARYN is in deze fase '
+                  'online-only en mag niet worden gebruikt voor echte '
+                  'medische, veterinaire, voer- of veiligheidskritieke '
+                  'beslissingen. Definitieve gebruiksvoorwaarden en social '
+                  'login volgen pas na de eerste externe testerfase.',
+            ),
+            _secondaryButton(
+              theme,
+              'Terug',
+              () => Navigator.of(context).maybePop(),
+              icon: Icons.arrow_back,
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
   Widget _welcome() {
     final theme = FlutterFlowTheme.of(context);
     return _pageFrame(
@@ -1964,40 +2103,6 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
               style: theme.bodyMedium.copyWith(color: theme.secondaryText),
             ),
             const SizedBox(height: 22),
-            IgnorePointer(
-              ignoring: _busy,
-              child: Semantics(
-                button: true,
-                label: 'Doorgaan met Apple',
-                child: SizedBox(
-                  width: double.infinity,
-                  child: SignInButton(
-                    Theme.of(context).brightness == Brightness.dark
-                        ? Buttons.appleDark
-                        : Buttons.apple,
-                    text: 'Doorgaan met Apple',
-                    onPressed: () => _signInWithProvider(OAuthProvider.apple),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            IgnorePointer(
-              ignoring: _busy,
-              child: Semantics(
-                button: true,
-                label: 'Doorgaan met Google',
-                child: SizedBox(
-                  width: double.infinity,
-                  child: SignInButton(
-                    Buttons.google,
-                    text: 'Doorgaan met Google',
-                    onPressed: () => _signInWithProvider(OAuthProvider.google),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
             _secondaryButton(
               theme,
               'Doorgaan met e-mail',
@@ -2006,33 +2111,15 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
             ),
             const SizedBox(height: 18),
             _feedback(theme),
-            if (_phase4ALegalConfigured)
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 8,
-                runSpacing: 4,
-                children: [
-                  TextButton(
-                    onPressed:
-                        () => _openLegal(
-                          _phase4APrivacyPolicyUrl,
-                          'Privacybeleid',
-                        ),
-                    child: const Text('Privacybeleid'),
-                  ),
-                  TextButton(
-                    onPressed:
-                        () => _openLegal(_phase4ATermsUrl, 'Voorwaarden'),
-                    child: const Text('Voorwaarden'),
-                  ),
-                ],
-              )
-            else
-              Text(
-                'Privacybeleid en voorwaarden moeten vóór release met echte HTTPS-links worden geconfigureerd.',
-                textAlign: TextAlign.center,
-                style: theme.bodySmall.copyWith(color: theme.secondaryText),
-              ),
+            TextButton(
+              onPressed: () => context.pushNamed('AlphaPrivacyPage'),
+              child: const Text('Alpha-privacyverklaring'),
+            ),
+            Text(
+              'Google, Apple en definitieve gebruiksvoorwaarden volgen pas na de eerste externe testerfase.',
+              textAlign: TextAlign.center,
+              style: theme.bodySmall.copyWith(color: theme.secondaryText),
+            ),
           ]),
         ],
       ),
@@ -2220,29 +2307,27 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
               ),
             ),
             const SizedBox(height: 10),
-            if (_phase4ALegalConfigured)
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                value: _legalAccepted,
-                onChanged:
-                    (value) => setState(() => _legalAccepted = value ?? false),
-                title: Text(
-                  'Ik accepteer het privacybeleid en de voorwaarden.',
-                  style: theme.bodySmall.copyWith(color: theme.primaryText),
-                ),
-              )
-            else
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: theme.warning,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  'Lokale ontwikkelmodus: juridische links ontbreken. Dit blokkeert een release, maar niet het testen van e-mailauthenticatie.',
-                  style: theme.bodySmall.copyWith(color: theme.primaryText),
-                ),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.secondaryBackground,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: theme.alternate),
               ),
+              child: Column(
+                children: [
+                  Text(
+                    'Lees vóór accountaanmaak hoe AVARYN je persoonsgegevens in de besloten Alpha verwerkt.',
+                    textAlign: TextAlign.center,
+                    style: theme.bodySmall.copyWith(color: theme.primaryText),
+                  ),
+                  TextButton(
+                    onPressed: () => context.pushNamed('AlphaPrivacyPage'),
+                    child: const Text('Alpha-privacyverklaring openen'),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 12),
             _feedback(theme),
             _primaryButton(
@@ -2386,6 +2471,43 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
 
   Widget _resetPassword() {
     final theme = FlutterFlowTheme.of(context);
+    if (!_recoveryLinkVerified ||
+        !_phase5HasPasswordRecoveryAuthorization(_client.auth.currentSession)) {
+      return _pageFrame(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _brand(theme, eyebrow: 'Wachtwoord herstellen'),
+            const SizedBox(height: 26),
+            _authCard(theme, [
+              Text(
+                'Beveiligde herstellink',
+                style: theme.headlineSmall.copyWith(color: theme.primaryText),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Controleer de link pas wanneer je zelf op de knop drukt.',
+                style: theme.bodyMedium.copyWith(color: theme.secondaryText),
+              ),
+              const SizedBox(height: 16),
+              _feedback(theme),
+              if (_emailLinkTokenHash.isNotEmpty)
+                _primaryButton(
+                  theme,
+                  'Herstellink controleren',
+                  _verifyRecoveryLink,
+                  icon: Icons.verified_user_outlined,
+                ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () => context.goNamed('AuthForgotPasswordPage'),
+                child: const Text('Nieuwe herstellink aanvragen'),
+              ),
+            ]),
+          ],
+        ),
+      );
+    }
     return _pageFrame(
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -2451,6 +2573,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
 
   Widget _loadingOrCallback() {
     final theme = FlutterFlowTheme.of(context);
+    final isCallback = widget.mode == 'callback';
     return _pageFrame(
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -2458,24 +2581,32 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
           _brand(theme, eyebrow: 'Beveiligde toegang'),
           const SizedBox(height: 32),
           _authCard(theme, [
-            Center(
-              child: SizedBox(
-                width: 34,
-                height: 34,
-                child: CircularProgressIndicator(color: theme.secondary),
+            if (_busy || !isCallback)
+              Center(
+                child: SizedBox(
+                  width: 34,
+                  height: 34,
+                  child: CircularProgressIndicator(color: theme.secondary),
+                ),
               ),
-            ),
             const SizedBox(height: 18),
             Text(
               widget.mode == 'gate'
                   ? 'Je AVARYN-account wordt veilig geladen.'
-                  : 'De aanmeldlink wordt gecontroleerd.',
+                  : 'Bevestig je e-mailadres pas wanneer je zelf op de knop drukt.',
               textAlign: TextAlign.center,
               style: theme.bodyMedium.copyWith(color: theme.secondaryText),
             ),
             const SizedBox(height: 16),
             _feedback(theme),
-            if (_error != null)
+            if (isCallback && _emailLinkTokenHash.isNotEmpty && !_busy)
+              _primaryButton(
+                theme,
+                'E-mailadres bevestigen',
+                _bootstrapCallback,
+                icon: Icons.mark_email_read_outlined,
+              ),
+            if (_error != null && !isCallback)
               _secondaryButton(
                 theme,
                 'Opnieuw proberen',
@@ -2995,25 +3126,17 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
               style: theme.titleLarge.copyWith(color: theme.primaryText),
             ),
             const SizedBox(height: 10),
-            if (_phase4ALegalConfigured) ...[
-              _secondaryButton(
-                theme,
-                'Privacybeleid',
-                () => _openLegal(_phase4APrivacyPolicyUrl, 'Privacybeleid'),
-                icon: Icons.privacy_tip_outlined,
-              ),
-              const SizedBox(height: 8),
-              _secondaryButton(
-                theme,
-                'Voorwaarden',
-                () => _openLegal(_phase4ATermsUrl, 'Voorwaarden'),
-                icon: Icons.description_outlined,
-              ),
-            ] else
-              Text(
-                'Juridische links ontbreken en blokkeren een release.',
-                style: theme.bodySmall.copyWith(color: theme.error),
-              ),
+            _secondaryButton(
+              theme,
+              'Alpha-privacyverklaring',
+              () => context.pushNamed('AlphaPrivacyPage'),
+              icon: Icons.privacy_tip_outlined,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Definitieve gebruiksvoorwaarden en social login zijn uitgesteld tot na de eerste externe testerfase.',
+              style: theme.bodySmall.copyWith(color: theme.secondaryText),
+            ),
             const SizedBox(height: 12),
             _secondaryButton(theme, 'Uitloggen', _logout, icon: Icons.logout),
             const SizedBox(height: 12),
@@ -3071,6 +3194,7 @@ class _AvarynAccountRuntimeState extends State<AvarynAccountRuntime> {
     }
     return switch (widget.mode) {
       'welcome' => _welcome(),
+      'privacy' => _alphaPrivacy(),
       'email' => _emailChoice(),
       'login' => _loginForm(),
       'signup' => _signupForm(),

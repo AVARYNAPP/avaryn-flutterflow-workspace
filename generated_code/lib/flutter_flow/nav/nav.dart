@@ -320,6 +320,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: LinkLocalStablePageWidget.routePath,
           requireAuth: true,
           builder: (context, params) => LinkLocalStablePageWidget(),
+        ),
+        FFRoute(
+          name: AlphaPrivacyPageWidget.routeName,
+          path: AlphaPrivacyPageWidget.routePath,
+          builder: (context, params) => AlphaPrivacyPageWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
