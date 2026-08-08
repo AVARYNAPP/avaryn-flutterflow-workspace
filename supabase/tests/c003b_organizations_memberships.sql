@@ -71,7 +71,13 @@ begin
   if (select pg_catalog.array_agg(code order by code) from public.organization_types)
     <> array['farrier_business','other_professional','stable','trainer_practice','veterinary_practice']
   then raise exception 'Organization type seed set is not exact'; end if;
-  if (select count(*) from public.permission_definitions where scope_kind = 'organization') <> 7
+  if not array[
+      'organization.view','organization.edit',
+      'organization.memberships.view','organization.memberships.manage',
+      'organization.roles.view','organization.roles.manage',
+      'organization.audit.view'
+    ]::text[] <@ (select array_agg(code) from public.permission_definitions
+      where scope_kind = 'organization')
     or exists (select 1 from public.permission_definitions
       where scope_kind = 'organization' and code not like 'organization.%')
   then raise exception 'Organization permission taxonomy is invalid'; end if;
@@ -152,9 +158,19 @@ begin
   if (select primary_admin_profile_id from public.organizations where id = fixture.organization_a) <> fixture.profile_a
   then raise exception 'Primary administrator was accepted from spoofed input'; end if;
   if not public.has_organization_permission(fixture.organization_a, 'organization.audit.view')
-    or (select count(*) from public.organization_role_permissions rp
-        join public.organization_roles role on role.id = rp.role_id
-        where role.organization_id = fixture.organization_a and role.code = 'head_admin') <> 7
+    or exists (
+      select 1
+      from public.permission_definitions permission_definition
+      where permission_definition.scope_kind = 'organization'
+        and not exists (
+          select 1
+          from public.organization_role_permissions role_permission
+          join public.organization_roles role on role.id = role_permission.role_id
+          where role.organization_id = fixture.organization_a
+            and role.code = 'head_admin'
+            and role_permission.permission_id = permission_definition.id
+        )
+    )
   then raise exception 'Head administrator was not assembled atomically with all permissions'; end if;
   if (select access_version from public.profiles where id = fixture.profile_a) <> 2
   then raise exception 'Organization creation did not rotate creator profile access_version'; end if;

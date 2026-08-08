@@ -31,19 +31,19 @@ abstract final class AuthCreateAccountPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_hju7zb0k",
+            key: "Container_3sgqb191",
             type: "Container",
             path: "AuthCreateAccountPage.body[0]",
             name: "Phase4AsignupPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_zucvgpbd",
+                key: "Column_oop9yht5",
                 type: "Column",
                 path: "AuthCreateAccountPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_dlekk4u9",
+                    key: "Container_px7l6czp",
                     type: "Container",
                     path: "AuthCreateAccountPage.body[0].children[0].children[0]",
                     name: "Phase4AsignupRuntime",

@@ -31,19 +31,19 @@ abstract final class OnboardingPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_lc477brs",
+            key: "Container_a2ufgu4l",
             type: "Container",
             path: "OnboardingPage.body[0]",
             name: "Phase4AonboardingPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_4qz6akpz",
+                key: "Column_mnxh3fky",
                 type: "Column",
                 path: "OnboardingPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_cw52v2vm",
+                    key: "Container_0r1ox5rj",
                     type: "Container",
                     path: "OnboardingPage.body[0].children[0].children[0]",
                     name: "Phase4AonboardingRuntime",

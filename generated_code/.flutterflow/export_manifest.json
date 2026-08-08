@@ -9,7 +9,7 @@
     "mode": "export",
     "format": true
   },
-  "exported_at": "2026-08-08T06:33:05.873744Z",
+  "exported_at": "2026-08-08T09:11:12.866570Z",
   "files": [
     ".flutterflow/export_manifest.json",
     ".gitignore",
@@ -279,6 +279,7 @@
     "lib/custom_code/widgets/avaryn_operational_runtime.dart",
     "lib/custom_code/widgets/avaryn_orion_photo.dart",
     "lib/custom_code/widgets/avaryn_planning_views_runtime.dart",
+    "lib/custom_code/widgets/avaryn_stable_account_runtime.dart",
     "lib/custom_code/widgets/avaryn_stable_runtime.dart",
     "lib/custom_code/widgets/index.dart",
     "lib/feeding_overview_page/feeding_overview_page_model.dart",
@@ -1313,6 +1314,17 @@
       "name": "AvarynHorseAccountRuntime",
       "primary_files": [
         "lib/custom_code/widgets/avaryn_horse_account_runtime.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "ulcndkhm",
+      "name": "AvarynStableAccountRuntime",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_stable_account_runtime.dart"
       ],
       "related_files": [
         "lib/custom_code/widgets/index.dart"

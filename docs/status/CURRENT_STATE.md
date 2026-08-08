@@ -225,7 +225,33 @@ Laatst bijgewerkt: 2026-08-08
   groen voor de zelfstandige empty-state, createflow en transferontvangstflow;
   er is geen persistente testdata aangemaakt.
 - Er zijn geen bekende open C-008 P0/P1/P2-code-, data- of
-  securitybevindingen. Productie is niet gewijzigd en C-009 is niet gestart.
+  securitybevindingen. Productie is niet gewijzigd.
+- **C-009-status:** **C-009 — Approved within the current Alpha/Staging
+  scope**. Formele uitkomst: **STABLE ACCOUNT / MEMBERSHIP / HORSE LINK ROUTE =
+  PASS**. Silas heeft de scherm- en cutoverreview op `2026-08-08` expliciet
+  goedgekeurd.
+- C-009 maakt het stalaccount een zelfstandige canonical organization zonder
+  login of gedeelde credentials. Exact één scalar Organization Authority,
+  expliciete memberships, begrensde role templates, verified one-time
+  invitations, bilaterale paard-stalkoppelingen, afzonderlijke residency en
+  expliciete scoped horse grants blijven server-side en lifecycle-/CAS-
+  beschermd.
+- Membership, rol, actieve link en residency verlenen geen impliciete
+  paardtoegang. Organization Authority-transfer hergebruikt uitsluitend de
+  bewezen zeven dagen geldige C-003E-route; C-008 Horse Authority, Planning,
+  Voeding en private media zijn niet herbouwd.
+- Migration `202608080002_c009_stable_account_vertical` is transactioneel op
+  exact AVARYN Staging toegepast en geregistreerd. Fresh build, de hosted
+  teruggerolde Reimer Dressage-securitymatrix, invitation-/horse-/organization-
+  transferconcurrency, direct geraakte C-003A–F/C-004/C-007/C-008-regressies,
+  custom-widgetanalyse en alle **192/192** FlutterFlow/Dart-tests zijn groen.
+  Er bleef geen C-009-testuser of fixture achter.
+- FlutterFlowrevisie `HssI1OiCUzJNn9p7t2ya` is gevalideerd en uitsluitend naar
+  de bestaande Alpha-hosts gepubliceerd. De cachevrije custom-domainroute toont
+  de C-009-stalruntime; de menselijke scherm-/cutovergate is **PASS**.
+- Er zijn geen bekende open C-009 P0/P1/P2-code-, data- of
+  securitybevindingen. Productie, Git-push en merge zijn niet uitgevoerd en
+  C-010 is niet gestart.
 - De trusted deletion-orchestrator blijft ontbreken; accountverwijdering en
   productieanonimisering blijven fail-closed.
 
@@ -268,8 +294,10 @@ Het goedgekeurde contract staat in
 | C-007-status | `Approved within the current Alpha/Staging scope` |
 | C-008-branch | `implementation/account-foundation-v2-c008-horse-authority-transfer` |
 | C-008-status | `Approved within the current Alpha/Staging scope; HORSE AUTHORITY / TRANSFER ROUTE = PASS` |
+| C-009-branch | `implementation/account-foundation-v2-c009-stable-memberships-horse-link` |
+| C-009-status | `Approved within the current Alpha/Staging scope; STABLE ACCOUNT / MEMBERSHIP / HORSE LINK ROUTE = PASS` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
-| FlutterFlow-revisie | `YNqu1rA4Wts0ZafmrG8q` (published to both Alpha hosts) |
+| FlutterFlow-revisie | `HssI1OiCUzJNn9p7t2ya` (published to both Alpha hosts) |
 | Live Alpha | <https://alpha.avaryn.eu/> |
 | Rollback-/fallback-URL | <https://avaryn-alpha.flutterflow.app/> |
 
@@ -334,5 +362,9 @@ Git-push en merge zijn niet uitgevoerd. C-008 heeft vervolgens uitsluitend de
 canonical horse-/authority-/transfervertical op het allowlisted Staging-/Alpha-
 target gemigreerd, securitytechnisch getest en gepubliceerd. De lokale en
 hosted gates, concurrencybewijzen en cachevrije schermreview zijn groen;
-C-008 is binnen de huidige Alpha/Staging-scope volledig afgerond. C-009 is niet
-gestart.
+C-008 is binnen de huidige Alpha/Staging-scope volledig afgerond. C-009 heeft
+daarna uitsluitend de canonical stalaccount-/membership-/rollen-/bilaterale
+horse-linkvertical op het allowlisted Staging-/Alpha-target gemigreerd,
+securitytechnisch getest en gepubliceerd. De lokale en hosted gates,
+concurrencybewijzen en expliciete scherm-/cutoverreview zijn groen; C-009 is
+binnen de huidige Alpha/Staging-scope volledig afgerond. C-010 is niet gestart.

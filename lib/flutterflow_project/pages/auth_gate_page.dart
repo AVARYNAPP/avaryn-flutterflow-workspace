@@ -31,19 +31,19 @@ abstract final class AuthGatePageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_0mxxxhxg",
+            key: "Container_l1vgx8fc",
             type: "Container",
             path: "AuthGatePage.body[0]",
             name: "Phase4AgatePageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_fe3uyeda",
+                key: "Column_8vw0d91y",
                 type: "Column",
                 path: "AuthGatePage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_inos91vj",
+                    key: "Container_r8ivrdkt",
                     type: "Container",
                     path: "AuthGatePage.body[0].children[0].children[0]",
                     name: "Phase4AgateRuntime",

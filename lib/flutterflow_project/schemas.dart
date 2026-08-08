@@ -9,6 +9,7 @@ import 'package:flutterflow_ai/flutterflow_ai.dart' as ffai;
 abstract final class Enums {
   static const all = <ffai.EnumHandle>[];
 }
+
 abstract final class Structs {
   static final ffai.StructHandle activityData = ffai.StructHandle(
     "ActivityData",
@@ -410,6 +411,7 @@ abstract final class CustomCode {
     "AvarynOperationalRuntime",
     "AvarynOrionPhoto",
     "AvarynPlanningViewsRuntime",
+    "AvarynStableAccountRuntime",
     "AvarynStableRuntime",
   ];
 }

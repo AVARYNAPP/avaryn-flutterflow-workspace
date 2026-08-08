@@ -31,19 +31,19 @@ abstract final class AuthWelcomePageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_nus83vja",
+            key: "Container_phv19o2o",
             type: "Container",
             path: "AuthWelcomePage.body[0]",
             name: "Phase4AwelcomePageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_4ygra7nf",
+                key: "Column_bkmglxse",
                 type: "Column",
                 path: "AuthWelcomePage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_1f8pbdt0",
+                    key: "Container_phk6nqra",
                     type: "Container",
                     path: "AuthWelcomePage.body[0].children[0].children[0]",
                     name: "Phase4AwelcomeRuntime",

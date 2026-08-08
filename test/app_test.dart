@@ -49,6 +49,22 @@ void main() {
     expect(findCustomWidget(project, name: 'AvarynStableRuntime'), isNotNull);
   });
 
+  test('C-009 bundled stable account runtime is valid custom-widget Dart', () {
+    final app = buildApp(
+      checkpoint.buildC009StableAccountRuntimeCompileTestApp,
+    );
+    final project = compileApp(app).project;
+
+    expect(
+      findPage(project, name: 'C009StableAccountRuntimeCompilePage'),
+      isNotNull,
+    );
+    expect(
+      findCustomWidget(project, name: 'AvarynStableAccountRuntime'),
+      isNotNull,
+    );
+  });
+
   test('Phase 4B member route accepts nullable generated page parameters', () {
     final source = File('dsl/avaryn_stable_runtime.dart').readAsStringSync();
 

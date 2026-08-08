@@ -93,6 +93,12 @@ class _AvarynHorseAccountRuntimeState extends State<AvarynHorseAccountRuntime> {
             params: {'p_horse_id': selected},
           ),
         );
+        workspace['organization_links'] = _rows(
+          await _client.rpc(
+            'get_horse_organization_links',
+            params: {'p_horse_id': selected},
+          ),
+        );
       }
       if (!mounted) return;
       setState(() {
@@ -553,6 +559,151 @@ class _AvarynHorseAccountRuntimeState extends State<AvarynHorseAccountRuntime> {
     });
   }
 
+  Future<void> _proposeOrganizationLink() async {
+    final organizationId = await _askText(
+      'Paard-stalkoppeling aanvragen',
+      'Canonical organization UUID',
+    );
+    if (organizationId == null || organizationId.isEmpty) return;
+    final linkType = await _askText(
+      'Type samenwerking',
+      'Linktype',
+      initial: 'training_provider',
+      confirm: 'Aanvragen',
+    );
+    if (linkType == null || linkType.isEmpty) return;
+    await _mutate(() async {
+      await _client.rpc(
+        'propose_organization_horse_link',
+        params: {
+          'p_horse_id': _selectedHorseId,
+          'p_organization_id': organizationId,
+          'p_link_type_code': linkType,
+          'p_initiating_context': 'horse',
+          'p_correlation_id': _uuid.v4(),
+        },
+      );
+    });
+  }
+
+  Future<void> _respondOrganizationLink(
+    Map<String, dynamic> link,
+    String action,
+  ) async {
+    await _mutate(() async {
+      await _client.rpc(
+        'respond_organization_horse_link',
+        params: {
+          'p_link_id': link['id'],
+          'p_expected_row_version': link['row_version'],
+          'p_action': action,
+          'p_correlation_id': _uuid.v4(),
+        },
+      );
+    });
+  }
+
+  Future<void> _grantOrganizationRoleHorseAccess(
+    Map<String, dynamic> link,
+  ) async {
+    final roles = _rows(link['roles']);
+    if (roles.isEmpty) return;
+    var roleId = roles.first['id']?.toString() ?? '';
+    var permission = 'horse.view';
+    final accepted = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => StatefulBuilder(
+            builder:
+                (context, setDialogState) => AlertDialog(
+                  title: const Text('Expliciete paardtoegang verlenen'),
+                  content: SizedBox(
+                    width: 520,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DropdownButtonFormField<String>(
+                          initialValue: roleId,
+                          decoration: const InputDecoration(
+                            labelText: 'Stalrol',
+                          ),
+                          items: roles
+                              .map(
+                                (role) => DropdownMenuItem(
+                                  value: role['id']?.toString(),
+                                  child: Text(role['name']?.toString() ?? ''),
+                                ),
+                              )
+                              .toList(growable: false),
+                          onChanged:
+                              (value) => setDialogState(
+                                () => roleId = value ?? roleId,
+                              ),
+                        ),
+                        const SizedBox(height: 12),
+                        DropdownButtonFormField<String>(
+                          initialValue: permission,
+                          decoration: const InputDecoration(
+                            labelText: 'Horse capability',
+                          ),
+                          items: const [
+                                'horse.view',
+                                'horse.edit',
+                                'horse.manage',
+                                'horse.assign',
+                                'horse.share',
+                              ]
+                              .map(
+                                (value) => DropdownMenuItem(
+                                  value: value,
+                                  child: Text(value),
+                                ),
+                              )
+                              .toList(growable: false),
+                          onChanged:
+                              (value) => setDialogState(
+                                () => permission = value ?? permission,
+                              ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Deze grant geldt alleen voor dit paard, deze stalrol en deze capability. De koppeling zelf geeft nul toegang.',
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Annuleren'),
+                    ),
+                    FilledButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text('Verlenen'),
+                    ),
+                  ],
+                ),
+          ),
+    );
+    if (accepted != true || roleId.isEmpty) return;
+    final now = DateTime.now().toUtc();
+    await _mutate(() async {
+      await _client.rpc(
+        'grant_horse_organization_role_permission',
+        params: {
+          'p_horse_id': _selectedHorseId,
+          'p_role_id': roleId,
+          'p_permission_code': permission,
+          'p_link_id': link['id'],
+          'p_valid_from': now.toIso8601String(),
+          'p_valid_until': now.add(const Duration(days: 90)).toIso8601String(),
+          'p_reason_code': 'LINK_BOUND',
+          'p_correlation_id': _uuid.v4(),
+        },
+      );
+    });
+  }
+
   Future<void> _startTransfer() async {
     final email = await _askText(
       'Horse Authority overdragen',
@@ -887,6 +1038,8 @@ class _AvarynHorseAccountRuntimeState extends State<AvarynHorseAccountRuntime> {
           const SizedBox(height: 14),
           _authorityCard(horse, workspace),
           const SizedBox(height: 14),
+          _organizationLinksCard(horse, _rows(workspace['organization_links'])),
+          const SizedBox(height: 14),
           _recordsCard(
             'Eigenaren',
             'Juridisch/contractueel eigendom staat los van Horse Authority en verleent geen toegang.',
@@ -1084,6 +1237,117 @@ class _AvarynHorseAccountRuntimeState extends State<AvarynHorseAccountRuntime> {
       ),
     );
   }
+
+  Widget _organizationLinksCard(
+    Map<String, dynamic> horse,
+    List<Map<String, dynamic>> links,
+  ) => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Paard-stalkoppelingen',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              if (horse['can_manage'] == true)
+                IconButton(
+                  onPressed: _busy ? null : _proposeOrganizationLink,
+                  icon: const Icon(Icons.add_link),
+                  tooltip: 'Koppeling aanvragen',
+                ),
+            ],
+          ),
+          const Text(
+            'Een koppeling wordt pas actief na bevestiging door Horse Authority én de bevoegde stalcontext en verleent zelf geen toegang.',
+          ),
+          const SizedBox(height: 8),
+          if (links.isEmpty)
+            const Text('Geen organisatiekoppelingen voor dit paard.')
+          else
+            for (final link in links)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.business_outlined),
+                title: Text(
+                  link['organization_name']?.toString() ?? 'Stalorganisatie',
+                ),
+                subtitle: Text(
+                  '${link['link_type']} · ${link['status']} · horse ${link['horse_confirmed'] == true ? 'bevestigd' : 'wacht'} · stal ${link['organization_confirmed'] == true ? 'bevestigd' : 'wacht'}',
+                ),
+                trailing:
+                    horse['can_manage'] == true
+                        ? Wrap(
+                          spacing: 2,
+                          children: [
+                            if (link['status'] == 'proposed' &&
+                                link['initiating_context'] == 'organization')
+                              PopupMenuButton<String>(
+                                onSelected:
+                                    (value) =>
+                                        _respondOrganizationLink(link, value),
+                                itemBuilder:
+                                    (_) => const [
+                                      PopupMenuItem(
+                                        value: 'accept',
+                                        child: Text('Bevestigen'),
+                                      ),
+                                      PopupMenuItem(
+                                        value: 'reject',
+                                        child: Text('Weigeren'),
+                                      ),
+                                    ],
+                              ),
+                            if (link['status'] == 'proposed' &&
+                                link['initiating_context'] == 'horse')
+                              IconButton(
+                                onPressed:
+                                    _busy
+                                        ? null
+                                        : () => _respondOrganizationLink(
+                                          link,
+                                          'withdraw',
+                                        ),
+                                icon: const Icon(Icons.cancel_outlined),
+                                tooltip: 'Aanvraag intrekken',
+                              ),
+                            if (link['status'] == 'active') ...[
+                              IconButton(
+                                onPressed:
+                                    _busy
+                                        ? null
+                                        : () =>
+                                            _grantOrganizationRoleHorseAccess(
+                                              link,
+                                            ),
+                                icon: const Icon(Icons.key_outlined),
+                                tooltip: 'Expliciete horse grant',
+                              ),
+                              IconButton(
+                                onPressed:
+                                    _busy
+                                        ? null
+                                        : () => _respondOrganizationLink(
+                                          link,
+                                          'end',
+                                        ),
+                                icon: const Icon(Icons.link_off),
+                                tooltip: 'Koppeling beëindigen',
+                              ),
+                            ],
+                          ],
+                        )
+                        : null,
+              ),
+        ],
+      ),
+    ),
+  );
 
   Widget _recordsCard(
     String title,

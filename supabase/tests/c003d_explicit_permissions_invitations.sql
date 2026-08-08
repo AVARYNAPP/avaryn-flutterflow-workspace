@@ -36,7 +36,13 @@ update pg_temp.c003d_fixture fixture set
 
 do $$
 begin
-  if (select count(*) from public.permission_definitions where scope_kind='organization')<>7
+  if not array[
+      'organization.view','organization.edit',
+      'organization.memberships.view','organization.memberships.manage',
+      'organization.roles.view','organization.roles.manage',
+      'organization.audit.view'
+    ]::text[] <@ (select array_agg(code) from public.permission_definitions
+      where scope_kind='organization')
     or (select count(*) from public.permission_definitions where scope_kind='horse')<>6
     or (select is_grantable from public.permission_definitions where code='horse.transfer')
     or exists(select 1 from public.permission_definitions where code like 'horse.%' and scope_kind<>'horse')
@@ -87,11 +93,12 @@ with created as(select * from public.create_organization_role(
   array['organization.view'],'c003d100-0000-4000-8000-000000000003'))
 update pg_temp.c003d_fixture fixture set role_id=created.role_id from created;
 do $$ begin
-  if (select count(*) from public.organization_role_permissions role_permission
-      join public.organization_roles role on role.id=role_permission.role_id
-      join public.permission_definitions permission on permission.id=role_permission.permission_id
-      where role.organization_id=(select organization_id from pg_temp.c003d_fixture)
-        and role.code='head_admin' and permission.scope_kind='organization')<>7
+  if exists(select 1 from public.permission_definitions permission
+      where permission.scope_kind='organization'
+        and not exists(select 1 from public.organization_role_permissions role_permission
+          join public.organization_roles role on role.id=role_permission.role_id
+          where role.organization_id=(select organization_id from pg_temp.c003d_fixture)
+            and role.code='head_admin' and role_permission.permission_id=permission.id))
     or exists(select 1 from public.organization_role_permissions role_permission
       join public.organization_roles role on role.id=role_permission.role_id
       join public.permission_definitions permission on permission.id=role_permission.permission_id

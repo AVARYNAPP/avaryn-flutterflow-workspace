@@ -16,6 +16,7 @@ final horsesOverviewPageHandle = ffai.ProjectPageHandle<HorsesOverviewPageParams
 final class HorsesOverviewPageParams {
   const HorsesOverviewPageParams();
 }
+
 final class HorsesOverviewPageState {
   const HorsesOverviewPageState();
 }
@@ -33,50 +34,50 @@ abstract final class HorsesOverviewPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Row_vsii3338",
+            key: "Row_b5mctemx",
             type: "Row",
             path: "HorsesOverviewPage.body[0]",
             name: "C008ResponsiveShell",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Container_s5anl9dd",
+                key: "Container_6yoah1vy",
                 type: "Container",
                 path: "HorsesOverviewPage.body[0].children[0]",
                 name: "C008DesktopSideNavigation",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_b452m27l",
+                    key: "Container_g7b4kt04",
                     type: "Container",
                     path: "HorsesOverviewPage.body[0].children[0].children[0]",
                     name: "AvarynDesktopNavigationBody",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Column_sezyzord",
+                        key: "Column_ylrv5p45",
                         type: "Column",
                         path: "HorsesOverviewPage.body[0].children[0].children[0].children[0]",
                         name: "Column",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Container_fq0a9g5e",
+                            key: "Container_nl5baljn",
                             type: "Container",
                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[0]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Column_2xbmgbby",
+                                key: "Column_pvbvf29c",
                                 type: "Column",
                                 path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[0].children[0]",
                                 name: "Column",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_ymy4zfpv",
+                                    key: "Text_umja9wcr",
                                     type: "Text",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[0].children[0].children[0]",
                                     name: "Text",
                                     text: "AVARYN",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Text_jrkvrrnw",
+                                    key: "Text_nf10rwkl",
                                     type: "Text",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[0].children[0].children[1]",
                                     name: "Text",
@@ -87,31 +88,31 @@ abstract final class HorsesOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_1g6ib2pp",
+                            key: "Container_q70pjmdc",
                             type: "Container",
                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[1]",
                             name: "Container",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_tqipjwy5",
+                            key: "Container_90vdrikj",
                             type: "Container",
                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[2]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_m3pbwd6l",
+                                key: "Row_qf6uphhs",
                                 type: "Row",
                                 path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[2].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_t55e3czd",
+                                    key: "Container_edjaiz72",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[2].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_zgpw7m49",
+                                    key: "Button_9iza6ldi",
                                     type: "Button",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[2].children[0].children[1]",
                                     name: "Button",
@@ -125,7 +126,7 @@ abstract final class HorsesOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_0rra2l9y",
+                            key: "Container_uzqjadqj",
                             type: "Container",
                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[3]",
                             name: "Container",
@@ -134,37 +135,37 @@ abstract final class HorsesOverviewPageWidgets {
                             ],
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_dijlxo90",
+                                key: "Row_3tiq13zj",
                                 type: "Row",
                                 path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_gdeyx1e3",
+                                    key: "Container_f7cr1hxj",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_qy9m6w36",
+                                    key: "Container_ml5o81do",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1]",
                                     name: "Container",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Row_z7of226h",
+                                        key: "Row_gjtojfxy",
                                         type: "Row",
                                         path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0]",
                                         name: "Row",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_498t0my8",
+                                            key: "Container_16xlu7pr",
                                             type: "Container",
                                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0]",
                                             name: "Container",
                                             children: <ffai.ProjectWidgetHandle>[
                                               ffai.ProjectWidgetHandle(
-                                                key: "Container_z3cqippq",
+                                                key: "Container_9dcba7mr",
                                                 type: "Container",
                                                 path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[0].children[0]",
                                                 name: "AvarynHorseshoeIcon",
@@ -172,7 +173,7 @@ abstract final class HorsesOverviewPageWidgets {
                                             ],
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_evalfvjs",
+                                            key: "Text_ck3p52a4",
                                             type: "Text",
                                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[3].children[0].children[1].children[0].children[1]",
                                             name: "Text",
@@ -187,25 +188,25 @@ abstract final class HorsesOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_r9leg4rc",
+                            key: "Container_cd0104j8",
                             type: "Container",
                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[4]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_z6xdjsd7",
+                                key: "Row_29wuiao4",
                                 type: "Row",
                                 path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[4].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_mbqpl9l8",
+                                    key: "Container_ondtpket",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[4].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_alk9obxw",
+                                    key: "Button_kpf8usm2",
                                     type: "Button",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[4].children[0].children[1]",
                                     name: "Button",
@@ -219,25 +220,25 @@ abstract final class HorsesOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_de0owomi",
+                            key: "Container_th3s7atg",
                             type: "Container",
                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[5]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_1joxexh4",
+                                key: "Row_zs5f2zae",
                                 type: "Row",
                                 path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[5].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_dsnj7ruj",
+                                    key: "Container_ytdu76fh",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[5].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_uuh38e95",
+                                    key: "Button_1wccehd1",
                                     type: "Button",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[5].children[0].children[1]",
                                     name: "Button",
@@ -251,25 +252,25 @@ abstract final class HorsesOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_jmm99a5y",
+                            key: "Container_kry7fvoj",
                             type: "Container",
                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[6]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_pauigsm6",
+                                key: "Row_zg6wcxmg",
                                 type: "Row",
                                 path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[6].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_qx4ypvtb",
+                                    key: "Container_zu2go8ys",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[6].children[0].children[0]",
                                     name: "Container",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Button_xgn4uos0",
+                                    key: "Button_qew9sbv1",
                                     type: "Button",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[6].children[0].children[1]",
                                     name: "Button",
@@ -283,44 +284,44 @@ abstract final class HorsesOverviewPageWidgets {
                             ],
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Spacer_7lvedtid",
+                            key: "Spacer_8n5e6ad6",
                             type: "Spacer",
                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[7]",
                             name: "FlexSpacer",
                           ),
                           ffai.ProjectWidgetHandle(
-                            key: "Container_doyuvocr",
+                            key: "Container_6ajjjhjt",
                             type: "Container",
                             path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[8]",
                             name: "Container",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_zouv6d79",
+                                key: "Row_x5cfju3g",
                                 type: "Row",
                                 path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Icon_gh66ylt0",
+                                    key: "Icon_ocqiprxv",
                                     type: "Icon",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0].children[0]",
                                     name: "Icon",
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Column_mfj1d5o0",
+                                    key: "Column_c6vbub2t",
                                     type: "Column",
                                     path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1]",
                                     name: "Column",
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_q8yyvzl8",
+                                        key: "Text_2n6gewa0",
                                         type: "Text",
                                         path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[0]",
                                         name: "Text",
                                         text: "Besloten Alpha",
                                       ),
                                       ffai.ProjectWidgetHandle(
-                                        key: "Text_k4g04fku",
+                                        key: "Text_q3zac6lh",
                                         type: "Text",
                                         path: "HorsesOverviewPage.body[0].children[0].children[0].children[0].children[8].children[0].children[1].children[1]",
                                         name: "Text",
@@ -339,38 +340,38 @@ abstract final class HorsesOverviewPageWidgets {
                 ],
               ),
               ffai.ProjectWidgetHandle(
-                key: "Container_uotlpvsy",
+                key: "Container_yz9n499y",
                 type: "Container",
                 path: "HorsesOverviewPage.body[0].children[1]",
                 name: "C008HorseWorkspaceBounds",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Column_d17f1dz7",
+                    key: "Column_hotb8458",
                     type: "Column",
                     path: "HorsesOverviewPage.body[0].children[1].children[0]",
                     name: "Column",
                     children: <ffai.ProjectWidgetHandle>[
                       ffai.ProjectWidgetHandle(
-                        key: "Container_phx8u8sh",
+                        key: "Container_iips37gg",
                         type: "Container",
                         path: "HorsesOverviewPage.body[0].children[1].children[0].children[0]",
                         name: "C008HorseHeader",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Column_urgt7snr",
+                            key: "Column_mbx8gvs7",
                             type: "Column",
                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[0].children[0]",
                             name: "Column",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Text_j850cv3o",
+                                key: "Text_52duyyil",
                                 type: "Text",
                                 path: "HorsesOverviewPage.body[0].children[1].children[0].children[0].children[0].children[0]",
                                 name: "Text",
                                 text: "Mijn paarden",
                               ),
                               ffai.ProjectWidgetHandle(
-                                key: "Text_w8n5y4rs",
+                                key: "Text_j391xg6d",
                                 type: "Text",
                                 path: "HorsesOverviewPage.body[0].children[1].children[0].children[0].children[0].children[1]",
                                 name: "Text",
@@ -381,31 +382,31 @@ abstract final class HorsesOverviewPageWidgets {
                         ],
                       ),
                       ffai.ProjectWidgetHandle(
-                        key: "Container_3ikxv621",
+                        key: "Container_v1mgxlgm",
                         type: "Container",
                         path: "HorsesOverviewPage.body[0].children[1].children[0].children[1]",
                         name: "C008HorseAccountRuntime",
                       ),
                       ffai.ProjectWidgetHandle(
-                        key: "Container_mso9evvk",
+                        key: "Container_glxaepfc",
                         type: "Container",
                         path: "HorsesOverviewPage.body[0].children[1].children[0].children[2]",
                         name: "C008MobileBottomNavigation",
                         children: <ffai.ProjectWidgetHandle>[
                           ffai.ProjectWidgetHandle(
-                            key: "Container_l3cscttl",
+                            key: "Container_y6u3bgcz",
                             type: "Container",
                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0]",
                             name: "AvarynMobileNavigationBody",
                             children: <ffai.ProjectWidgetHandle>[
                               ffai.ProjectWidgetHandle(
-                                key: "Row_wdixhvfz",
+                                key: "Row_rvw208n9",
                                 type: "Row",
                                 path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0]",
                                 name: "Row",
                                 children: <ffai.ProjectWidgetHandle>[
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_rboh179r",
+                                    key: "Container_e9kj0ed1",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[0]",
                                     name: "Container",
@@ -414,25 +415,25 @@ abstract final class HorsesOverviewPageWidgets {
                                     ],
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Column_zqic0y1q",
+                                        key: "Column_a19s3g7r",
                                         type: "Column",
                                         path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0]",
                                         name: "Column",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_cmbj29z2",
+                                            key: "Container_m8k2mi8u",
                                             type: "Container",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[0]",
                                             name: "Container",
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Icon_p8h9stw7",
+                                            key: "Icon_twosdqn3",
                                             type: "Icon",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[1]",
                                             name: "Icon",
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_cypx30kg",
+                                            key: "Text_cmz14sjn",
                                             type: "Text",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[0].children[0].children[2]",
                                             name: "Text",
@@ -443,7 +444,7 @@ abstract final class HorsesOverviewPageWidgets {
                                     ],
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_uqpqdfr5",
+                                    key: "Container_qcb27o5o",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[1]",
                                     name: "Container",
@@ -452,25 +453,25 @@ abstract final class HorsesOverviewPageWidgets {
                                     ],
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Column_natpcuxp",
+                                        key: "Column_inn0wyfl",
                                         type: "Column",
                                         path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[1].children[0]",
                                         name: "Column",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_kuxk0cma",
+                                            key: "Container_2xodcghz",
                                             type: "Container",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[1].children[0].children[0]",
                                             name: "Container",
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_6magzatu",
+                                            key: "Container_gift599u",
                                             type: "Container",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[1].children[0].children[1]",
                                             name: "Container",
                                             children: <ffai.ProjectWidgetHandle>[
                                               ffai.ProjectWidgetHandle(
-                                                key: "Container_2eyhxsk7",
+                                                key: "Container_3qv777s9",
                                                 type: "Container",
                                                 path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[1].children[0].children[1].children[0]",
                                                 name: "AvarynHorseshoeIcon",
@@ -478,7 +479,7 @@ abstract final class HorsesOverviewPageWidgets {
                                             ],
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_mjlp9lr6",
+                                            key: "Text_61a109lt",
                                             type: "Text",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[1].children[0].children[2]",
                                             name: "Text",
@@ -489,7 +490,7 @@ abstract final class HorsesOverviewPageWidgets {
                                     ],
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_tl3mfjhf",
+                                    key: "Container_sd0h30qw",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[2]",
                                     name: "Container",
@@ -498,25 +499,25 @@ abstract final class HorsesOverviewPageWidgets {
                                     ],
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Column_7ighgb6q",
+                                        key: "Column_vgw1c5jr",
                                         type: "Column",
                                         path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[2].children[0]",
                                         name: "Column",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_xjo0ztmw",
+                                            key: "Container_feygkzsh",
                                             type: "Container",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[2].children[0].children[0]",
                                             name: "Container",
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Icon_nca480df",
+                                            key: "Icon_e5dnnahi",
                                             type: "Icon",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[2].children[0].children[1]",
                                             name: "Icon",
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_idl1bdae",
+                                            key: "Text_7fzntgal",
                                             type: "Text",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[2].children[0].children[2]",
                                             name: "Text",
@@ -527,7 +528,7 @@ abstract final class HorsesOverviewPageWidgets {
                                     ],
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_5dvgu7ls",
+                                    key: "Container_jm2hmza0",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[3]",
                                     name: "Container",
@@ -536,25 +537,25 @@ abstract final class HorsesOverviewPageWidgets {
                                     ],
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Column_t4xsfbmd",
+                                        key: "Column_0lufwigc",
                                         type: "Column",
                                         path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[3].children[0]",
                                         name: "Column",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_vrix6et5",
+                                            key: "Container_rd5337z5",
                                             type: "Container",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[3].children[0].children[0]",
                                             name: "Container",
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Icon_yjid4y6p",
+                                            key: "Icon_ztiinppe",
                                             type: "Icon",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[3].children[0].children[1]",
                                             name: "Icon",
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_s1u0w37r",
+                                            key: "Text_zpcn39oa",
                                             type: "Text",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[3].children[0].children[2]",
                                             name: "Text",
@@ -565,7 +566,7 @@ abstract final class HorsesOverviewPageWidgets {
                                     ],
                                   ),
                                   ffai.ProjectWidgetHandle(
-                                    key: "Container_rsyt80bs",
+                                    key: "Container_msiogfkg",
                                     type: "Container",
                                     path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[4]",
                                     name: "Container",
@@ -574,25 +575,25 @@ abstract final class HorsesOverviewPageWidgets {
                                     ],
                                     children: <ffai.ProjectWidgetHandle>[
                                       ffai.ProjectWidgetHandle(
-                                        key: "Column_0jy33wuj",
+                                        key: "Column_xb6y1hbq",
                                         type: "Column",
                                         path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[4].children[0]",
                                         name: "Column",
                                         children: <ffai.ProjectWidgetHandle>[
                                           ffai.ProjectWidgetHandle(
-                                            key: "Container_z8nd1x5q",
+                                            key: "Container_7op5x25v",
                                             type: "Container",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[4].children[0].children[0]",
                                             name: "Container",
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Icon_tjmabcx4",
+                                            key: "Icon_uugf3i8r",
                                             type: "Icon",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[4].children[0].children[1]",
                                             name: "Icon",
                                           ),
                                           ffai.ProjectWidgetHandle(
-                                            key: "Text_r5xg2bdq",
+                                            key: "Text_c34tf77b",
                                             type: "Text",
                                             path: "HorsesOverviewPage.body[0].children[1].children[0].children[2].children[0].children[0].children[4].children[0].children[2]",
                                             name: "Text",

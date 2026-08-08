@@ -56,7 +56,9 @@ begin
       and pg_catalog.has_function_privilege('authenticated',procedure.oid,'execute')
       and not pg_catalog.has_function_privilege('anon',procedure.oid,'execute')
       and not pg_catalog.has_function_privilege('service_role',procedure.oid,'execute')
-  )<>8 then raise exception 'C003F_TYPED_TRANSFER_RPC_ACL_INVALID';end if;
+  -- C-009 adds one authenticated-only statement-consistent stable authority
+  -- response wrapper over the unchanged C-003E transfer state machine.
+  )<>9 then raise exception 'C003F_TYPED_TRANSFER_RPC_ACL_INVALID';end if;
 
   if pg_catalog.has_table_privilege('anon','public.horse_authority_transfers','select')
     or pg_catalog.has_table_privilege('authenticated','public.horse_authority_transfers','select')

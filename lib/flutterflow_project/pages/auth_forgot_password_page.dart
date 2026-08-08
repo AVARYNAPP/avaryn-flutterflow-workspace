@@ -31,19 +31,19 @@ abstract final class AuthForgotPasswordPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_1njhbq2x",
+            key: "Container_wz9z8st5",
             type: "Container",
             path: "AuthForgotPasswordPage.body[0]",
             name: "Phase4AforgotPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_14mf19c5",
+                key: "Column_kdcfsent",
                 type: "Column",
                 path: "AuthForgotPasswordPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_lv7zo4uv",
+                    key: "Container_0q6upbdu",
                     type: "Container",
                     path: "AuthForgotPasswordPage.body[0].children[0].children[0]",
                     name: "Phase4AforgotRuntime",

@@ -31,19 +31,19 @@ abstract final class AuthResetPasswordPageWidgets {
       slots: <String, List<ffai.ProjectWidgetHandle>>{
         "body": <ffai.ProjectWidgetHandle>[
           ffai.ProjectWidgetHandle(
-            key: "Container_wcr5wfqg",
+            key: "Container_gmbvapnk",
             type: "Container",
             path: "AuthResetPasswordPage.body[0]",
             name: "Phase4AresetPageBody",
             children: <ffai.ProjectWidgetHandle>[
               ffai.ProjectWidgetHandle(
-                key: "Column_cecnyuzi",
+                key: "Column_kdlt1ptg",
                 type: "Column",
                 path: "AuthResetPasswordPage.body[0].children[0]",
                 name: "Column",
                 children: <ffai.ProjectWidgetHandle>[
                   ffai.ProjectWidgetHandle(
-                    key: "Container_nieihqo8",
+                    key: "Container_urhdlzh8",
                     type: "Container",
                     path: "AuthResetPasswordPage.body[0].children[0].children[0]",
                     name: "Phase4AresetRuntime",

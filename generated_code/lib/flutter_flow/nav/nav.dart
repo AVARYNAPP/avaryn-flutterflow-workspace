@@ -255,6 +255,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: StableInvitationPageWidget.routeName,
           path: StableInvitationPageWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => StableInvitationPageWidget(),
         ),
         FFRoute(

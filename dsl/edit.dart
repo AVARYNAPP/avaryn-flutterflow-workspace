@@ -5206,7 +5206,7 @@ Future<void> main(List<String> args) async {
   final options = _parseCliOptions(args);
   try {
     await flutterFlowAI(
-      buildAvarynC008,
+      buildAvarynC009,
       apiKey: options.apiKey,
       baseUrl: options.baseUrl,
       projectName: options.projectName,
@@ -5930,6 +5930,89 @@ void buildAvarynC008(App app) {
         tabletHidden: false,
         tabletLandscapeHidden: false,
         desktopHidden: true,
+      );
+    }
+  });
+}
+
+/// C-009 reuses the approved organization/membership/invitation/transfer and
+/// canonical-horse state machines. It replaces only the existing stable
+/// account routes with one capability-driven product runtime; C-008 horses,
+/// Planning, Feeding and the broad workspace model remain unchanged.
+void buildAvarynC009(App app) {
+  buildAvarynC008(app);
+  _applyC009StableAccountRuntimeResource(app);
+  final pages = <ProjectPageHandle>[
+    ff.Pages.stablePickerPage,
+    ff.Pages.createStablePage,
+    ff.Pages.stableDetailsPage,
+    ff.Pages.stableMembersPage,
+    ff.Pages.inviteStableMemberPage,
+    ff.Pages.pendingStableInvitationsPage,
+    ff.Pages.manageStableRolesPage,
+    ff.Pages.stableAccessPage,
+    ff.Pages.stableInvitationPage,
+  ];
+  for (final target in pages) {
+    app.editPage(target, (page) {
+      page.ensureReplaced(
+        target.widgets.byPath('${target.name}.body[0]').single,
+        _c009StableAccountPageBody(),
+      );
+    });
+  }
+  app.raw((project) {
+    for (final target in pages) {
+      updatePage(
+        project,
+        name: target.name,
+        description:
+            'Canonical stable account with scalar Organization Authority, explicit memberships, capability templates, bilateral horse links and separate residency history.',
+      );
+      setPageRequiresAuth(project, pageName: target.name, requiresAuth: true);
+    }
+  });
+}
+
+String _loadC009StableAccountRuntimeWidgetCode() {
+  final sourceFile = _resolveDslSourceFile(
+    'avaryn_stable_account_runtime.dart',
+  );
+  if (!sourceFile.existsSync()) {
+    throw StateError('Missing C-009 stable runtime: ${sourceFile.path}');
+  }
+  return sourceFile
+      .readAsLinesSync()
+      .where((line) => line.trim() != "import 'package:flutter/material.dart';")
+      .join('\n');
+}
+
+void _applyC009StableAccountRuntimeResource(App app) {
+  final code = _loadC009StableAccountRuntimeWidgetCode();
+  app.raw((project) {
+    final existing = findCustomWidget(
+      project,
+      name: 'AvarynStableAccountRuntime',
+    );
+    if (existing == null) {
+      addCustomWidget(
+        project,
+        name: 'AvarynStableAccountRuntime',
+        code: code,
+        parameters: const [],
+        description:
+            'Online-only C-009 stable account runtime with explicit capability, membership, link, residency and Organization Authority controls.',
+      );
+    } else {
+      updateCustomWidget(
+        project,
+        name: 'AvarynStableAccountRuntime',
+        code: code,
+        parameters: existing.parameters
+            .map((parameter) => parameter.deepCopy())
+            .toList(growable: false),
+        description:
+            'Online-only C-009 stable account runtime with explicit capability, membership, link, residency and Organization Authority controls.',
       );
     }
   });
@@ -12386,6 +12469,24 @@ void buildPhase4BStableRuntimeCompileTestApp(App app) {
 }
 
 /// Standalone compile-only smoke app used by test/app_test.dart.
+void buildC009StableAccountRuntimeCompileTestApp(App app) {
+  _configureAvarynTheme(app, existingProject: false);
+  final dynamic stableAccountRuntime = app.customWidget(
+    'AvarynStableAccountRuntime',
+    code: _loadC009StableAccountRuntimeWidgetCode(),
+    description:
+        'Compile-only C-009 stable account runtime regression fixture.',
+  );
+  app.page(
+    'C009StableAccountRuntimeCompilePage',
+    route: '/',
+    isInitial: true,
+    description: 'Compiles the bundled C-009 stable account widget source.',
+    body: stableAccountRuntime(name: 'C009StableAccountRuntimeCompileFixture'),
+  );
+}
+
+/// Standalone compile-only smoke app used by test/app_test.dart.
 void buildPhase4C7OperationalRuntimeCompileTestApp(App app) {
   _configureAvarynTheme(app, existingProject: false);
   app.pubDependency('crypto', '^3.0.7');
@@ -13818,6 +13919,48 @@ DslWidget _c008HorsePageBody() => Row(
       ),
     ),
   ],
+);
+
+DslWidget _c009StableAccountPageBody() => Container(
+  name: 'C009StableAccountShell',
+  width: double.infinity,
+  height: double.infinity,
+  color: Colors.primaryBackground,
+  child: Column(
+    crossAxis: CrossAxis.stretch,
+    children: [
+      Container(
+        name: 'C009StableAccountHeader',
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        color: Colors.primary,
+        child: Column(
+          crossAxis: CrossAxis.start,
+          spacing: 3,
+          children: [
+            Text(
+              'Stalaccount',
+              style: Styles.titleLarge,
+              color: Colors.accent1,
+            ),
+            Text(
+              'Zelfstandige organisatie · expliciete capabilities · één Organization Authority',
+              style: Styles.bodySmall,
+              color: Colors.tertiary,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+      Expanded(
+        CustomWidget(
+          name: 'C009StableAccountRuntime',
+          widgetName: 'AvarynStableAccountRuntime',
+          arguments: const {},
+        ),
+      ),
+    ],
+  ),
 );
 
 DslWidget _mobileNavigationBody({

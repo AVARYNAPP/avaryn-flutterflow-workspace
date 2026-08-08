@@ -149,7 +149,7 @@ void main() {
   });
 
   test('server authority and active edit flow remain bound', () {
-    expect(edit, contains('buildAvarynC008,'));
+    expect(edit, contains('buildAvarynC009,'));
     expect(edit, contains('buildAvarynPhase5D2(app);'));
     expect(edit, contains('void buildAvarynPhase5B5(App app)'));
     expect(edit, contains('void buildAvarynPhase5D1(App app)'));

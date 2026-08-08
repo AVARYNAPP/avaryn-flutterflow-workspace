@@ -18,3 +18,5 @@ export '/custom_code/widgets/avaryn_operational_runtime.dart'
     show AvarynOperationalRuntime;
 export '/custom_code/widgets/avaryn_horse_account_runtime.dart'
     show AvarynHorseAccountRuntime;
+export '/custom_code/widgets/avaryn_stable_account_runtime.dart'
+    show AvarynStableAccountRuntime;
