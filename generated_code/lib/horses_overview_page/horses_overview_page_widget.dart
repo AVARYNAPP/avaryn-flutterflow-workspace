@@ -13,8 +13,8 @@ import 'package:provider/provider.dart';
 import 'horses_overview_page_model.dart';
 export 'horses_overview_page_model.dart';
 
-/// AVARYN Alpha product route backed by the existing RLS-scoped Phase 4/5
-/// contracts.
+/// Independent canonical horse profiles with explicit relationships, one
+/// primary Horse Authority and atomic seven-day authority transfer.
 class HorsesOverviewPageWidget extends StatefulWidget {
   const HorsesOverviewPageWidget({super.key});
 
@@ -806,27 +806,75 @@ class _HorsesOverviewPageWidgetState extends State<HorsesOverviewPageWidget> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Container(
-                        height: 78.0,
                         decoration: BoxDecoration(
                           color: FlutterFlowTheme.of(context).primary,
                         ),
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
-                              18.0, 8.0, 18.0, 8.0),
-                          child: Container(
-                            child: custom_widgets.AvarynStableRuntime(
-                              mode: 'selector',
-                              initialStableMemberId: '',
-                            ),
+                              20.0, 12.0, 20.0, 12.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Mijn paarden',
+                                style: FlutterFlowTheme.of(context)
+                                    .titleLarge
+                                    .override(
+                                      font: GoogleFonts.interTight(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .titleLarge
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .titleLarge
+                                            .fontStyle,
+                                      ),
+                                      color:
+                                          FlutterFlowTheme.of(context).accent1,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .titleLarge
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .titleLarge
+                                          .fontStyle,
+                                    ),
+                              ),
+                              Text(
+                                'Zelfstandig profiel · expliciete relaties · één Horse Authority',
+                                maxLines: 2,
+                                style: FlutterFlowTheme.of(context)
+                                    .bodySmall
+                                    .override(
+                                      font: GoogleFonts.inter(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .bodySmall
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .bodySmall
+                                            .fontStyle,
+                                      ),
+                                      color:
+                                          FlutterFlowTheme.of(context).tertiary,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodySmall
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodySmall
+                                          .fontStyle,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ].divide(SizedBox(height: 3.0)),
                           ),
                         ),
                       ),
                       Expanded(
                         flex: 1,
                         child: Container(
-                          child: custom_widgets.AvarynOperationalRuntime(
-                            mode: 'horses',
-                          ),
+                          child: custom_widgets.AvarynHorseAccountRuntime(),
                         ),
                       ),
                       if (responsiveVisibility(

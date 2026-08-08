@@ -5206,7 +5206,7 @@ Future<void> main(List<String> args) async {
   final options = _parseCliOptions(args);
   try {
     await flutterFlowAI(
-      buildAvarynPhase5D2,
+      buildAvarynC008,
       apiKey: options.apiKey,
       baseUrl: options.baseUrl,
       projectName: options.projectName,
@@ -5880,6 +5880,101 @@ void buildAvarynPhase5D2(App app) {
   });
   _applyAvarynAlphaUxRecovery(app);
   buildAvarynC007(app);
+}
+
+/// C-008 replaces only the active horse workspace with the independent
+/// canonical-horse, explicit relationship and Horse Authority/transfer route.
+/// Planning and Feeding deliberately retain their existing stable-scoped
+/// runtime; the database bridge keeps their horse UUIDs compatible.
+void buildAvarynC008(App app) {
+  buildAvarynPhase5D2(app);
+  _applyC008HorseRuntimeResource(app);
+  app.editPage(ff.Pages.horsesOverviewPage, (page) {
+    page.ensureReplaced(
+      ff.Pages.horsesOverviewPage.widgets
+          .byPath('HorsesOverviewPage.body[0]')
+          .single,
+      _c008HorsePageBody(),
+    );
+  });
+  app.raw((project) {
+    updatePage(
+      project,
+      name: 'HorsesOverviewPage',
+      description:
+          'Independent canonical horse profiles with explicit relationships, one primary Horse Authority and atomic seven-day authority transfer.',
+    );
+    final page = findPage(project, name: 'HorsesOverviewPage');
+    if (page == null) throw StateError('Expected HorsesOverviewPage.');
+    final desktop = findDescendants(
+      page.node,
+      (node) => node.name == 'C008DesktopSideNavigation',
+    );
+    final mobile = findDescendants(
+      page.node,
+      (node) => node.name == 'C008MobileBottomNavigation',
+    );
+    if (desktop.length == 1) {
+      setResponsiveVisibility(
+        desktop.single,
+        phoneHidden: true,
+        tabletHidden: true,
+        tabletLandscapeHidden: true,
+        desktopHidden: false,
+      );
+    }
+    if (mobile.length == 1) {
+      setResponsiveVisibility(
+        mobile.single,
+        phoneHidden: false,
+        tabletHidden: false,
+        tabletLandscapeHidden: false,
+        desktopHidden: true,
+      );
+    }
+  });
+}
+
+String _loadC008HorseRuntimeWidgetCode() {
+  final sourceFile = _resolveDslSourceFile('avaryn_horse_account_runtime.dart');
+  if (!sourceFile.existsSync()) {
+    throw StateError('Missing C-008 horse runtime: ${sourceFile.path}');
+  }
+  return sourceFile
+      .readAsLinesSync()
+      .where((line) => line.trim() != "import 'package:flutter/material.dart';")
+      .join('\n');
+}
+
+void _applyC008HorseRuntimeResource(App app) {
+  final code = _loadC008HorseRuntimeWidgetCode();
+  app.raw((project) {
+    final existing = findCustomWidget(
+      project,
+      name: 'AvarynHorseAccountRuntime',
+    );
+    if (existing == null) {
+      addCustomWidget(
+        project,
+        name: 'AvarynHorseAccountRuntime',
+        code: code,
+        parameters: const [],
+        description:
+            'Online-only canonical horse workspace for profile, explicit relationships, bounded delegates, audit and atomic Horse Authority transfer.',
+      );
+    } else {
+      updateCustomWidget(
+        project,
+        name: 'AvarynHorseAccountRuntime',
+        code: code,
+        parameters: existing.parameters
+            .map((parameter) => parameter.deepCopy())
+            .toList(growable: false),
+        description:
+            'Online-only canonical horse workspace for profile, explicit relationships, bounded delegates, audit and atomic Horse Authority transfer.',
+      );
+    }
+  });
 }
 
 /// Restores the proven AVARYN product presentation around the existing
@@ -13641,6 +13736,77 @@ DslWidget _phase4C7OperationalPageBody({
               child: _mobileNavigationBody(
                 bindParams: false,
                 activeTab: activeTab,
+                horsesTarget: ff.Pages.horsesOverviewPage,
+                feedingTarget: ff.Pages.feedingOverviewPage,
+                planningTarget: ff.Pages.planningPage,
+                profileTarget: 'PersonalProfilePage',
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  ],
+);
+
+DslWidget _c008HorsePageBody() => Row(
+  name: 'C008ResponsiveShell',
+  crossAxis: CrossAxis.stretch,
+  children: [
+    Container(
+      name: 'C008DesktopSideNavigation',
+      child: _desktopNavigationBody(
+        bindParams: false,
+        activeTab: 'Paarden',
+        horsesTarget: ff.Pages.horsesOverviewPage,
+        feedingTarget: ff.Pages.feedingOverviewPage,
+        planningTarget: ff.Pages.planningPage,
+        profileTarget: 'PersonalProfilePage',
+      ),
+    ),
+    Expanded(
+      Container(
+        name: 'C008HorseWorkspaceBounds',
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
+          crossAxis: CrossAxis.stretch,
+          children: [
+            Container(
+              name: 'C008HorseHeader',
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              color: Colors.primary,
+              child: Column(
+                crossAxis: CrossAxis.start,
+                spacing: 3,
+                children: [
+                  Text(
+                    'Mijn paarden',
+                    style: Styles.titleLarge,
+                    color: Colors.accent1,
+                  ),
+                  Text(
+                    'Zelfstandig profiel · expliciete relaties · één Horse Authority',
+                    style: Styles.bodySmall,
+                    color: Colors.tertiary,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              CustomWidget(
+                name: 'C008HorseAccountRuntime',
+                widgetName: 'AvarynHorseAccountRuntime',
+                arguments: const {},
+              ),
+            ),
+            Container(
+              name: 'C008MobileBottomNavigation',
+              child: _mobileNavigationBody(
+                bindParams: false,
+                activeTab: 'Paarden',
                 horsesTarget: ff.Pages.horsesOverviewPage,
                 feedingTarget: ff.Pages.feedingOverviewPage,
                 planningTarget: ff.Pages.planningPage,

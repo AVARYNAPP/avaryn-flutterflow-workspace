@@ -25,7 +25,8 @@ void main() {
   });
 
   test('active edit flow includes the Phase 5D.2 feeding slice', () {
-    expect(edit, contains('buildAvarynPhase5D2,'));
+    expect(edit, contains('buildAvarynC008,'));
+    expect(edit, contains('buildAvarynPhase5D2(app);'));
     expect(edit, contains('void buildAvarynPhase5D2(App app)'));
     expect(edit, contains("name: 'FeedingOverviewPage'"));
     expect(edit, contains("name: 'FeedingRoundExecutionPage'"));

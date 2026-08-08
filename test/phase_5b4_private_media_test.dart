@@ -114,7 +114,8 @@ void main() {
   });
 
   test('Phase 5B.4 remains integrated in the active FlutterFlow edit flow', () {
-    expect(edit, contains('buildAvarynPhase5D2,'));
+    expect(edit, contains('buildAvarynC008,'));
+    expect(edit, contains('buildAvarynPhase5D2(app);'));
     expect(edit, contains('void buildAvarynPhase5B4(App app)'));
     expect(edit, contains("findPubDependency(project, name: 'image')"));
     expect(edit, contains("version: '^4.8.0'"));

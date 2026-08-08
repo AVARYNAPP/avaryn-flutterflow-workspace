@@ -199,6 +199,33 @@ Laatst bijgewerkt: 2026-08-08
   registreerde beide actuele transactionele mails als `delivered`; Supabase
   registreerde bevestiging en login. Silas heeft daarna de contractuele scherm-
   en cutoverreview expliciet goedgekeurd: **PASS**.
+- **C-008-status:** **C-008 — Approved within the current Alpha/Staging
+  scope**. Formele uitkomst: **HORSE AUTHORITY / TRANSFER ROUTE = PASS**.
+- C-008 maakt het bestaande C-003C canonical horse het zelfstandige duurzame
+  paardenaccount. Een paard heeft geen login of verplichte stal/organisatie,
+  heeft exact één server-side primary Horse Authority en houdt juridisch
+  eigendom, relaties, residency, gedelegeerd beheer en expliciete permissions
+  afzonderlijk. Relaties, ownership en stalcontext verlenen geen impliciete
+  toegang.
+- Migration `202608080001_c008_canonical_horse_vertical` is transactioneel op
+  exact AVARYN Staging toegepast en aan de migrationhistorie gebonden. De
+  inhoudelijke hosted RLS-/ACL-/actor-/CAS-/ownership-/relationship-/delegation-
+  /transfer-/audit-/legacybridgematrix is volledig teruggerold en groen; er
+  bleef geen testuser of fixture achter. De postcheck bewijst authenticated-
+  only RPC's, private-helperdeny, de legacybridge en nul active horses zonder
+  primary authority.
+- De FlutterFlow AI-SDK is na expliciete goedkeuring van build `2c299209` naar
+  `b5c8a09d` geüpgraded. De volledige lokale suite is **183/183 PASS**;
+  relevante SQL/security-, transfer-, concurrency-, Planning-, Feeding- en
+  C-007-regressies en de C-008 custom-widgetanalyse zijn groen.
+- FlutterFlowrevisies `rhTZQThF7kbDX671Nagg` en
+  `YNqu1rA4Wts0ZafmrG8q` zijn gevalideerd en naar beide bestaande Alpha-hosts
+  gepubliceerd. Beide hosts leveren identieke index-, serviceworker- en
+  bundlebestanden. De cachevrije ingelogde schermreview op mobiel en desktop is
+  groen voor de zelfstandige empty-state, createflow en transferontvangstflow;
+  er is geen persistente testdata aangemaakt.
+- Er zijn geen bekende open C-008 P0/P1/P2-code-, data- of
+  securitybevindingen. Productie is niet gewijzigd en C-009 is niet gestart.
 - De trusted deletion-orchestrator blijft ontbreken; accountverwijdering en
   productieanonimisering blijven fail-closed.
 
@@ -239,8 +266,10 @@ Het goedgekeurde contract staat in
 | C-006-status | `PASS — staging reset, v2 seed and security smoke completed` |
 | C-007-branch | `implementation/account-foundation-v2-c007-personal-auth-onboarding` |
 | C-007-status | `Approved within the current Alpha/Staging scope` |
+| C-008-branch | `implementation/account-foundation-v2-c008-horse-authority-transfer` |
+| C-008-status | `Approved within the current Alpha/Staging scope; HORSE AUTHORITY / TRANSFER ROUTE = PASS` |
 | FlutterFlow-project | `a-v-a-r-y-n-alpha-ynvyuq` |
-| FlutterFlow-revisie | `tIuGom3jTogDhabdK25X` (published to both Alpha hosts) |
+| FlutterFlow-revisie | `YNqu1rA4Wts0ZafmrG8q` (published to both Alpha hosts) |
 | Live Alpha | <https://alpha.avaryn.eu/> |
 | Rollback-/fallback-URL | <https://avaryn-alpha.flutterflow.app/> |
 
@@ -274,9 +303,10 @@ De snapshotbranch is het bewijs- en rollbackpunt en mag niet worden gewijzigd.
   afzonderlijke exportwaarschuwing en valt buiten C-002/C-002A.
 - `flutterflow ai upgrade --check` meldde in C-002 op 2026-08-04 een nieuwere
   SDK-build (`2c299209` naar `b5c8a09d`, beide rapporteren versie `0.0.40`). De
-  C-002A-check kon door een lokaal Dart-kernel-/netwerkprobleem niet afronden.
-  De C-003A- en C-003C-check konden niet starten omdat `dart` niet op `PATH`
-  stond. Er is niet geüpgraded en FlutterFlow is niet uitgevoerd.
+  C-002A-check kon door een lokaal Dart-kernel-/netwerkprobleem niet afronden en
+  de C-003A-/C-003C-checks misten `dart` op `PATH`. De upgrade is later binnen
+  C-008 expliciet goedgekeurd en succesvol uitgevoerd; de finale check meldt
+  `newer_available: false`.
 - De live Alpha en rollback-URL zijn in C-001 read-only geobserveerd; C-002,
   C-002A en C-002B hebben geen live omgeving benaderd of gewijzigd.
 
@@ -300,4 +330,9 @@ Staging-/Alpha-target gemigreerd, geconfigureerd, beveiligingstechnisch getest
 en met de e-mail-only/privacy- en first-party e-maillinkrevisies gepubliceerd.
 De echte e-maillevenscyclus en expliciete scherm-/cutoverapproval zijn groen;
 C-007 is binnen de huidige Alpha/Staging-scope volledig afgerond. Productie,
-Git-push en merge zijn niet uitgevoerd.
+Git-push en merge zijn niet uitgevoerd. C-008 heeft vervolgens uitsluitend de
+canonical horse-/authority-/transfervertical op het allowlisted Staging-/Alpha-
+target gemigreerd, securitytechnisch getest en gepubliceerd. De lokale en
+hosted gates, concurrencybewijzen en cachevrije schermreview zijn groen;
+C-008 is binnen de huidige Alpha/Staging-scope volledig afgerond. C-009 is niet
+gestart.

@@ -9,7 +9,7 @@
     "mode": "export",
     "format": true
   },
-  "exported_at": "2026-08-07T21:30:57.962069Z",
+  "exported_at": "2026-08-08T06:33:05.873744Z",
   "files": [
     ".flutterflow/export_manifest.json",
     ".gitignore",
@@ -272,6 +272,7 @@
     "lib/custom_code/widgets/avaryn_account_runtime.dart",
     "lib/custom_code/widgets/avaryn_agenda_picker_runtime.dart",
     "lib/custom_code/widgets/avaryn_daily_feeding_runtime.dart",
+    "lib/custom_code/widgets/avaryn_horse_account_runtime.dart",
     "lib/custom_code/widgets/avaryn_horse_avatar.dart",
     "lib/custom_code/widgets/avaryn_horse_nutrition_runtime.dart",
     "lib/custom_code/widgets/avaryn_horseshoe_icon.dart",
@@ -1301,6 +1302,17 @@
       "name": "AvarynHorseshoeIcon",
       "primary_files": [
         "lib/custom_code/widgets/avaryn_horseshoe_icon.dart"
+      ],
+      "related_files": [
+        "lib/custom_code/widgets/index.dart"
+      ]
+    },
+    {
+      "type": "custom_widget",
+      "key": "rx7l7om5",
+      "name": "AvarynHorseAccountRuntime",
+      "primary_files": [
+        "lib/custom_code/widgets/avaryn_horse_account_runtime.dart"
       ],
       "related_files": [
         "lib/custom_code/widgets/index.dart"
