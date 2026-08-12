@@ -4,6 +4,7 @@ select extensions.plan(1);
 
 create temporary table c003d_fixture(
   auth_owner uuid not null,auth_target uuid not null,auth_other uuid not null,auth_unverified uuid not null,
+  test_reference_at timestamptz not null,
   profile_owner uuid,profile_target uuid,profile_other uuid,profile_unverified uuid,
   horse_id uuid,organization_id uuid,role_id uuid,membership_id uuid,
   relationship_id uuid,link_id uuid,direct_grant_id uuid,bound_grant_id uuid,role_grant_id uuid,
@@ -12,9 +13,10 @@ create temporary table c003d_fixture(
 );
 grant select,update on pg_temp.c003d_fixture to authenticated,anon,service_role;
 
-insert into pg_temp.c003d_fixture(auth_owner,auth_target,auth_other,auth_unverified) values(
+insert into pg_temp.c003d_fixture(auth_owner,auth_target,auth_other,auth_unverified,test_reference_at) values(
   'c003d000-0000-4000-8000-000000000001','c003d000-0000-4000-8000-000000000002',
-  'c003d000-0000-4000-8000-000000000003','c003d000-0000-4000-8000-000000000004'
+  'c003d000-0000-4000-8000-000000000003','c003d000-0000-4000-8000-000000000004',
+  pg_catalog.statement_timestamp()
 );
 insert into auth.users(instance_id,id,aud,role,email,encrypted_password,email_confirmed_at,
   raw_app_meta_data,raw_user_meta_data,created_at,updated_at)
@@ -88,6 +90,49 @@ update pg_temp.c003d_fixture fixture set horse_id=created.horse_id from created;
 with created as(select * from public.create_organization('stable','C003D Stable',null,
   'c003d100-0000-4000-8000-000000000002','{}'))
 update pg_temp.c003d_fixture fixture set organization_id=created.organization_id from created;
+
+-- Hosted SQL-editor execution sends this file as one query batch. Normalize
+-- only the recognizable bootstrap membership and reserved assignment to the
+-- explicit fixture reference so the normal next-statement authority contract
+-- is tested identically in batch and statement-by-statement runners.
+reset role;
+update public.organization_memberships membership set valid_from=fixture.test_reference_at
+from pg_temp.c003d_fixture fixture
+where membership.organization_id=fixture.organization_id
+  and membership.profile_id=fixture.profile_owner
+  and membership.creation_correlation_id='c003d100-0000-4000-8000-000000000002'
+  and membership.status='active';
+update public.organization_membership_roles assignment set valid_from=fixture.test_reference_at
+from pg_temp.c003d_fixture fixture
+join public.organization_memberships membership
+  on membership.organization_id=fixture.organization_id
+  and membership.profile_id=fixture.profile_owner
+  and membership.creation_correlation_id='c003d100-0000-4000-8000-000000000002'
+where assignment.organization_id=fixture.organization_id
+  and assignment.membership_id=membership.id
+  and assignment.creation_correlation_id='c003d100-0000-4000-8000-000000000002'
+  and assignment.status='active';
+do $$ declare fixture pg_temp.c003d_fixture%rowtype;
+begin select * into fixture from pg_temp.c003d_fixture;
+  if (select count(*) from public.organization_memberships membership
+      where membership.organization_id=fixture.organization_id
+        and membership.profile_id=fixture.profile_owner
+        and membership.creation_correlation_id='c003d100-0000-4000-8000-000000000002'
+        and membership.status='active' and membership.valid_from=fixture.test_reference_at)<>1
+    or (select count(*) from public.organization_membership_roles assignment
+      join public.organization_memberships membership
+        on membership.id=assignment.membership_id
+        and membership.organization_id=assignment.organization_id
+      where membership.organization_id=fixture.organization_id
+        and membership.profile_id=fixture.profile_owner
+        and assignment.creation_correlation_id='c003d100-0000-4000-8000-000000000002'
+        and assignment.status='active' and assignment.valid_from=fixture.test_reference_at)<>1
+    or not private.c003b_profile_has_permission(
+      fixture.profile_owner,fixture.organization_id,'organization.roles.manage',fixture.test_reference_at
+    )
+  then raise exception 'C-003D organization authority fixture time normalization failed';end if;
+end $$;
+set local role authenticated;
 with created as(select * from public.create_organization_role(
   (select organization_id from pg_temp.c003d_fixture),'rider_team','Rider team',null,
   array['organization.view'],'c003d100-0000-4000-8000-000000000003'))
@@ -173,6 +218,69 @@ end $$;
 with response as(select * from public.respond_organization_invitation(
   (select organization_token from pg_temp.c003d_fixture),'accept','c003d120-0000-4000-8000-000000000002'))
 update pg_temp.c003d_fixture fixture set membership_id=response.membership_id from response;
+-- Match the normal next-statement contract when this test is submitted as one
+-- hosted query batch. Only the membership returned by this invitation response
+-- and its invitation-created role assignment use the existing fixture time.
+reset role;
+update public.organization_memberships membership set valid_from=fixture.test_reference_at
+from pg_temp.c003d_fixture fixture
+where membership.id=fixture.membership_id
+  and membership.organization_id=fixture.organization_id
+  and membership.profile_id=fixture.profile_target
+  and membership.created_by_profile_id=fixture.profile_owner
+  and membership.creation_correlation_id='c003d120-0000-4000-8000-000000000002'
+  and membership.status='active';
+update public.organization_membership_roles assignment set valid_from=fixture.test_reference_at
+from pg_temp.c003d_fixture fixture
+join public.organization_memberships membership
+  on membership.id=fixture.membership_id
+  and membership.organization_id=fixture.organization_id
+  and membership.profile_id=fixture.profile_target
+  and membership.created_by_profile_id=fixture.profile_owner
+  and membership.creation_correlation_id='c003d120-0000-4000-8000-000000000002'
+where assignment.organization_id=fixture.organization_id
+  and assignment.membership_id=membership.id
+  and assignment.role_id=fixture.role_id
+  and assignment.granted_by_profile_id=fixture.profile_owner
+  and assignment.creation_correlation_id='c003d120-0000-4000-8000-000000000002'
+  and assignment.status='active';
+do $$ declare fixture pg_temp.c003d_fixture%rowtype;
+  membership_exact boolean;membership_valid boolean;
+  assignment_exact boolean;assignment_valid boolean;permission_valid boolean;
+begin select * into fixture from pg_temp.c003d_fixture;
+  select count(*)=1,bool_and(
+      membership.valid_from=fixture.test_reference_at
+      and membership.valid_from<=fixture.test_reference_at
+      and (membership.valid_until is null or membership.valid_until>fixture.test_reference_at)
+    ) into membership_exact,membership_valid
+  from public.organization_memberships membership
+  where membership.id=fixture.membership_id
+    and membership.organization_id=fixture.organization_id
+    and membership.profile_id=fixture.profile_target
+    and membership.created_by_profile_id=fixture.profile_owner
+    and membership.creation_correlation_id='c003d120-0000-4000-8000-000000000002'
+    and membership.status='active';
+  select count(*)=1,bool_and(
+      assignment.valid_from=fixture.test_reference_at
+      and assignment.valid_from<=fixture.test_reference_at
+      and (assignment.valid_until is null or assignment.valid_until>fixture.test_reference_at)
+    ) into assignment_exact,assignment_valid
+  from public.organization_membership_roles assignment
+  where assignment.organization_id=fixture.organization_id
+    and assignment.membership_id=fixture.membership_id
+    and assignment.role_id=fixture.role_id
+    and assignment.granted_by_profile_id=fixture.profile_owner
+    and assignment.creation_correlation_id='c003d120-0000-4000-8000-000000000002'
+    and assignment.status='active';
+  permission_valid:=private.c003b_profile_has_permission(
+    fixture.profile_target,fixture.organization_id,'organization.view',fixture.test_reference_at
+  );
+  if membership_exact is distinct from true or membership_valid is distinct from true
+    or assignment_exact is distinct from true or assignment_valid is distinct from true
+    or permission_valid is distinct from true
+  then raise exception 'C-003D invitation membership fixture time normalization failed';end if;
+end $$;
+set local role authenticated;
 do $$ begin
   if not public.has_organization_permission((select organization_id from pg_temp.c003d_fixture),'organization.view')
   then raise exception 'organization invitation acceptance failed';end if;

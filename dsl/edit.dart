@@ -5365,6 +5365,30 @@ void buildAvarynC007(App app) {
           .single,
       _phase4APersonalProfilePageBody(),
     );
+    page.mutateNode(
+      ff.Pages.personalProfilePage.widgets
+          .byPath('PersonalProfilePage.body[0].children[0]')
+          .single,
+      (node) => setResponsiveVisibility(
+        node,
+        phoneHidden: true,
+        tabletHidden: true,
+        tabletLandscapeHidden: true,
+        desktopHidden: false,
+      ),
+    );
+    page.mutateNode(
+      ff.Pages.personalProfilePage.widgets
+          .byPath('PersonalProfilePage.body[0].children[1].children[1]')
+          .single,
+      (node) => setResponsiveVisibility(
+        node,
+        phoneHidden: false,
+        tabletHidden: false,
+        tabletLandscapeHidden: false,
+        desktopHidden: true,
+      ),
+    );
   });
   assert(alphaPrivacy.name == 'AlphaPrivacyPage');
 }
@@ -5971,6 +5995,7 @@ void buildAvarynC009(App app) {
       );
       setPageRequiresAuth(project, pageName: target.name, requiresAuth: true);
     }
+
   });
 }
 
@@ -6043,7 +6068,7 @@ void _applyC008HorseRuntimeResource(App app) {
         code: code,
         parameters: const [],
         description:
-            'Online-only canonical horse workspace for profile, explicit relationships, bounded delegates, audit and atomic Horse Authority transfer.',
+            'Responsive C-009.1 canonical horse experience with minimal creation, sectioned profile editing, private media and preserved authority, relationship and transfer controls.',
       );
     } else {
       updateCustomWidget(
@@ -6054,7 +6079,7 @@ void _applyC008HorseRuntimeResource(App app) {
             .map((parameter) => parameter.deepCopy())
             .toList(growable: false),
         description:
-            'Online-only canonical horse workspace for profile, explicit relationships, bounded delegates, audit and atomic Horse Authority transfer.',
+            'Responsive C-009.1 canonical horse experience with minimal creation, sectioned profile editing, private media and preserved authority, relationship and transfer controls.',
       );
     }
   });
@@ -12487,6 +12512,35 @@ void buildC009StableAccountRuntimeCompileTestApp(App app) {
 }
 
 /// Standalone compile-only smoke app used by test/app_test.dart.
+void buildC0091HorseAccountRuntimeCompileTestApp(App app) {
+  _configureAvarynTheme(app, existingProject: false);
+  app.pubDependency('crypto', '^3.0.7');
+  app.pubDependency('file_picker', '^11.0.2');
+  app.pubDependency('flutter_secure_storage', '10.0.0-beta.4');
+  app.pubDependency('image', '^4.8.0');
+  app.pubDependency('supabase_flutter', '2.9.0');
+  app.pubDependency('uuid', '^4.0.0');
+  app.customWidget(
+    'AvarynOrionPhoto',
+    code: _orionPhotoCustomWidgetCode,
+    description: 'Embedded fallback sourced from assets/orion-mobile-hero.jpg.',
+  );
+  final dynamic horseAccountRuntime = app.customWidget(
+    'AvarynHorseAccountRuntime',
+    code: _loadC008HorseRuntimeWidgetCode(),
+    description:
+        'Compile-only C-009.1 canonical horse, media, Planning and Feeding runtime fixture.',
+  );
+  app.page(
+    'C0091HorseAccountRuntimeCompilePage',
+    route: '/',
+    isInitial: true,
+    description: 'Compiles the bundled C-009.1 horse account widget source.',
+    body: horseAccountRuntime(name: 'C0091HorseAccountRuntimeCompileFixture'),
+  );
+}
+
+/// Standalone compile-only smoke app used by test/app_test.dart.
 void buildPhase4C7OperationalRuntimeCompileTestApp(App app) {
   _configureAvarynTheme(app, existingProject: false);
   app.pubDependency('crypto', '^3.0.7');
@@ -13875,23 +13929,46 @@ DslWidget _c008HorsePageBody() => Row(
           children: [
             Container(
               name: 'C008HorseHeader',
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               color: Colors.primary,
-              child: Column(
-                crossAxis: CrossAxis.start,
-                spacing: 3,
+              child: Row(
+                crossAxis: CrossAxis.center,
+                spacing: 12,
                 children: [
-                  Text(
-                    'Mijn paarden',
-                    style: Styles.titleLarge,
-                    color: Colors.accent1,
+                  Container(
+                    width: 36,
+                    height: 36,
+                    alignment: Alignment.center,
+                    borderRadius: 10,
+                    borderColor: Colors.secondary,
+                    borderWidth: 1,
+                    child: Text(
+                      'A',
+                      style: Styles.titleMedium,
+                      color: Colors.accent1,
+                    ),
                   ),
-                  Text(
-                    'Zelfstandig profiel · expliciete relaties · één Horse Authority',
-                    style: Styles.bodySmall,
-                    color: Colors.tertiary,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  Expanded(
+                    Column(
+                      crossAxis: CrossAxis.start,
+                      spacing: 1,
+                      children: [
+                        Text(
+                          'A V A R Y N',
+                          style: Styles.titleSmall,
+                          color: Colors.accent1,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          'HORSE EXPERIENCE',
+                          style: Styles.labelSmall,
+                          color: Colors.tertiary,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

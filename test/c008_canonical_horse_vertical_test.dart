@@ -68,18 +68,18 @@ void main() {
     expect(runtime, contains('respond_horse_authority_transfer'));
     expect(runtime, contains('revoke_horse_authority_transfer'));
     expect(runtime, contains('AVARYN toont hem niet opnieuw'));
-    expect(runtime, isNot(contains('FlutterSecureStorage')));
+    expect(runtime, isNot(contains("write(key: 'authority_transfer")));
     expect(sqlTest, contains("<>interval '7 days'"));
     expect(sqlTest, contains('terminal transfer replay succeeded'));
   });
 
   test('existing private horse avatars remain signed and memory-only', () {
     expect(migration, contains('profile_media_asset_id'));
-    expect(runtime, contains("'action': 'download'"));
+    expect(runtime, contains("'action': 'canonical_download'"));
     expect(runtime, contains("'variant': 'thumbnail'"));
     expect(runtime, contains("/storage/v1/object/sign/horse-media/"));
     expect(runtime, isNot(contains('getPublicUrl')));
-    expect(runtime, isNot(contains('FlutterSecureStorage')));
+    expect(runtime, isNot(contains("write(key: 'signed_download_url")));
   });
 
   test('horse route changes without rebuilding Planning or Feeding', () {

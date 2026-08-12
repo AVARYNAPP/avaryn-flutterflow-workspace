@@ -220,6 +220,36 @@ begin
 end;
 $$;
 
+-- Canonical execution authority is explicit and independent from the stable
+-- assignment. The rider receives edit (execution) without view, proving that
+-- assignment alone does not open schedule metadata.
+reset role;
+insert into public.horse_profile_permission_grants (
+  horse_id,
+  grantee_profile_id,
+  permission_id,
+  grantor_profile_id,
+  reason_code,
+  creation_correlation_id
+)
+select
+  item.horse_id,
+  grantee.id,
+  permission.id,
+  grantor.id,
+  'MANUAL_GRANT',
+  '5d140000-0000-0000-0000-000000000011'::uuid
+from public.schedule_items item
+join public.profiles grantee
+  on grantee.auth_user_id = '5c000000-0000-0000-0000-000000000004'::uuid
+join public.profiles grantor
+  on grantor.auth_user_id = '5c000000-0000-0000-0000-000000000001'::uuid
+join public.permission_definitions permission
+  on permission.code = 'horse.edit'
+where item.id = (select id from phase_5d1_ids where name = 'assigned_item');
+set local role authenticated;
+select set_config('request.jwt.claim.role', 'authenticated', true);
+
 select set_config(
   'request.jwt.claim.sub',
   '5c000000-0000-0000-0000-000000000004',
@@ -234,8 +264,8 @@ begin
       '5ca00000-0000-0000-0000-000000000001',
       '2026-08-03'
     )
-  ) <> 1 then
-    raise exception 'Assigned rider received more than the assigned task';
+  ) <> 0 then
+    raise exception 'Assignment or execute-only grant leaked schedule metadata';
   end if;
   if (
     select count(*)
@@ -248,8 +278,8 @@ begin
     )
       and assignment_role = 'responsible'
       and access_scope = 'assigned'
-  ) <> 1 then
-    raise exception 'Assigned groom cannot see the exact assigned task';
+  ) <> 0 then
+    raise exception 'Assignment opened an implicit schedule read';
   end if;
   if (
     select count(*)
@@ -292,11 +322,10 @@ do $$
 begin
   if (
     select count(*)
-    from public.schedule_executions
-    where id = (select id from phase_5d1_ids where name = 'execution')
-      and actor_user_id = '5c000000-0000-0000-0000-000000000004'
+    from phase_5d1_ids
+    where name = 'execution' and id is not null
   ) <> 1 then
-    raise exception 'Assignment-only rider execution was not registered';
+    raise exception 'Explicit execute-only rider execution was not registered';
   end if;
 end;
 $$;

@@ -64,7 +64,7 @@ class FFButtonWidget extends StatefulWidget {
 
   final String text;
   final Widget? icon;
-  final IconData? iconData;
+  final Object? iconData;
   final Function()? onPressed;
   final FFButtonOptions options;
   final bool showLoadingIndicator;
@@ -83,6 +83,26 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
   int get maxLines => widget.options.maxLines ?? 1;
   String? get text =>
       widget.options.textStyle?.fontSize == 0 ? null : widget.text;
+
+  Widget? _resolvedIcon() {
+    if (widget.icon != null) return widget.icon;
+    final iconData = widget.iconData;
+    if (iconData is FaIconData) {
+      return FaIcon(
+        iconData,
+        size: widget.options.iconSize,
+        color: widget.options.iconColor,
+      );
+    }
+    if (iconData is IconData) {
+      return Icon(
+        iconData,
+        size: widget.options.iconSize,
+        color: widget.options.iconColor,
+      );
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -209,14 +229,8 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
       }),
     );
 
-    if ((widget.icon != null || widget.iconData != null) && !loading) {
-      Widget icon = widget.icon ??
-          FaIcon(
-            widget.iconData!,
-            size: widget.options.iconSize,
-            color: widget.options.iconColor,
-          );
-
+    final icon = _resolvedIcon();
+    if (icon != null && !loading) {
       if (text == null) {
         return Container(
           height: widget.options.height,

@@ -120,6 +120,26 @@ void main() {
     );
   });
 
+  test('C-007 replacement preserves responsive personal profile navigation', () {
+    final c007 = edit.substring(
+      edit.indexOf('void buildAvarynC007(App app)'),
+      edit.indexOf('const bool _agendaFunctionCheckpointOnly'),
+    );
+    expect(
+      c007,
+      contains("byPath('PersonalProfilePage.body[0].children[0]')"),
+    );
+    expect(
+      c007,
+      contains(
+        "byPath('PersonalProfilePage.body[0].children[1].children[1]')",
+      ),
+    );
+    expect(c007, contains('page.mutateNode('));
+    expect(c007, contains('phoneHidden: true'));
+    expect(c007, contains('desktopHidden: true'));
+  });
+
   test('RPC and private helper ACLs are explicit and fail closed', () {
     expect(migration, contains('from public,anon,authenticated,service_role'));
     expect(migration, contains('to authenticated'));

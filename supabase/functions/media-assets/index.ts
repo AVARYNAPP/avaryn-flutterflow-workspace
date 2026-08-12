@@ -64,6 +64,12 @@ function safeRpcError(message: string) {
     return 'MEDIA_THUMBNAIL_INVALID'
   }
   if (message.includes('REQUEST_ID_REUSED')) return 'REQUEST_ID_REUSED'
+  if (message.includes('MEDIA_PERMISSION_REQUIRED')) {
+    return 'MEDIA_PERMISSION_REQUIRED'
+  }
+  if (message.includes('PROFILE_MEDIA_UNAVAILABLE')) {
+    return 'PROFILE_MEDIA_UNAVAILABLE'
+  }
   return 'MEDIA_UNAVAILABLE'
 }
 
@@ -675,20 +681,30 @@ Deno.serve(async (request: Request) => {
     return response(401, { code: 'INVALID_SESSION' })
   }
 
-  if (action === 'create') {
+  if (action === 'create' || action === 'canonical_create') {
+    const canonical = action === 'canonical_create'
     const mimeType = typeof body.mime_type === 'string' ? body.mime_type : ''
     if (!allowedMimes.has(mimeType)) {
       return response(400, { code: 'MEDIA_INPUT_INVALID' })
     }
     const { data, error } = await callerClient.rpc(
-      'create_media_upload_session',
-      {
-        p_horse_id: body.horse_id,
-        p_schedule_execution_id: body.schedule_execution_id ?? null,
-        p_original_filename: body.original_filename,
-        p_mime_type: mimeType,
-        p_request_id: body.request_id,
-      },
+      canonical
+        ? 'create_canonical_media_upload_session'
+        : 'create_media_upload_session',
+      canonical
+        ? {
+            p_horse_id: body.horse_id,
+            p_original_filename: body.original_filename,
+            p_mime_type: mimeType,
+            p_request_id: body.request_id,
+          }
+        : {
+            p_horse_id: body.horse_id,
+            p_schedule_execution_id: body.schedule_execution_id ?? null,
+            p_original_filename: body.original_filename,
+            p_mime_type: mimeType,
+            p_request_id: body.request_id,
+          },
     )
     if (error || !data || typeof data !== 'object') {
       const code = safeRpcError(error?.message ?? '')
@@ -745,7 +761,8 @@ Deno.serve(async (request: Request) => {
     })
   }
 
-  if (action === 'finalize') {
+  if (action === 'finalize' || action === 'canonical_finalize') {
+    const canonical = action === 'canonical_finalize'
     const mediaAssetId =
       typeof body.media_asset_id === 'string' ? body.media_asset_id : ''
     const rowVersion =
@@ -756,7 +773,9 @@ Deno.serve(async (request: Request) => {
       return response(400, { code: 'MEDIA_FINALIZE_INPUT_INVALID' })
     }
     const { data: session, error: sessionError } = await serviceClient.rpc(
-      'get_media_upload_session',
+      canonical
+        ? 'get_canonical_media_upload_session'
+        : 'get_media_upload_session',
       {
         p_actor_user_id: user.id,
         p_media_asset_id: mediaAssetId,
@@ -821,18 +840,21 @@ Deno.serve(async (request: Request) => {
     ) {
       return response(409, { code: 'MEDIA_VARIANT_MISMATCH' })
     }
-    const { data, error } = await serviceClient.rpc('finalize_media_asset', {
-      p_actor_user_id: user.id,
-      p_media_asset_id: mediaAssetId,
-      p_expected_row_version: rowVersion,
-      p_original_mime_type: original.mime,
-      p_original_byte_size: original.size,
-      p_original_sha256_hex: original.sha256,
-      p_thumbnail_mime_type: thumbnail?.mime ?? null,
-      p_thumbnail_byte_size: thumbnail?.size ?? null,
-      p_thumbnail_sha256_hex: thumbnail?.sha256 ?? null,
-      p_request_id: body.request_id,
-    })
+    const { data, error } = await serviceClient.rpc(
+      canonical ? 'finalize_canonical_media_asset' : 'finalize_media_asset',
+      {
+        p_actor_user_id: user.id,
+        p_media_asset_id: mediaAssetId,
+        p_expected_row_version: rowVersion,
+        p_original_mime_type: original.mime,
+        p_original_byte_size: original.size,
+        p_original_sha256_hex: original.sha256,
+        p_thumbnail_mime_type: thumbnail?.mime ?? null,
+        p_thumbnail_byte_size: thumbnail?.size ?? null,
+        p_thumbnail_sha256_hex: thumbnail?.sha256 ?? null,
+        p_request_id: body.request_id,
+      },
+    )
     if (error) {
       const code = safeRpcError(error.message)
       return response(code === 'MEDIA_VERSION_CONFLICT' ? 409 : 403, { code })
@@ -840,10 +862,13 @@ Deno.serve(async (request: Request) => {
     return response(200, data as Record<string, unknown>)
   }
 
-  if (action === 'download') {
+  if (action === 'download' || action === 'canonical_download') {
+    const canonical = action === 'canonical_download'
     const variant = body.variant === 'thumbnail' ? 'thumbnail' : 'original'
     const { data, error } = await serviceClient.rpc(
-      'authorize_media_asset_download',
+      canonical
+        ? 'authorize_canonical_media_asset_download'
+        : 'authorize_media_asset_download',
       {
         p_actor_user_id: user.id,
         p_media_asset_id: body.media_asset_id,

@@ -108,6 +108,66 @@ values (
   '4c360000-0000-0000-0000-000000000001'
 );
 
+-- Since C-009.1, canonical horse access is never inherited from stable
+-- membership or the legacy horse_access_grants bridge. Preserve the intent of
+-- this Planning regression fixture with explicit canonical permissions: the
+-- member and assignee receive explicit view + edit capabilities, while the
+-- unassigned viewer below
+-- intentionally receives no grant.
+insert into public.horse_profile_permission_grants (
+  horse_id,
+  grantee_profile_id,
+  permission_id,
+  grantor_profile_id,
+  reason_code,
+  creation_correlation_id
+)
+select
+  fixture.horse_id,
+  grantee.id,
+  permission.id,
+  grantor.id,
+  'MANUAL_GRANT',
+  fixture.creation_correlation_id
+from (
+  values
+    (
+      '4c350000-0000-0000-0000-000000000001'::uuid,
+      '4c310000-0000-0000-0000-000000000003'::uuid,
+      'horse.edit'::text,
+      '4c360000-0000-0000-0000-000000000011'::uuid
+    ),
+    (
+      '4c350000-0000-0000-0000-000000000001'::uuid,
+      '4c310000-0000-0000-0000-000000000003'::uuid,
+      'horse.view'::text,
+      '4c360000-0000-0000-0000-000000000013'::uuid
+    ),
+    (
+      '4c350000-0000-0000-0000-000000000001'::uuid,
+      '4c310000-0000-0000-0000-000000000004'::uuid,
+      'horse.edit'::text,
+      '4c360000-0000-0000-0000-000000000012'::uuid
+    ),
+    (
+      '4c350000-0000-0000-0000-000000000001'::uuid,
+      '4c310000-0000-0000-0000-000000000004'::uuid,
+      'horse.view'::text,
+      '4c360000-0000-0000-0000-000000000014'::uuid
+    )
+) as fixture(
+  horse_id,
+  grantee_profile_id,
+  permission_code,
+  creation_correlation_id
+)
+join public.permission_definitions permission
+  on permission.code = fixture.permission_code
+join public.profiles grantee
+  on grantee.auth_user_id = fixture.grantee_profile_id
+join public.profiles grantor
+  on grantor.auth_user_id = '4c310000-0000-0000-0000-000000000001'::uuid;
+
 insert into public.schedule_series (
   id, stable_id, horse_id, series_kind, data_category, title, instruction,
   timezone, frequency, interval_value, weekdays, local_start_time,
@@ -979,19 +1039,19 @@ begin
     select count(*)
     from public.schedule_items
     where id = (select id from phase_4c3_ids where name = 'one_off')
-  ) <> 0 then
-    raise exception 'Assigned-only actor received full base-row access';
+  ) <> 1 then
+    raise exception 'Explicit canonical editor lacked full base-row access';
   end if;
   if (
     select count(*)
     from public.get_schedule_item(
       (select id from phase_4c3_ids where name = 'one_off')
     )
-    where access_scope = 'assigned'
+    where access_scope = 'full'
       and series_id is null
       and assignment_role = 'responsible'
   ) <> 1 then
-    raise exception 'Assigned-minimal deep-link read failed';
+    raise exception 'Explicit canonical editor deep-link read failed';
   end if;
   if (
     select count(*)
@@ -1002,12 +1062,15 @@ begin
     where schedule_item_id = (
       select id from phase_4c3_ids where name = 'one_off'
     )
-      and access_scope = 'assigned'
+      and access_scope = 'full'
   ) <> 1 then
-    raise exception 'Assigned-minimal Today read failed';
+    raise exception 'Explicit canonical editor Today read failed';
   end if;
-  if (select count(*) from public.horses) <> 0 then
-    raise exception 'Task assignment opened Horse dossier access';
+  if (
+    select count(*) from public.canonical_horses
+    where id = '4c350000-0000-0000-0000-000000000001'
+  ) <> 1 then
+    raise exception 'Explicit canonical editor lacked Horse dossier access';
   end if;
 end;
 $$;

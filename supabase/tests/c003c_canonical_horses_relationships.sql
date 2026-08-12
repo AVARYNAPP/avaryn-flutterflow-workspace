@@ -4,6 +4,7 @@ select extensions.plan(1);
 
 create temporary table c003c_fixture (
   auth_a uuid not null, auth_b uuid not null, auth_c uuid not null, auth_d uuid not null,
+  test_reference_at timestamptz not null,
   profile_a uuid, profile_b uuid, profile_c uuid, profile_d uuid,
   horse_a uuid, horse_b uuid,
   stable_org uuid, stable_org_2 uuid, other_org uuid,
@@ -12,11 +13,12 @@ create temporary table c003c_fixture (
 );
 grant select,update on pg_temp.c003c_fixture to authenticated,anon,service_role;
 
-insert into pg_temp.c003c_fixture(auth_a,auth_b,auth_c,auth_d) values
+insert into pg_temp.c003c_fixture(auth_a,auth_b,auth_c,auth_d,test_reference_at) values
   ('c003c000-0000-4000-8000-000000000001',
    'c003c000-0000-4000-8000-000000000002',
    'c003c000-0000-4000-8000-000000000003',
-   'c003c000-0000-4000-8000-000000000004');
+   'c003c000-0000-4000-8000-000000000004',
+   pg_catalog.statement_timestamp());
 
 insert into auth.users(instance_id,id,aud,role,email,encrypted_password,email_confirmed_at,
   raw_app_meta_data,raw_user_meta_data,created_at,updated_at)
@@ -105,7 +107,7 @@ end $$;
 
 -- An inactive profile cannot create or acquire horse authority.
 with x as (select public.start_horse_person_relationship((select horse_a from pg_temp.c003c_fixture),
-  (select profile_d from pg_temp.c003c_fixture),'groom',statement_timestamp(),'c003c104-0000-4000-8000-000000000001') id)
+  (select profile_d from pg_temp.c003c_fixture),'groom',(select test_reference_at from pg_temp.c003c_fixture),'c003c104-0000-4000-8000-000000000001') id)
 update pg_temp.c003c_fixture f set inactive_relationship=x.id from x;
 select set_config('request.jwt.claim.sub',(select auth_d::text from pg_temp.c003c_fixture),true);
 select * from public.request_profile_deletion(1,'c003c105-0000-4000-8000-000000000001');
@@ -131,20 +133,62 @@ with created as (select * from public.create_organization('veterinary_practice',
   'c003c110-0000-4000-8000-000000000002','{}'))
 update pg_temp.c003c_fixture f set other_org=created.organization_id from created;
 
+-- A hosted SQL-editor execution sends this file as one query batch, so its
+-- statement_timestamp remains fixed while create_organization uses the wall
+-- clock for membership/assignment defaults. Normalize only these test rows to
+-- the explicit fixture reference time so the same authority contract is tested
+-- deterministically in both batch and statement-by-statement runners.
+reset role;
+update public.organization_memberships membership set valid_from=f.test_reference_at
+from pg_temp.c003c_fixture f
+where membership.organization_id in(f.stable_org,f.stable_org_2,f.other_org)
+  and membership.profile_id in(f.profile_b,f.profile_c)
+  and membership.status='active';
+update public.organization_membership_roles assignment set valid_from=f.test_reference_at
+from pg_temp.c003c_fixture f
+join public.organization_memberships membership
+  on membership.organization_id in(f.stable_org,f.stable_org_2,f.other_org)
+  and membership.profile_id in(f.profile_b,f.profile_c)
+where assignment.organization_id=membership.organization_id
+  and assignment.membership_id=membership.id and assignment.status='active';
+do $$ declare f pg_temp.c003c_fixture%rowtype;
+begin select * into f from pg_temp.c003c_fixture;
+  if (select count(*) from public.organization_memberships membership
+      where membership.organization_id in(f.stable_org,f.stable_org_2,f.other_org)
+        and membership.profile_id in(f.profile_b,f.profile_c) and membership.status='active')<>3
+    or exists(select 1 from public.organization_memberships membership
+      where membership.organization_id in(f.stable_org,f.stable_org_2,f.other_org)
+        and membership.profile_id in(f.profile_b,f.profile_c) and membership.status='active'
+        and membership.valid_from>f.test_reference_at)
+    or (select count(*) from public.organization_membership_roles assignment
+      join public.organization_memberships membership
+        on membership.id=assignment.membership_id and membership.organization_id=assignment.organization_id
+      where membership.organization_id in(f.stable_org,f.stable_org_2,f.other_org)
+        and membership.profile_id in(f.profile_b,f.profile_c) and assignment.status='active')<>3
+    or exists(select 1 from public.organization_membership_roles assignment
+      join public.organization_memberships membership
+        on membership.id=assignment.membership_id and membership.organization_id=assignment.organization_id
+      where membership.organization_id in(f.stable_org,f.stable_org_2,f.other_org)
+        and membership.profile_id in(f.profile_b,f.profile_c) and assignment.status='active'
+        and assignment.valid_from>f.test_reference_at)
+  then raise exception 'Organization authority fixture time normalization failed'; end if;
+end $$;
+set local role authenticated;
+
 -- A records legal ownership, a semantic relationship, organization ownership,
 -- and residency. None of those records is an access path.
 select set_config('request.jwt.claim.sub',(select auth_a::text from pg_temp.c003c_fixture),true);
 with x as (select public.start_horse_person_ownership((select horse_a from pg_temp.c003c_fixture),
-  (select profile_c from pg_temp.c003c_fixture),50,statement_timestamp(),'c003c120-0000-4000-8000-000000000001') id)
+  (select profile_c from pg_temp.c003c_fixture),50,(select test_reference_at from pg_temp.c003c_fixture),'c003c120-0000-4000-8000-000000000001') id)
 update pg_temp.c003c_fixture f set person_ownership=x.id from x;
 with x as (select public.start_horse_organization_ownership((select horse_a from pg_temp.c003c_fixture),
-  (select stable_org from pg_temp.c003c_fixture),50,statement_timestamp(),'c003c120-0000-4000-8000-000000000002') id)
+  (select stable_org from pg_temp.c003c_fixture),50,(select test_reference_at from pg_temp.c003c_fixture),'c003c120-0000-4000-8000-000000000002') id)
 update pg_temp.c003c_fixture f set org_ownership=x.id from x;
 with x as (select public.start_horse_person_relationship((select horse_a from pg_temp.c003c_fixture),
-  (select profile_c from pg_temp.c003c_fixture),'rider',statement_timestamp(),'c003c120-0000-4000-8000-000000000003') id)
+  (select profile_c from pg_temp.c003c_fixture),'rider',(select test_reference_at from pg_temp.c003c_fixture),'c003c120-0000-4000-8000-000000000003') id)
 update pg_temp.c003c_fixture f set relationship=x.id from x;
 with x as (select * from public.switch_horse_residency((select horse_a from pg_temp.c003c_fixture),
-  (select stable_org from pg_temp.c003c_fixture),statement_timestamp(),'c003c120-0000-4000-8000-000000000004'))
+  (select stable_org from pg_temp.c003c_fixture),(select test_reference_at from pg_temp.c003c_fixture),'c003c120-0000-4000-8000-000000000004'))
 update pg_temp.c003c_fixture f set residency=x.residency_id from x;
 
 select set_config('request.jwt.claim.sub',(select auth_c::text from pg_temp.c003c_fixture),true);

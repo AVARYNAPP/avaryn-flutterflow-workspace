@@ -141,11 +141,12 @@ void main() {
     expect(sql, contains('Atomic task same-request replay was not idempotent'));
     expect(
       sql,
-      contains('Assigned rider received more than the assigned task'),
+      contains('Assignment or execute-only grant leaked schedule metadata'),
     );
+    expect(sql, contains('Assignment opened an implicit schedule read'));
     expect(
       sql,
-      contains('Assigned rider directly accessed an unassigned task'),
+      contains('Explicit execute-only rider execution was not registered'),
     );
     expect(sql, contains('Revoked user retained direct task access'));
     expect(sql, contains('Revoked user retained direct task mutation access'));

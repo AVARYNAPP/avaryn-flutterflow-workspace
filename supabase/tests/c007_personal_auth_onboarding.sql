@@ -193,11 +193,17 @@ begin
     or audit_record.row_version_before <> 1
     or audit_record.row_version_after <> 2
     or not (audit_record.metadata -> 'changed_fields' ? 'onboarding_completed_at')
-    or audit_record::text ilike '%ada%'
-    or audit_record::text ilike '%lovelace%'
-    or audit_record::text ilike '%31612345678%'
-    or audit_record::text ilike '%example.invalid%'
-    or audit_record::text ilike '%platform_admin%'
+    or pg_catalog.concat(
+      audit_record.old_state::text,
+      audit_record.new_state::text,
+      audit_record.metadata::text
+    ) ilike any (array[
+      '%ada%',
+      '%lovelace%',
+      '%31612345678%',
+      '%example.invalid%',
+      '%platform_admin%'
+    ])
   then
     raise exception 'C007 onboarding audit is invalid or contains PII/Auth metadata';
   end if;

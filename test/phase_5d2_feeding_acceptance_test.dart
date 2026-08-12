@@ -131,12 +131,9 @@ void main() {
     expect(sql, contains('Non-matching standard slots were not preserved'));
     expect(
       sql,
-      contains('Assigned groom saw more or fewer than one total feeding task'),
+      contains('Assignment or execute-only grant leaked feeding task metadata'),
     );
-    expect(
-      sql,
-      contains('Assigned groom did not receive the exact feeding task'),
-    );
+    expect(sql, contains('Assignment opened an implicit feeding-task read'));
     expect(sql, contains('Feeding correction replay was not idempotent'));
     expect(sql, contains('Feeding correction did not remain append-only'));
     expect(sql, contains('Cross-stable owner read feeding plan from stable A'));

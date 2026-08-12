@@ -65,6 +65,22 @@ void main() {
     );
   });
 
+  test('C-009.1 bundled horse account runtime is valid custom-widget Dart', () {
+    final app = buildApp(
+      checkpoint.buildC0091HorseAccountRuntimeCompileTestApp,
+    );
+    final project = compileApp(app).project;
+
+    expect(
+      findPage(project, name: 'C0091HorseAccountRuntimeCompilePage'),
+      isNotNull,
+    );
+    expect(
+      findCustomWidget(project, name: 'AvarynHorseAccountRuntime'),
+      isNotNull,
+    );
+  });
+
   test('Phase 4B member route accepts nullable generated page parameters', () {
     final source = File('dsl/avaryn_stable_runtime.dart').readAsStringSync();
 

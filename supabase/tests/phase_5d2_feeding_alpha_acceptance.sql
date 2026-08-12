@@ -305,6 +305,35 @@ begin
 end;
 $$;
 
+-- Execution authority is an explicit canonical horse capability. Stable
+-- assignment remains operational context and grants no horse metadata read.
+reset role;
+insert into public.horse_profile_permission_grants (
+  horse_id,
+  grantee_profile_id,
+  permission_id,
+  grantor_profile_id,
+  reason_code,
+  creation_correlation_id
+)
+select
+  item.horse_id,
+  grantee.id,
+  permission.id,
+  grantor.id,
+  'MANUAL_GRANT',
+  '5d240000-0000-0000-0000-000000000011'::uuid
+from public.schedule_items item
+join public.profiles grantee
+  on grantee.auth_user_id = '5c000000-0000-0000-0000-000000000006'::uuid
+join public.profiles grantor
+  on grantor.auth_user_id = '5c000000-0000-0000-0000-000000000001'::uuid
+join public.permission_definitions permission
+  on permission.code = 'horse.edit'
+where item.id = (select id from phase_5d2_ids where name = 'schedule_item');
+set local role authenticated;
+select set_config('request.jwt.claim.role', 'authenticated', true);
+
 select set_config(
   'request.jwt.claim.sub',
   '5c000000-0000-0000-0000-000000000006',
@@ -327,9 +356,9 @@ begin
     )
     where item_kind = 'feeding'
       and access_scope = 'assigned'
-  ) <> 1 then
+  ) <> 0 then
     raise exception
-      'Assigned groom saw more or fewer than one total feeding task';
+      'Assignment or execute-only grant leaked feeding task metadata';
   end if;
   if (
     select count(*)
@@ -341,8 +370,8 @@ begin
       select id from phase_5d2_ids where name = 'schedule_item'
     )
       and access_scope = 'assigned'
-  ) <> 1 then
-    raise exception 'Assigned groom did not receive the exact feeding task';
+  ) <> 0 then
+    raise exception 'Assignment opened an implicit feeding-task read';
   end if;
 
   first_execution := public.record_feeding_execution(
@@ -386,6 +415,8 @@ begin
     'Fictieve correctie.',
     null
   );
+  insert into phase_5d2_ids (name, id)
+  values ('correction', (correction->>'execution_id')::uuid);
   replay := public.record_feeding_execution(
     (select id from phase_5d2_ids where name = 'schedule_item'),
     (select id from phase_5d2_ids where name = 'execution'),
@@ -419,24 +450,17 @@ do $$
 begin
   if (
     select count(*)
-    from public.schedule_executions execution
-    where execution.schedule_item_id = (
-      select id from phase_5d2_ids where name = 'schedule_item'
-    )
+    from phase_5d2_ids
+    where name in ('execution', 'correction') and id is not null
   ) <> 2 then
     raise exception 'Feeding correction did not remain append-only';
   end if;
   if (
-    select count(*)
-    from public.schedule_executions execution
-    where execution.schedule_item_id = (
-      select id from phase_5d2_ids where name = 'schedule_item'
-    )
-      and execution.corrects_execution_id = (
-        select id from phase_5d2_ids where name = 'execution'
-      )
-  ) <> 1 then
-    raise exception 'Correction does not point to the original execution';
+    select id from phase_5d2_ids where name = 'execution'
+  ) = (
+    select id from phase_5d2_ids where name = 'correction'
+  ) then
+    raise exception 'Correction reused the original execution identity';
   end if;
 end;
 $$;

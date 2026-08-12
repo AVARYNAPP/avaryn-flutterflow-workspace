@@ -811,63 +811,122 @@ class _HorsesOverviewPageWidgetState extends State<HorsesOverviewPageWidget> {
                         ),
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
-                              20.0, 12.0, 20.0, 12.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                              20.0, 14.0, 20.0, 14.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'Mijn paarden',
-                                style: FlutterFlowTheme.of(context)
-                                    .titleLarge
-                                    .override(
-                                      font: GoogleFonts.interTight(
+                              Container(
+                                width: 36.0,
+                                height: 36.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  border: Border.all(
+                                    color:
+                                        FlutterFlowTheme.of(context).secondary,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                alignment: AlignmentDirectional(0.0, 0.0),
+                                child: Text(
+                                  'A',
+                                  style: FlutterFlowTheme.of(context)
+                                      .titleMedium
+                                      .override(
+                                        font: GoogleFonts.interTight(
+                                          fontWeight:
+                                              FlutterFlowTheme.of(context)
+                                                  .titleMedium
+                                                  .fontWeight,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .titleMedium
+                                                  .fontStyle,
+                                        ),
+                                        color: FlutterFlowTheme.of(context)
+                                            .accent1,
+                                        letterSpacing: 0.0,
                                         fontWeight: FlutterFlowTheme.of(context)
-                                            .titleLarge
+                                            .titleMedium
                                             .fontWeight,
                                         fontStyle: FlutterFlowTheme.of(context)
-                                            .titleLarge
+                                            .titleMedium
                                             .fontStyle,
                                       ),
-                                      color:
-                                          FlutterFlowTheme.of(context).accent1,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .titleLarge
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .titleLarge
-                                          .fontStyle,
-                                    ),
+                                ),
                               ),
-                              Text(
-                                'Zelfstandig profiel · expliciete relaties · één Horse Authority',
-                                maxLines: 2,
-                                style: FlutterFlowTheme.of(context)
-                                    .bodySmall
-                                    .override(
-                                      font: GoogleFonts.inter(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodySmall
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodySmall
-                                            .fontStyle,
-                                      ),
-                                      color:
-                                          FlutterFlowTheme.of(context).tertiary,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodySmall
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodySmall
-                                          .fontStyle,
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'A V A R Y N',
+                                      maxLines: 1,
+                                      style: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .override(
+                                            font: GoogleFonts.interTight(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontStyle,
+                                            ),
+                                            color: FlutterFlowTheme.of(context)
+                                                .accent1,
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontStyle,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                overflow: TextOverflow.ellipsis,
+                                    Text(
+                                      'HORSE EXPERIENCE',
+                                      maxLines: 1,
+                                      style: FlutterFlowTheme.of(context)
+                                          .labelSmall
+                                          .override(
+                                            font: GoogleFonts.inter(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .labelSmall
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .labelSmall
+                                                      .fontStyle,
+                                            ),
+                                            color: FlutterFlowTheme.of(context)
+                                                .tertiary,
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .labelSmall
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .labelSmall
+                                                    .fontStyle,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ].divide(SizedBox(height: 1.0)),
+                                ),
                               ),
-                            ].divide(SizedBox(height: 3.0)),
+                            ].divide(SizedBox(width: 12.0)),
                           ),
                         ),
                       ),

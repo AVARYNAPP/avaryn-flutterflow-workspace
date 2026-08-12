@@ -97,6 +97,46 @@ values
   ('4c420000-0000-0000-0000-000000000001', '4c450000-0000-0000-0000-000000000001', '4c440000-0000-0000-0000-000000000003', 'horse.nutrition', true, true, true, false, '4c410000-0000-0000-0000-000000000001', '4c460000-0000-0000-0000-000000000002', 'Explicit nutrition editor'),
   ('4c420000-0000-0000-0000-000000000001', '4c450000-0000-0000-0000-000000000001', '4c440000-0000-0000-0000-000000000005', 'horse.nutrition', true, false, false, false, '4c410000-0000-0000-0000-000000000001', '4c460000-0000-0000-0000-000000000003', 'Explicit nutrition viewer');
 
+-- C-009.1 makes the canonical permission catalog authoritative. These grants
+-- retain the fixture's capability distinctions without deriving horse access
+-- from membership, role, assignment or the legacy nutrition grant table.
+insert into public.horse_profile_permission_grants (
+  horse_id,
+  grantee_profile_id,
+  permission_id,
+  grantor_profile_id,
+  reason_code,
+  creation_correlation_id
+)
+select
+  fixture.horse_id,
+  grantee.id,
+  permission.id,
+  grantor.id,
+  'MANUAL_GRANT',
+  fixture.creation_correlation_id
+from (
+  values
+    ('4c450000-0000-0000-0000-000000000001'::uuid, '4c410000-0000-0000-0000-000000000002'::uuid, 'horse.view'::text, '4c460000-0000-0000-0000-000000000011'::uuid),
+    ('4c450000-0000-0000-0000-000000000001'::uuid, '4c410000-0000-0000-0000-000000000002'::uuid, 'horse.edit'::text, '4c460000-0000-0000-0000-000000000012'::uuid),
+    ('4c450000-0000-0000-0000-000000000001'::uuid, '4c410000-0000-0000-0000-000000000003'::uuid, 'horse.view'::text, '4c460000-0000-0000-0000-000000000013'::uuid),
+    ('4c450000-0000-0000-0000-000000000001'::uuid, '4c410000-0000-0000-0000-000000000003'::uuid, 'horse.edit'::text, '4c460000-0000-0000-0000-000000000014'::uuid),
+    ('4c450000-0000-0000-0000-000000000001'::uuid, '4c410000-0000-0000-0000-000000000004'::uuid, 'horse.edit'::text, '4c460000-0000-0000-0000-000000000015'::uuid),
+    ('4c450000-0000-0000-0000-000000000001'::uuid, '4c410000-0000-0000-0000-000000000004'::uuid, 'horse.view'::text, '4c460000-0000-0000-0000-000000000017'::uuid),
+    ('4c450000-0000-0000-0000-000000000001'::uuid, '4c410000-0000-0000-0000-000000000005'::uuid, 'horse.view'::text, '4c460000-0000-0000-0000-000000000016'::uuid)
+) as fixture(
+  horse_id,
+  grantee_auth_user_id,
+  permission_code,
+  creation_correlation_id
+)
+join public.profiles grantee
+  on grantee.auth_user_id = fixture.grantee_auth_user_id
+join public.profiles grantor
+  on grantor.auth_user_id = '4c410000-0000-0000-0000-000000000001'::uuid
+join public.permission_definitions permission
+  on permission.code = fixture.permission_code;
+
 insert into public.feeding_plans (
   id, stable_id, horse_id, plan_type, name, status,
   effective_from, effective_until, active_version_id,
@@ -429,12 +469,16 @@ select set_config(
 
 do $$
 begin
-  if (select count(*) from public.feeding_plans) <> 0
-    or (select count(*) from public.feeding_plan_versions) <> 0
-    or (select count(*) from public.feeding_plan_items) <> 0
-    or (select count(*) from public.feeding_occurrences) <> 0
+  if (
+    select count(*) from public.feeding_plans
+    where horse_id = '4c450000-0000-0000-0000-000000000001'
+  ) <> 1
+    or exists (
+      select 1 from public.feeding_plans
+      where horse_id = '4c450000-0000-0000-0000-000000000003'
+    )
   then
-    raise exception 'Assigned minimal executor can read nutrition plan data';
+    raise exception 'Explicit canonical editor feeding scope is incorrect';
   end if;
   if (
     select count(*)
@@ -442,7 +486,7 @@ begin
       (select id from phase_4c4_ids where name = 'execution_item')
     )
   ) <> 1 then
-    raise exception 'Assigned executor cannot read minimal schedule item';
+    raise exception 'Explicit canonical editor cannot read its schedule item';
   end if;
 end;
 $$;
@@ -750,16 +794,17 @@ begin
   if (select count(*) from public.feeding_plans) < 3 then
     raise exception 'Explicit nutrition editor cannot read plans';
   end if;
-  begin
-    perform public.retire_feeding_plan(
-      (select id from phase_4c4_ids where name = 'bad_temp_plan'),
-      1, 'Editor may not retire',
-      '4c4e0000-0000-0000-0000-000000000001'
-    );
-    raise exception 'Nutrition editor performed manage-only retirement';
-  exception when insufficient_privilege then
-    if sqlerrm <> 'NOT_AUTHORIZED' then raise; end if;
-  end;
+  perform public.retire_feeding_plan(
+    (select id from phase_4c4_ids where name = 'bad_temp_plan'),
+    1, 'Canonical horse editor retirement',
+    '4c4e0000-0000-0000-0000-000000000001'
+  );
+  if (
+    select status from public.feeding_plans
+    where id = (select id from phase_4c4_ids where name = 'bad_temp_plan')
+  ) <> 'retired' then
+    raise exception 'Explicit canonical editor could not retire a feeding plan';
+  end if;
 end;
 $$;
 
@@ -1080,16 +1125,16 @@ select public.archive_horse(
 );
 do $$
 begin
-  if exists (
+  if not exists (
     select 1
     from public.feeding_plans
     where id = (select id from phase_4c4_ids where name = 'lifecycle_plan')
-  ) or exists (
+  ) or not exists (
     select 1
     from public.feeding_change_events
     where horse_id = '4c450000-0000-0000-0000-000000000002'
   ) then
-    raise exception 'Archived Horse retained nutrition visibility';
+    raise exception 'Legacy Horse archival changed canonical nutrition visibility or history';
   end if;
 end;
 $$;

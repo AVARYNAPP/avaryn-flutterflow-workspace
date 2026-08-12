@@ -103,6 +103,33 @@ values
     'Media viewer regression fixture'
   );
 
+-- C-009.1 moves media authority to the canonical C-003C permission model.
+-- Keep the historical stable-scoped graph, but make editor/viewer authority
+-- explicit on the canonical horse instead of deriving it from membership.
+insert into public.horse_delegated_administrators (
+  id, horse_id, profile_id, granted_by_profile_id, permission_codes,
+  valid_from, creation_correlation_id
+)
+select
+  '4c560000-0000-0000-0000-000000000011'::uuid,
+  '4c550000-0000-0000-0000-000000000001'::uuid,
+  editor.id, owner_profile.id, array['horse.view','horse.edit']::text[],
+  statement_timestamp(), '4c560000-0000-0000-0000-000000000021'::uuid
+from public.profiles editor
+cross join public.profiles owner_profile
+where editor.auth_user_id = '4c510000-0000-0000-0000-000000000003'
+  and owner_profile.auth_user_id = '4c510000-0000-0000-0000-000000000001'
+union all
+select
+  '4c560000-0000-0000-0000-000000000012'::uuid,
+  '4c550000-0000-0000-0000-000000000001'::uuid,
+  viewer.id, owner_profile.id, array['horse.view']::text[],
+  statement_timestamp(), '4c560000-0000-0000-0000-000000000022'::uuid
+from public.profiles viewer
+cross join public.profiles owner_profile
+where viewer.auth_user_id = '4c510000-0000-0000-0000-000000000004'
+  and owner_profile.auth_user_id = '4c510000-0000-0000-0000-000000000001';
+
 do $$
 declare
   relation_name text;
@@ -558,6 +585,11 @@ begin
   where horse_id = '4c550000-0000-0000-0000-000000000001'
     and membership_id = '4c540000-0000-0000-0000-000000000003'
     and category = 'horse.media';
+  update public.horse_delegated_administrators
+  set status = 'ended', valid_until = statement_timestamp(),
+    ended_reason_code = 'C0091_PERMISSION_REVOKED', row_version = row_version + 1,
+    updated_at = clock_timestamp()
+  where id = '4c560000-0000-0000-0000-000000000011';
 end;
 $$;
 
@@ -719,10 +751,10 @@ begin
   if (
     select count(*) from public.media_assets
     where id = '4c5e3000-0000-0000-0000-000000000001'
-  ) <> 1 or (
+  ) <> 0 or (
     select count(*) from public.media_links
     where media_asset_id = '4c5e3000-0000-0000-0000-000000000001'
-  ) <> 1 or not exists (
+  ) <> 0 or exists (
     select 1 from public.media_links
     where id = '4c5e4000-0000-0000-0000-000000000001'
   ) or (
@@ -730,7 +762,7 @@ begin
     where media_asset_id = '4c5e3000-0000-0000-0000-000000000001'
   ) <> 0
   then
-    raise exception '4C.5 execution-minimal row filtering failed';
+    raise exception '4C.5 execution assignment implied canonical media access';
   end if;
 end;
 $$;
