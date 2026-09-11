@@ -1,4 +1,4 @@
-import {browserDay} from './browser-clock.js';
+import {browserDay,dashboardClock} from './browser-clock.js';
 import {renderTaskForm} from './task-form.js';
 import {PRODUCT} from './product-config.js';
 import {createAccountCore} from './account-core.js';
@@ -24,6 +24,7 @@ export function createBackendController({getState,setState,render,save,navigate,
  const acknowledgedRequests=new WeakMap();
  let phase=PRODUCT.demo&&localStorage.getItem(MODE)==='demo'?'demo':'login',message='',busy=false,generation=0;
  let authMode='login',authEmail='',emailCallback=null,resendAfter=0;
+ let calendarFlight=null;
  const connected=()=>getState().backend?.connected===true;
  const scopeKey=state=>`avaryn-v8-connected-preferences:${state.backend.actor.id}:${state.backend.organizationId||'personal'}`;
  const contextKey=state=>`avaryn-v8-connected-active-context:${state.backend.actor.id}`;
@@ -37,7 +38,7 @@ export function createBackendController({getState,setState,render,save,navigate,
    return true;
   }catch{return false;}
  }
- function clearCore(){purgeMedia?.();clearAuthCallback?.();const old=getState();setState({theme:old.theme||'light',route:'today',horseFilter:'personal',period:'today',selectedDay:old.today||browserDay(),horses:[],tasks:[],activities:[],feeding:{},team:[],stableName:'Jouw stal',stableLocation:''});}
+ function clearCore(){calendarFlight=null;purgeMedia?.();clearAuthCallback?.();const old=getState();setState({theme:old.theme||'light',route:'today',horseFilter:'personal',period:'today',selectedDay:old.today||browserDay(),horses:[],tasks:[],activities:[],feeding:{},team:[],stableName:'Jouw stal',stableLocation:''});}
  async function load(organizationId,day){
   const ticket=generation;let unavailable=false;
   const read=async(id,onDate=day)=>{
@@ -255,9 +256,19 @@ export function createBackendController({getState,setState,render,save,navigate,
   if(ticket!==generation||!isCurrent())return;
   clearCore();phase='login';message=success;closeModal();render();
  }
- function reload(){
-  if(!connected())return;const org=getState().backend.organizationId,day=getState().selectedDay,ticket=++generation;phase='loading';render();
+ function reload(day=getState().selectedDay){
+  if(!connected())return;const org=getState().backend.organizationId,ticket=++generation;phase='loading';render();
   return load(org,day).then(loaded=>{if(loaded&&ticket===generation)render();}).catch(e=>{if(ticket!==generation)return;clearCore();phase='login';message=errorMessage(e);render();});
  }
- return {getScreen,init,handleNativeEmailCallback,suspendAccount,clearDeletedSession,handleAction,handleSubmit,saveLocal,connected,reload,perform,apiRequest:(name,params,options)=>client.requestRpc(name,params,options),edgeRequest:client.edgeRequest,mediaRequest:client.mediaRequest,uploadHorseMedia:client.uploadHorseMedia,downloadHorseMedia:client.downloadHorseMedia};
+ function refreshToday(now=new Date()){
+  const s=getState(),b=s.backend;
+  // A day change refreshes authoritative projections, never an open draft.
+  if(!connected()||phase!=='connected'||busy||calendarFlight||b.profile?.profile_status!=='active'||!b.todayDate||document.querySelector('#modal')?.open||(s.route==='function-profile'&&document.querySelector('#app form')))return false;
+  const day=dashboardClock(now,s).day;if(day===b.todayDate)return false;
+  const flight={};calendarFlight=flight;
+  const selectedDay=s.selectedDay===b.todayDate?day:s.selectedDay;
+  void reload(selectedDay).finally(()=>{if(calendarFlight===flight)calendarFlight=null;});
+  return true;
+ }
+ return {getScreen,init,handleNativeEmailCallback,suspendAccount,clearDeletedSession,handleAction,handleSubmit,saveLocal,connected,reload,refreshToday,perform,apiRequest:(name,params,options)=>client.requestRpc(name,params,options),edgeRequest:client.edgeRequest,mediaRequest:client.mediaRequest,uploadHorseMedia:client.uploadHorseMedia,downloadHorseMedia:client.downloadHorseMedia};
 }

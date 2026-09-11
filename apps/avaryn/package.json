@@ -9,7 +9,8 @@
     "build:demo": "node scripts/build.mjs --demo",
     "dev": "node scripts/dev-server.mjs",
     "test:core": "node --test src/test/backend-client.test.mjs src/test/date-priority.test.mjs",
-    "native:sync": "cap sync"
+    "native:versions": "node scripts/sync-native-versions.mjs",
+    "native:sync": "npm run native:versions && cap sync"
   },
   "dependencies": {
     "@capacitor/core": "8.5.2",

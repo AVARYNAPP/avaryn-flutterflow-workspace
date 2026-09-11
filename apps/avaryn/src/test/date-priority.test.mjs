@@ -92,14 +92,14 @@ test('Today next card, warmup priority and horse time agree with verified LA hea
   assert.match(html,/Vrijdag 11 september/);assert.match(html,/Goedemiddag/);assert.match(html,/17:30 – 18:30/);assert.match(html,/17:30 · Training/);
   assert.ok(html.indexOf('class="next-card"')<html.indexOf('class="vitality-card"'));assert.ok(html.indexOf('class="vitality-card"')<html.indexOf('Dit staat nog open'));assert.match(html,/Warming-up voor je rit/);
 });
-function clockRefreshFixture({state,now,oldDay,hidden=false}){
+function clockRefreshFixture({state,now,oldDay,hidden=false,refreshDay=()=>false,pending=false,hasHeader=true,modalOpen=false,inlineForm=false}){
   const source=readFileSync(new URL('../app.js',import.meta.url),'utf8');
   const match=source.match(/function refreshTodayClock\(\)\{[\s\S]*?\n\}/);assert.ok(match);
   const date={textContent:''},greeting={textContent:''};let renders=0;
   const header={dataset:{todayDay:oldDay},querySelector:q=>q==='[data-today-date]'?date:greeting};
-  const document={hidden,querySelector:()=>header};
+  const document={hidden,querySelector:q=>q==='#modal'?{open:modalOpen}:q==='#app form'?(inlineForm?{}:null):hasHeader?header:null};
   class FixedDate extends Date{constructor(){super(now);}}
-  const refresh=new Function('state','document','dashboardClock','render','Date',`${match[0]};return refreshTodayClock;`)(state,document,dashboardClock,()=>renders++,FixedDate);
+  const refresh=new Function('state','document','dashboardClock','render','Date','backendController','accountLifecycle',`${match[0]};return refreshTodayClock;`)(state,document,dashboardClock,()=>renders++,FixedDate,{refreshToday:refreshDay},{isPending:()=>pending});
   return {refresh,date,greeting,get renders(){return renders;}};
 }
 test('actual focus/timer refresh uses same account clock as initial rendering',()=>{
@@ -109,4 +109,18 @@ test('actual focus/timer refresh uses same account clock as initial rendering',(
 test('actual refresh rerenders once after account midnight, but stays idle while hidden',()=>{
   const s=accountClockState('America/Los_Angeles'),h=clockRefreshFixture({state:s,now:'2026-09-12T07:00:00Z',oldDay:'2026-09-11'});h.refresh();assert.equal(h.renders,1);
   const hidden=clockRefreshFixture({state:s,now:'2026-09-12T07:00:00Z',oldDay:'2026-09-11',hidden:true});hidden.refresh();assert.equal(hidden.renders,0);
+});
+test('clock event delegates data refresh even on a feeding route without Today header',()=>{
+  let calls=0;const h=clockRefreshFixture({state:accountClockState('Europe/Amsterdam'),now:'2026-09-11T22:01:00Z',oldDay:'2026-09-11',hasHeader:false,refreshDay:()=>{calls++;return true;}});h.refresh();assert.equal(calls,1);assert.equal(h.renders,0);
+});
+test('a started data refresh prevents stale header rerender; hidden and pending accounts never trigger it',()=>{
+  let calls=0;const args={state:accountClockState('Europe/Amsterdam'),now:'2026-09-11T22:01:00Z',oldDay:'2026-09-11',refreshDay:()=>{calls++;return true;}};
+  const h=clockRefreshFixture(args);h.refresh();assert.equal(h.renders,0);assert.equal(h.date.textContent,'');assert.equal(calls,1);
+  clockRefreshFixture({...args,hidden:true}).refresh();clockRefreshFixture({...args,pending:true}).refresh();assert.equal(calls,1);
+});
+test('midnight timer preserves open modal and inline drafts without even rerendering the background',()=>{
+  let calls=0;for(const open of [{modalOpen:true},{inlineForm:true}]){const h=clockRefreshFixture({state:{...accountClockState('Europe/Amsterdam'),route:'function-profile'},now:'2026-09-11T22:01:00Z',oldDay:'2026-09-11',refreshDay:()=>{calls++;return false;},...open});h.refresh();assert.equal(h.renders,0);assert.equal(h.date.textContent,'');}assert.equal(calls,0);
+});
+test('clock refresh ignores the previous inline form after navigation changes the route',()=>{
+  let calls=0;const h=clockRefreshFixture({state:{...accountClockState('Europe/Amsterdam'),route:'horse-feeding'},now:'2026-09-11T22:01:00Z',oldDay:'2026-09-11',inlineForm:true,refreshDay:()=>{calls++;return true;}});h.refresh();assert.equal(calls,1);assert.equal(h.renders,0);assert.equal(h.date.textContent,'');
 });

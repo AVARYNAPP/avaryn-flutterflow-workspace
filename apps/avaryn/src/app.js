@@ -58,7 +58,7 @@ function navigate(route,horseId){
   const dest=route.startsWith('horse-')?`paard/${state.horseId}/${{'horse-overview':'overzicht','horse-planning':'planning','horse-feeding':'voeding'}[route]}`:paths[route];
   if(modal.open)modal.close();
   if(history.state?.sheet)history.replaceState(null,'','#/'+dest);else history.pushState(null,'','#/'+dest);
-  if(state.backend?.connected&&['today','stable'].includes(route)&&state.selectedDay!==state.today){state.selectedDay=state.today;backendController.reload();}else render();window.scrollTo(0,0);save();
+  if(state.backend?.connected&&['today','stable'].includes(route)&&state.selectedDay!==state.today){state.selectedDay=state.today;if(!backendController.refreshToday())backendController.reload();}else render();window.scrollTo(0,0);save();
 }
 function toast(message){const el=document.querySelector('#toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2800);}
 function navButton(route,label,ic,desktop=false){
@@ -72,6 +72,7 @@ function render(){
   document.documentElement.dataset.theme=state.theme==='dark'?'dark':'light';
   if(accountLifecycle?.isPending()){document.querySelector('#app').innerHTML='<div class="access-loading"><h1>Je verwijderaanvraag wordt afgehandeld.</h1><p>Je gewone accounttoegang is gesloten. Controleer de status om dezelfde aanvraag te vervolgen.</p><button class="button-primary" data-action="account-delete">Verwijderstatus controleren</button><button class="button-secondary" data-action="logout">Uitloggen</button></div>';return;}
   const gate=backendController?.getScreen();if(gate){document.querySelector('#app').innerHTML=gate;return;}
+  if(backendController?.refreshToday())return;
   const view=viewState();if(!view.horses.some(h=>h.id===state.horseId)){state.horseId=view.horses[0]?.id;view.horseId=state.horseId;}
   const ctx=createContext(view);let content='';
   switch(state.route){
@@ -253,16 +254,19 @@ document.addEventListener('submit',event=>{if(accountLifecycle.handleSubmit(even
 });
 document.addEventListener('change',event=>{if(updateTaskTiming(event.target))return;if(event.target.matches('[data-task-day]')&&event.target.value){state.selectedDay=event.target.value;save();if(state.backend?.connected)backendController.reload();else render();}});
 modal.addEventListener('cancel',event=>{event.preventDefault();closeModal();});
+modal.addEventListener('close',refreshTodayClock);
 window.addEventListener('popstate',()=>{horseProfile.cancelOpen();if(modal.open)modal.close();parseHash();render();window.scrollTo(0,0);});
 window.addEventListener('hashchange',()=>{horseProfile.cancelOpen();if(modal.open)modal.close();parseHash();render();window.scrollTo(0,0);});
 void retireLegacyPreviewCache();
 parseHash();render();await backendController.init();
 platform.onAuthCallback?.(value=>backendController.handleNativeEmailCallback(value),error=>toast(error.message));
 
-// Keep an open Today header current without replacing forms or polling the backend.
+// Refresh a changed account day once; otherwise only update the clock text.
 function refreshTodayClock(){
+  if(document.hidden||document.querySelector('#modal')?.open||(state.route==='function-profile'&&document.querySelector('#app form')))return;
+  if(!accountLifecycle?.isPending()&&backendController?.refreshToday())return;
   const header=document.querySelector('[data-today-day]');
-  if(!header||document.hidden)return;
+  if(!header)return;
   const clock=dashboardClock(new Date(),state);
   if(header.dataset.todayDay!==clock.day){render();return;}
   header.querySelector('[data-today-date]').textContent=clock.dateLabel;
