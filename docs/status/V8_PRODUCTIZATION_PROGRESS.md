@@ -4,7 +4,10 @@ Dit is een werkstatus, geen eindacceptatie of publicatieverklaring.
 
 Officiële client: `apps/avaryn/src`. Ontwikkelkandidaat `C010-V8-PRODUCTIZATION-20260911-01`.
 Gecontroleerde ontwikkelbranch: `implementation/c010-stable-team-collaboration`;
-historische HEAD `5fc70f09d5122da1def3d44cbcfc3a3098086f60`. Er is nog geen nieuw productiseringscheckpoint gepusht.
+historische HEAD `5fc70f09d5122da1def3d44cbcfc3a3098086f60`.
+Technisch broncheckpoint: `e1ba6965f459525061d45ae3984c2a0b877918c0`, lokaal vastgelegd.
+De push naar precies deze ontwikkelbranch kreeg GitHub403: de bestaande lokale Git-koppeling
+gebruikte een ander account zonder schrijfrecht. Geen accountwisseling of herhaalde push uitgevoerd.
 
 De geaccepteerde warme V8 blijft de visuele basis. Webassets worden lokaal gebundeld voor Capacitor;
 de native projecten verwijzen niet naar een tijdelijke ontwikkelwebsite.
@@ -39,11 +42,14 @@ de native projecten verwijzen niet naar een tijdelijke ontwikkelwebsite.
 - Lokale server herstart met een afgeschermde config die de acht werkelijke developmentcontainers controleert. Alle geserveerde bestandshashes en kandidaat/backendidentiteit gelijk aan de build; nieuwe archieflees-RPC weigert anoniem met401. Dit is HTTPbewijs, geen nieuwe browseracceptatie.
 - Native fotoactie gebruikt de bestaande expliciete opslagflow.72 gerichte checks plus5 controllerchecks groen, onderdeel van de gezamenlijke suite. Cameratoegang, galerijkeuze en toestemming op een echt toestel zijn nog niet getest.
 - Zelfstandige developmentmodus zonder FlutterFlow-binding:35 Pythonchecks en56 Nodechecks; bestaande devconfig daadwerkelijk tegen de eigen containers gevalideerd. Het voorbeeld van een volledig nieuwe backend is nog niet gestart.
+- Overdrachtsproef vanaf broncheckpoint `e1ba6965f459`:400 exacte bronbestanden in een schone map op dezelfde Mac, verse `npm ci`, webbuild en beide Capacitor-syncs geslaagd. Alle34 bestanden inclusief het buildmanifest zijn bytegelijk. In die schone map opnieuw884 productsuitetests geslaagd,2 liveproeven overgeslagen;35 productrunnerchecks en5 huidige backendmanifestguards geslaagd. Geen FlutterFlow-state, oude node_modules of ontbrekende imports nodig.
+- Afgeleid webpakket gereed:33 clientbestanden plus Worker en hostingmetadata; ZIP bevat daarnaast een herleidbaar releasereceipt. Artifact-SHA256 `325667557b975e3cc89a7bae7add3194b2b26cf7a0ded3dceb65f4f34ac58a4d`. Nog niet gepubliceerd; geen secrets of Edgecode in dit publicatiepakket.
 
 ## Open werk en persoonlijke afhankelijkheden
 
 - Exacte overdracht/deployment van de drie Edgebronbestanden naar uitsluitend de nieuwe pilot wacht op de gevraagde gebruikersbevestiging: automatische browserreview accepteerde het eerder aangeleverde mandaat hiervoor niet. Geen upload langs een andere route uitgevoerd.
-- Noodzakelijke online registratie/herstel, media, accountlifecycle en gedeelde gebruikersflows; finale kandidaatfreeze, artifacts, checkpoint en schone herstelbuild.
+- Noodzakelijke online registratie/herstel, media, accountlifecycle en gedeelde gebruikersflows. Technische bronfreeze, lokaal checkpoint, webpakket en schone overdrachtsbuild zijn afgerond; push, browseracceptatie en publicatie staan open.
+- Browsercontrole wacht op het ontgrendelen van de Mac. GitHubpush vraagt een geautoriseerd account met schrijfrecht op uitsluitend `AVARYNAPP/avaryn-flutterflow-workspace`; de accountnaam is gevraagd, geen token.
 - De archiefoverdracht is aangesloten. Bestaande legacyguards blijven van kracht; nieuw aangemaakte canonieke accounts vragen geen kunstmatige legacy-remap. De end-to-end verwijdering met een nieuw zelfstandig geregistreerd testaccount staat nog open.
 - Android SDK-licentie vraagt persoonlijke acceptatie. Android APK/AAB nog niet gebouwd.
 - Deze Mac heeft geen geschikte Xcode/macOS-combinatie voor Capacitor8. Geen bewezen iOS-simulatorbuild, archive of IPA; signing/developeraccounts blijven afzonderlijk te verifiëren.

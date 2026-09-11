@@ -12,7 +12,7 @@ duurzame pilotkern en web/iOS/Android-builds. Geen publieke storevrijgave of mai
 7. [ ] Gate B: lokale SQL-/HTTP-/raceproeven en gezamenlijke productsuite geslaagd; managed Edge- en onlineproeven staan nog open.
 8. [ ] Gate C: finale kandidaat, visuele vergelijking, web/Android/iOS artifacts, exact checkpointreview.
 9. [ ] Gate D: besloten permanente pilot, cross-client/opslag/update/herstel, testdistributie waar mogelijk.
-10. [ ] Schone overdrachtsbuild, documentatie, gepusht ontwikkelcheckpoint en gebundelde persoonlijke acties.
+10. [ ] Schone overdrachtsbuild en documentatie bewezen, checkpoint lokaal vastgelegd; push wacht op juiste GitHub-schrijftoegang. Persoonlijke acties gebundeld.
 
 De productbron en parallel beoordeelde wijzigingen zijn bevroren voor het technische checkpoint.
 De productsuite telt 886 tests:884 geslaagd,0 fouten,2 expliciete liveproeven overgeslagen.
