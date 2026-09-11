@@ -1,0 +1,53 @@
+import {renderVitalityCard,vitalityTraining} from './vitality.js';
+import {browserDay,dashboardClock,activityDay,activityOrder,browserActivity} from './browser-clock.js';
+import {taskToday,taskOrder} from './task-timing.js';
+import {getActiveStableView} from './stable-view.js';
+import {renderArenaSummary} from './arena.js';
+import {getPersona,canCreateTask,canPlan,canManage,canViewTeam} from './horse-access.js';
+import {renderFacilitySummary} from './facilities.js';
+import {renderMomentCard} from './menu-ui.js';
+
+const openTasks=state=>state.tasks.filter(t=>!['done','completed','cancelled'].includes(t.status)).sort(taskOrder);
+const activities=state=>state.activities.filter(a=>a.date===(state.today||browserDay())).sort((a,b)=>a.time.localeCompare(b.time));
+const todayActivities=(state,day)=>state.activities.filter(a=>activityDay(a)===day).sort(activityOrder).map(browserActivity);
+
+function horseCards(state,ctx,day){return `<div class="today-horses">${state.horses.map(h=>{
+  const activity=todayActivities(state,day).find(a=>a.horseId===h.id);
+  return `<button class="today-horse" data-action="navigate" data-route="horse-overview" data-horse="${h.id}" aria-label="Bekijk ${ctx.esc(h.name)}"><img src="${h.image}" alt="${ctx.esc(h.name)}"><div class="today-horse-body">${h.imageIsPlaceholder?'<small class="backend-photo-note">Voorbeeldfoto</small>':''}<h3>${ctx.esc(h.name)}</h3><p>${ctx.esc(state.feeding[h.id]?.status||'Voerplan bekijken')}</p><div class="horse-foot"><span>${activity?ctx.esc(activity.time+' · '+activity.type):'Een rustige dag'}</span>${ctx.icon('arrow-up-right',14)}</div></div></button>`;
+}).join('')}</div>`;}
+
+export function feedPreview(state,ctx){
+  state=getActiveStableView(state);
+  if(!state.horses.length)return `<div class="feed-preview"><div class="feed-preview-head"><span class="feed-preview-icon">${ctx.icon('feed',23)}</span><div><h3>Voeding vandaag</h3><p>Je voerplannen verschijnen bij je paarden.</p></div></div><button class="text-link" data-action="navigate" data-route="horses">Naar je paarden ${ctx.icon('arrow-right',15)}</button></div>`;
+  const rows=['Ochtend','Middag','Avond'].map(name=>{
+    const products=[...new Set(Object.values(state.feeding).flatMap(plan=>plan.meals.filter(meal=>meal.name===name).flatMap(meal=>meal.items.map(item=>item.product))))];
+    return `<div class="feed-mini-row"><strong>${name}</strong><span>${products.length?products.map(ctx.esc).join(' · '):(state.backend?.connected?'Geen zichtbare voerinstructies':'Geen voerbeurt')}</span></div>`;
+  }).join('');
+  return `<div class="feed-preview"><div class="feed-preview-head"><span class="feed-preview-icon">${ctx.icon('feed',23)}</span><div><h3>Voeding vandaag</h3><p>Voor ${ctx.esc(state.horses.map(h=>h.name).join(' en '))}</p></div></div>${rows}<button class="text-link" data-action="navigate" data-route="stable-feed">Open de voerinstructies ${ctx.icon('arrow-right',15)}</button></div>`;
+}
+
+export function renderToday(state,ctx,now=new Date()){
+  const clock=dashboardClock(now,state),training=vitalityTraining(state,clock.day),hasTraining=Boolean(training);
+  const vitality=renderVitalityCard(state,ctx,clock.day);
+  const person=getPersona(state), source=state.backend?.connected?[...(state.backend.todayActivities||[]),...state.activities.filter(a=>a.isMine)]:state.activities;
+  const list=[...new Map(source.map(a=>[a.id,a])).values()].filter(a=>activityDay(a)===clock.day).sort(activityOrder).map(browserActivity),tasks=state.backend?.connected?(state.backend.todayTasks||[]):openTasks(state);
+  const general=tasks.filter(t=>!t.date),dated=tasks.filter(t=>t.date===clock.day);
+  const next=list.find(a=>!['done','completed','cancelled'].includes(a.status))||(training&&browserActivity(training.activity));
+  const horse=next&&ctx.horse(next.horseId);
+  return `<header class="page-intro" data-today-day="${clock.day}"><div><p class="eyebrow"><span data-today-date>${ctx.esc(clock.dateLabel)}</span> · ${ctx.esc(state.stableName)}</p><h1><span data-today-greeting>${clock.greeting}</span>, ${ctx.esc(person.name.split(' ')[0])}</h1><p>Je paarden dichtbij. Rust in je dag.</p></div></header>
+  <div class="today-layout"><div class="today-main">
+    ${next?`<article class="next-card"><img class="next-photo" src="${horse?.image||(state.backend?.connected?'assets/horse-placeholder.svg':'assets/orion.png')}" alt="${ctx.esc(horse?.name||next.title)}"><div class="next-content"><p class="eyebrow">Volgende afspraak</p>${horse?.imageIsPlaceholder?'<small class="backend-photo-note">Voorbeeldfoto</small>':''}<span class="next-time">${ctx.esc(next.time)} – ${ctx.esc(next.end)}</span><h2>${ctx.esc(horse?.name||next.title)}<br>${ctx.esc(next.type)}</h2><p class="next-context">${[next.location,next.person].filter(value=>String(value||'').trim()).map(ctx.esc).join(' · ')}</p><button class="text-link" data-action="open-activity" data-id="${next.id}">Bekijk de afspraak ${ctx.icon('arrow-right',15)}</button></div></article>`:`<article class="daily-calm-card"><span class="daily-calm-icon">${ctx.icon('sun',26)}</span><h2>Alle ruimte voor je paarden</h2><p>Er zijn geen open afspraken zichtbaar voor vandaag.</p><button class="text-link" data-action="navigate" data-route="planning">Bekijk de agenda ${ctx.icon('arrow-right',15)}</button></article>`}
+    ${hasTraining?vitality:''}
+    <section class="section"><div class="section-heading"><h2>Dit staat nog open <span class="section-count">${dated.length}</span></h2><button class="text-link" data-action="navigate" data-route="tasks">Alle taken ${ctx.icon('chevron-right',14)}</button></div><div class="today-tasks">${dated.slice(0,2).map(t=>ctx.taskCard(t)).join('')||`<div class="daily-calm-card"><p>${state.backend?.connected&&state.today!==clock.day?'Geen open taken geladen voor deze datum.':'Alles voor nu gedaan. Geniet van je paarden.'}</p></div>`}</div>
+      ${general.length?`<div class="section-heading task-general-heading"><h2>Algemene taken <span class="section-count">${general.length}</span></h2></div><div class="today-tasks">${general.slice(0,2).map(t=>ctx.taskCard(t)).join('')}</div>`:''}
+      <p class="quick-label">Snelle acties</p><div class="quick-actions">${canCreateTask(state)?`<button class="button-secondary" data-action="new-task">${ctx.icon('plus',16)} Taak toevoegen</button>`:`<button class="button-secondary" data-action="navigate" data-route="tasks">${ctx.icon('tasks',16)} Mijn taken</button>`}${canPlan(state)?`<button class="button-secondary" data-action="new-activity">${ctx.icon('calendar',16)} Activiteit plannen</button>`:`<button class="button-secondary" data-action="open-feeding">${ctx.icon('feed',16)} Voeding openen</button>`}</div>
+    </section>
+  </div><aside class="today-side"><section class="section"><div class="section-heading"><h2>Paarden vandaag</h2><button class="text-link" data-action="navigate" data-route="horses">Bekijk alle ${ctx.icon('chevron-right',14)}</button></div>${horseCards(state,ctx,clock.day)}</section><section class="section">${feedPreview(state,ctx)}</section>${!hasTraining?vitality:''}</aside></div>
+  <section class="section">${renderFacilitySummary(state,ctx)}${renderArenaSummary(state,ctx)}</section>
+  <section class="section">${renderMomentCard(state,ctx)}</section>
+  <section class="section"><div class="section-heading"><h2>Verder vandaag</h2><button class="text-link" data-action="navigate" data-route="planning">Naar de agenda ${ctx.icon('chevron-right',14)}</button></div><div class="events-stack">${list.filter(a=>a.id!==next?.id).map(a=>ctx.activityCard(a)).join('')||'<p class="horse-muted">Geen andere afspraken vandaag.</p>'}</div></section>`;
+}
+
+export function renderStable(state,ctx){state=getActiveStableView(state);return `<section class="stable-view"><header class="stable-hero"><div class="stable-hero-content"><span class="badge">${ctx.icon('stable',12)} Jouw stal</span><h1>${ctx.esc(state.stableName)}</h1><p>${ctx.icon('location',12)} ${ctx.esc(state.stableLocation)}</p><div class="stable-actions">${canViewTeam(state)?`<button class="button-secondary" data-action="team">${ctx.icon('users',15)} Het team</button><button class="button-soft" data-action="manage-stable">${ctx.icon('settings',15)} Beheer</button>`:`<button class="button-secondary" data-action="navigate" data-route="tasks">${ctx.icon('tasks',15)} Mijn werk</button>`}</div></div><img src="${state.horses[0]?.image||(state.backend?.connected?'assets/horse-placeholder.svg':'assets/orion.png')}" alt="Paard op stal"></header>
+  <div class="stable-stats"><button class="stable-stat" data-action="stable-horses">${ctx.icon('horse',22)}<div><strong>${state.horses.length}</strong><span>${canManage(state)?'Paarden op stal':'Paarden voor jou'}</span></div></button><button class="stable-stat" data-action="navigate" data-route="tasks">${ctx.icon('tasks',22)}<div><strong>${openTasks(state).length}</strong><span>Open taken</span></div></button><button class="stable-stat" data-action="navigate" data-route="planning">${ctx.icon('calendar',22)}<div><strong>${activities(state).length}</strong><span>Afspraken vandaag</span></div></button></div>
+  <section class="section">${renderFacilitySummary(state,ctx)}${renderArenaSummary(state,ctx)}</section><div class="stable-grid"><div><section class="section"><div class="section-heading"><h2>Taken vandaag</h2><button class="text-link" data-action="navigate" data-route="tasks">Alle taken ${ctx.icon('chevron-right',14)}</button></div><div class="today-tasks">${openTasks(state).filter(t=>t.date===taskToday(state)).slice(0,2).map(t=>ctx.taskCard(t)).join('')||'<p class="horse-muted">Alle taken voor nu zijn gedaan.</p>'}</div>${openTasks(state).some(t=>!t.date)?`<div class="section-heading task-general-heading"><h2>Algemene taken</h2></div><div class="today-tasks">${openTasks(state).filter(t=>!t.date).slice(0,2).map(t=>ctx.taskCard(t)).join('')}</div>`:''}</section><section class="section"><div class="section-heading"><h2>Straks in de agenda</h2></div><div class="events-stack">${activities(state).slice(0,2).map(a=>ctx.activityCard(a)).join('')}</div></section></div><aside><section class="section">${feedPreview(state,ctx)}</section>${canManage(state)?`<section class="section"><div class="section-heading"><h2>Samen op stal</h2></div><div class="team-preview"><div class="avatar-stack">${state.team.slice(0,3).map(p=>`<span>${ctx.esc(p.initials)}</span>`).join('')}</div><div><strong>Jouw vaste team</strong><small>${ctx.esc(state.team.slice(0,3).map(p=>p.name.split(' ')[0]).join(', '))}</small></div><button class="text-link" data-action="team">Bekijk ${ctx.icon('chevron-right',14)}</button></div></section>`:''}</aside></div></section>`;}

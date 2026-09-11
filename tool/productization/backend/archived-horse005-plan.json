@@ -1,0 +1,345 @@
+{
+  "project_ref": "rvymglpkttlfwhqpmupp",
+  "organization_id": "ufvwcbrvwbqmejwraend",
+  "pilot_cluster": "7678069749886157684",
+  "dev_cluster": "7684330901039525928",
+  "dev_target": "avaryn-c010-vitality-20260911-a",
+  "baseline": [
+    {
+      "version": "202607250001",
+      "name": "phase_4a_identity",
+      "sha256": "e9ff290b80d77620cf959a3fb00ddd2432265a3172870024bbfc7e8516061e8f",
+      "statement_count": 1
+    },
+    {
+      "version": "202607260001",
+      "name": "phase_4b_stables_memberships",
+      "sha256": "aa809b1a28b70288469a0bdb2c632d77b9220d6ceda4ed6b8037e525e801c963",
+      "statement_count": 1
+    },
+    {
+      "version": "202607260002",
+      "name": "phase_4c2a0_security_event_compatibility",
+      "sha256": "fb2b2291f6a1c815162b775abd6beed51833e21b732c21366d4e6207a9eef708",
+      "statement_count": 1
+    },
+    {
+      "version": "202607270001",
+      "name": "phase_4c2a_horse_core",
+      "sha256": "801d771344a9882ad3d1d5bc95c98ca29a418fda76d5296b1f5916190cfb1f63",
+      "statement_count": 1
+    },
+    {
+      "version": "202607270002",
+      "name": "phase_4c2b_horse_identity_relationships",
+      "sha256": "01084b65249602db93b641fa43fc450eed3feaeab6a756cabaa30ffeab8d220a",
+      "statement_count": 1
+    },
+    {
+      "version": "202607270003",
+      "name": "phase_4c3_planning_tasks",
+      "sha256": "baadad93541d25020f05eb896fa666542ca6a1d0b01449b4b14e21b769beec97",
+      "statement_count": 1
+    },
+    {
+      "version": "202607270004",
+      "name": "phase_4c4_feeding",
+      "sha256": "fd7f230bec2cc125053b619a6bc83eb6a89be7b84b4b2d02400df81eb3718416",
+      "statement_count": 1
+    },
+    {
+      "version": "202607270005",
+      "name": "phase_4c5_media",
+      "sha256": "058f09508196084c6ff36c2de58d4d7f54cd53ee39304c104c03206551650271",
+      "statement_count": 1
+    },
+    {
+      "version": "202607270006",
+      "name": "phase_4c6_realtime_offline_sync",
+      "sha256": "5e316a4dd04549025de3eb383516d0d92c7dffbf7b7458f586aefabfa279115a",
+      "statement_count": 1
+    },
+    {
+      "version": "202607270007",
+      "name": "phase_5b1_invitation_resume",
+      "sha256": "5ad9a8b3cd18fbf343b4095f4c6f5a48f7374bd1489fc8c9a5315aaaf5767b6f",
+      "statement_count": 1
+    },
+    {
+      "version": "202607280001",
+      "name": "phase_5b2_horse_alpha",
+      "sha256": "3c4ded9dc6c3a476669a8e5e9a3dda6bef1cb7df6f7da0122141fc0898e33c11",
+      "statement_count": 1
+    },
+    {
+      "version": "202607280002",
+      "name": "phase_5b4_media_alpha",
+      "sha256": "d31353fbaaf5c1b983c29b368764d1344069ffc83b508aa87a9bdc8a74b619ba",
+      "statement_count": 1
+    },
+    {
+      "version": "202607280003",
+      "name": "phase_5d1_planning_atomic_flows",
+      "sha256": "ae0949b0f101d5738ad86725f5d270dae01a93af0603d859e33552efbd7b52df",
+      "statement_count": 1
+    },
+    {
+      "version": "202607280004",
+      "name": "phase_5d2_feeding_atomic_flow",
+      "sha256": "74499b828253c45ff5e2314ef56ca4357d85d52e2423d2fd8fb4b174214f969d",
+      "statement_count": 1
+    },
+    {
+      "version": "202607280005",
+      "name": "phase_5d3_realtime_policy_handshake",
+      "sha256": "836bc1cfc85e491e495adf278199f65f919ab3618f3ee5cb97095dab70e86ebf",
+      "statement_count": 1
+    },
+    {
+      "version": "202607290001",
+      "name": "phase_5_alpha_product_recovery",
+      "sha256": "ffb4dd8679dd6e46985e39ad47ac9d22ed550c52e981955ba977d1a725b81465",
+      "statement_count": 1
+    },
+    {
+      "version": "202607300001",
+      "name": "phase_5_alpha_interaction_recovery",
+      "sha256": "66183075679fa94009d3a29140ae7f83dc65a0f0acc0cc52f806affb9625ebbc",
+      "statement_count": 1
+    },
+    {
+      "version": "202608040001",
+      "name": "c003a_identity_audit_foundation",
+      "sha256": "ae60a1779d79191ef0adceb224c345a9a9f27097de625c7f34b1be5b9137967f",
+      "statement_count": 1
+    },
+    {
+      "version": "202608050001",
+      "name": "c003b_organizations_memberships",
+      "sha256": "d984aae2e6855faff9c04137e02e1c89a1382c3551a244228dfee624be2dcea4",
+      "statement_count": 1
+    },
+    {
+      "version": "202608050002",
+      "name": "c003c_canonical_horses_relationships",
+      "sha256": "7f8363a2eec60efcaf51dbb29783dfa1784b32d3cf76c440cd5c5144a0858271",
+      "statement_count": 1
+    },
+    {
+      "version": "202608050003",
+      "name": "c003d_explicit_permissions_invitations",
+      "sha256": "917a9ff77efb3958f41c670b0a137db9a08d70df584804e6a1b0da6f1dacb259",
+      "statement_count": 1
+    },
+    {
+      "version": "202608050004",
+      "name": "c003e_atomic_transfers",
+      "sha256": "cd593abc004acda7e297c53678e42526151ab504d70074286c29b430c50a43e5",
+      "statement_count": 1
+    },
+    {
+      "version": "202608060001",
+      "name": "c007_personal_auth_onboarding",
+      "sha256": "2196aaa7c042874ba62705f9abba3ea2b1350c60cec40144dc7329fbc4708d7e",
+      "statement_count": 1
+    },
+    {
+      "version": "202608080001",
+      "name": "c008_canonical_horse_vertical",
+      "sha256": "852190d66e16e10fba7efa1d363d5465410281acd5fafad43a7cf3d8923b8548",
+      "statement_count": 1
+    },
+    {
+      "version": "202608080002",
+      "name": "c009_stable_account_vertical",
+      "sha256": "3b2ad6c378b09e36ffcf10d499fa1bcb7efe3d4702cedb9f6fbbe6fcb75d396b",
+      "statement_count": 1
+    },
+    {
+      "version": "202608080003",
+      "name": "c0091_canonical_media_hardening",
+      "sha256": "d670c81cb5b14b179f2fd77d94d8c25af79d0fc4dcaf5521c35560bf6357b551",
+      "statement_count": 1
+    },
+    {
+      "version": "202608100001",
+      "name": "c0091_canonical_horse_planning_feeding_rescope",
+      "sha256": "7a8d3c4ea5912bc4618bd05a596205ef49a72659aed625e2604b91a7d78bdb79",
+      "statement_count": 1
+    },
+    {
+      "version": "202608100002",
+      "name": "c0091_planning_activity_contract",
+      "sha256": "8c86d724d4c7075d184b107debd3d1a43fbbd35db595d60081ad137ce4eb7879",
+      "statement_count": 1
+    },
+    {
+      "version": "202608100003",
+      "name": "c0091_canonical_feeding_nullif_fix",
+      "sha256": "83c55a2f74868c0aeda9881a7062907e6e0a122441ae574258d93e79143c950f",
+      "statement_count": 1
+    },
+    {
+      "version": "202608110001",
+      "name": "c0091_atomic_feeding_round",
+      "sha256": "7d7aedd3606c6e5d48630b880b5c775ef4200ac1d4fb60c69d99a313dbc632b5",
+      "statement_count": 1
+    },
+    {
+      "version": "202608110002",
+      "name": "c0091_single_standard_feeding_plan",
+      "sha256": "8e45b838ab18c7d6987369c3fa86e5af04638969dac98f812be665eb9856dfcf",
+      "statement_count": 1
+    },
+    {
+      "version": "202608120001",
+      "name": "c010_stable_team_collaboration",
+      "sha256": "27ae90e9b60cf80cb53cc2add3ecccc29eb4a9bd31ae3b9dcbd3b258d9f5973a",
+      "statement_count": 1
+    },
+    {
+      "version": "202608120002",
+      "name": "c010_human_acceptance_round1",
+      "sha256": "70be0acbcbe3e6622f33a3312521d8fe2be52141d1fe0f3ee52730e965076714",
+      "statement_count": 1
+    },
+    {
+      "version": "202608120003",
+      "name": "c010_create_stable_idempotency_lock",
+      "sha256": "abda67d25d64d55681d86e2279f50ae32e6650b30c560f9007867a76188f440b",
+      "statement_count": 1
+    },
+    {
+      "version": "202609070001",
+      "name": "c010_task_visibility",
+      "sha256": "88842348bdd0edcd0141216659133fb90055ab6946a5d82b50c229bc79b7bd29",
+      "statement_count": 1
+    },
+    {
+      "version": "202609070002",
+      "name": "c010_calendar_windows",
+      "sha256": "28fd17cf094d4a085b781a1572750fb5d178b0a855c158516c8d9cc6d4681b7e",
+      "statement_count": 1
+    },
+    {
+      "version": "202609080001",
+      "name": "c010_task_cas_http",
+      "sha256": "8057805cbd3cd71f8f317a6241e118fa1275b162b304eb5c815299492c18f8e6",
+      "statement_count": 1
+    },
+    {
+      "version": "202609080002",
+      "name": "c010_ux_profile_cas_http",
+      "sha256": "e1b8169aec604c81148a72becad9f602db25c7ac64ffa004fc619151b604b852",
+      "statement_count": 1
+    },
+    {
+      "version": "202609090001",
+      "name": "c010_account_deletion",
+      "sha256": "473726fef0b4801f56c13a34c018e25dabbfc565132b02f67be0b62243051248",
+      "statement_count": 1
+    },
+    {
+      "version": "202609090002",
+      "name": "c010_account_deletion_legacy_targets",
+      "sha256": "19b0bb6774646620ece9dadc0f0cfedd7b94fed2f33a86dec085c8394802d6e7",
+      "statement_count": 1
+    },
+    {
+      "version": "202609090003",
+      "name": "c010_historical_actor_privacy",
+      "sha256": "0929c2cd48b95815f36f99e538d6ddde66c7ee4b13a2f92ffc2b9d35bc1e1882",
+      "statement_count": 1
+    },
+    {
+      "version": "202609090004",
+      "name": "c010_invitation_recipient_labels",
+      "sha256": "fa093ccd675fb48846eeb345bba6f8493aa64e8d06db2236e865325c8b159495",
+      "statement_count": 1
+    },
+    {
+      "version": "202609090005",
+      "name": "c010_personal_day",
+      "sha256": "9cfa58fc961e7e6f8405587e275e4b747c164ea3120ab0fd084bc8d9b9605828",
+      "statement_count": 1
+    },
+    {
+      "version": "202609090006",
+      "name": "c010_archived_authority_transfer",
+      "sha256": "ac9c6d91295f5f1e9f9b58a26921bace4f57109f63a732b957fbea71224f82d4",
+      "statement_count": 1
+    },
+    {
+      "version": "202609110001",
+      "name": "c010_connected_facilities",
+      "sha256": "b3253a9ffb4201032ba662a0bbf54514eafe7018a967d455a9673527cdd6b4d0",
+      "statement_count": 1
+    },
+    {
+      "version": "202609110002",
+      "name": "c010_flexible_task_timing",
+      "sha256": "c52d988040602fe61272b33634af95b7c31166a9460586891f74b80b43d2196c",
+      "statement_count": 1
+    },
+    {
+      "version": "202609110003",
+      "name": "c010_rider_vitality",
+      "sha256": "00d190b36029894ccc2b696c9f17d9289651dd2ab0b65be0a606513cb8ddb7cf",
+      "statement_count": 1
+    },
+    {
+      "version": "202609110004",
+      "name": "c010_account_calendar_timezone",
+      "sha256": "a9e47de0b01bb8fd407e354b1ea1a148d89455a53e79c70561aa13f6365b08bd",
+      "statement_count": 1
+    }
+  ],
+  "migration": {
+    "version": "202609110005",
+    "name": "c010_archived_horse_authority_transfer",
+    "path": "supabase/migrations/202609110005_c010_archived_horse_authority_transfer.sql",
+    "sha256": "755aa06c7d613aa887ed8f9c69ce9afe68560c45e00bb19d7955ef85677f98bc",
+    "transaction_wrapper": "source"
+  },
+  "executor_sql_sha256": {
+    "pilot": "e3e8bd96d3f7745bc2802a804674f5e3d3f5ae3c2c85bd5d9997567c4bada12c",
+    "dev": "ec817545da38cc19c829ef32413e2d3e45cf801edb6f00b0064f5a96ef973bf9"
+  },
+  "helper_hashes": {
+    "pilot_timezone_increment.py": "efcb5c32e487a86e8dde094e3729de08ccb78b30b8d86cfb020e31bc519949fd",
+    "backup_pilot_database.py": "47f91dd093dcf9b0a2a865a1240df1d50927873673eafd51a26bab36aedb5dda",
+    "check_pilot_connection.py": "bfeac65f97099b013b13cca8509230fff6e292b4c895601a8256e0b14eddf101",
+    "apply_pilot_migrations.py": "ca94c3f11485aba7a4b7d2d3e5ee2a1147751049c70eb117f386785e753cedc6",
+    "prepare_pilot_release.py": "fe9ca7d92f92ff9f44d9882f651648566f2770c9aa3e33e9cb0a30f3803b773c"
+  },
+  "local_runner_sha256": "42bb1202da072c362592e6274633adffa6c496966a37e3ca68e7e97f846982aa",
+  "tests": [
+    {
+      "name": "c010_archived_horse_authority_transfer",
+      "assertions": 48,
+      "sha256": "d9d41ed576fd205e6e7e69805573f96857ceed0ea17b22638f8b3650d0241c98"
+    },
+    {
+      "name": "c003e_atomic_transfers",
+      "assertions": 1,
+      "sha256": "c58256a9d1d1d4ccb56c0bfc259eceec0abedcf02272c1baef2f0e22b56275be"
+    },
+    {
+      "name": "c010_account_deletion",
+      "assertions": 1,
+      "sha256": "0861a9756a1dd2623fb7fe018d62daf5f083e0baa80e62cdaf42b61c50b091f4"
+    }
+  ],
+  "unchanged": [
+    "all48 historical migrations",
+    "existing data",
+    "table/column privileges and RLS",
+    "existing function owners/ACL",
+    "Auth/Edge/SMTP/Storage bytes"
+  ],
+  "only_new_permission": "authenticated EXECUTE on actorless list_c010_my_archived_horses()",
+  "backup": "full custom archive, decoded and actually restored to a new local database before rehearsal",
+  "automatic_retry": false,
+  "automatic_restore": false,
+  "fixture_seed": false
+}

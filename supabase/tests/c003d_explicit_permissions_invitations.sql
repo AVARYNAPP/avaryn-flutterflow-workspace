@@ -45,7 +45,15 @@ begin
       'organization.audit.view'
     ]::text[] <@ (select array_agg(code) from public.permission_definitions
       where scope_kind='organization')
-    or (select count(*) from public.permission_definitions where scope_kind='horse')<>6
+    or (select array_agg(code order by code) from public.permission_definitions
+      where scope_kind='horse') is distinct from array[
+        'horse.assign','horse.edit','horse.feeding.manage','horse.manage',
+        'horse.planning.manage','horse.share','horse.transfer','horse.view'
+      ]::text[]
+    or (select count(*) from public.permission_definitions
+      where scope_kind='horse' and is_active and is_grantable
+        and ((code='horse.planning.manage' and action_class='assign')
+          or (code='horse.feeding.manage' and action_class='edit')))<>2
     or (select is_grantable from public.permission_definitions where code='horse.transfer')
     or exists(select 1 from public.permission_definitions where code like 'horse.%' and scope_kind<>'horse')
   then raise exception 'C-003D permission catalog invalid';end if;

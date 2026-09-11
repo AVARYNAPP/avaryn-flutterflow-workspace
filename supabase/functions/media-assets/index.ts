@@ -8,9 +8,8 @@ import decodeWebp, {
 
 const responseHeaders = {
   'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
+    'authorization, x-client-info, apikey, content-type, x-supabase-api-version',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
 }
 
@@ -625,7 +624,34 @@ async function sha256Hex(bytes: Uint8Array) {
     .join('')
 }
 
-Deno.serve(async (request: Request) => {
+// Only the browser-facing origin changes; authentication and signing stay internal.
+function publicSignedStorageUrl(
+  signedUrl: string,
+  supabaseUrl: string,
+  publicUrl: string,
+  operation: 'upload' | 'download',
+): string | null {
+  try {
+    const internal = new URL(supabaseUrl)
+    const external = new URL(publicUrl)
+    const signed = new URL(signedUrl)
+    const prefix = operation === 'upload'
+      ? '/storage/v1/object/upload/sign/horse-media/'
+      : '/storage/v1/object/sign/horse-media/'
+    const allowedExternal = external.protocol === 'https:' ||
+      (external.protocol === 'http:' && external.hostname === '127.0.0.1')
+    if (!allowedExternal || external.username || external.password ||
+        (external.pathname !== '/' && external.pathname !== '') ||
+        external.search || external.hash || signed.origin !== internal.origin ||
+        signed.username || signed.password || signed.hash ||
+        !signed.pathname.startsWith(prefix)) return null
+    return `${external.origin}${signed.pathname}${signed.search}`
+  } catch {
+    return null
+  }
+}
+
+async function handleRequest(request: Request) {
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: responseHeaders })
   }
@@ -634,6 +660,7 @@ Deno.serve(async (request: Request) => {
   }
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
+  const publicUrl = Deno.env.get('SUPABASE_PUBLIC_URL') ?? supabaseUrl
   const publishableKey =
     Deno.env.get('SUPABASE_ANON_KEY') ??
     Deno.env.get('SUPABASE_PUBLISHABLE_KEY') ??
@@ -743,12 +770,18 @@ Deno.serve(async (request: Request) => {
       if (signedError || !signed) {
         return response(503, { code: 'MEDIA_UPLOAD_SIGNING_UNAVAILABLE' })
       }
+      const signedUploadUrl = publicSignedStorageUrl(
+        signed.signedUrl, supabaseUrl, publicUrl, 'upload',
+      )
+      if (!signedUploadUrl) {
+        return response(503, { code: 'MEDIA_UPLOAD_SIGNING_UNAVAILABLE' })
+      }
       uploads.push({
         variant: variant.variant,
         object_path: variant.object_path,
         expected_mime_type: variant.expected_mime_type,
         max_byte_size: variant.max_byte_size,
-        signed_upload_url: signed.signedUrl,
+        signed_upload_url: signedUploadUrl,
         upload_token: signed.token,
       })
     }
@@ -885,12 +918,40 @@ Deno.serve(async (request: Request) => {
     if (signedError || !signed) {
       return response(503, { code: 'MEDIA_DOWNLOAD_SIGNING_UNAVAILABLE' })
     }
+    const signedDownloadUrl = publicSignedStorageUrl(
+      signed.signedUrl, supabaseUrl, publicUrl, 'download',
+    )
+    if (!signedDownloadUrl) {
+      return response(503, { code: 'MEDIA_DOWNLOAD_SIGNING_UNAVAILABLE' })
+    }
     return response(200, {
-      signed_download_url: signed.signedUrl,
+      signed_download_url: signedDownloadUrl,
       expires_in: signedDownloadLifetimeSeconds,
       mime_type: coordinate.mime_type,
     })
   }
 
   return response(400, { code: 'UNKNOWN_ACTION' })
+}
+
+// Same-origin preview proxy and explicitly configured local browser origins.
+// No Origin is valid for server calls; Supabase Auth/RLS still governs access.
+Deno.serve(async (request: Request) => {
+  const configured = Deno.env.get('AVARYN_ALLOWED_ORIGINS')
+  const origin = request.headers.get('Origin')
+  const allowed = configured === undefined
+    ? null
+    : new Set(configured.split(',').map((value) => value.trim()).filter(Boolean))
+  if (origin && allowed && !allowed.has(origin)) {
+    return new Response(JSON.stringify({ code: 'ORIGIN_NOT_ALLOWED' }), {
+      status: 403, headers: { 'Content-Type': 'application/json', 'Vary': 'Origin' },
+    })
+  }
+  const result = await handleRequest(request)
+  const headers = new Headers(result.headers)
+  headers.set('Vary', 'Origin')
+  if (allowed === null) headers.set('Access-Control-Allow-Origin', '*')
+  else if (origin) headers.set('Access-Control-Allow-Origin', origin)
+  else headers.delete('Access-Control-Allow-Origin')
+  return new Response(result.body, { status: result.status, headers })
 })

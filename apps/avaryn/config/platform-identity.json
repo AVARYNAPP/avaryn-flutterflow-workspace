@@ -1,0 +1,9 @@
+{
+  "displayName": "AVARYN",
+  "developmentBundleId": "com.mycompany.avarynalpha",
+  "source": "Existing generated_code iOS and Android identifiers; no new identifier chosen",
+  "storeRegistrationVerified": false,
+  "signingVerified": false,
+  "distributionAllowed": false,
+  "remaining": "Verify the existing AVARYN Apple/Google registrations and signing before distribution. This is an unsigned development scaffold."
+}

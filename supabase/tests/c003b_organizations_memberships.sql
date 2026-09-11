@@ -463,7 +463,8 @@ begin
       'Unknown primary', gen_random_uuid(), fixture.profile_a, gen_random_uuid()
     );
     raise exception 'Organization with unknown primary profile succeeded';
-  exception when foreign_key_violation then null; end;
+  exception when insufficient_privilege then
+    if sqlerrm<>'ACTIVE_TARGET_PROFILE_REQUIRED' then raise; end if; end;
   begin
     update public.organization_memberships set status = 'suspended', row_version = row_version + 1
       where id = fixture.membership_a;
@@ -667,10 +668,12 @@ do $$ begin
   exception when insufficient_privilege then null; end;
 end $$;
 
-select * from public.request_profile_deletion(
-  (select row_version from public.profiles where id = (select profile_b from pg_temp.c003b_fixture)),
-  'c003b500-0000-4000-8000-000000000003'
-);
+-- Privileged, transaction-local inactive fixture; the public partial request
+-- now refuses and is covered independently by c010_account_deletion.sql.
+reset role;
+update public.profiles set status='deletion_pending',access_version=access_version+1
+where id=(select profile_b from pg_temp.c003b_fixture);
+set local role authenticated;
 do $$ begin
   if private.current_profile_id() is not null
     or public.has_organization_permission(

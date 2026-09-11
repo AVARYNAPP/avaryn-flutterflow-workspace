@@ -129,7 +129,7 @@ begin
       'c0071000-0000-4000-8000-000000000002'
     );
     raise exception 'Stale profile mutation succeeded';
-  exception when serialization_failure then
+  exception when sqlstate 'PT409' then
     if sqlerrm <> 'PROFILE_VERSION_STALE' then raise;end if;
   end;
 

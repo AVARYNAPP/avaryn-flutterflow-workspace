@@ -77,3 +77,8 @@ project_snapshot.json
 *.pfx
 *.jks
 *.keystore
+
+# FlutterFlow AI managed
+generated_code/
+# Disposable local backend state and credentials.
+.avaryn-local/

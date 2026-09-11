@@ -110,7 +110,12 @@ with x as (select public.start_horse_person_relationship((select horse_a from pg
   (select profile_d from pg_temp.c003c_fixture),'groom',(select test_reference_at from pg_temp.c003c_fixture),'c003c104-0000-4000-8000-000000000001') id)
 update pg_temp.c003c_fixture f set inactive_relationship=x.id from x;
 select set_config('request.jwt.claim.sub',(select auth_d::text from pg_temp.c003c_fixture),true);
-select * from public.request_profile_deletion(1,'c003c105-0000-4000-8000-000000000001');
+-- Privileged, transaction-local inactive fixture; the public partial request
+-- now refuses and is covered independently by c010_account_deletion.sql.
+reset role;
+update public.profiles set status='deletion_pending',access_version=access_version+1
+where id=(select profile_d from pg_temp.c003c_fixture);
+set local role authenticated;
 do $$ begin
   begin perform public.create_canonical_horse('inactive',null,'unknown',null,gen_random_uuid(),'{}');
     raise exception 'inactive profile created horse'; exception when insufficient_privilege then null; end;
@@ -356,7 +361,8 @@ begin select * into f from pg_temp.c003c_fixture;
       values(f.profile_d,'Inactive primary',f.profile_a,gen_random_uuid());
     set constraints c003c_primary_authority_horses immediate;
     raise exception 'inactive primary authority succeeded';
-  exception when check_violation then null; end;
+  exception when insufficient_privilege then
+    if sqlerrm<>'ACTIVE_TARGET_PROFILE_REQUIRED' then raise; end if; end;
   set constraints c003c_primary_authority_horses deferred;
   begin update public.canonical_horses set primary_authority_profile_id=f.profile_b,row_version=row_version+1 where id=f.horse_a;
     raise exception 'owner bypassed immutable primary authority'; exception when insufficient_privilege then null; end;

@@ -1,0 +1,11 @@
+{
+  "architecture": "arm64",
+  "db": "public.ecr.aws/supabase/postgres@sha256:ac581882596ed0e46937ea6dd53a627d09f53e005d7264c2082a7ff7b62eaaca",
+  "auth": "public.ecr.aws/supabase/gotrue@sha256:2b352c02adf11a2025cd5993c246ef85db73743553c39194d2b1862d1cc4d1fd",
+  "rest": "public.ecr.aws/supabase/postgrest@sha256:b574528fe109c8343c1247155734d03df8c34b462f342dca0ccc20244fc36ef9",
+  "mail": "public.ecr.aws/supabase/mailpit@sha256:37a38e48e9338cd7e89dfeb487f37b02ebfcd9cb23111bed2d345e79d37d6dd6",
+  "gateway": "public.ecr.aws/supabase/kong@sha256:1b53405d8680a09d6f44494b7990bf7da2ea43f84a258c59717d4539abf09f6d",
+  "storage": "public.ecr.aws/supabase/storage-api@sha256:545a5a40307a75a398417e0c74644c8e13afde3146a1252b66ab829db0a8191c",
+  "edge": "public.ecr.aws/supabase/edge-runtime@sha256:c52405002a890ca9fcf77978671c57f3a988e03174afb277f84ac65bc917013c",
+  "realtime": "public.ecr.aws/supabase/realtime@sha256:d50129a429b4ce5bbc12cab5cfe20b02d83069862f68542c55f7a744aa1c2cfc"
+}

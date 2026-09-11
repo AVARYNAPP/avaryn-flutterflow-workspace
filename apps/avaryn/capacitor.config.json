@@ -1,0 +1,7 @@
+{
+  "appId": "com.mycompany.avarynalpha",
+  "appName": "AVARYN",
+  "webDir": "dist",
+  "server": { "iosScheme": "capacitor", "androidScheme": "https" },
+  "ios": { "contentInset": "automatic", "preferredContentMode": "mobile" }
+}

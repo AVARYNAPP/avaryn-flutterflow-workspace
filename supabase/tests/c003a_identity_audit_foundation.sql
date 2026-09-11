@@ -1026,51 +1026,39 @@ begin
 end;
 $$;
 
--- Exercise stale optimistic concurrency and then a valid, idempotent deletion
--- request. The RPC has no target-profile argument to spoof.
+-- C010 closes the partial public foundation lifecycle. It must refuse
+-- without changing the profile for stale/current/replayed versions alike.
 set local role authenticated;
-
-do $$
-declare
-  fixture pg_temp.c003a_fixture%rowtype;
-  result record;
-  visible_count bigint;
-  changed_count bigint;
+do $$ declare fixture pg_temp.c003a_fixture%rowtype; result record; version bigint;
 begin
   select * into fixture from pg_temp.c003a_fixture;
-
-  select * into result
-  from public.request_profile_deletion(1, fixture.delete_request_a);
-
-  if result.result_code <> 'stale_row_version'
-    or result.applied
-    or result.row_version <> 2
-    or result.access_version <> 1
-  then
-    raise exception 'Stale deletion request was not rejected safely';
-  end if;
-
-  select * into result
-  from public.request_profile_deletion(2, fixture.delete_request_a);
-  if result.result_code <> 'deletion_pending'
-    or not result.applied
-    or result.profile_status <> 'deletion_pending'
-    or result.row_version <> 3
-    or result.access_version <> 2
-    or result.production_ready
-  then
-    raise exception 'Valid deletion request result is incorrect';
-  end if;
-
-  select * into result
-  from public.request_profile_deletion(999, fixture.delete_request_a);
-  if result.result_code <> 'idempotent_replay'
-    or result.applied
-    or result.row_version <> 3
-    or result.access_version <> 2
-  then
-    raise exception 'Deletion request replay was not idempotent';
-  end if;
+  foreach version in array array[1::bigint,2::bigint,999::bigint] loop
+    select * into result from public.request_profile_deletion(version,fixture.delete_request_a);
+    if result.result_code<>'trusted_deletion_service_required' or result.applied or result.production_ready
+      or result.profile_status<>'active' or result.row_version<>2 or result.access_version<>1 then
+      raise exception 'partial foundation request changed state before trusted preflight'; end if;
+  end loop;
+end $$;
+reset role;
+-- Continue testing the old private foundation shapes/ACL with an explicit
+-- privileged pending fixture. Actual trusted orchestration is tested in C010.
+do $$ declare fixture pg_temp.c003a_fixture%rowtype;
+begin
+  select * into fixture from pg_temp.c003a_fixture;
+  if exists(select 1 from public.audit_events where resource_id=fixture.profile_a
+      and event_type in('profile.deletion_requested','profile.lifecycle_denied')) then
+    raise exception 'side-effect-free public refusal emitted lifecycle writes'; end if;
+  perform private.c003a_write_profile_audit('profile.lifecycle_denied',fixture.profile_a,fixture.profile_a,null,
+    fixture.delete_request_a,'rpc','active','active',2,2,1,1,'{"denial_code":"STALE_ROW_VERSION"}'::jsonb);
+  update public.profiles set status='deletion_pending',access_version=access_version+1 where id=fixture.profile_a;
+  perform private.c003a_write_profile_audit('profile.deletion_requested',fixture.profile_a,fixture.profile_a,null,
+    fixture.delete_request_a,'rpc','active','deletion_pending',2,3,1,2,'{}'::jsonb);
+end $$;
+set local role authenticated;
+do $$
+declare fixture pg_temp.c003a_fixture%rowtype; visible_count bigint; changed_count bigint;
+begin
+  select * into fixture from pg_temp.c003a_fixture;
 
   begin
     perform public.request_profile_deletion(3, fixture.alternate_request_a);

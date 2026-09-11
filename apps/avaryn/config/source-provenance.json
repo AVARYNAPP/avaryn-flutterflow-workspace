@@ -1,0 +1,295 @@
+{
+  "sourceCandidate": "C010-V8-RIDER-VITALITY-DATE-PRIORITY-20260911-01",
+  "sourceManifestSHA256": "a2d6c56acec48bee50d82e0a656d901b584805b5d88505c1a7aed894624930b3",
+  "sourceRole": "Approved V8 visual client; canonical source now apps/avaryn/src; older preview copies are historical",
+  "entries": [
+    {
+      "path": "app.js",
+      "bytes": 35196,
+      "sha256": "1c68a274a8031aff34f3dd37d8dbdd53019f8752216abe3b3ef276e95d2d9946",
+      "public": true
+    },
+    {
+      "path": "arena.css",
+      "bytes": 10754,
+      "sha256": "10e8797aeafb356b736a50eb7e333e293bbef29077ffd068554fa1aecc877ae6",
+      "public": true
+    },
+    {
+      "path": "arena.js",
+      "bytes": 23625,
+      "sha256": "6581622ff46e4c8bec8fbc4cbaba1ccb7dc063edcea85258e4a16b422fe43984",
+      "public": true
+    },
+    {
+      "path": "assets/fonts/InstrumentSans.ttf",
+      "bytes": 194336,
+      "sha256": "b24f1812584816958afcf22e22d08e44318c5e51651e25d2438efdde389b33b1",
+      "public": true
+    },
+    {
+      "path": "assets/fonts/Inter.ttf",
+      "bytes": 876576,
+      "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+      "public": true
+    },
+    {
+      "path": "assets/fonts/instrumentsans-OFL.txt",
+      "bytes": 4403,
+      "sha256": "9e27a72ed30eb49a08678f6a5d6ed98ec7ba5368f541637ee0683ec9134ef966",
+      "public": true
+    },
+    {
+      "path": "assets/fonts/inter-OFL.txt",
+      "bytes": 4377,
+      "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57",
+      "public": true
+    },
+    {
+      "path": "assets/mark.svg",
+      "bytes": 252,
+      "sha256": "3c4d9fd23302d438642304f5cb483fc1286977bd25400f29c474c374c84bf5a0",
+      "public": true
+    },
+    {
+      "path": "assets/nova.png",
+      "bytes": 2384098,
+      "sha256": "c41df80d7a9164e152e5690f85c53fad013c0749e615313272817858ba48bd7a",
+      "public": true
+    },
+    {
+      "path": "assets/orion.png",
+      "bytes": 2207598,
+      "sha256": "9d93ee00ede74cd7989841c9922aa2736ea7f34cc668fab19a2dc105cb527b6e",
+      "public": true
+    },
+    {
+      "path": "backend-client.js",
+      "bytes": 29394,
+      "sha256": "213ffbe82bdbdc11ff0800968d88ae3de8a0ee6d9716fd1272969468ada92f6b",
+      "public": true
+    },
+    {
+      "path": "backend-controller.js",
+      "bytes": 15991,
+      "sha256": "78f0c30ff04bb743d9e988779c9357a4d491c0926dae0d4ed6fe7edd9c2da877",
+      "public": true
+    },
+    {
+      "path": "backend-feeding-form.js",
+      "bytes": 12714,
+      "sha256": "205c111293c7e49d2b6451d32c53ee2f3b5002e633f35e5f19de036c47c23626",
+      "public": true
+    },
+    {
+      "path": "backend-ui.css",
+      "bytes": 2598,
+      "sha256": "93d53f5525f8fd9c7d74c354117405c36e31769351ba886312a657bd3d4e01f0",
+      "public": true
+    },
+    {
+      "path": "backend-ui.js",
+      "bytes": 1953,
+      "sha256": "e8d46070c85abc2d8c97aafa7af6447ceaf5d07763d9fff3fa5b0f8db22d2333",
+      "public": true
+    },
+    {
+      "path": "browser-clock.js",
+      "bytes": 1356,
+      "sha256": "d5bef2d6941ebcc144d14903769738793531f28accdd61d4133af4b827ae6f4b",
+      "public": true
+    },
+    {
+      "path": "cache-refresh.js",
+      "bytes": 690,
+      "sha256": "da106aac429a02fff1b769fb12d02416b0ba7c6c51540e5f009b82442b9cf086",
+      "public": true
+    },
+    {
+      "path": "components.js",
+      "bytes": 7144,
+      "sha256": "03ed9b31374d141fe4a8b8273dd5ba5def20d8a5360b3470d33567576392beed",
+      "public": true
+    },
+    {
+      "path": "connected-p2-controller.js",
+      "bytes": 7991,
+      "sha256": "d2eb1d86ba33f9cc412184060aa514c074f77cd3ff89423343bf750a8bbcbc90",
+      "public": true
+    },
+    {
+      "path": "daily-ui.js",
+      "bytes": 10173,
+      "sha256": "d5070734cfb532dea0a1ac1581e2bc9841b3d82ef97383b9f19490b846c40952",
+      "public": true
+    },
+    {
+      "path": "data.js",
+      "bytes": 5206,
+      "sha256": "32e8b53f313c45da045d6c046b1e3e5b16f42fd04f5e5422828b79e36e9f539a",
+      "public": true
+    },
+    {
+      "path": "exercise-data.js",
+      "bytes": 2218,
+      "sha256": "b835a4d831ff72baaebb684e9f0d2e1c36cb0bf7feaf57b4aaab39d42b15b1dd",
+      "public": true
+    },
+    {
+      "path": "facilities.css",
+      "bytes": 16063,
+      "sha256": "28b0a545406057e4a9f236d2dcd92926cb0de90e4d86776d6fd9f58bcb0176fb",
+      "public": true
+    },
+    {
+      "path": "facilities.js",
+      "bytes": 35462,
+      "sha256": "b5e37283001cd4311d095e64197bdabb5a41e3fc129401632f3a833ff91c351e",
+      "public": true
+    },
+    {
+      "path": "facility-data.js",
+      "bytes": 10266,
+      "sha256": "9fab1dbce7a8c4c7ac235094b505bd443caf9cc0b890bdd61f1b3782f43a123c",
+      "public": true
+    },
+    {
+      "path": "feeding.js",
+      "bytes": 6897,
+      "sha256": "79b7d393dd411f9ac0682259f3873bd1e6893d542739ca4c167d403a1ac6d5cf",
+      "public": true
+    },
+    {
+      "path": "flutter_service_worker.js",
+      "bytes": 655,
+      "sha256": "a94c4efeff184abfb1958fd0d764875e9215df212418085cc12f15745a3edf0f",
+      "public": true
+    },
+    {
+      "path": "horse-access.js",
+      "bytes": 5978,
+      "sha256": "32ac40142cc64656d48d497d0483494d42a2c5f47df937977142711a9eb5ca75",
+      "public": true
+    },
+    {
+      "path": "horse-feeding.css",
+      "bytes": 16603,
+      "sha256": "357613f19b54615378961cf6d8717d61b68a5a725b893c625c6c08f0255a9509",
+      "public": true
+    },
+    {
+      "path": "horses.js",
+      "bytes": 11258,
+      "sha256": "b13d86bda59ca220f4e3a1b5c64f9124282f2f40bd1b2076cf2dd183e018e7ae",
+      "public": true
+    },
+    {
+      "path": "index.html",
+      "bytes": 1211,
+      "sha256": "4545860f82053c6be728a4cf36c68e839ff43e2b54fd6dadcb0cf0b748620f4d",
+      "public": true
+    },
+    {
+      "path": "menu-ui.css",
+      "bytes": 14266,
+      "sha256": "8c2e54ef20a78feabdd8145cab613595816e09145fa6e80d79b0e5c82aee0d45",
+      "public": true
+    },
+    {
+      "path": "menu-ui.js",
+      "bytes": 15151,
+      "sha256": "3ec043d728982a6bfdfcbf31fdd379a9a343533cbfdaab8c10b243b6c31be026",
+      "public": true
+    },
+    {
+      "path": "navigation.css",
+      "bytes": 4691,
+      "sha256": "ef771ef33010153274b38c4407ce5bf1964221bcd6d3198c2be0d38d3a07e127",
+      "public": true
+    },
+    {
+      "path": "p2-client.js",
+      "bytes": 8776,
+      "sha256": "764c848aa874c2d3eeb34bec2e13e3c838ee2a94a5af12a5dc9f4e2925431b0c",
+      "public": true
+    },
+    {
+      "path": "planning-tasks.css",
+      "bytes": 9502,
+      "sha256": "ff5ab1bc582c3543de95a531a82e9e88d2873591dc522e0fb6ee42d160b18c00",
+      "public": true
+    },
+    {
+      "path": "planning.js",
+      "bytes": 8353,
+      "sha256": "8940ea2d0d9ff0505e40a0c3a765eadd906e78c52551084aabd2f833bcd792ea",
+      "public": true
+    },
+    {
+      "path": "product-structure.js",
+      "bytes": 25958,
+      "sha256": "7301767b20cdec82077d444c638f5593af9aa8b5187a3474fc1603e56048bf42",
+      "public": true
+    },
+    {
+      "path": "role-profile.css",
+      "bytes": 5032,
+      "sha256": "c8d40b53e913fce08766334c115495db1202d03ae3b214646210428ddbcd54db",
+      "public": true
+    },
+    {
+      "path": "role-profile.js",
+      "bytes": 13171,
+      "sha256": "fd64535568d6c9cec63b53567752e5a6eed9384e0bf5be9ffe363de556c0b34c",
+      "public": true
+    },
+    {
+      "path": "stable-view.js",
+      "bytes": 863,
+      "sha256": "6d66a423f07150f81a87b2b4bbfca4385e000c99fe94a677b41b3567de00988f",
+      "public": true
+    },
+    {
+      "path": "styles.css",
+      "bytes": 22202,
+      "sha256": "b1bace1f07bd293ca246c91e227bb42333e9d7c5b5a577fa7c41e544a34f4ebe",
+      "public": true
+    },
+    {
+      "path": "task-form.js",
+      "bytes": 3291,
+      "sha256": "cb2baa99fa2b2a6d27dcaf40595e732c8106cd61d82c391c86b1e47de2450113",
+      "public": true
+    },
+    {
+      "path": "task-timing.js",
+      "bytes": 1149,
+      "sha256": "0e70b2388b064c1bd4747b19f0168573af3b1556ddd6741970744bce9d1b327b",
+      "public": true
+    },
+    {
+      "path": "tasks.js",
+      "bytes": 3043,
+      "sha256": "920ac3ec331e05fba818d482478dd4fdb8cfefef8c93017cc17e74f61e4370c9",
+      "public": true
+    },
+    {
+      "path": "version.json",
+      "bytes": 992,
+      "sha256": "757aaad34ce0ce379cb45a0e32c16cba554e6a865dce0f8590e5ed649da603b9",
+      "public": true
+    },
+    {
+      "path": "vitality.css",
+      "bytes": 6883,
+      "sha256": "ec5f58544325a49ce1e7aa0f8b1eb383622e7707ea8d32b53c3eedec231c69d0",
+      "public": true
+    },
+    {
+      "path": "vitality.js",
+      "bytes": 24854,
+      "sha256": "e7679c8f6c228780ae54d7650ef6b893740b50110fe20187a33da3bd863aeb51",
+      "public": true
+    }
+  ]
+}

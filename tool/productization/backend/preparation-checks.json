@@ -1,0 +1,23 @@
+{
+  "status": "OFFLINE_PASS",
+  "checked_at": "2026-09-11T18:09:40.416286+00:00",
+  "test_command": "python3 -B -m unittest discover -s tool/productization/backend -p 'test_*.py'",
+  "tests_pass": 8,
+  "tests_fail": 0,
+  "migration_count": 47,
+  "source_manifest_sha256": "41829a55f5283d349bc285e41d2706a68d87f904f54aa17bb3323e6eb6fda11d",
+  "file_sha256": {
+    "configure_pilot_connection.py": "2bb0b474dbd455ce0684430729141d4be525f9208ccd7941f32a3bdb58ff1261",
+    "pilot-release-manifest.json": "45c18994e82bffc0d335ff82ab0fa602c785e5e88f08340ed20363ba2da47711",
+    "pilot_migration_history.sql": "3e4b8979176556af76606f1198c60eaae26d651d63ffdba3acc1b2520ec221f9",
+    "pilot_postflight.sql": "82aded885e7659d2c1e4fdc9bb8d3277d39a5214c17a1b3cf4cb6c3e77cd2a64",
+    "pilot_preflight.sql": "1495069234b1f5fa1c41d77b9b617986b8180d8c07a1582a06556b504260734f",
+    "prepare_pilot_release.py": "fe9ca7d92f92ff9f44d9882f651648566f2770c9aa3e33e9cb0a30f3803b773c",
+    "test_prepare_pilot.py": "8b24c3d3df033923b81c1760b4a280e67eed52027bb7abf83681c647c1a3ed7f"
+  },
+  "remote_queries": 0,
+  "remote_mutations": 0,
+  "credentials_accessed": false,
+  "interactive_setup_executed": false,
+  "excluded_cli_account_reused": false
+}

@@ -46,7 +46,12 @@ update pg_temp.c003e_fixture fixture set
 select set_config('request.jwt.claim.sub',(select auth_inactive::text from pg_temp.c003e_fixture),true);
 select set_config('request.jwt.claim.role','authenticated',true);
 set local role authenticated;
-select * from public.request_profile_deletion(1,'c003e090-0000-4000-8000-000000000001');
+-- Privileged, transaction-local inactive fixture; the public partial request
+-- now refuses and is covered independently by c010_account_deletion.sql.
+reset role;
+update public.profiles set status='deletion_pending',access_version=access_version+1
+where id=(select inactive_profile from pg_temp.c003e_fixture);
+set local role authenticated;
 
 -- Client roles have no table or unexpected RPC path.
 reset role;
@@ -132,12 +137,10 @@ begin
 end $$;
 
 -- Primary deletion remains blocked before accepted transfer.
-do $$ begin
-  begin
-    perform public.request_profile_deletion(2,'c003e120-0000-4000-8000-000000000002');
-    set constraints c003c_primary_authority_profiles immediate;
-    raise exception 'primary authority entered deletion before transfer';
-  exception when check_violation then null;end;
+do $$ declare result record; begin
+  select * into result from public.request_profile_deletion(2,'c003e120-0000-4000-8000-000000000002');
+  if result.applied or result.profile_status<>'active' or result.result_code<>'trusted_deletion_service_required' then
+    raise exception 'primary authority entered deletion before transfer'; end if;
 end $$;
 
 select set_config('request.jwt.claim.sub',(select auth_outsider::text from pg_temp.c003e_fixture),true);
@@ -259,11 +262,9 @@ begin
     (select organization_id from pg_temp.c003e_fixture),(select recipient from pg_temp.c003e_fixture),
     'c003e140-0000-4000-8000-000000000001');
   if replay.applied or replay.transfer_token is not null then raise exception 'organization transfer idempotency failed';end if;
-  begin
-    perform public.request_profile_deletion(2,'c003e140-0000-4000-8000-000000000002');
-    set constraints c003b_primary_admin_profiles immediate;
-    raise exception 'primary admin entered deletion before transfer';
-  exception when check_violation then null;end;
+  select * into replay from public.request_profile_deletion(2,'c003e140-0000-4000-8000-000000000002');
+  if replay.applied or replay.profile_status<>'active' or replay.result_code<>'trusted_deletion_service_required' then
+    raise exception 'primary admin entered deletion before transfer'; end if;
 end $$;
 select set_config('request.jwt.claim.sub',(select auth_recipient::text from pg_temp.c003e_fixture),true);
 select * from public.respond_organization_authority_transfer(

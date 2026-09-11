@@ -1,0 +1,138 @@
+.horse-page,.feeding-stable-page{width:100%;max-width:1120px;margin:0 auto;padding-bottom:28px}
+.horse-page button,.feeding-stable-page button{font:inherit;cursor:pointer}
+.horse-page button:focus-visible,.feeding-stable-page button:focus-visible,.horse-details summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.horse-page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:6px 0 26px}
+.horse-page h1,.feeding-stable-page h1{font-family:var(--serif);font-size:clamp(32px,4vw,42px);font-weight:600;letter-spacing:-1.2px;line-height:1.1;color:var(--text);margin:4px 0 12px}
+.horse-eyebrow{display:block;font-size:11px;line-height:1.5;font-weight:650;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+.horse-intro,.feeding-intro{font-size:15px;line-height:1.6;color:var(--muted);margin:0}
+.horse-count{color:var(--muted);font-size:13px;white-space:nowrap;padding-bottom:5px}
+.horse-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.horse-card{min-width:0;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:21px;box-shadow:0 6px 22px #32233305}
+.horse-image-button{display:block;position:relative;padding:0;width:100%;border:0;background:var(--surface-soft);overflow:hidden}
+.horse-card-photo{display:block;width:100%;aspect-ratio:1.8;object-fit:cover;object-position:50% 38%;transition:transform .4s ease}
+.horse-image-button:hover .horse-card-photo{transform:scale(1.025)}
+.horse-photo-arrow{position:absolute;right:16px;bottom:16px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#fffdf8e8;color:#4d4154;backdrop-filter:blur(7px)}
+.horse-card-body{padding:20px 22px 18px}
+.horse-card-identity{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.horse-card-identity h2{font-family:var(--serif);font-size:27px;font-weight:600;line-height:1.2;letter-spacing:-.5px;margin:0 0 4px}
+.horse-name-link{padding:0;border:0;background:none;text-align:left;color:var(--text)}
+.horse-card-identity p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.horse-discipline{display:inline-flex;align-items:center;background:var(--accent-soft);color:var(--accent);border:1px solid var(--line);padding:5px 10px;border-radius:8px;line-height:1.3;font-size:11px;font-weight:600;flex-shrink:0}
+.horse-stable-line{display:flex;gap:7px;align-items:center;color:var(--muted);font-size:12px;margin:10px 0 17px}
+.horse-card-signals{border-top:1px solid var(--line);padding-top:15px;display:grid;gap:11px;font-size:13px;line-height:1.5;color:var(--text)}
+.horse-card-signals>div{display:flex;align-items:flex-start;gap:9px}
+.horse-card-signals svg{flex-shrink:0;color:var(--accent);margin-top:1px}
+.horse-card-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:0 10px 8px;border-top:1px solid var(--line)}
+.horse-card-actions button{position:relative;border:0;background:none;color:var(--accent);min-height:48px;font-size:12px;font-weight:600;padding:8px 2px}
+.horse-card-actions button+button:before{content:"";position:absolute;left:0;top:15px;bottom:15px;border-left:1px solid var(--line)}
+.horse-card-actions button:hover{background:var(--surface-soft)}
+.horse-back{display:inline-flex;align-items:center;gap:4px;border:0;background:none;color:var(--muted);font-size:12px!important;padding:0;min-height:36px;margin:0 0 13px -4px}
+.horse-header-main{display:flex;align-items:center;gap:24px;padding:0 0 22px}
+.horse-header-photo{display:block;width:138px;height:148px;object-fit:cover;object-position:51% 40%;border-radius:20px;flex-shrink:0;box-shadow:0 7px 20px #30272a0a}
+.horse-header-copy{min-width:0}
+.horse-header-copy h1{font-size:42px;margin:4px 0 8px}
+.horse-header-copy>p:not(.horse-eyebrow){margin:0 0 13px;font-size:14px;color:var(--muted);line-height:1.5}
+.horse-tabs{display:flex;gap:5px;border-bottom:1px solid var(--line);margin-bottom:25px}
+.horse-tabs button{flex:1;position:relative;padding:13px 14px 16px;min-height:48px;border:0;background:none;color:var(--muted);font-size:14px;font-weight:500;white-space:nowrap}
+.horse-tabs button[aria-current=page]{color:var(--accent);font-weight:650}
+.horse-tabs button[aria-current=page]:after{position:absolute;content:"";bottom:-1px;left:15%;right:15%;height:3px;border-radius:3px;background:var(--accent)}
+.horse-tabs button:hover{background:var(--surface-soft)}
+.horse-overview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.horse-section{min-width:0;padding:23px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.horse-section-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+.horse-section-heading>svg{color:var(--accent);flex-shrink:0}
+.horse-section h2{font-family:var(--serif);font-size:23px;font-weight:550;line-height:1.2;letter-spacing:-.5px;margin:0;color:var(--text)}
+.horse-section .horse-eyebrow{font-size:10px;margin-bottom:7px}
+.horse-next>article{box-shadow:none!important}
+.horse-muted{color:var(--muted);line-height:1.6;font-size:14px}
+.horse-text-link{display:inline-flex;align-items:center;gap:7px;border:0;background:none;color:var(--accent);padding:11px 0 0;min-height:44px;font-weight:600;font-size:13px!important;text-align:left}
+.horse-feed-preview{background:var(--surface-soft)}
+.horse-feed-status{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--success);font-weight:600;margin:0 0 17px}
+.horse-feed-status>span{display:block;width:6px;height:6px;border-radius:50%;background:currentColor}
+.horse-meal-preview{display:grid;gap:12px}
+.horse-meal-preview>div{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;font-size:12px;line-height:1.5}
+.horse-meal-preview>div>span{color:var(--muted)}
+.horse-meal-preview strong{color:var(--text);font-weight:500}
+.horse-team{display:flex;flex-wrap:wrap;gap:18px 24px}
+.horse-person{display:flex;gap:10px;align-items:center}
+.horse-person-avatar{display:grid;place-items:center;flex-shrink:0;width:37px;height:37px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--line);color:var(--accent);font-size:12px;font-weight:600}
+.horse-person>div{display:grid;gap:3px;font-size:13px;line-height:1.3}
+.horse-person strong{font-weight:600;color:var(--text)}
+.horse-person>div>span{font-size:11px;color:var(--muted)}
+.horse-team-place{display:flex;align-items:center;gap:12px;color:var(--accent)}
+.horse-team-place strong{font-size:14px;color:var(--text)}
+.horse-team-place p{font-size:12px;line-height:1.5;color:var(--muted);margin:5px 0 0}
+.horse-details{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:0 23px}
+.horse-details summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:22px 0;color:var(--text)}
+.horse-details summary::-webkit-details-marker{display:none}
+.horse-details summary strong{font-family:var(--serif);font-size:21px;font-weight:550;letter-spacing:-.4px}
+.horse-details summary svg{transition:transform .2s;color:var(--muted);transform:rotate(90deg)}
+.horse-details[open] summary svg{transform:rotate(-90deg)}
+.horse-details dl{padding:0 0 10px;margin:0;border-top:1px solid var(--line)}
+.horse-details dl>div{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;padding:12px 0;font-size:13px;border-bottom:1px solid var(--line)}
+.horse-details dl>div:last-child{border-bottom:0}
+.horse-details dt{color:var(--muted)}
+.horse-details dd{margin:0;color:var(--text);text-align:right;overflow-wrap:anywhere}
+.feeding-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:0 0 19px}
+.feeding-heading h2{font-family:var(--serif);color:var(--text);font-size:27px;line-height:1.2;font-weight:550;letter-spacing:-.6px;margin:4px 0 0}
+.feeding-edit{display:inline-flex;align-items:center;gap:7px;justify-content:center;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:10px 12px;min-height:44px;flex-shrink:0;color:var(--accent);font-size:12px!important;font-weight:600!important}
+.feeding-edit:hover{background:var(--accent-soft)}
+.feeding-plan-status{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;font-weight:600;color:var(--success);padding:13px 16px;background:var(--surface-soft);border:1px solid var(--line);border-radius:11px;margin-bottom:19px}
+.feeding-status-dot{display:block;width:6px;height:6px;border-radius:50%;background:currentColor}
+.feeding-status-detail{margin-left:auto;color:var(--muted);font-weight:400}
+.feeding-meal-grid,.feeding-stable-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;align-items:start}
+.feeding-meal,.feeding-stable-meal{min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:18px;overflow:hidden}
+.feeding-meal>header,.feeding-stable-meal>header{display:flex;gap:12px;align-items:center;padding:20px 19px 16px}
+.feeding-meal>header h3,.feeding-stable-meal>header h2{font-family:var(--serif);font-size:22px;line-height:1.2;color:var(--text);font-weight:550;margin:0 0 4px;letter-spacing:-.4px}
+.feeding-meal>header span,.feeding-stable-meal>header span{font-size:11px;color:var(--muted)}
+.feeding-meal-icon{display:grid;place-items:center;width:41px;height:41px;background:var(--accent-soft);color:var(--accent);border-radius:12px;flex-shrink:0}
+.feeding-items{padding:0 19px 8px;margin:0;list-style:none}
+.feeding-item{border-top:1px solid var(--line);padding:15px 0 13px}
+.feeding-item-main{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;font-size:14px;line-height:1.5}
+.feeding-item-main strong{font-weight:550;color:var(--text);min-width:0;overflow-wrap:anywhere}
+.feeding-amount{font-size:13px;line-height:1.5;font-weight:650;color:var(--accent);white-space:nowrap;background:var(--accent-soft);padding:3px 8px;border-radius:6px;flex-shrink:0}
+.feeding-item-note{display:flex;gap:6px;color:var(--muted);font-size:12px;line-height:1.7;margin:9px 0 0}
+.feeding-item-note svg{flex-shrink:0;margin-top:3px}
+.feeding-no-gift{font-size:13px;line-height:1.6;color:var(--muted);margin:0;padding:0 19px 22px}
+.feeding-note{display:flex;align-items:flex-start;gap:12px;padding:20px;background:var(--surface-soft);border:1px solid var(--line);border-radius:14px;margin-top:20px;color:var(--accent)}
+.feeding-note>svg{flex-shrink:0;margin-top:1px}
+.feeding-note h3{font-size:13px;font-weight:600;color:var(--text);margin:0 0 6px}
+.feeding-note p{font-size:13px;color:var(--muted);line-height:1.7;margin:0;max-width:75ch;white-space:pre-line}
+.feeding-stable-rhythm{display:flex;gap:9px;align-items:center;margin:3px 0 23px;color:var(--muted);font-size:13px}
+.feeding-stable-rhythm svg{color:var(--accent)}
+.feeding-stable-rhythm>span>span{padding:0 6px}
+.feeding-stable-meal>header{background:var(--surface-soft);padding:20px}
+.feeding-horse+.feeding-horse{border-top:1px solid var(--line)}
+.feeding-horse-title{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;padding:18px;color:var(--text)}
+.feeding-horse-title img{height:42px;width:42px;border-radius:10px;object-fit:cover;flex-shrink:0}
+.feeding-horse-title>span{flex:1;min-width:0;display:grid;gap:4px}
+.feeding-horse-title strong{font-size:15px;font-weight:600}
+.feeding-horse-title>span>span{font-size:10px;line-height:1.35;color:var(--muted)}
+.feeding-horse-title>svg{color:var(--muted);flex-shrink:0}
+.feeding-horse .feeding-item{padding-top:12px}
+.feeding-horse .feeding-items{padding-bottom:7px}
+.feeding-stable-plan-note{display:flex;align-items:flex-start;gap:7px;padding:0 19px 17px;margin:0;font-size:11px;line-height:1.65;color:var(--muted)}
+.feeding-stable-plan-note svg{flex-shrink:0;margin-top:2px}
+.feeding-stable-plan-note span,.feeding-item-note span{white-space:pre-line;overflow-wrap:anywhere}
+@media(min-width:1100px){.horse-people,.horse-details{min-height:145px}}
+@media(max-width:850px){.feeding-meal-grid,.feeding-stable-grid{grid-template-columns:1fr}.feeding-stable-meal>header{padding:17px 19px}.feeding-horse-title{padding:17px 19px}.feeding-heading h2{font-size:24px}}
+@media(max-width:650px){.horse-grid,.horse-overview-grid{grid-template-columns:1fr;gap:18px}.horse-page-heading{margin-top:4px;margin-bottom:23px}.horse-page h1,.feeding-stable-page h1{font-size:34px}.horse-count{font-size:11px}.horse-card-photo{aspect-ratio:1.82}.horse-card-body{padding:18px 19px 16px}.horse-card-identity h2{font-size:27px}.horse-header-main{gap:19px;padding-bottom:21px}.horse-header-photo{width:104px;height:126px;border-radius:17px}.horse-header-copy h1{font-size:34px}.horse-header-copy .horse-eyebrow{font-size:10px;letter-spacing:1px}.horse-header-copy>p:not(.horse-eyebrow){font-size:12px;margin-bottom:11px}.horse-tabs{margin-bottom:23px}.horse-tabs button{font-size:13px;padding-left:8px;padding-right:8px}.horse-section{padding:20px}.horse-section h2{font-size:23px}.horse-meal-preview>div{grid-template-columns:61px minmax(0,1fr)}.horse-details{padding:0 20px}.feeding-heading{align-items:flex-start;gap:10px}.feeding-heading h2{font-size:24px}.feeding-heading .horse-eyebrow{font-size:10px;letter-spacing:1px}.feeding-edit{padding:9px;gap:5px}.feeding-status-detail{font-size:11px}.feeding-meal>header{padding:18px 19px 15px}.feeding-item-main{font-size:15px}.feeding-item-note{font-size:13px}.feeding-no-gift{font-size:13px}.feeding-note{padding:18px}.feeding-note p{font-size:13px}.feeding-stable-rhythm{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.horse-card-photo,.horse-details summary svg{transition:none}.horse-image-button:hover .horse-card-photo{transform:none}}
+
+/* Paardcontext blijft lokaal zichtbaar zonder een tweede navigatierij. */
+.horse-add{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;min-height:46px;padding:10px 14px;border:0;border-radius:13px;background:var(--accent);color:var(--on-accent);font-size:13px!important;font-weight:600!important;white-space:nowrap}
+.horse-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;background:var(--surface-soft);border:1px solid var(--line);border-radius:14px;padding:4px;max-width:540px;margin:0 0 13px}
+.horse-filters button{border:0;border-radius:10px;min-width:0;min-height:46px;padding:8px 5px;background:none;color:var(--muted);font-size:13px;font-weight:550;line-height:1.3}
+.horse-filters button[aria-pressed=true]{background:var(--surface);color:var(--accent);box-shadow:0 2px 6px #00000008;font-weight:650}
+.horse-list-context{display:flex;align-items:baseline;justify-content:space-between;gap:16px;color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:19px}
+.horse-list-context p{margin:0;min-width:0}
+.horse-list-context>span{white-space:nowrap;flex:none}
+.horse-access-label{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:7px;background:var(--accent-soft);color:var(--accent);padding:5px 8px;font-size:10px;font-weight:600;line-height:1.35;flex:none;max-width:120px;text-align:center}
+.horse-list-empty{padding:30px 23px;border:1px solid var(--line);border-radius:18px;background:var(--surface);text-align:center}
+.horse-list-empty h2{font-family:var(--serif);font-size:23px;line-height:1.3;font-weight:550;margin:0 0 10px;letter-spacing:-.4px;color:var(--text)}
+.horse-list-empty p{font-size:14px;line-height:1.65;color:var(--muted);margin:0 auto;max-width:48ch}
+.feeding-readonly{flex:none;display:inline-flex;padding:7px 9px;border:1px solid var(--line);background:var(--surface-soft);color:var(--muted);border-radius:8px;font-size:11px;line-height:1.4}
+@media(max-width:650px){.horse-page-heading{align-items:center;gap:10px}.horse-page-heading h1{font-size:32px}.horse-page-heading .horse-eyebrow{font-size:9px;letter-spacing:1px}.horse-page-heading .horse-intro{font-size:12px}.horse-add{padding-inline:10px;font-size:11px!important;gap:5px}.horse-filters button{font-size:12px}.horse-list-context{gap:10px;font-size:11px}.horse-card-identity{gap:9px}.horse-access-label{font-size:10px;max-width:105px}.feeding-readonly{font-size:10px;padding:6px 7px}}
+@media(max-width:359px){.horse-page-heading{flex-wrap:wrap}.horse-page-heading .horse-add{margin-top:1px}.horse-filters button{font-size:11px}.horse-list-context{align-items:flex-start}.feeding-heading:has(.feeding-readonly){flex-wrap:wrap}.horse-access-label{max-width:96px}}
+
+.horse-add span{display:block}.horse-add small{display:block;font-size:9px;font-weight:400;opacity:.82;margin-top:3px}

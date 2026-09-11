@@ -1,0 +1,23 @@
+{
+  "name": "C010-V8-RIDER-VITALITY-DATE-PRIORITY-20260911-01",
+  "version": "C010-V8-RIDER-VITALITY-DATE-PRIORITY-20260911-01",
+  "preview": "https://avaryn-c010-preview.silasdesteur.chatgpt.site/",
+  "sourcePrototype": "C010-V8-RIDER-VITALITY-EXERCISES-20260911-01",
+  "backendProject": "avaryn-c010-rc-20260908-a",
+  "scope": "Local browser date/greeting and Today Rider Vitality priority only",
+  "later": [
+    "Momenten",
+    "Abonnementen",
+    "Documenten",
+    "Webshop"
+  ],
+  "acceptance": "Awaiting human date/greeting and dashboard priority review",
+  "localPreview": "http://127.0.0.1:56597/",
+  "migration": {
+    "file": "202609110002_c010_flexible_task_timing.sql",
+    "sha256": "c52d988040602fe61272b33634af95b7c31166a9460586891f74b80b43d2196c"
+  },
+  "backendChanges": false,
+  "personalPrototypeStorage": "This browser only, scoped by account; no sync or social publishing",
+  "publication": "Local served successor on existing 56597 origin; online Sites 10 unchanged"
+}

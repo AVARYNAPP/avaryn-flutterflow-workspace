@@ -1,0 +1,25 @@
+{
+  "platform": "macOS arm64",
+  "source_metadata": [
+    "https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=aarch64&image_type=jdk&os=mac&vendor=eclipse",
+    "https://developer.android.com/studio"
+  ],
+  "archives": [
+    {
+      "name": "jdk-21.0.12.1+1",
+      "filename": "OpenJDK21U-jdk_aarch64_mac_hotspot_21.0.12.1_1.tar.gz",
+      "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_aarch64_mac_hotspot_21.0.12.1_1.tar.gz",
+      "sha256": "3623232f33a9c3baadf304480b2535f9a3cba8a58d42ecbb438ba267315d9998",
+      "checksum_url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_aarch64_mac_hotspot_21.0.12.1_1.tar.gz.sha256.txt",
+      "directory": "jdk21"
+    },
+    {
+      "name": "Google Command Line Tools macOS ARM build15859902",
+      "filename": "commandlinetools-mac_arm64-15859902_latest.zip",
+      "url": "https://dl.google.com/android/repository/commandlinetools-mac_arm64-15859902_latest.zip",
+      "sha256": "835b62a26162b229b441d1f6d4680383815a270809eb33522c0d480fa5002c4e",
+      "checksum_source": "https://developer.android.com/studio",
+      "directory": "google-commandlinetools"
+    }
+  ]
+}
