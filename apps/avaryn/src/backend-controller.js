@@ -213,6 +213,7 @@ export function createBackendController({getState,setState,render,save,navigate,
    const email=String(data.get('email')||authEmail).trim(),password=String(data.get('password')||'');authEmail=email;
    const callback=emailCallback;busy=true;message='';render();
    (async()=>{
+    let emailVerified=false;
     try{
      if(mode==='signup'){await client.signUp(email,password);if(ticket!==generation)return;authMode='verify';resendAfter=Date.now()+60000;message='Controleer je inbox en eventueel je ongewenste e-mail.';}
      else if(mode==='recover'){await client.recover(email);if(ticket!==generation)return;authMode='recovery';message='Als dit account bestaat, ontvang je een herstelmail.';}
@@ -221,13 +222,15 @@ export function createBackendController({getState,setState,render,save,navigate,
       else if(mode==='reset')await client.updatePassword(password);
       else await client.verifyEmail({email,token:String(data.get('token')||''),tokenHash:callback?.tokenHash,type:mode==='recovery'?'recovery':callback?'email':'signup'});
       if(ticket!==generation)return;
+      emailVerified=mode==='verify';
       emailCallback=null;
       if(mode==='recovery'){authMode='reset';return;}
       clearCore();phase='loading';render();if(!await load()||ticket!==generation)return;
+      authMode='login';
       localStorage.setItem(MODE,'backend');navigate('today');
       if(!getState().backend.profile?.onboarding_completed_at)core.profileForm();else teamCore.resume();
      }
-    }catch(error){if(ticket!==generation)return;clearCore();phase='login';message=errorMessage(error);}
+    }catch(error){if(ticket!==generation)return;clearCore();phase='login';if(emailVerified&&error?.status===401){authMode='login';message='Je e-mailadres is bevestigd. Log in om verder te gaan.';}else message=errorMessage(error);}
     finally{if(ticket===generation){busy=false;render();}}
    })();return true;
   }
