@@ -83,6 +83,14 @@ function parseObject(bytes){
  try{const value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));if(value&&typeof value==='object'&&!Array.isArray(value))return value;}catch{}
  throw fail('INVALID_REQUEST');
 }
+function diagnoseUpstream504(selected,bytes){
+ if(selected.kind!=='rpc')return;
+ let code='unclassified';
+ try{if(bytes.length<=64*1024){const value=parseObject(bytes).code;if(value==='PGRST003'||value==='57014')code=value;}}catch{}
+ // Route is already canonical and RPC-allowlisted. Never log response text,
+ // arbitrary codes, request bodies, user headers or signed URL queries.
+ try{console.warn(JSON.stringify({event:'avaryn_upstream_http_504',route:selected.path,status:504,code}));}catch{}
+}
 
 /** The injectable fetch/deadline are for deterministic tests; production uses
  * standard Workers Fetch/Streams and the fixed 20-second total proxy budget.
@@ -117,6 +125,7 @@ export function createPilotWorker({fetchImpl=globalThis.fetch,timeoutMs=20000}={
    const response=await abortable(fetchImpl(PILOT_UPSTREAM+selected.path+url.search,{method:request.method,headers:outgoing,body:request.method==='GET'?undefined:bytes,signal:controller.signal,redirect:'manual',credentials:'omit'}),controller.signal);
    if(response.status>=300&&response.status<400||response.headers.has('location')){cancel(response.body);return json(502,'UPSTREAM_REDIRECT_REFUSED',origin);}
    stage='response';const result=await limitedBytes(response.body,MEDIA_LIMIT,controller.signal);
+   if(response.status===504)diagnoseUpstream504(selected,result);
    const h=headers(origin);h.set('content-type',selected.kind==='media'&&request.method==='GET'&&response.ok?response.headers.get('content-type')||'application/octet-stream':'application/json; charset=utf-8');
    if(selected.kind==='media'&&request.method==='GET'&&response.ok&&!['image/png','image/jpeg','image/webp'].includes(h.get('content-type').split(';')[0].trim()))return json(502,'INVALID_MEDIA_RESPONSE',origin);
    if(response.headers.has('x-supabase-api-version'))h.set('x-supabase-api-version',response.headers.get('x-supabase-api-version'));

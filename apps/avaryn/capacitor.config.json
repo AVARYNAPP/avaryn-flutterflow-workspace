@@ -2,6 +2,7 @@
   "appId": "com.mycompany.avarynalpha",
   "appName": "AVARYN",
   "webDir": "dist",
+  "loggingBehavior": "none",
   "server": { "iosScheme": "capacitor", "androidScheme": "https" },
   "ios": { "contentInset": "automatic", "preferredContentMode": "mobile" }
 }

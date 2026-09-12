@@ -2,6 +2,9 @@ import {esc,icon} from './components.js';
 import {PRODUCT} from './product-config.js';
 const emailField=value=>`<label class="form-field">E-mailadres<input type="email" name="email" value="${esc(value)}" autocomplete="email" autocapitalize="none" required></label>`;
 const passwordField=(fresh=false)=>`<label class="form-field">${fresh?'Kies een wachtwoord':'Wachtwoord'}<input type="password" name="password" autocomplete="${fresh?'new-password':'current-password'}"${fresh?' minlength="12"':''} required></label>${fresh?'<p class="horse-muted">Gebruik minstens 12 tekens.</p>':''}`;
+export function renderLoadRecovery(message=''){
+ return `<div class="access-loading"><span class="wordmark">AVARYN</span><h1>Je gegevens konden niet worden geladen.</h1><p>Je bent aangemeld. Probeer je actuele gegevens opnieuw op te halen.</p>${message?`<p class="form-error" role="alert" style="color:var(--text)">${esc(message)}</p>`:''}<p><button type="button" class="button-primary" data-action="load-retry">Opnieuw laden ${icon('arrow-right',17)}</button></p><button type="button" class="text-link" data-action="logout">Uitloggen</button></div>`;
+}
 export function renderAuth({mode='login',message='',busy=false,email='',tokenHash=false}={}){
  const modes={login:['Welkom terug.','Log in om je paarden en je dag te bekijken.','Inloggen'],signup:['Welkom bij AVARYN.','Maak je eigen account aan. Daarna bevestig je je e-mailadres.','Account aanmaken'],recover:['Wachtwoord vergeten?','Je ontvangt een e-mail waarmee je een nieuw wachtwoord kunt kiezen.','Herstelmail versturen'],verify:['Controleer je e-mail.','Bevestig je e-mailadres via de ontvangen link of vul de bevestigingscode in.','E-mailadres bevestigen'],recovery:['Bevestig je herstelverzoek.','Gebruik de ontvangen herstellink of code.','Verder'],reset:['Een nieuw wachtwoord.','Kies een nieuw wachtwoord voor je account.','Wachtwoord opslaan']};
  const [title,intro,button]=modes[mode]||modes.login;

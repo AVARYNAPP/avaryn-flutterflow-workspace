@@ -1,4 +1,27 @@
-# V8 productisering — voortgang, 12 september 2026
+# AVARYN V8 — actuele productisering
+
+## Actueel — kandidaat07, 12 september 2026
+
+De opvolger C010-V8-PRODUCTIZATION-20260912-07 (0.10.8/build7) is lokaal gebouwd: webentry app-JXBJQ2KX.js, 33 clientbestanden/35 publicatiebestanden. Kandidaat06 is alleen lokaal getest en op de emulator geïnstalleerd;07 voegt uitschakeling van gevoelige Capacitor-debuglogging toe. Online staat tot de gecontroleerde publicatie nog05, checkpoint b812d4831f1366aaa3b5654b8dff39e56b9129d5. Officiële ontwikkelbranch: implementation/c010-stable-team-collaboration. Pilot: https://avaryn-c010-pilot.silasdesteur.chatgpt.site/ met uitsluitend backend rvymglpkttlfwhqpmupp. Definitieve online binding volgt in het opleverreceipt.
+
+De gebruiker heeft persoonlijk wachtwoordherstel én gewone nieuwe telefoonlogin bevestigd. Zelfregistratie is vrij voor iedereen met de pilotlink; vijf vaste e-mailadressen zijn niet nodig. Geen ongevraagde uitnodigingsmail verstuurd.
+
+| Onderdeel | Actuele bewijsstatus | Resterend |
+| --- | --- | --- |
+| Onafhankelijkheid Mac/tunnel | PASS: eigen devserver56860 uit; nieuwe registratie, ontvangen/bevestigde mail, profiel/paard/stal, tweede login en private media werkten via vaste Worker/Supabase. Ook na macOS-herstart opnieuw ingelogd. | Geen lokale infrastructuur nodig voor de webpilot. |
+| Nieuwe synthetische manager en groom | PASS: onboarding, paard, stal, uitnodiging/acceptatie; groom voltooit gedeelde taak, manager leest resultaat terug. Taken zonder datum/met datum/met21:00 en instructies opgeslagen; onafhankelijke groomreadbacks. | Intrekking PASS: stalcontext verdwijnt, eigen gegevens behouden. Finale updatecontrole nog uitvoeren. |
+| Planning/voeding/faciliteiten | PASS online05: training19:30–20:00, Basisvoeding plus tijdelijk schema13–14 september met instructies; volledige herlaadactie bewaart beide. Nieuwe voorzieningen en exclusieve rijbakaanvraag→goedkeuring; groom ziet gedeelde bezetting zonder beheerknoppen. | PASS: verblijfplaats/box met instructie, wasplaatsmoment20:10–20:25; tweede managersessie leest warming-upstap2/focus/privéterugblik. |
+| Sessies en fouten | Gerichte herstelschermfix met144 functionele checks PASS;21 contrastchecks herhaald.78 Workerchecks PASS, uitsluitend veilige504-classificatie. Eerdere401 en twee504 niet gereproduceerd; oorzaak niet bewezen hersteld. | Natuurlijke tokenproef gecorrigeerd voor gedocumenteerde30s PostgREST-speling; loopt naast ander werk. |
+| Backup/herstel | PASS: volledige49-migration Pilotdump daadwerkelijk in nieuwe geïsoleerde lokale database hersteld;125 tabelhashes/owners/RLS/ACL gelijk. Twee private PNG-objecten op checksum/omvang gecontroleerd, ook na reboot. | Geen uploadrestore naar tweede Storage-service of volledige hosted configuratie-export bewezen. |
+| Android | PASS: ondertekende05 installatie/login/taakafronding/herstart;06 en07 update met dezelfde afzonderlijke testkey behouden sessie en gedeelde data.07 logproef bevat geen bridgecredentials. | Native media/callback afronden; fysieke telefoon/store-release niet getest. |
+| iOS | macOS26.6.2 en Xcode26.6/17F113 bevestigd;07 assets/plugins gesynchroniseerd, simulatorcompilatie loopt. | iOS26.5 Simulatorruntime door gebruiker installeren; feitelijke installatie/flows daarna. |
+| Bron, overdracht en publicatie | GitHub-pushrecht op juiste repository bevestigd.20 bedoelde bestanden geselecteerd voor review; alle uitgaande Gitobjecten en huidige bron gescand, geen ongeclassificeerde secretmatch.44 pakket/metadatachecks PASS. | Exacte staging, lokaal checkpoint, gewone ontwikkelpush en bestaande Sites-publicatie volgen. |
+
+Bewijs staat afgeschermd onder .avaryn-local/productization-20260911/evidence: final-user-flows/resume-*, operational49-backupreceipts, backup-post-reboot-integrity.json, candidate07-independent-source-review.json, candidate07-full-outgoing-content-scan.json en de platformreceipts. Historische testtellingen worden niet opgeteld als één nieuwe integrale suite.
+
+Alleen noodzakelijke correcties en synthetische mutaties in Pilot; persoonlijke account behouden. Geen main-merge/force-push, database-migration, oude Staging, Alpha/DNS-omzetting, productie, C-011 of nieuwe kosten. Dit is technische voortgang, geen menselijke eindacceptatie.
+
+## Historische voortgang en bewijs
 
 Dit is een werkstatus, geen eindacceptatie of publicatieverklaring.
 
@@ -72,18 +95,9 @@ Alleen `/auth/v1/verify` met HTTP403 en de werkelijk vastgestelde providercode `
 
 Webbuild `/api`: `app-22PYSOSG.js`, versie0.10.8/build5,33 clientbestanden en35 gehashte pakketbestanden in het nieuwe `private/pilot-artifact-candidate05`. **44 gerichte checks PASS/0 SKIP** (9 koude assets,14 packaging,21 native-versies);109 broninputs tijdens build ongewijzigd. Bewijs `candidate05-web-staging.json` en `candidate05-package-version-tests.log`. Geen nieuwe volledige suite, native05-compilatie, Gitcheckpoint of publicatieclaim. Kandidaat02 **924 PASS/2 SKIP** blijft historisch baselinebewijs; eerdere04-pakketten blijven behouden.
 
-## Open werk en persoonlijke afhankelijkheden
+## Historische afhankelijkheden
 
-- De beide Pilot-Edgefuncties zijn gedeployed; de drie online bronbestanden zijn exact tegen de geteste checksums gelezen. Na afzonderlijk akkoord staan de legacy JWT-filters uit; verplichte interne Auth- en databaseautorisatie blijven behouden. Media:3 negatieve Authproeven; delete-account:5 weigeringen, inclusief echte Auth-lookup, PASS. PNG-media is inmiddels apart authenticated bewezen; andere media- en lifecyclegevallen blijven open; de afzonderlijke managed D-verwijdering is hierboven begrensd bewezen.
-- Nog nodig: persoonlijke wachtwoordreset en herstel-tokenreplay, nog niet bewezen managed media/lifecycle en gedeelde gebruikersflows; kandidaat05-publicatie en tokenfout-/herstelacceptatie. Kandidaat04-publicatie en de genoemde managed flows zijn apart vastgelegd; ontwikkelpush blijft open.
-- Browsercontrole is hervat. GitHubpush vraagt een geautoriseerd account met schrijfrecht op uitsluitend `AVARYNAPP/avaryn-flutterflow-workspace`; de accountnaam is gevraagd, geen token.
-- De archiefoverdracht is aangesloten. Bestaande legacyguards blijven van kracht; nieuw aangemaakte canonieke accounts vragen geen kunstmatige legacy-remap. Een nieuw lokaal én een afzonderlijk managed wegwerpaccount zijn via de app verwijderd, inclusief geweigerde herlogin; alleen de hierboven genoemde begrensde readbacks zijn bewezen.
-- Androidcompile wordt afzonderlijk behandeld; native verbinding, toestelinstallatie, camera/toestemmingen en distributie zijn met deze webbewijzen niet aangetoond.
-- Deze Mac heeft geen geschikte Xcode/macOS-combinatie voor Capacitor8. Geen bewezen iOS-simulatorbuild, archive of IPA; signing/developeraccounts blijven afzonderlijk te verifiëren.
-- Apple/Google-providerlogin blijft verborgen zolang de vereiste configuratie ontbreekt. E-maillogin moet onafhankelijk daarvan werken.
-- Geen publieke storevrijgave, main-merge of menselijke C-010-eindacceptatie.
-
-Auth-templatevariabelen volgen de officiële [Supabase-documentatie](https://supabase.com/docs/guides/auth/auth-email-templates).
+De eerdere open-actielijst is vervangen door de actuele backlog bovenaan. Eerdere bewijssecties blijven hieronder behouden.
 
 ## Android kandidaat03 — historisch compilebewijs
 

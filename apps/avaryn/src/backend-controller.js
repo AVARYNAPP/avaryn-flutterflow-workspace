@@ -6,7 +6,7 @@ import {createTeamCore} from './team-core.js';
 import {createHorseResidency} from './horse-residency.js';
 import {createActivityEditor} from './activity-form.js';
 import {createAuthorityTransfer} from './authority-transfer.js';
-import {renderAuth,consumeEmailCallback} from './auth-ui.js';
+import {renderAuth,renderLoadRecovery,consumeEmailCallback} from './auth-ui.js';
 import {taskToday,taskFormValues} from './task-timing.js';
 import {createBackendClient} from './backend-client.js';
 import {createFeedingEditor} from './backend-feeding-form.js';
@@ -24,7 +24,7 @@ export function createBackendController({getState,setState,render,save,navigate,
  const acknowledgedRequests=new WeakMap();
  let phase=PRODUCT.demo&&localStorage.getItem(MODE)==='demo'?'demo':'login',message='',busy=false,generation=0;
  let authMode='login',authEmail='',emailCallback=null,resendAfter=0;
- let calendarFlight=null;
+ let calendarFlight=null,loadRecovery=null;
  const connected=()=>getState().backend?.connected===true;
  const scopeKey=state=>`avaryn-v8-connected-preferences:${state.backend.actor.id}:${state.backend.organizationId||'personal'}`;
  const contextKey=state=>`avaryn-v8-connected-active-context:${state.backend.actor.id}`;
@@ -38,7 +38,24 @@ export function createBackendController({getState,setState,render,save,navigate,
    return true;
   }catch{return false;}
  }
- function clearCore(){calendarFlight=null;purgeMedia?.();clearAuthCallback?.();const old=getState();setState({theme:old.theme||'light',route:'today',horseFilter:'personal',period:'today',selectedDay:old.today||browserDay(),horses:[],tasks:[],activities:[],feeding:{},team:[],stableName:'Jouw stal',stableLocation:''});}
+ function clearCore(){calendarFlight=null;loadRecovery=null;purgeMedia?.();clearAuthCallback?.();const old=getState();setState({theme:old.theme||'light',route:'today',horseFilter:'personal',period:'today',selectedDay:old.today||browserDay(),horses:[],tasks:[],activities:[],feeding:{},team:[],stableName:'Jouw stal',stableLocation:''});}
+ function captureLoad(organizationId,day,afterLoad){
+  const {route,horseId,horseFilter,period}=getState();
+  return {organizationId,day,afterLoad,presentation:{route,horseId,horseFilter,period}};
+ }
+ function failedLoad(error,recovery){
+  clearCore();authMode='login';emailCallback=null;message=errorMessage(error);
+  const temporary=!error?.accessLost&&!/STALE/.test(error?.code||'')&&((error?.status>=500&&error.status<600)||(!error?.status&&['NETWORK','TIMEOUT'].includes(error?.code)));
+  loadRecovery=temporary?recovery:null;phase=loadRecovery?'load-error':'login';
+ }
+ function retryLoad(){
+  if(phase!=='load-error'||busy||!loadRecovery)return;
+  const recovery=loadRecovery,ticket=++generation;busy=true;clearCore();
+  Object.assign(getState(),recovery.presentation);phase='loading';render();
+  void load(recovery.organizationId,recovery.day).then(loaded=>{
+   if(loaded&&ticket===generation)recovery.afterLoad?.();
+  }).catch(error=>{if(ticket===generation)failedLoad(error,recovery);}).finally(()=>{if(ticket===generation){busy=false;render();}});
+ }
  async function load(organizationId,day){
   const ticket=generation;let unavailable=false;
   const read=async(id,onDate=day)=>{
@@ -78,7 +95,7 @@ export function createBackendController({getState,setState,render,save,navigate,
   const latest=getState();
   Object.assign(next,{route:latest.route||next.route,horseFilter:latest.horseFilter||next.horseFilter,horseId:latest.horseId||next.horseId,period:latest.period||next.period,theme:latest.theme!==current.theme?latest.theme:next.theme});
   if(!next.horses.some(h=>h.id===next.horseId))next.horseId=next.horses[0]?.id;
-  setState(next);const persisted=saveLocal();phase='connected';message='';
+  setState(next);const persisted=saveLocal();phase='connected';message='';loadRecovery=null;
   if(unavailable)toast('Je vorige stalkeuze is niet meer beschikbaar. Je bekijkt nu je persoonlijke paarden.');
   else if(persisted===false)toast('Je stalkeuze kon niet op dit apparaat worden bewaard.');
   return true;
@@ -159,16 +176,16 @@ export function createBackendController({getState,setState,render,save,navigate,
  const residency=createHorseResidency({getState,showModal,perform,toast,apiRequest:client.requestRpc});
  const activityEditor=createActivityEditor({getState,showModal,closeModal,perform,client,formError,toast,onAccessLost:()=>reload()});
  const authority=createAuthorityTransfer({getState,showModal,closeModal,perform,toast,getBackend:()=>({apiRequest:client.requestRpc})});
- function getScreen(){authority.syncContext();activityEditor.syncContext();if(phase==='loading')return loginPending();if(phase==='login')return renderAuth({mode:authMode,message,busy,email:authEmail,tokenHash:Boolean(emailCallback?.tokenHash)});return null;}
+ function getScreen(){authority.syncContext();activityEditor.syncContext();if(phase==='loading')return loginPending();if(phase==='load-error')return renderLoadRecovery(message);if(phase==='login')return renderAuth({mode:authMode,message,busy,email:authEmail,tokenHash:Boolean(emailCallback?.tokenHash)});return null;}
  async function init(){
   teamCore.consumeLink();
   emailCallback=consumeEmailCallback(globalThis.location,globalThis.history);
   if(emailCallback){phase='login';authMode=emailCallback.type==='recovery'?'recovery':'verify';if(emailCallback.invalid){authMode='login';message='Deze bevestigingslink is niet geldig. Vraag een nieuwe e-mail aan.';}render();return;}
-  if(phase==='demo')return;const ticket=generation;phase='loading';render();
+  if(phase==='demo')return;const ticket=generation;let recovery=null;phase='loading';render();
   try{const restored=await client.restore();if(ticket!==generation)return;
-   if(restored){if(!await load()||ticket!==generation)return;restoreRoute?.();render();teamCore.resume();}
+   if(restored){recovery=captureLoad(undefined,undefined,()=>{restoreRoute?.();render();teamCore.resume();});if(!await load()||ticket!==generation)return;recovery.afterLoad();}
    else{phase='login';render();}
-  }catch(error){if(ticket!==generation)return;clearCore();phase='login';message=errorMessage(error);render();}
+  }catch(error){if(ticket!==generation)return;failedLoad(error,recovery);render();}
  }
  async function handleNativeEmailCallback(value){
   if(!['email','recovery'].includes(value?.type)||!/^[-a-zA-Z0-9_]{16,2048}$/.test(value?.tokenHash||''))return;
@@ -178,6 +195,7 @@ export function createBackendController({getState,setState,render,save,navigate,
   finally{if(ticket===generation){busy=false;phase='login';render();}}
  }
  function handleAction(action,button){
+  if(action==='load-retry'){retryLoad();return true;}
   if(['auth-login','auth-signup','auth-recover'].includes(action)){if(busy)return true;authMode=action.slice(5);emailCallback=null;message='';phase='login';render();return true;}
   if(action==='auth-resend'){
    if(busy||Date.now()<resendAfter)return true;
@@ -196,8 +214,8 @@ export function createBackendController({getState,setState,render,save,navigate,
   if(action==='switch-stable'){showModal('Kies je stal',`<div class="scope-options"><button class="button-secondary" data-action="select-stable" data-id="personal">Mijn paarden · persoonlijk</button>${getState().backend.organizations.map(o=>`<button class="button-secondary" data-action="select-stable" data-id="${esc(o.id)}">${esc(o.name)}</button>`).join('')}<button class="button-primary" data-action="create-stable">Een stal aanmaken</button></div>`,'','Jouw stallen');return true;}
   if(action==='select-stable'){
    const id=button.dataset.id==='personal'?null:button.dataset.id;if(id!==null&&!getState().backend.organizations.some(o=>o.id===id))return true;
-   const ticket=++generation;saveLocal();clearCore();phase='loading';closeModal();render();
-   load(id).then(loaded=>{if(loaded&&ticket===generation)navigate('stable');}).catch(e=>{if(ticket!==generation)return;clearCore();phase='login';message=errorMessage(e);render();});return true;
+   const ticket=++generation,recovery=captureLoad(id,undefined,()=>navigate('stable'));saveLocal();clearCore();phase='loading';closeModal();render();
+   load(id).then(loaded=>{if(loaded&&ticket===generation)recovery.afterLoad();}).catch(e=>{if(ticket!==generation)return;failedLoad(e,recovery);render();});return true;
   }
   if(action==='new-task'){taskForm();return true;}
   if(action==='complete-task'){completion('task',button.dataset.id);return true;}
@@ -213,7 +231,7 @@ export function createBackendController({getState,setState,render,save,navigate,
    const email=String(data.get('email')||authEmail).trim(),password=String(data.get('password')||'');authEmail=email;
    const callback=emailCallback;busy=true;message='';render();
    (async()=>{
-    let emailVerified=false;
+    let emailVerified=false,recovery=null;
     try{
      if(mode==='signup'){await client.signUp(email,password);if(ticket!==generation)return;authMode='verify';resendAfter=Date.now()+60000;message='Controleer je inbox en eventueel je ongewenste e-mail.';}
      else if(mode==='recover'){await client.recover(email);if(ticket!==generation)return;authMode='recovery';message='Als dit account bestaat, ontvang je een herstelmail.';}
@@ -225,12 +243,11 @@ export function createBackendController({getState,setState,render,save,navigate,
       emailVerified=mode==='verify';
       emailCallback=null;
       if(mode==='recovery'){authMode='reset';return;}
+      recovery=captureLoad(undefined,undefined,()=>{authMode='login';localStorage.setItem(MODE,'backend');navigate('today');if(!getState().backend.profile?.onboarding_completed_at)core.profileForm();else teamCore.resume();});
       clearCore();phase='loading';render();if(!await load()||ticket!==generation)return;
-      authMode='login';
-      localStorage.setItem(MODE,'backend');navigate('today');
-      if(!getState().backend.profile?.onboarding_completed_at)core.profileForm();else teamCore.resume();
+      recovery.afterLoad();
      }
-    }catch(error){if(ticket!==generation)return;clearCore();phase='login';if(emailVerified&&error?.status===401){authMode='login';message='Je e-mailadres is bevestigd. Log in om verder te gaan.';}else message=errorMessage(error);}
+    }catch(error){if(ticket!==generation)return;if(recovery)failedLoad(error,recovery);else{clearCore();phase='login';message=errorMessage(error);}if(emailVerified&&error?.status===401){authMode='login';message='Je e-mailadres is bevestigd. Log in om verder te gaan.';}}
     finally{if(ticket===generation){busy=false;render();}}
    })();return true;
   }
@@ -260,8 +277,8 @@ export function createBackendController({getState,setState,render,save,navigate,
   clearCore();phase='login';message=success;closeModal();render();
  }
  function reload(day=getState().selectedDay){
-  if(!connected())return;const org=getState().backend.organizationId,ticket=++generation;phase='loading';render();
-  return load(org,day).then(loaded=>{if(loaded&&ticket===generation)render();}).catch(e=>{if(ticket!==generation)return;clearCore();phase='login';message=errorMessage(e);render();});
+  if(!connected())return;const org=getState().backend.organizationId,ticket=++generation,recovery=captureLoad(org,day);phase='loading';render();
+  return load(org,day).then(loaded=>{if(loaded&&ticket===generation)render();}).catch(e=>{if(ticket!==generation)return;failedLoad(e,recovery);render();});
  }
  function refreshToday(now=new Date()){
   const s=getState(),b=s.backend;

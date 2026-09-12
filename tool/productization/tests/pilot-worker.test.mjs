@@ -82,6 +82,47 @@ test('oversized response is cancelled and never partially exposed',async()=>{let
 test('any upstream redirect/Location is rejected and is never followed',async()=>{for(const [status,location] of [[302,'https://foreign.example/'],[307,PILOT_UPSTREAM+'/auth/v1/user'],[200,'/unexpected']]){const h=harness({upstream:()=>new Response('',{status,headers:{location}})});await expectCode(await h.call('/api/auth/v1/signup',{auth:null}),502,'UPSTREAM_REDIRECT_REFUSED');assert.equal(h.upstream.length,1);}});
 test('transport errors never expose keys, signed URLs or internal error text',async()=>{const h=harness({upstream:()=>{throw Error(KEY+' '+PILOT_UPSTREAM+media()+' private-error');}});const r=await h.call('/api/auth/v1/signup',{auth:null}),body=await r.text();assert.equal(r.status,503);for(const part of [KEY,PILOT_UPSTREAM,'synthetic.signed.token','private-error'])assert.equal(body.includes(part),false);});
 test('Auth/CAS/pending codes and JSON remain intact with private headers discarded',async()=>{for(const [status,body] of [[400,{code:'invalid_credentials'}],[409,{code:'PT409',message:'STALE_TASK_VERSION'}],[202,{code:'ACCOUNT_DELETION_PENDING',request_id:ID}]]){const h=harness({upstream:()=>json(body,status,{'set-cookie':'nope','x-supabase-api-version':'2024-01-01','access-control-allow-origin':'*'})});const r=await h.call('/api/rest/v1/rpc/list_c010_horses');assert.equal(r.status,status);assert.deepEqual(await r.json(),body);assert.equal(r.headers.get('access-control-allow-origin'),ORIGIN);assert.equal(r.headers.get('set-cookie'),null);}});
+for(const code of ['PGRST003','57014'])test('upstream RPC 504 diagnoses only allowlisted code '+code,async t=>{
+ const log=t.mock.method(console,'warn',()=>{}),path='/api/rest/v1/rpc/get_my_c010_function_profile';
+ const body=JSON.stringify({code,message:KEY+' '+JWT,details:'https://private.example/path?token=synthetic-secret',hint:{email:'synthetic@example.invalid'}});
+ const h=harness({upstream:()=>new Response(body,{status:504,headers:{'content-type':'application/json','x-private':'synthetic-header','set-cookie':'synthetic-cookie'}})});
+ const r=await h.call(path,{body:'{"secret":"synthetic-request"}',headers:{referer:ORIGIN+'/?token=synthetic-query',cookie:'synthetic-request-cookie'}});
+ assert.equal(r.status,504);assert.equal(await r.text(),body);assert.equal(r.headers.get('x-private'),null);
+ assert.deepEqual(log.mock.calls.map(c=>c.arguments),[[JSON.stringify({event:'avaryn_upstream_http_504',route:path.slice(4),status:504,code})]]);
+});
+for(const [label,body] of [
+ ['unknown sensitive code',JSON.stringify({code:'private\n'+KEY,message:JWT})],
+ ['non-string code',JSON.stringify({code:{secret:KEY}})],
+ ['nested code',JSON.stringify({error:{code:'57014'},message:KEY})],
+ ['array',JSON.stringify([{code:'PGRST003',secret:KEY}])],
+ ['malformed JSON','{"code":"57014","secret":"'+KEY],
+ ['invalid UTF-8',new Uint8Array([255,254,253])],
+ ['over diagnostic parse limit',JSON.stringify({code:'PGRST003',message:'x'.repeat(64*1024)})],
+ ['nonexact known code',JSON.stringify({code:'57014 ',message:KEY})],
+])test('upstream RPC 504 safely classifies '+label,async t=>{
+ const log=t.mock.method(console,'warn',()=>{}),bytes=typeof body==='string'?new TextEncoder().encode(body):body;
+ const h=harness({upstream:()=>new Response(bytes,{status:504})}),r=await h.call('/api/rest/v1/rpc/list_c010_horses');
+ assert.equal(r.status,504);assert.deepEqual(new Uint8Array(await r.arrayBuffer()),bytes);
+ assert.deepEqual(log.mock.calls.map(c=>c.arguments),[[JSON.stringify({event:'avaryn_upstream_http_504',route:'/rest/v1/rpc/list_c010_horses',status:504,code:'unclassified'})]]);
+});
+test('diagnostics exclude other upstream statuses and local or refused 504 paths',async t=>{
+ const log=t.mock.method(console,'warn',()=>{});
+ for(const status of [200,400,401,403,500,503]){const h=harness({upstream:()=>json({code:'57014'},status)});assert.equal((await h.call('/api/rest/v1/rpc/list_c010_horses')).status,status);}
+ const stalled=harness({timeoutMs:15,upstream:()=>new Promise(()=>{})});await expectCode(await stalled.call('/api/rest/v1/rpc/list_c010_horses'),504,'UPSTREAM_TIMEOUT');
+ const interrupted=harness({upstream:()=>{throw Object.assign(Error(KEY),{status:504});}});await expectCode(await interrupted.call('/api/rest/v1/rpc/list_c010_horses'),503,'BACKEND_UNAVAILABLE');
+ const refused=harness({upstream:()=>json({code:'57014'},504)});
+ for(const path of ['/api/rest/v1/rpc/private_unknown','/api/rest/v1/rpc/list_c010_horses?token=synthetic-query'])assert.equal((await refused.call(path)).status,404);
+ assert.equal(refused.upstream.length,0);assert.equal(log.mock.calls.length,0);
+});
+test('diagnostics never log Auth, Edge, media identifiers or signed queries',async t=>{
+ const log=t.mock.method(console,'warn',()=>{}),h=harness({upstream:()=>json({code:'57014',message:KEY},504)});
+ for(const [path,options] of [['/api/auth/v1/token?grant_type=password',{auth:null}],['/api/functions/v1/media-assets',{body:'{"action":"canonical_download"}'}],[media(),{method:'GET'}]])assert.equal((await h.call(path,options)).status,504);
+ assert.equal(log.mock.calls.length,0);
+});
+test('diagnostic logger failure cannot alter an upstream RPC response',async t=>{
+ t.mock.method(console,'warn',()=>{throw Error('synthetic logger failure');});const body={code:'PGRST003',message:'synthetic timeout'},h=harness({upstream:()=>json(body,504)}),r=await h.call('/api/rest/v1/rpc/list_c010_horses');
+ assert.equal(r.status,504);assert.deepEqual(await r.json(),body);
+});
 test('local logout 204 remains bodyless',async()=>{const h=harness({upstream:()=>new Response(null,{status:204})}),r=await h.call('/api/auth/v1/logout?scope=local');assert.equal(r.status,204);assert.equal(await r.text(),'');});
 test('HTML returned from signed media is not exposed as an image',async()=>{const h=harness({upstream:()=>new Response('<script>x</script>',{headers:{'content-type':'text/html'}})});await expectCode(await h.call(media(),{method:'GET'}),502,'INVALID_MEDIA_RESPONSE');});
 test('only current derived public filenames/assets/licenses enter the asset binding',async()=>{const h=harness();for(const path of ['/app-ABCDEFG1.js','/chunk-A1B2C3D4.js','/menu-ui.css','/assets/orion.png','/assets/fonts/Inter.ttf','/assets/fonts/inter-OFL.txt'])assert.equal((await h.call(path,{method:'GET',auth:null})).status,200);assert.equal(h.assets.length,6);});

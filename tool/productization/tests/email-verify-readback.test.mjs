@@ -90,10 +90,12 @@ test('401 from verification itself stays a verification error and never claims e
  assert.equal(h.calls.filter(c=>c.path.includes('/rest/')).length,0);assert.equal(h.memory.size,0);
 });
 
-for(const status of [403,503])test('post-verification '+status+' retains its existing error handling',async t=>{
+for(const status of [403,503])test('post-verification '+status+' discards the consumed OTP and preserves the correct access boundary',async t=>{
  const h=fixture(t,{readStatus:status});await h.verify();await tick();
- assert.match(h.screen(),/auth-verify-form/);assert.doesNotMatch(h.screen(),/Je e-mailadres is bevestigd/);
+ assert.match(h.screen(),status===503?/data-action="load-retry"/:/auth-login-form/);
+ assert.doesNotMatch(h.screen(),/auth-verify-form|name="token"|Je e-mailadres is bevestigd/);
  assert.equal(h.state.backend,undefined);assert.deepEqual(h.routes,[]);
+ assert.equal(h.memory.size,1);assert.equal(h.calls.filter(c=>c.path.endsWith('/verify')).length,1);
 });
 
 test('logout during post-verification reads cannot regain the old recovery message or workspace',async t=>{

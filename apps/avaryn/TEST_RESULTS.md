@@ -1,3 +1,17 @@
+# Actuele teststatus — kandidaat07, 12 september 2026
+
+C010-V8-PRODUCTIZATION-20260912-07 (0.10.8/build7) is lokaal gebouwd: app-JXBJQ2KX.js,33 clientbestanden/35 publicatiebestanden, Worker SHA256 c55824eaa12ae1381ca5bdcced93f55c90d825e22b3737df1d968a1eac07aa2b. Online staat bij dit technische checkpoint nog05 (b812d4831f1366aaa3b5654b8dff39e56b9129d5). Publicatie en exact geladen bron worden afzonderlijk vastgelegd; dit document claimt geen nog niet uitgevoerde deployment.
+
+- Gerichte correctie: na geslaagde Auth en een tijdelijke laadfout een duidelijke Opnieuw laden-route; geen rechtenfallback.144 functionele controles PASS;21 hiervan na contrastcorrectie opnieuw PASS.320px donkere eindweergave visueel gecontroleerd, leesbaar en zonder overflow; ongewijzigde320/390 light/dark-geometrie hergebruikt.
+- 78 Workercontroles PASS, waaronder13 voor begrensde504-diagnostiek. Alleen canonieke RPC-route/status en toegestane foutcode; geen payloads.44 package/cold-route/native-versiecontroles PASS.
+- Capacitor loggingBehavior none voorkomt gevoelige bridge-debugoutput;3 configchecks plus42 ongewijzigde callback/storagechecks PASS. Native07-update en runtimecontrole afzonderlijk in Androidreceipt. Geen nieuwe volledige productsuitetelling; eerder924/2SKIP blijft historisch baselinebewijs.
+- Nieuwe managed gebruikersketen op05: nieuw bevestigd synthetisch manageraccount, profiel/paard/stal, twee-accountuitnodiging en acceptatie, gedeelde taakafronding en beide datedvarianten; planning, Basisvoeding/tijdelijk schema/instructies, verblijfplaats/box, faciliteitenmoment en exclusieve rijbakaanvraag→goedkeuring PASS. Tweede managersessie leest warming-upstap2, focus en privéreflectie terug. Staltoegang ingetrokken; groom verliest de context en behoudt eigen gegevens.
+- Mac-onafhankelijkheid PASS met eigen devserver uit: nieuwe registratie, daadwerkelijk ontvangen en bevestigde mail, gegevens en media; na OS-herstart opnieuw ingelogd. Volledige49-migration DBbackup echt apart hersteld:125 tabelhashes/owners/RLS/ACL gelijk.2 private mediaobjecten op bytes/checksums geverifieerd. Geen tweede Storage-uploadrestore of volledige hostedconfigexportclaim.
+- Eerdere401 en twee tijdelijke504 niet gereproduceerd; exacte oorzaak niet bewezen hersteld. Eerste natuurlijke tokenproef verwachtte401 al8s na expiry, terwijl PostgREST30s speling documenteert; die proef is geen refresh-PASS. Eén gecorrigeerde natuurlijke proef loopt naast ander werk, zonder globale TTLwijziging.
+- Android: ondertekende05-installatie/login/taakafronding/herstart PASS;06 en07 dezelfde-keyupdates behouden sessie en serverdata. iOS: macOS26.6.2/Xcode26.6 aanwezig;07 native sync PASS, compilatie en simulatorgebruik bij dit checkpoint nog in uitvoering.
+
+Persoonlijk wachtwoordherstel en gewone nieuwe telefoonlogin zijn door gebruiker bevestigd; geen persoonlijke verwijderproef. Bewijs: .avaryn-local/productization-20260911/evidence/final-user-flows/resume-*, candidate07-independent-source-review.json, platform- en backupreceipts. Actuele resterende backlog staat in docs/status/V8_PRODUCTIZATION_PROGRESS.md. Onderstaande secties en resterende gates zijn historische momentopnames, geen actuele blokkadelijst.
+
 # Technisch checkpoint — 12 september 2026
 
 Lokale kandidaat: `C010-V8-PRODUCTIZATION-20260912-05`, versie0.10.8/build5, entry `app-22PYSOSG.js`; nog niet gepubliceerd.
