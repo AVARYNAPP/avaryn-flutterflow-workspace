@@ -87,6 +87,32 @@ test('HTML returned from signed media is not exposed as an image',async()=>{cons
 test('only current derived public filenames/assets/licenses enter the asset binding',async()=>{const h=harness();for(const path of ['/app-ABCDEFG1.js','/chunk-A1B2C3D4.js','/menu-ui.css','/assets/orion.png','/assets/fonts/Inter.ttf','/assets/fonts/inter-OFL.txt'])assert.equal((await h.call(path,{method:'GET',auth:null})).status,200);assert.equal(h.assets.length,6);});
 test('private/source/config/test/metadata files cannot be returned by ASSETS',async()=>{const h=harness();for(const path of ['/.env','/server/worker.js','/config/release.json','/build-manifest.json','/_preview/toegang','/private/accounts.json','/test/unit.js','/app.js','/app-ABCDEFG1.js.map','/assets/private/key.txt','/assets/.env','/dump.sql','/backup.tar.gz','/unknown-route'])assert.equal((await h.call(path,{method:'GET',auth:null})).status,404);assert.equal(h.assets.length,0);});
 test('cold callback/document paths fetch canonical root, stripping token queries and all identity headers',async()=>{const h=harness();for(const path of ['/auth/callback?token_hash=private-code&type=email','/auth/reset-password?token_hash=private-code&type=recovery','/uitnodiging?invitation=one-time','/index.html']){const r=await h.call(path,{method:'GET',headers:{cookie:'private'},auth:JWT});assert.equal(r.status,200);const sent=h.assets.at(-1);assert.equal(sent.url,ORIGIN+'/');assert.deepEqual([...sent.headers],[]);assert.equal(r.headers.get('location'),null);}});
+for(const path of ['/','/index.html','/auth/callback','/auth/reset-password','/uitnodiging'])test('external document navigation loads only the existing shell: '+path,async()=>{
+ const h=harness(),r=await h.call(path+'?token_hash=synthetic-email-code&type=email',{method:'GET',origin:null,auth:null,headers:{'sec-fetch-site':'cross-site','sec-fetch-mode':'navigate','sec-fetch-dest':'document','referer':'https://mail.google.com/mail/','cookie':'synthetic-browser-cookie'}});
+ assert.equal(r.status,200);assert.equal(await r.text(),'<html>AVARYN</html>');assert.equal(h.upstream.length,0);assert.equal(h.assets.length,1);assert.equal(h.assets[0].url,ORIGIN+'/');assert.equal(h.assets[0].method,'GET');assert.deepEqual([...h.assets[0].headers],[]);assert.equal(r.headers.get('access-control-allow-origin'),null);assert.equal(r.headers.get('cache-control'),'no-store');assert.equal(r.headers.get('referrer-policy'),'no-referrer');assert.equal(r.headers.get('location'),null);
+});
+test('foreign Origin on shell navigation neither grants CORS nor forwards tokens or user headers',async()=>{
+ const h=harness(),r=await h.call('/auth/callback?token_hash=synthetic-email-code&type=email',{method:'GET',origin:'https://mail.google.com',headers:{'sec-fetch-site':'cross-site','sec-fetch-mode':'navigate','sec-fetch-dest':'document',cookie:'synthetic-cookie',apikey:'synthetic-caller-key'}});
+ assert.equal(r.status,200);assert.equal(r.headers.get('access-control-allow-origin'),null);assert.equal(r.headers.get('access-control-allow-credentials'),null);assert.equal(h.upstream.length,0);assert.equal(h.assets[0].url,ORIGIN+'/');assert.deepEqual([...h.assets[0].headers],[]);
+});
+test('cross-site shell fetches, frames and non-GET methods remain refused',async()=>{
+ for(const [method,mode,dest] of [['GET',null,null],['GET','cors','document'],['GET','no-cors','document'],['GET','navigate','iframe'],['GET','navigate','empty'],['GET','navigate',null],['POST','navigate','document'],['HEAD','navigate','document'],['OPTIONS','navigate','document']]){
+  const h=harness(),headers={'sec-fetch-site':'cross-site'};if(mode)headers['sec-fetch-mode']=mode;if(dest)headers['sec-fetch-dest']=dest;
+  await expectCode(await h.call('/auth/callback',{method,origin:null,auth:null,headers}),403,'ORIGIN_REFUSED');assert.equal(h.assets.length+h.upstream.length,0);
+ }
+});
+test('navigation metadata never opens cross-site API, runtime, assets or unknown shell paths',async()=>{
+ const headers={'sec-fetch-site':'cross-site','sec-fetch-mode':'navigate','sec-fetch-dest':'document'};
+ for(const [path,method] of [['/api/auth/v1/user','GET'],[media(),'GET'],['/api/auth/v1/signup','POST'],['/api/rest/v1/rpc/list_c010_horses','POST'],['/api/functions/v1/delete-account','POST'],['/runtime.json','GET'],['/version.json','GET'],['/app-ABCDEFG1.js','GET'],['/assets/orion.png','GET'],['/auth/callback/extra','GET'],['/unknown-route','GET']]){
+  const h=harness();await expectCode(await h.call(path,{method,headers}),403,'ORIGIN_REFUSED');assert.equal(h.assets.length+h.upstream.length,0);
+ }
+});
+test('document navigation cannot bypass host and malformed-path checks',async()=>{
+ const h=harness(),headers={'sec-fetch-site':'cross-site','sec-fetch-mode':'navigate','sec-fetch-dest':'document'};
+ await expectCode(await h.worker.fetch(new Request('https://foreign.example/auth/callback',{headers}),h.env),403,'HOST_REFUSED');
+ await expectCode(await h.call('/auth/callback',{method:'GET',origin:null,headers:{...headers,Host:'foreign.example'}}),403,'HOST_REFUSED');
+ await expectCode(await h.call('/auth%2fcallback',{method:'GET',origin:null,headers}),400,'INVALID_PATH');assert.equal(h.assets.length+h.upstream.length,0);
+});
 test('ASSETS redirect and exception are contained without secret leakage',async()=>{const h=harness();h.env.ASSETS.fetch=async()=>new Response('',{status:307,headers:{location:'https://foreign.example/'}});await expectCode(await h.call('/',{method:'GET'}),502,'ASSET_REDIRECT_REFUSED');h.env.ASSETS.fetch=async()=>{throw Error(KEY);};const r=await h.call('/',{method:'GET'});assert.equal(r.status,503);assert.equal((await r.text()).includes(KEY),false);});
 test('HEAD assets discard unexpected response streams without reading or retaining bytes',async()=>{let cancelled=false;const h=harness();h.env.ASSETS.fetch=async()=>new Response(new ReadableStream({cancel(){cancelled=true;}}));const r=await h.call('/',{method:'HEAD',auth:null});assert.equal(r.status,200);assert.equal(await r.text(),'');assert.equal(cancelled,true);});
 test('already-expired stream read cancels without a dangling rejected read',async()=>{let cancelled=false;const c=new AbortController();c.abort();const stream=new ReadableStream({cancel(){cancelled=true;}});await assert.rejects(limitedBytes(stream,1024,c.signal),e=>e.code==='TIMEOUT');assert.equal(cancelled,true);});

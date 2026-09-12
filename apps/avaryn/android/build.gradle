@@ -24,6 +24,16 @@ allprojects {
     }
 }
 
+// Match the installed, pinned SDK across the app and Capacitor libraries.
+// AGP otherwise defaults to 35.0.0, which is not part of our 36.0.0 toolchain.
+subprojects { project ->
+    ['com.android.application', 'com.android.library'].each { pluginId ->
+        project.pluginManager.withPlugin(pluginId) {
+            project.android.buildToolsVersion = '36.0.0'
+        }
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

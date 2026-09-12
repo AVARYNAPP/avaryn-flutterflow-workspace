@@ -135,8 +135,11 @@ export function createPilotWorker({fetchImpl=globalThis.fetch,timeoutMs=20000}={
   if(url.origin!==env.APP_ORIGIN||request.headers.has('host')&&request.headers.get('host')!==url.host)return json(403,'HOST_REFUSED');
   if(blockedPath(url))return json(400,'INVALID_PATH');
   const incoming=request.headers.get('origin'),native=NATIVE_ORIGINS.includes(incoming);
-  if(incoming&&incoming!==env.APP_ORIGIN&&!native)return json(403,'ORIGIN_REFUSED');
-  if(request.headers.get('sec-fetch-site')==='cross-site'&&!native)return json(403,'ORIGIN_REFUSED');
+  // Email links may navigate from another site to the static shell. This does
+  // not authorize API calls; ASSETS receives only the canonical root below.
+  const shellNavigation=request.method==='GET'&&SHELL_PATHS.has(url.pathname)&&request.headers.get('sec-fetch-mode')==='navigate'&&request.headers.get('sec-fetch-dest')==='document';
+  if(incoming&&incoming!==env.APP_ORIGIN&&!native&&!shellNavigation)return json(403,'ORIGIN_REFUSED');
+  if(request.headers.get('sec-fetch-site')==='cross-site'&&!native&&!shellNavigation)return json(403,'ORIGIN_REFUSED');
   const cors=incoming&&(native||incoming===env.APP_ORIGIN)?incoming:undefined;
   if(url.pathname.startsWith('/api/')){
    if(request.method==='OPTIONS'){
