@@ -69,6 +69,36 @@ for(const code of ['otp_expired','invalid_token'])test('invalid or replayed emai
  const f=fixture(()=>Response.json({code,message:code},{status:403}));await assert.rejects(f.client.verifyEmail({tokenHash:TOKEN}),e=>e.status===403);
  assert.equal(f.memory.size,0);await assert.rejects(f.client.load(),e=>e.code==='AUTH_REQUIRED');
 });
+// Exact managed Auth /verify response observed with a dummy token on 2026-09-12.
+// This checks response handling, not elapsed token lifetime or a live replay.
+const PROVIDER_OTP_ERROR={code:'otp_expired',message:'Email link is invalid or has expired'};
+const OTP_MESSAGE='Deze code of link is ongeldig, verlopen of al gebruikt. Vraag een nieuwe e-mail aan.';
+for(const type of ['email','recovery'])test('verified provider token copy for '+type+' preserves failed-verification session boundary',async()=>{
+ const f=fixture(url=>url.endsWith('/verify')?Response.json(PROVIDER_OTP_ERROR,{status:403}):undefined);
+ await f.client.login('B',PASSWORD);
+ await assert.rejects(f.client.verifyEmail({tokenHash:TOKEN,type}),e=>{
+  assert.equal(e.status,403);assert.equal(e.message,OTP_MESSAGE);assert.equal(e.code,'otp_expired');
+  assert.equal(e.accessLost,false);assert.equal(e.uncertain,false);
+  const html=renderAuth({mode:type==='recovery'?'recovery':'verify',message:e.message,tokenHash:TOKEN});
+  assert.ok(html.includes(OTP_MESSAGE));assert.equal(html.includes(TOKEN),false);assert.equal(html.includes(PROVIDER_OTP_ERROR.message),false);return true;
+ });
+ assert.equal(f.memory.size,0);await assert.rejects(f.client.load(),e=>e.code==='AUTH_REQUIRED');
+ assert.equal(f.calls.filter(c=>c.url.endsWith('/verify')).length,1,'No automatic token replay');
+});
+for(const scenario of [
+ {name:'RPC provider-shaped error remains an access failure',path:'/get_current_account_profile',operation:c=>c.load(),body:PROVIDER_OTP_ERROR,status:403,accessLost:true},
+ {name:'other Auth endpoint is not normalized',path:'/recover',operation:c=>c.recover(EMAIL),body:PROVIDER_OTP_ERROR,status:403,accessLost:true},
+ {name:'SQL42501 remains an access failure',path:'/verify',operation:c=>c.verifyEmail({tokenHash:TOKEN}),body:{code:'42501',message:'PERMISSION_DENIED'},status:403,accessLost:true},
+ {name:'unknown provider code never matches by English message',path:'/verify',operation:c=>c.verifyEmail({tokenHash:TOKEN}),body:{code:'unproven_token_code',message:PROVIDER_OTP_ERROR.message},status:403,accessLost:true},
+ {name:'server failure retains uncertain retry handling',path:'/verify',operation:c=>c.verifyEmail({tokenHash:TOKEN}),body:PROVIDER_OTP_ERROR,status:503,accessLost:false,uncertain:true},
+])test('token copy scope: '+scenario.name,async()=>{
+ const f=fixture(url=>url.endsWith(scenario.path)?Response.json(scenario.body,{status:scenario.status}):undefined);
+ await f.client.login('B',PASSWORD);
+ await assert.rejects(scenario.operation(f.client),e=>{
+  assert.equal(e.status,scenario.status);assert.equal(e.accessLost,scenario.accessLost);assert.equal(e.uncertain,Boolean(scenario.uncertain));assert.notEqual(e.message,OTP_MESSAGE);
+  if(scenario.accessLost)assert.equal(e.message,'Je hebt geen toegang tot deze handeling. Laad de actuele gegevens.');return true;
+ });
+});
 for(const value of [authSession(A,false),{user:{id:A,email_confirmed_at:'2026-09-11T12:00:00Z'}}])test('incomplete verify response does not falsely confirm an account: '+Boolean(value.access_token),async()=>{
  const f=fixture(()=>Response.json(value));await assert.rejects(f.client.verifyEmail({tokenHash:TOKEN}));assert.equal(f.memory.size,0);
 });

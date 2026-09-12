@@ -62,7 +62,8 @@ export function civilInstant(day,time,timeZone) {
 }
 export const amsterdamInstant=(day,time)=>civilInstant(day,time,ZONE);
 
-function friendly(status,body,write) {
+function friendly(status,body,write,path) {
+  if(path==='/auth/v1/verify'&&status===403&&body?.code==='otp_expired')return new BackendError('Deze code of link is ongeldig, verlopen of al gebruikt. Vraag een nieuwe e-mail aan.',{code:'otp_expired',status});
   const code=String(body?.message||body?.code||body?.error_code||body?.error||'');
   if(code==='TEMPORARY_FEEDING_PLAN_CONFLICT')return new BackendError('Een tijdelijk schema heeft basisvoeding nodig die de hele periode dekt en mag niet overlappen met een ander tijdelijk schema. Controleer de basisvoeding en datums.',{code,status});
   if(code==='STANDARD_FEEDING_PLAN_OVERLAP')return new BackendError('Er bestaat al basisvoeding voor deze periode. Open de bestaande basisvoeding om die aan te passen.',{code,status});
@@ -175,7 +176,7 @@ export function createBackendClient({baseUrl='/api',fetchImpl=globalThis.fetch,s
         const response=await fetchImpl(baseUrl+path,{method,headers,body:method==='GET'?undefined:JSON.stringify(body??{}),signal:controller.signal,cache:'no-store',credentials:'same-origin'});
         if(response.ok&&response.status===204)return {};
         let payload;try{payload=await response.json();}catch{throw new BackendError('De verbinding gaf geen bruikbaar antwoord.',{code:'INVALID_RESPONSE',uncertain:write});}
-        if(!response.ok)throw friendly(response.status,payload,write);return payload;
+        if(!response.ok)throw friendly(response.status,payload,write,path);return payload;
       })();
       return await Promise.race([operation,new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new BackendError(write?'Opslaan is nog niet bevestigd. Laad de gegevens voordat je opnieuw probeert.':'Het laden duurt te lang. Probeer het opnieuw.',{code:'TIMEOUT',uncertain:write}));},timeoutMs);})]);
     }catch(error){if(error instanceof BackendError)throw error;throw new BackendError(write?'Opslaan is nog niet bevestigd. Laad de gegevens voordat je opnieuw probeert.':'AVARYN is tijdelijk niet bereikbaar. Probeer het opnieuw.',{code:'NETWORK',uncertain:write});}
