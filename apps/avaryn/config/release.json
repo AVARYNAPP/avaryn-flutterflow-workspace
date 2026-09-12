@@ -1,7 +1,7 @@
 {
-  "candidate": "C010-V8-PRODUCTIZATION-20260912-08",
+  "candidate": "C010-V8-PRODUCTIZATION-20260912-09",
   "version": "0.10.8",
-  "buildNumber": 8,
+  "buildNumber": 9,
   "status": "development",
   "baseCandidate": "C010-V8-RIDER-VITALITY-DATE-PRIORITY-20260911-01"
 }

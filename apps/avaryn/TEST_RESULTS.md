@@ -1,6 +1,20 @@
 # Actuele teststatus — productisering, 12 september 2026
 
-## Kandidaat 08 — lokale opvolger, 12 september 2026
+## Actuele opvolger — kandidaat 09, 12 september 2026
+
+`C010-V8-PRODUCTIZATION-20260912-09` (0.10.8/build 9) bevat de geteste 08-sessie-/naamcorrectie plus één bestaande mobiele CSS-regel die nu ook inlogvelden op16px zet. In de echte iOS-app veroorzaakte de oude13px-invoer focuszoom die na login bleef staan. Nieuwe normale iOS-login toont Vandaag volledig; eigen pinchzoom blijft mogelijk. Desktopvelden blijven13px, mobiele velden zijn16px op320/390; nul gemeten browserconsolemeldingen in deze lokale formulierproef.
+
+Webentry `app-QTOOQUNT.js`; native entry `app-G44TDNMN.js` gebruikt de vaste HTTPS-Pilot-API. Backend `rvymglpkttlfwhqpmupp` en49 migrations/Edge/Auth/RLS zijn ongewijzigd. De onafhankelijke delta-herbouw leverde alle34 clientbestanden bytegelijk op, met ongewijzigde dependencies uit de schone08-build. Pakket/versie/koude-assets:44 PASS. De08-sessiecorrectie blijft exact bytegelijk en hergebruikt61 actuele regressies,141 omliggende controles en onafhankelijke review.
+
+Android09: ondertekende update met dezelfde testkey behoudt sessie, paarden en opgeslagen foto;33 native bestanden exact. iOS09: standaard ad-hoc simulatorbuild, strikte codesigncontrole, installatie met bewaarde Keychain en33 bestanden exact; gewone login, uitloggen, light/dark en focus zonder uitsnijding daadwerkelijk gecontroleerd. De08-koude iOS-herstart las dezelfde stal en Android-testfoto terug. Native artifacts zijn simulator-/emulatortestbuilds, geen fysieke toestel- of storeacceptatie. Echte mail→automatische native terugkeer, fysieke camera en release-signing blijven afzonderlijke grenzen.
+
+De losse Android08-login-time-out bleef afzonderlijk bewaard: Sites registreerde alleen een geslaagde preflight, geen voltooide Auth-POST; één normale herlogin werkte. Dit is geen bewezen JWT-fout of herstelde upstreamoorzaak. Voor de specifieke waargenomen tijdelijkeJWT-weigering is08/09 begrensde read-retry getest; een echte online weigering gevolgd door aantoonbaar geslaagde automatische retry is nog niet geobserveerd. De natuurlijke tokenproef (3643seconden zonder requests, oud token geweigerd, reguliere refresh en vier reads geslaagd) blijft onafhankelijk bewijs.
+
+Kandidaat08 is lokaal vastgelegd als `21f80ff165cda0f3cd471701a0b67b95061677c6`, maar niet gepubliceerd. Automatische goedkeuringscontrole blokkeerde de ontwikkelpush omdat het eerdere directe akkoord alleen b083 en zes voorgangers omvatte; de concrete vraag staat apart open. De09-bron wordt selectief gecheckpoint en naar uitsluitend de bestaande pilot gepubliceerd. Tot het aparte publicatiereceipt slaagt, blijft de hieronder bewezen online07 de geldende online toestand. Geen main-merge, productie, Alpha, oud Staging, C-011, kosten of menselijke eindacceptatie.
+
+Bewijs: `candidate09-version-assets-tests.log`, `candidate09-packaging-tests.log`, `candidate09-independent-build.json`, `candidate09-login-local-summary.json`, `android-candidate09-native-final.json`, `ios-candidate09-input-zoom-diagnosis.json` en de bijbehorende native/screenshotreceipts. De [testwandeling](TESTER_GUIDE.md) gebruikt vrije registratie via de gedeelde pilotlink. De geverifieerde backup is een momentopname; doorlopende backup en volledige hosted/Storage-herstelbaarheid zijn niet daarmee bewezen.
+
+## Voorafgaand lokaal checkpoint 08 — bewijs op dat moment
 
 `C010-V8-PRODUCTIZATION-20260912-08` (0.10.8/build 8) volgt checkpoint `b0839e2d287f13c0a2393feed5c1268f256b1b37` op. De webentry is `app-2NFGTUZO.js`; de native entry met vaste HTTPS-pilot-API is `app-ANBX25TF.js`. De hieronder vastgelegde 07-publicatie blijft de laatst geverifieerde online versie totdat het afzonderlijke 08-publicatiereceipt is afgerond. Backend `rvymglpkttlfwhqpmupp`, 49 migrations, Edgebron en toegangsgrenzen zijn ongewijzigd.
 
