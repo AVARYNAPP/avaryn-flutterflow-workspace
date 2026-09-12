@@ -169,14 +169,26 @@ export function createBackendClient({baseUrl='/api',fetchImpl=globalThis.fetch,s
   };
   const clear=()=>{session=null;cached=null;rawCache=null;epoch++;loadEpoch++;refreshPromise=null;return persist();};
   async function request(path,body,{token=session?.access_token,write=false,method='POST'}={}) {
-    const controller=new AbortController();let timer;const headers={'Content-Type':'application/json','X-Supabase-Api-Version':'2024-01-01'};
+    const controller=new AbortController(),requestEpoch=epoch;let timer;const headers={'Content-Type':'application/json','X-Supabase-Api-Version':'2024-01-01'};
     if(token)headers.Authorization='Bearer '+token;
     try {
       const operation=(async()=>{
-        const response=await fetchImpl(baseUrl+path,{method,headers,body:method==='GET'?undefined:JSON.stringify(body??{}),signal:controller.signal,cache:'no-store',credentials:'same-origin'});
-        if(response.ok&&response.status===204)return {};
-        let payload;try{payload=await response.json();}catch{throw new BackendError('De verbinding gaf geen bruikbaar antwoord.',{code:'INVALID_RESPONSE',uncertain:write});}
-        if(!response.ok)throw friendly(response.status,payload,write,path);return payload;
+        const encodedBody=method==='GET'?undefined:JSON.stringify(body??{});
+        for(let attempt=0;attempt<2;attempt++){
+          const response=await fetchImpl(baseUrl+path,{method,headers,body:encodedBody,signal:controller.signal,cache:'no-store',credentials:'same-origin'});
+          if(response.ok&&response.status===204)return {};
+          let payload;try{payload=await response.json();}catch{throw new BackendError('De verbinding gaf geen bruikbaar antwoord.',{code:'INVALID_RESPONSE',uncertain:write});}
+          // A newly issued JWT can briefly precede a validator's clock. Retry
+          // only this explicit pre-execution refusal on a read-only RPC, with
+          // the same bearer and the original deadline. Never replay a write.
+          if(attempt===0&&token&&!write&&method==='POST'&&/^\/rest\/v1\/rpc\/(?:get|list|preview)_[a-z][a-z0-9_]*$/.test(path)&&response.status===401&&payload?.code==='PGRST303'&&['JWT issued at future','JWT not yet valid'].includes(payload?.message)){
+            await new Promise(resolve=>setTimeout(resolve,1200));
+            current(requestEpoch);
+            if(controller.signal.aborted)throw new BackendError('Het laden duurt te lang. Probeer het opnieuw.',{code:'TIMEOUT'});
+            continue;
+          }
+          if(!response.ok)throw friendly(response.status,payload,write,path);return payload;
+        }
       })();
       return await Promise.race([operation,new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new BackendError(write?'Opslaan is nog niet bevestigd. Laad de gegevens voordat je opnieuw probeert.':'Het laden duurt te lang. Probeer het opnieuw.',{code:'TIMEOUT',uncertain:write}));},timeoutMs);})]);
     }catch(error){if(error instanceof BackendError)throw error;throw new BackendError(write?'Opslaan is nog niet bevestigd. Laad de gegevens voordat je opnieuw probeert.':'AVARYN is tijdelijk niet bereikbaar. Probeer het opnieuw.',{code:'NETWORK',uncertain:write});}
